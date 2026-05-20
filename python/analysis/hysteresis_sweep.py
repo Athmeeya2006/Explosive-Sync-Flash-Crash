@@ -43,11 +43,11 @@ def main() -> None:
         adj = ba_network(args.n, args.m, rng)
 
     omega = frequencies_from_mode(adj, rng, args.omega_mean, args.omega_std, args.freq_mode)
-    
+
     k_values = np.linspace(args.k_min, args.k_max, args.k_steps)
-    
+
     rows = []
-    
+
     # Forward sweep
     print("Running forward sweep...")
     for k in k_values:
@@ -70,13 +70,13 @@ def main() -> None:
 
     out_path = Path(args.out)
     ensure_dir(out_path.parent)
-    
+
     # Save manually to handle the string column
     with open(out_path, 'w') as f:
         f.write("k,direction,order\n")
         for row in rows:
             f.write(f"{row[0]:.6f},{row[1]},{row[2]:.6f}\n")
-            
+
     print(f"Saved hysteresis data to {out_path}")
 
 

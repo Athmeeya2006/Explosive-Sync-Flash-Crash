@@ -29,7 +29,7 @@ def plot_hist(ax, data, label, color):
     # Histogram
     hist, edges = np.histogram(data, bins=bins, density=True)
     centers = (edges[:-1] + edges[1:]) / 2
-    
+
     ax.plot(centers, hist, 'o', label=label, color=color, alpha=0.8)
 
 
@@ -44,7 +44,7 @@ def main() -> None:
     ba_deg = ba.sum(axis=1)
 
     fig, ax = plt.subplots(figsize=(7.0, 5.0))
-    
+
     plot_hist(ax, er_deg[er_deg > 0], "ER Network (Poisson)", "blue")
     plot_hist(ax, ba_deg[ba_deg > 0], "BA Network (Power Law)", "red")
 

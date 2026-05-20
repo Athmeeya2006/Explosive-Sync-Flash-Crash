@@ -1,8 +1,6 @@
 import sys
 from unittest.mock import patch
-from pathlib import Path
 
-import pytest
 
 from analysis.early_warning import main as ew_main
 from analysis.finite_size_scaling import main as fss_main
@@ -71,7 +69,7 @@ def test_early_warning(tmp_path):
     test_args_gen = ["prog", "--n", "10", "--tmax", "1.0", "--dt", "0.1", "--out", str(in_file)]
     with patch.object(sys, "argv", test_args_gen):
         rk_main()
-    
+
     test_args = ["prog", "--input", str(in_file), "--window", "2", "--out", str(out_file)]
     with patch.object(sys, "argv", test_args):
         ew_main()
@@ -88,15 +86,15 @@ def test_plots(tmp_path):
     k_out = tmp_path / "k.csv"
     with patch.object(sys, "argv", ["prog", "--n", "10", "--tmax", "0.5", "--out", str(k_out)]):
         rk_main()
-        
+
     ew_out = tmp_path / "ew.csv"
     with patch.object(sys, "argv", ["prog", "--input", str(k_out), "--window", "2", "--out", str(ew_out)]):
         ew_main()
-        
+
     fss_out = tmp_path / "fss.csv"
     with patch.object(sys, "argv", ["prog", "--n-list", "10", "--k-list", "0.5", "--n-replicas", "1", "--tmax", "0.5", "--out", str(fss_out)]):
         fss_main()
-        
+
     fc_out = tmp_path / "fc.csv"
     with patch.object(sys, "argv", ["prog", "--n", "10", "--tmax", "0.5", "--out", str(fc_out)]):
         fcs_main()

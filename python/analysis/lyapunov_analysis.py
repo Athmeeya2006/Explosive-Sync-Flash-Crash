@@ -27,13 +27,13 @@ def kuramoto_with_variational_rhs(
     n = omega.size
     theta = state[:n]
     delta = state[n:]
-    
+
     # Base system
     sins = np.sin(theta[edge_j] - theta[edge_i])
     coupling = np.bincount(edge_i, weights=sins, minlength=n)
     coupling = np.divide(coupling, deg, out=np.zeros_like(coupling), where=deg > 0.0)
     dtheta = omega + k * coupling
-    
+
     # Variational system (Jacobian vector product)
     # J_{ij} = K/k_i A_{ij} cos(theta_j - theta_i) for i != j
     # J_{ii} = -K/k_i sum_j A_{ij} cos(theta_j - theta_i)
@@ -43,7 +43,7 @@ def kuramoto_with_variational_rhs(
     delta_diff = delta[edge_j] - delta[edge_i]
     jvp_coupling = np.bincount(edge_i, weights=coss * delta_diff, minlength=n)
     jvp = k * np.divide(jvp_coupling, deg, out=np.zeros_like(jvp_coupling), where=deg > 0.0)
-    
+
     return np.concatenate([dtheta, jvp])
 
 
@@ -60,7 +60,7 @@ def compute_lyapunov(
     edge_i, edge_j = adj_sparse.nonzero()
     deg = np.asarray(adj_sparse.sum(axis=1)).ravel()
     n = omega.size
-    
+
     # 1. Run transient
     sol_transient = solve_ivp(
         kuramoto_rhs,
@@ -72,16 +72,16 @@ def compute_lyapunov(
     )
     if not sol_transient.success:
         raise RuntimeError("Transient integration failed")
-        
+
     theta_current = sol_transient.y[:, -1]
-    
+
     # 2. Benettin algorithm for largest Lyapunov exponent
     delta_current = np.random.randn(n)
     delta_current /= np.linalg.norm(delta_current)
-    
+
     lyap_sum = 0.0
     steps = int(round(tmax / dt))
-    
+
     for _ in range(steps):
         state0 = np.concatenate([theta_current, delta_current])
         sol = solve_ivp(
@@ -94,15 +94,15 @@ def compute_lyapunov(
         )
         if not sol.success:
             raise RuntimeError("Variational integration failed")
-            
+
         state_end = sol.y[:, -1]
         theta_current = state_end[:n]
         delta_end = state_end[n:]
-        
+
         norm_end = np.linalg.norm(delta_end)
         lyap_sum += np.log(norm_end)
         delta_current = delta_end / norm_end
-        
+
     return lyap_sum / tmax
 
 
@@ -135,16 +135,16 @@ def main() -> None:
 
     omega = frequencies_from_mode(adj, rng, 0.0, 1.0, args.freq_mode)
     theta0 = rng.uniform(0.0, 2.0 * np.pi, size=args.n)
-    
+
     k_vals = np.linspace(args.k_min, args.k_max, args.k_steps)
     rows = []
-    
+
     print("Computing Lyapunov exponents...")
     for k in k_vals:
         lyap = compute_lyapunov(adj, omega, theta0, k, args.tmax, args.dt, args.t_transient)
         print(f"K={k:.2f}, LLE={lyap:.5f}")
         rows.append((k, lyap))
-        
+
     out_path = Path(args.out)
     ensure_dir(out_path.parent)
     header = "k,lyapunov"

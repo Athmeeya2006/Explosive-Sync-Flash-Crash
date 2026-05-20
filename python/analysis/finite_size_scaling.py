@@ -44,9 +44,9 @@ def main() -> None:
 
     pairs = [(n, k) for n in n_list for k in k_list]
     seed_seq = np.random.SeedSequence(args.seed)
-    
+
     rows = []
-    
+
     # We need child sequences for each pair and replica
     child_seqs = seed_seq.spawn(len(pairs) * args.n_replicas)
     seq_idx = 0

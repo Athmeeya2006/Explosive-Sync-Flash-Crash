@@ -46,17 +46,17 @@ def main() -> None:
             else:
                 counts = np.bincount(labels)
                 gcc_fracs.append(counts.max() / args.n)
-                
+
         gcc_mean.append(np.mean(gcc_fracs))
         gcc_std.append(np.std(gcc_fracs))
 
-    gcc_mean = np.array(gcc_mean)
-    gcc_std = np.array(gcc_std)
+    gcc_mean_arr = np.array(gcc_mean)
+    gcc_std_arr = np.array(gcc_std)
 
     fig, ax = plt.subplots(figsize=(7.0, 4.0))
     # p_c = 1/N for ER network
     p_c = 1.0 / args.n
-    ax.errorbar(p_vals, gcc_mean, yerr=gcc_std, marker='o', markersize=4, capsize=3, label='Simulation')
+    ax.errorbar(p_vals, gcc_mean_arr, yerr=gcc_std_arr, marker='o', markersize=4, capsize=3, label='Simulation')
     ax.axvline(p_c, color='red', linestyle='--', label=f'Critical p = 1/N ({p_c:.4f})')
 
     ax.set_xlabel("Edge probability p")
