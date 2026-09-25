@@ -1,23 +1,70 @@
-# Python
+# ---------------------------------------------------------------- Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
 .venv/
 venv/
+env/
 
-# C++ build artifacts
+# ---------------------------------------------------------------- C++ build artifacts
 build/
 cpp/build/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 compile_commands.json
+*.o
+*.so
+*.a
 
-# Jupyter
+# ---------------------------------------------------------------- Node
+node_modules/
+research/tools/node_modules/
+
+# ---------------------------------------------------------------- Editors / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# ---------------------------------------------------------------- Jupyter
 .ipynb_checkpoints/
 
-# OS files
-.DS_Store
+# ================================================================= LARGE REGENERABLE DATA
+# Everything below is reproducible from a script and is far too large to push.
+# What IS kept: every result CSV (the findings), every figure, and all source.
+
+# Downloaded market prices (~155 MB) -> research/empirical/fetch_markets.py
+research/empirical/data/markets/
+research/empirical/data/daily/
+research/empirical/data/indicators/
+*.pkl
+
+# Simulation state dumps (~2 MB) -> re-run the s*.py scripts
+*.npz
+
+# Reference PDFs (~126 MB, third-party copyright) -> references/fetch_references.py
+# references/index.csv and references/README.md are kept so the library is reconstructable.
+references/**/*.pdf
+
+# Run logs
+research/data/*.log
+research/empirical/data/*.log
+*.log
+
+# Generated top-level demo outputs from the original python/ CLI layer
+/data/*.csv
+/data/*.npy
+/figures/*.png
+
+# Scratch
+scratch/
+tmp/
+*.tmp

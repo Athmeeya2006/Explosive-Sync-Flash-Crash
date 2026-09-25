@@ -1,0 +1,1121 @@
+                                                                                                                               Articles
+                                                                                                          https://doi.org/10.1038/s41567-018-0409-0
+
+
+
+
+Spatiotemporal signal propagation in
+complex networks
+Chittaranjan Hens1,2,3, Uzi Harush1,3, Simi Haber1, Reuven Cohen                                   1
+                                                                                                       and Baruch Barzel           1
+                                                                                                                                    *
+
+A major achievement in the study of complex networks is the realization that diverse systems, from sub-cellular biology to
+social networks, exhibit universal topological characteristics. Yet, such universality does not naturally translate to the dynam-
+ics of these systems, as dynamic behaviour cannot be uniquely predicted from topology alone. Rather, it depends on the inter-
+play of the network’s topology with the dynamic mechanisms of interaction between the nodes. Hence, systems with similar
+structure may exhibit profoundly different dynamic behaviour. We therefore seek a general theoretical framework to help
+us systematically translate topological elements into their predicted dynamic outcome. Here, we offer such a translation in
+the context of signal propagation, linking the topology of a network to the observed spatiotemporal spread of perturbative
+signals across it, thus capturing the network’s role in propagating local information. For a range of nonlinear dynamic models,
+we predict that the propagation rules condense into three highly distinctive dynamic regimes, characterized by the interplay
+between network paths, degree distribution and the interaction dynamics. As a result, classifying a system’s intrinsic interac-
+tion mechanisms into the relevant dynamic regime allows us to systematically translate topology into dynamic patterns of
+information propagation.
+
+
+
+
+N
+       etworks represent a powerful tool to visualize and predict               of biochemical signals in a sub-cellular environment (Fig. 1a).
+       information propagation in complex systems, from viral                   Denoting the abundance of the ith protein by xi(t), we capture the
+       spread1, to neuronal2 or biochemical3–5 signals. In some cases           system’s dynamics through16 xi̇ = −Bi xia + ∑ Nj =1 A ij H (xj ) , in which
+the network topology exposes the natural geometry of the propaga-               the first term describes a protein’s self-dynamics, for example, deg-
+tion, with the more distant nodes impacted at later times. In others,           radation (a =​ 1), dimerization (a =​ 2) or a more complicated chain
+however, the translation is less transparent, a consequence of the              reaction (fractional a, Supplementary Section 2.2), and the second
+diverse forms of nonlinear interactions that may take place between             term depicts i’s regulation by its interacting partners, often captured
+the nodes6–11. Therefore, advances are often system dependent, with             by a Hill function of the form17,18 H (xj ) = x jh ∕ (1 + x jh ) (Fig. 1b).
+each dynamics warranting its own dedicated analysis, allowing lim-              Changes in the abundance of one protein propagate, through Aij,
+ited insight to transfer across domains.                                        to affect the abundance levels of all other proteins, representing a
+    To overcome this diversity we seek general tools to translate a             spread of biochemical information in the system3. Hence we initi-
+network’s topology into predictions on its observed propagation                 ate a biochemical signal by introducing a perturbation Δ​xj to the
+patterns—often characterized through the system’s response to local             steady-state abundance of the source j (black node), and then track
+perturbations3,12,13. A single component is perturbed, and as a result          its propagation, as it penetrates the network, for illustration, focus-
+all other network components are impacted, leading, in the long                 ing on four selected target nodes i =​ 1, 2, 3, 4 (coloured nodes).
+term, to a cascade of responses, whose size and penetration depth                   In Fig. 1d–i we track the resulting propagation under different
+help characterize the network’s dynamic behaviour3,4,14,15. Such                dynamics, by controlling the values of a and h and monitoring the
+predictions, however, tracking the system’s long-term response,                 sequence of responses Δ​xi(t) of the four selected target nodes. We
+provide little insight into its temporal propagation, leaving open              also measured the propagation times T(j →​  i) for the signal in j to
+time-related questions, such as, how much time it will take the cas-            travel to i through
+cade to build up, which nodes respond first and which later, or what
+percentage of nodes are impacted at any given point in time.                                     Δxi (t = T (j → i )) = ηΔxi (t → ∞)                      (1)
+    We address these questions here by predicting an individual
+node’s degree-dependent response time, allowing us, by piec-                    namely T(j →​  i) represents the time when i has reached an η-fraction
+ing together all local responses, to predict the complete network               of its final response to the j-signal (typically setting η ~ 1/2, the half-
+spatiotemporal propagation patterns. Analytically tractable for a               life of i’s response; Fig. 1c, Supplementary Section 3.2). For a =​  h =​  1
+family of commonly encountered steady-state dynamics, our for-                  the propagation seems predictable—first impacting the nearest
+malism allows us to systematically translate topology into signal               neighbours 1, 2, then reaching the farther nodes 3, 4 (Fig. 1d,e).
+propagation, in effect, reestablishing networks as predictors of                This clean picture, however, is violated as the dynamics is changed.
+information spread.                                                             For instance, under a =​ 1/2 we find that the nearest neighbour 1 is
+                                                                                impacted significantly later than all other nodes, seemingly skipped
+Diversity in signal propagation                                                 over by the more distant 3 and 4 (Fig. 1f,g). The opposite occurs
+To illustrate the challenge we begin with an artificial N-node protein          when we set a =​  3, h =​ 1/2, as now 1 becomes the first to receive the
+interaction network Aij, which we use to simulate the propagation               signal, preceding 4 by two orders of magnitude (Fig. 1h,i).
+
+
+Department of Mathematics, Bar-Ilan University, Ramat-Gan, Israel. 2Physics and Applied Mathematics Unit, Indian Statistical Institute, Kolkata, India.
+1
+
+These authors contributed equally: Chittaranjan Hens, Uzi Harush. *e-mail: baruchbarzel@gmail.com
+3
+
+
+
+Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics                                                                             403
+Articles                                                                                                                                                               NAtuRe PHYsics
+
+           a                                                                                         d                                               e
+                                                                                                               1.0                                                 2
+                                  Aij
+                                                                                                                          1,2
+                                                                                          a=1                                        3       4
+
+
+
+
+                                                                                                                                                     T ( j→i )
+                                                                                                    ∆xi (t )
+
+
+
+
+                                                                                                                                                                                                 1.81
+                                                                                          h=1                  0.5                                                 1
+
+
+
+
+                                                                                                                                                                                          1.69
+                                                                        1
+
+
+
+
+                                                                                                                                                                       0.69
+                                                                                                                                                                               0.69
+                       4
+                                                     j
+                                                                               3                                0                                                 0
+                                                                                                                     0       1       2   3       4                      1       2          3      4
+                                                                    2                                                            t                                                    i
+
+
+                                                                                                     f                                               g
+                                                                                                               1.0                                               120
+           b
+                                                          N                                                                      4
+
+
+
+
+                                                                                                                                                     T ( j→i )
+                                                                        xjh (t )
+
+
+
+
+                                                                                                    ∆xi (t )
+                            dxi                                                           a = 1/2
+
+
+
+
+                                                                                                                                                                       118
+                                   = – Bi xia (t ) +          Aij                                              0.5                   3                            60
+                            dt                                       1 + xjh (t )         h=1                                            1
+                                                         j=1                                                         2
+
+
+
+
+                                                                                                                                                                                          53
+                                                                                                                                                                               2.7
+
+
+                                                                                                                                                                                                 6.3
+           c                                                                                                                                                       0
+                                                                                                                     100 101 102 103                                     1      2          3      4
+                                                                                                                           t                                                          i
+
+
+                                                                                                     h                                               i
+                 Response
+
+
+
+
+                                                                                                               1.0                                               0.6
+                                         T ( j→i )
+                                                                                                                         1
+
+
+
+
+                                                                                                                                                     T ( j→i )
+                                                                                          a=3
+
+
+
+
+                                                                                                    ∆xi (t )
+                                                                    ∆xi (t )
+                                                                                          h = 1/2              0.5                                               0.3
+
+
+
+
+                                                                                                                                                                                                 0.52
+                                                                                                                                         4
+
+
+
+
+                                                                                                                                                                                          0.12
+                                                                                                                                 3
+                                                                                                                                     2
+
+
+
+
+                                                                                                                                                                       0.006
+                                                                                                                                                                               0.2
+                                                                                                                0                                                  0
+                                                         Time                                                            10–2            100                           1       2          3      4
+                                                                                                                                 t                                                    i
+
+
+Fig. 1 | Propagation of signals in a complex network environment. To model network dynamics we use a two-layer description. a, The first layer is the
+topology, captured by the weighted network Aij. b, The second layer is the system’s dynamics, designed to capture the inner mechanisms driving the
+system’s observed behaviour. Here, for illustration, we consider protein interactions in sub-cellular networks: proteins are depleted at a rate proportional to
+xia (setting Bi =​1 for all i) and activated by their network neighbours via the Hill function H (xj) = xjh ∕ (1 + xjh) (refs. 17,18). The dynamic behaviour of the system
+(a,b) can be captured through its patterns of information, or signal, propagation. A local signal in the form of an activity perturbation Δ​xj is applied to the
+source node j (black), spreading through the network to impact all other nodes 1, 2, …​. c, The spatiotemporal propagation of this signal is captured by the
+response of all target nodes, i, via Δ​xi(t), which we normalize to satisfy Δ​xi(t →​ ∞​) =​1. The propagation time, T(j →​ i), captures the time for Δ​xi to reach
+an η-fraction of its final response, here illustrated for η =​1/2 (half-life). We tested the propagation from j under different dynamics, varying the exponents
+a and h. d, The response Δ​xi(t) versus t, as obtained for a =​ h =​1 for nodes i =​1, 2, 3 and 4 (coloured in Aij). 1 and 2 respond almost simultaneously, hence
+their overlapping plots. e, The propagation time T(j →​ i) for these four nodes. As expected we find that the signal first reaches the neighbouring nodes
+1,2, then propagates to impact the next neighbours 3, 4. f,g, Changing the value of a to 1/2 has a pronounced impact on the propagation pattern, as now 1
+seems to be skipped by the more distant 3 and 4. Moreover, T(j →​1) is now two orders of magnitude greater than T(j →​2), despite being at equal distance
+from j, and in sharp contrast with their previously simultaneous responses. h,i, The propagation sequence is further scrambled under a =​ 3, h =​1/2, as are
+the propagation timescales, with 1 now preceding the others by two orders of magnitude. Hence, Aij alone is insufficient to predict information spread, as
+indeed, changes in the dynamic equation in b translate to profound and seemingly unpredictable consequences on the observed propagation.
+
+
+
+  This diversity of propagation patterns is also expressed by the                         empirical networks with a set of frequently encountered dynamic
+mean propagation time                                                                     models. This includes Erdős–Rényi (ER) and scale-free (SF) net-
+                                                                                          works19 with different link weight distributions (SF, SF1, SF2), as well
+                                             1
+                                                          N                               as empirical networks from social20–22, biological22–24, neuronal25 and
+                                   ⟨T ⟩ =        ∑ T (j → i)                        (2)   ecological26 domains. To scan the dynamics space, we implemented
+                                             N 2 i ,j=1                                   relevant steady-state dynamic models, capturing epidemic spread-
+                                                                                          ing (E27), ecological interactions (M10), regulatory dynamics (R1,
+capturing the typical time for signals to cover the entire network.                       R 217,18), neuronal activation (N28) and population dynamics (P29),
+We find that 〈​T〉​ranges from ~10−2 (Fig. 1i, green) to ~102 (Fig. 1g,                    together a spectrum of nonlinear models from diverse application
+red), representing a several order of magnitude difference in                             fields. We arrive at a combination totaling 41 systems—each pair-
+timescales exhibited by the same network. Consequently, signal                            ing a network with its relevant dynamics, on which to observe and
+propagation cannot be mapped directly to the network topology,                            understand the potential signal propagation patterns (Fig. 2a,b).
+as, indeed, even in this simple example, we observe that changes to                           Introducing permanent activity perturbations Δ​x around the
+the dynamics (values of a and h) can have dramatic consequences                           steady state, as in Fig. 1, we examined signal propagation in each of
+on the spreading behaviour.                                                               our 41 combined networks/dynamics. The results for SF, across all
+    To advance from this anecdotal observation towards a general                          six dynamic models, are presented in Fig. 3a–f. We find that despite
+signal propagation framework, we seek to separate the role of the                         the fact that the networks and layouts in all panels are identical,
+topology from that of the dynamics. Therefore, we constructed a                           the spatiotemporal propagation patterns are visibly different,
+systematic testing ground combining a diverse body of model and                           depending on the type of dynamics: in some cases propagating,
+
+404                                                                                           Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics
+NAtuRe PHYsics                                                                                                                        Articles
+expectedly, from core to periphery (R1, N, blue), in others, strik-               for M and E the prediction is θ =​  −​1 (Fig. 4c), all corroborated by
+ingly, advancing from the periphery inwards (R 2, P, red) and finally,            our simulation results.
+in M and E, featuring a seemingly random scatter of early respond-                    Most crucially, θ is intrinsic to the system’s dynamics M, inde-
+ing nodes (green). These observations indicate a non-trivial inter-               pendent of the network topology Aij. Indeed, Fig. 4a–c groups
+play between structure and dynamics, whose mathematical roots we                  together distinct systems based on their shared dynamics: R1 and N
+investigate below.                                                                having θ =​  0, R 2 and P with θ =​ 3/2 and 1, respectively, and M and
+                                                                                  E both having θ =​  −​1. In each of these dynamic classes, the scal-
+Analytical framework for spatiotemporal propagation                               ing of equation (4) is sustained across diverse networks, ranging in
+To understand the roots of the observed propagation patterns                      size, density and structural heterogeneity. Hence θ is a fingerprint of
+we develop a unified framework to capture the behaviour of                        the system’s dynamic model M, providing the desired separation of
+all dynamic models used in Figs. 1–3. Therefore we consider the                   topology versus dynamics: Aij provides the degrees Si and their dis-
+general equation (Fig. 2c)                                                        tribution P(S), while M translates these into τi through θ (Fig. 2d).
+
+           dx i
+                                   N                                              Global propagation regimes
+                = M 0 (xi (t )) + ∑ A ij M1 (xi (t )) M2 (xj (t ))          (3)   Equation (4) provides not only the local response times τi, but also
+           dt                     j=1                                             helps unravel the global propagation patterns T(j →​  i), predicting
+                                                                                  three distinct propagation regimes:
+in which the nonlinear functions M =​  (M0(x), M1(x), M2(x)) can
+be selected to cover each of the systems included in our testing                  Distance-limited propagation (R1, N, blue). In case θ =​ 0 we have
+ground (Fig. 2a,b), together with a range of additional social30, bio-            τi in equation (4) independent of Si. Therefore, as the signal propa-
+logical16 or technological31 dynamics. For instance, the regulatory               gates along network paths, each node in its trajectory causes, on
+models R1, R 2 are covered by equation (3) through M =​  (−​Bxα, 1,               average, the same delay, and hence the propagation time T(j →​  i)
+xh/(1 +​  xh)); similarly, the SIS model E maps to M =​  (−​Bx, 1 −​  x, x);      is primarily governed by the path length Lij. In Fig. 4d we present
+excluded, however, are non-factorizable interactions, for example,                T(j →​  i) versus Lij, confirming our prediction that in R1 and N prop-
+M(xi, xj) =​  M(xj −​  xi) (ref. 32). The network Aij ≥​ 0 represents a ran-      agation is, indeed, driven by distance.
+dom weighted network, with arbitrary degree/weight distribu-
+tions—that is, a positive weighted configuration model network33.                 Degree-limited propagation (R 2, P, red). For θ >​ 0 equation (4)
+    To predict the signal propagation patterns of equation (3), we                predicts that hubs respond at a slower rate than low-degree nodes,
+first focus on each node’s individual response time τi to a directly              in effect being the bottlenecks of signal propagation. In this class the
+incoming signal; that is, we seek the T(j →​  i) for signals originat-            length of a path Lij is of little importance compared to the degrees
+ing in i’s nearest neighbour j. In Supplementary Section 1 we show,               of the nodes along its trajectory; especially in SF networks, where
+based on linear response theory, that we can link τi to i’s weighted              paths are extremely short35, whereas degrees range over orders of
+degree Si = ∑ Nj =1 A ij through the universal scaling relationship               magnitude (Fig. 4e).
+
+                                  τi ~ Siθ                                  (4)   Composite propagation (E, M, green). For θ <​ 0 the hubs respond
+                                                                                  rapidly, and hence signal propagation is, again, primarily limited
+where                                                                             by the path length from source to target (Fig. 4f); however paths
+                                                                                  enriched with hubs will support a more rapid propagation.
+                              θ = −2−Γ(0)                                   (5)       We can now revisit the illustrative Fig. 1, to better understand its
+                                                                                  observed T(j →​  i). The blue dynamics (Fig. 1d,e) is distance limited
+The parameter Γ​(0) is determined by the system’s dynamics M                      (θ =​ 0), therefore the signal reaches the nearest neighbours first at
+through the leading powers of the Hahn series expansion                           t ≈​ 1, then proceeds to impact the next neighbours at t ≈​ 2. In con-
+                                                                                  trast, red (Fig. 1f,g) is degree limited (θ =​ 2), and hence the highly
+                                        ∞                                         connected hub node 1 is the last to receive the signal, bypassed by 3,
+                       Y (R−1(x )) = ∑ Cnx Γ(n)                             (6)   whose incoming information is routed via the low-degree, and thus
+                                       n =0                                       fast-responding, node 2. This illustrates that under degree-limited
+                                                                                  propagation, short paths do not necessarily translate to rapid propa-
+where Y(x) =​  (d(M1R)/dx)−1, R(x) =​  −​M1(x)/M0(x) and R−1(x)                   gation. Finally, for the green system (Fig. 1h,i), we predict θ =​  −​2/3, a
+denotes its inverse function. The Hahn expansion in equation (6)                  composite dynamics, in which the hub-enriched paths are now fastest,
+is a generalization of the Taylor expansion, to include both negative             leading to a third propagation sequence 1, 3 (hubs), followed by 2, 4.
+and real powers34; hence Γ​(n), n =​  0, …​, ∞​, represents a sequence of             Consequently, θ provides not only local insight, but also guide-
+real powers in ascending order; that is, Γ​(n +​  1) >​  Γ​(n). Equation (5)      lines on the global spreading patterns, identifying rapid versus slow
+relates the exponent θ in equation (4) to the leading power Γ​(0) of              pathways. More broadly, these insights can help us uncover the
+equation (6), hence directly linking τi to the system’s dynamics M (see           dynamic consequences associated with two of the most profound
+Supplementary Section 2 for detailed application of equations (4)–(6)             characteristics of real networks: first, most real networks exhibit
+on all dynamics of Fig. 2b).                                                      extremely short paths, often following ⟨L ij ⟩ ~ log N 35; second, the
+    Equations (4)–(6) represent our first key prediction, showing                 (weighted) degree distribution P(S) of many real systems is fat-
+that the individual response times of all nodes are driven by the                 tailed, often scale-free, featuring hubs alongside low-degree nodes36.
+interplay between topology, Si, and dynamics, θ. Therefore, the                   Our analysis indicates that these two topological hallmarks impact
+exponent θ helps translate topology into dynamic insight, here map-               the propagation of signals in a rather distinctive fashion. Whereas
+ping response time, a desirable dynamic function, to the weighted                 the short paths accelerate propagation, the impact of degree hetero-
+degree, a well-mapped topological characteristic. To test this predic-            geneity depends on the dynamic regime: hubs may either expedite
+tion, we measured τi versus Si for each of the 41 systems summa-                  propagation (θ <​ 0, green, Fig. 4i), have no effect on it (θ =​  0, blue,
+rized in Fig. 2a. The results, presented in Fig. 4a–c, fully confirm our          Fig. 4g) or cause delays (θ >​ 0, red, Fig. 4h).
+predicted scaling: for R1 and N, equation (5) predicts θ =​  0 (Fig. 4a);             To quantify this effect consider again the mean propagation
+for R 2 and P, it predicts θ =​  3/2 and θ =​ 1, respectively (Fig. 4b);          time 〈​T〉​in equation (2), which measures the efficiency of the
+
+Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics                                                                             405
+Articles                                                                                                                                                                                          NAtuRe PHYsics
+
+                  a
+                                                                                                    Testing ground for signal propagation
+                                                                                                       ER
+
+
+
+
+                                                                                 networks
+                                                                                  Model
+                                                                                                       SF
+                                                                                                       SF1
+                                                                                                       SF2
+                                                                                                       PPI1
+                                                                                                       PPI2
+                                                                                                       PPI3
+
+
+
+
+                                                                                   Empirical networks
+                                                                                                       PPI4
+                                                                                                       Brain
+                                                                                                       ECO1
+                                                                                                       ECO2
+                                                                                                       UCIonline
+                                                                                                       Epoch
+                                                                                                       ATN
+                                                                                                       Epinions
+                                                                                                                  R1 N R2 P M E
+                                                                                                                        Dynamic models
+
+
+                  b
+                                                N
+                                 dxi                              xj
+                   R1                = –xi +          Aij
+                                 dt                             1 + xj
+                                               j=1
+                                                            N
+                          dxi
+                   N          = –Bxi + C tanhxi +         Aij tanhxj                                                                             c                    N
+                          dt
+                                                       j=1                                                                                       dxi
+                                                                                                                                                     = M0(xi ) +               AijM1(xi) M2(xj)
+                                                  N                                                                                              dt
+                               dxi                                 xj0.2                                                                                             j=1
+                   R2              = –xi0.4 +          Aij
+                               dt                           1 + xj0.2
+                                                j=1
+                                                   N
+                                  dxi
+                   P                   = –xi0.5 +       Aij xj0.2
+                                  dt
+                                                  j=1
+                                                     N
+                             dxi                                xi xj
+                      M           = xi (1 – xi2) +       Aij
+                             dt                               1 + xj                                                                         d        P(S ), Lij                  θ, τi
+                                                   j=1
+                                             N
+                              dxi
+                      E            = –xi +        Aij (1 – xi ) xj
+                               dt                                                                                                                                  T(j → i )
+                                            j=1
+
+
+                  e
+                                                                                                          Signal propagation fingerprint
+
+                                                                                                                                Dynamic regime
+
+                               Characteristic                              Distance limited (θ = 0)                          Degree limited (θ > 0)                            Composite (θ < 0)
+
+                               Role of P (S )                                              None                               Hubs respond slowly                         Hubs respond rapidly
+
+                            Impact of scale-free                                           None                               Delayed propagation                         Expedited propagation
+
+                                 Role of Lij                                    T( j → i ) ∝ Lij                                      None                                        T( j → i ) ∝ Lij
+
+                                    P (T )                                     Discrete peaks                                 Single fat-tailed peak                       Overlapping peaks
+
+                                     〈T 〉                                        〈T 〉 ∼ logN                                        〈T 〉 ∼ N α                                    〈T 〉 ∼ const
+
+                                Modularity                                    Delayed spillover                           Extremely delayed spillover                      Immediate spillover
+
+
+
+Fig. 2 | Testing ground and characterization of network signal propagation. a, We tested signal propagation on 41 systems constructed from combinations
+of 15 networks and 6 relevant dynamic models; for example, epidemic spreading E on the social network UCIonline (shaded boxes). The networks
+(Supplementary Section 3.4): ER, Erdős–Rényi; SF, SF1, SF2, scale-free networks with binary, uniform and scale-free distributed weights, respectively; PPI1–
+PPI4, protein interaction networks22–24; Brain, physical connections between human brain regions38; ECO1/2, plant pollinator network of Carlinville, Illinois26,
+collapsed on to the plants/pollinators; UCIonline, Epoch, Epinions and ATN, online social networks20–22. We tested all dynamic models on our four model
+networks (24 shaded boxes, top) and on the appropriate empirical networks (17 shaded boxes, bottom). b, The dynamics (Supplementary Section 2): R 1, R 2
+, gene regulation via the Michaelis–Menten model17,18 with different exponents39 for the self-dynamics (1 versus 0.4) and for the regulating Hill function (1
+versus 0.2); N, activation dynamics between brain regions28; P, population dynamics through birth–death processes29,31,40; M, mutualsitic interactions, for
+example, plant–pollinator relationships in ecological networks10; E, susceptible–infected–susceptible (SIS) model for epidemic spreading41–43. c, We offer
+to capture these dynamics, together with a range of additional pairwise dynamics, through the universal equation (3). d, The propagation patterns emerge
+from the interplay between the weighted topology Aij and the system’s intrinsic dynamics M =​ (M0(x), M1(x), M2(x)). The topology provides the path lengths
+Lij and the weighted degree distribution P(S); the dynamics determine how these topological features translate into τi through θ (equation (4)). Combining
+the two contributions, for example, equation (7), provides the spatiotemporal propagation T(j →​ i). e, Depending on the value of θ we predict that systems
+within equation (3) exhibit three dynamic regimes, each with its series of distinctive observable fingerprints, characterizing how topological features
+(for example, system size N), impact propagation patterns (for example, mean propagation time 〈​T〉​; characteristic 5).
+
+406                                                                                                                          Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics
+NAtuRe PHYsics                                                                                                                                                           Articles
+       a                                     b                             c                               d                           e                                 f
+                                    1                                                           2
+Time
+
+
+
+
+       g            ×10–3
+                                             h            ×10–3
+                                                                           i            ×10–3
+                                                                                                           j           ×10–3
+                                                                                                                                       k            ×10–3
+                                                                                                                                                                         l            ×10–3
+                6                       ER                            ER                            ER                            ER            6               ER                6                   ER
+                                                      6                             6                              6
+                                                                                                          P (T )
+       P (T )
+
+
+
+
+                                                                                                                   4
+
+
+
+
+                                                                                                                                       P (T )
+
+
+
+
+                                                                                                                                                                         P (T )
+                                                                           P (T )
+                                             P (T )
+
+
+
+
+                4                                     4                             4                                                           4                                 4
+
+                2                                     2                             2                              2                            2                                 2
+
+                0                                     0                             0                              0                            0                                 0
+                    0   3       6       9                 0       3    6             101 102 103                    101 102 103                     0       1        2                0   1       2
+                            T                                     T                         T                              T                                T                                 T
+                    ×10–3                                 ×10–3                         ×10–3                          ×10–3                        ×10–3                             ×10–3
+                                        SF                            SF                            SF                            SF                            SF                                    SF
+                6                                     6                             6                              6                            6                                 6
+                                                                           P (T )
+
+
+
+
+                                                                                    4
+                                                                                                          P (T )
+       P (T )
+
+
+
+
+                                             P (T )
+
+
+
+
+                                                                                                                                       P (T )
+
+
+
+
+                                                                                                                                                                         P (T )
+                4                                     4                                                            4                            4                                 4
+
+                2                                     2                             2                              2                            2                                 2
+
+                0                                     0                             0                              0                            0                                 0
+                    0   3       6       9                 0       3    6             101 102 103                    101 102 103                     0       1        2                0   1       2
+                            T                                     T                         T                              T                                T                                 T
+
+
+Fig. 3 | Classifying the zoo of propagation patterns. a, Propagation on the scale-free network SF under regulatory dynamics R 1. At t =​0 we introduce a
+perturbation to the activity of a randomly selected source node (centre), then track the propagation, presenting three snapshots observed at selected time
+points. The size and colour depth of each node represent its response; hence nodes that received the signal at earlier times appear first. b–f, We repeated
+this experiment on the same network and the same source node, using different dynamic models (as detailed in Fig. 2b). We observe different propagation
+patterns depending on the dynamics, resulting in a zoo of seemingly unpredictable propagation patterns. g,h, The probability density function P(T) versus
+T as obtained from R 1 and N on ER (top) and SF (bottom). We find that P(T) exhibits multiple sharp peaks in both ER and SF, indicating that the degree
+distribution P(S) has little impact on the propagation. i,j, In R 2 and P the density P(T) has a fundamentally different form with no discrete peaks. Here P(T)
+is broader in SF (bottom) compared with ER (top), showing that now P(S) has a significant impact on the propagation. k,l, M and E exhibit a third type of
+P(T), featuring multiple overlapping peaks. To highlight these peaks we show (in shades of green) P(T ∩​ L), capturing the probability that T(j →​ i) ∈​ (T, T +​ dT)
+while Lij =​ L; that is, P(T) extracted exclusively from node pairs at distance Lij =​ 1, 2, …​. The complete P(T) is a composition of these overlapping peaks. For
+SF (bottom) the inner peaks P(T ∩​ L) are broader and hence show more overlap compared with ER (top). Therefore in this class the propagation is affected
+both by distance (discrete peaks) and by P(S) (variance within each peak). Complementary results from all our 41 model/empirical systems—the testing
+ground of Fig. 2—appear in Supplementary Section 4.
+
+
+network propagation. Our analysis predicts three levels of efficiency.                                   that SF shrinks the topological distance, it greatly inflates the tem-
+The first, efficient spread (θ = 0, R1, N, Fig. 4j), occurs in distance-                                 poral distance, illustrating the potentially non-trivial mapping from
+limited propagation where we have T(j →​  i) ∝​  Lij, and hence, for a                                   topology to dynamics. Finally, in composite dynamics (θ < 0, E, M,
+random network ⟨T ⟩ ∝ ⟨Lij ⟩ ~ log N , a rapid coverage that grows                                       Fig. 4l), signals rapidly propagate thanks to the hubs. Consequently,
+only logarithmically with the system’s size. The second, slow spread                                     the propagation time is primarily determined by the response of the
+(θ > 0, R 2, P, Fig. 4k), occurs in the degree-limited regime where the                                  target nodes, which is independent of N or of the path length. This
+propagation times are governed by the hubs, whose degrees increase                                       results in an ultra-efficient spread, in which ⟨T ⟩ ~ const, effectively
+with N; hence for a large system (N →​  ∞​        ), signals require an                                  independent of N. Indeed, in Fig. 4l we find that networks of vastly
+extremely long time to penetrate the network. For SF networks this                                       different size, ranging over more than four orders of magnitude, are
+leads to a scaling behaviour ⟨T ⟩ ~ N α, an inefficient propagation in                                   all covered within approximately the same 〈​T〉​; a counter-intuitive
+which 〈​T〉​diverges polynomially with N. Therefore, despite the fact                                     form of propagation, that is yet fully predicted by our formalism.
+
+Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics                                                                                                                         407
+Articles                                                                                                                                                                                                                     NAtuRe PHYsics
+
+                       a                                                                       b                                                                     c        101
+                                                                          θ=0                                                                                                                                        θ = –1
+                                                                                                          106                      θ= 3
+                                     2
+                                                                                                                                      2                                       100
+                                  10                                                                      105
+                                                                     1                                                         2
+                                                                                                                                                                            10–1
+                                                                                                          104
+
+                      τi
+
+
+
+
+                                                                                              τi
+
+
+
+
+                                                                                                                                                                    τi
+                                                                                                                                                                            10–2
+                                                                                                          103
+                                  101
+                                                                                                          102                                        θ=1                    10–3
+
+                                                                                                          101                                                               10–4
+                                                    101                    102                                       100           101             102                                       100     101          102
+                                                                    Si                                                               Si                                                                     Si
+
+                       d                                                                       e                                                                     f
+                                               SF                                                                                                        SF                                     SF
+                                               ER                                                         103                                            ER                          2          ER
+                                     8                              1
+                      T (j → i)
+
+
+
+
+                                                                                              T (j → i)
+
+
+
+
+                                                                                                                                                                         T (j → i)
+                                                                                                                                                                                     1
+                                     4                                                                    102
+                                                                                                                                             2
+
+
+
+
+                                     0                                                                                                                                               0
+                                         0               3                 6                                     0             3                 6                                       0           3                   6
+                                                                   Lij                                                               Lij                                                                    Lij
+
+                       g                                                                       h                                                                     i
+                                               θ=0                               ER                                    θ>0                                 ER                                 θ<0                             ER
+                                                                                 SF                                                                        SF                                                                 SF
+                                  〈T 〉
+
+
+
+
+                                                                                                          〈T 〉
+
+
+
+
+                                                                                                                                                                              〈T 〉
+                                                                                                                                             283
+
+
+
+
+                                                                                                                                                                                                                  1.57
+
+
+                                                                                                                                                                                                                             1.41
+                                                                                                                                                                                             0.75
+
+
+                                                                                                                                                                                                     0.57
+                                                                                                                     137
+
+
+
+
+                                                                                                                                                         1,070
+                                                                                                                               976
+                                              7.1
+
+
+                                                             6.2
+
+
+                                                                         3.8
+
+
+                                                                                 3.6
+
+
+
+
+                                                         1                                                                 2
+
+
+                       j             8
+                                                                                               k                                                                     l               6
+                                                                                                          103
+
+                                                                                                                                     2                                               4
+                                     6
+                                                              1
+                      〈T 〉
+
+
+
+
+                                                                                              〈T 〉
+
+
+
+
+                                                                                                                                                                         〈T 〉
+
+
+
+
+                                                                                                          102                                                                        2
+                                     4
+
+                                                                                                                                                                                     0
+                                     2                                                                    101
+                                             101         102             103     104                             101       102           103         104                                 101         102          103         104
+                                                                   N                                                                     N                                                                  N
+                                                    ER                                 SF2                                 PPI3                                  ECO1                                Epoch
+                                                    SF                                 PPI1                                PPI4                                  ECO2                                Epinions
+                                                    SF1                                PPI2                                Brain                                 UCIonline                           ATN
+
+
+
+
+Fig. 4 | Dynamic regimes of signal propagation. We measured the local response times τi of all nodes versus their weighted degree Si, for our 41
+networks/dynamics detailed in Fig. 2a,b. a, τi versus Si, as obtained from R 1 (dark) and N (light) on all relevant networks (symbols). As predicted,
+we observe the scaling of equation (4) with θ =​0 (solid black line). This scaling relationship is independent of Aij, sustained across all models (ER,
+SF, SF1, SF2) and relevant empirical networks (PPI1–PPI4, Brain). b, For R 2 and P we predict θ =​ 3/2 and θ =​1, respectively (solid lines), in perfect
+agreement with the observed results (symbols). c, For M and E we predict θ =​ −​1, again confirmed for both the model and relevant empirical
+networks. d, T(j →​ i) versus Lij as obtained from R 1 and N on ER and SF. These systems are in the distance-limited regime, θ =​0, in which T(j →​ i)
+is proportional to Lij. e, R 2 and P, having θ >​0, are in the degree-limited regime, and consequently T(j →​ i) is almost independent of Lij. f, M and E
+represent composite dynamics, where, again T(j →​ i) ∝​ Lij. g–i, The mean propagation time 〈​T〉​on ER and SF networks with identical average degree
+〈​S〉​. g, Distance limited: 〈​T〉​is unaffected by the ER/SF networks, other than a minor decrease in 〈​T〉​for SF, a consequence of the typically shorter
+paths characterizing SF networks. h, Degree limited: here hubs delay the propagation, and hence SF dramatically increases 〈​T〉​. The effect is more
+pronounced when θ is large. Indeed, R 2 (θ =​3/2) features a 612% increase, compared with the 278% exhibited by P (θ =​ 1). i, Composite: 〈​T〉​ is
+dominated by the response time of the small nodes, which is roughly the same in ER and SF. It is smaller than in the two other regimes (blue, red)
+due to the fast response of the hubs along all pathways from source to target. j, Efficient spread: 〈​T〉​versus the number of nodes N as obtained from
+R 1 (dark) and N (light). As predicted, ⟨T ⟩ ~ log N (solid lines). k, Slow spread: for R 2 (dark) and P (light), ⟨T ⟩ ~ N α (solid line represents α =​ 1/2).
+Hence, despite the fact that SF shrinks the mean topological distance 〈​L〉​, it greatly inflates the mean temporal distance 〈​T〉​. l, Ultra-efficient spread:
+in composite dynamics we predict ⟨T ⟩ ~ const, independent of system size. Indeed, N spans four orders of magnitude, whereas 〈​T〉​is practically
+constant. Data points in a–c and j–l represent logarithmic bins44 in Si,N (Supplementary Section 3.3).
+
+408                                                                                                                                          Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics
+NAtuRe PHYsics                                                                                                                                   Articles
+                            a     C1           C2                                                                  b
+                                                                                                                       1.0     C1
+                                                                                                                               C2
+
+                        1
+                                           H                                                                           0.5
+
+
+
+
+                                                                                                                  f
+                                                                                                                        0
+                                       j                                                                                              2         4
+                                                                                                                                      t
+                            c                                                                                      d
+                                                                                                                       1.0     C1
+                                                                                                                               C2
+
+                                                                                                                       0.5
+
+
+
+
+                                                                                                                  f
+                        2
+
+
+
+                                                                                                                        0
+                                                                                                                             100 101 102 103
+                                                                                                                                     t
+                            e                                                                                      f
+                                                                                                                       1.0
+                                                                                                                               C1
+                                                                                                                               C2
+
+                                                                                                                       0.5
+
+
+
+
+                                                                                                                  f
+                                                                                                                        0
+                                                                                                                                0.1       0.2   0.3
+                                                                                                                                      t
+                                                                  Time
+
+
+Fig. 5 | Propagation between communities (see Methods). We constructed a modular network with two SF communities, C1 and C2, comprising N =​ 1,000
+nodes each, linked by a single hub H. At t =​0 we introduced a signal on a source node j ∈​ C1 (blue node at bottom left), then tracked the propagation
+across the communities. a, Distance-limited R 1. As expected the signal first impacts nodes in C1, then spills over to C2 through H. b, The fraction f of nodes
+impacted by the signal versus t for C1 (dark) and C2 (light) for the case in a. A node i is considered to be impacted at time t if T(j →​ i) ≤​ t. Nodes in C2 show a
+slightly delayed response compared with C1, owing to the typically longer cross-community pathways. The observed step-like propagation pattern reflects
+the discrete nature of the network paths, which govern the advancement of signals in the distance-limited regime (as also expressed through the discrete
+peaks of P(T) in this dynamic family; Fig. 3g,h). c, Degree-limited R 2. Here the slow responding hub serves as a shock absorber, and hence the signal
+remains confined to C1 for a long time. Therefore, in this class topological modularity is amplified, translating into a strong dynamic modularity. d, f
+versus t for the case in c shows that, indeed, the spillover to C2 is extremely delayed, occurring orders of magnitude later than the complete response
+of C1 (f →​1, dark red). e,f, Composite E. In this class hubs respond extremely fast, rendering the community boundaries (H) effectively transparent for
+dynamic signal propagation. As a result C1 and C2 respond in unison, showing almost no dynamic traces associated with the topological modularity.
+
+
+    Going beyond the averaged 〈​T〉​, a most profound distinction                       In Fig. 5 we illustrate the impact of network modularity on signal
+between the three regimes is expressed through the response time                    propagation in each of our three dynamic regimes (see Methods).
+distribution, P(T), capturing the probability density that a randomly                  Taken together, we find that the zoo of diverse spreading behav-
+selected i, j pair has T(j →​  i) ∈​  (T, T +​  dT). In the distance-limited        iours observed in Figs. 1–5 is, in fact, a consequence of a deep uni-
+regime, nodes are divided into discrete equidistant shells, compris-                versality that can be fully predicted through the single, analytically
+ing the nearest neighbours of the signal source, the next-nearest                   tractable, exponent θ. Its value helps systematically translate micro-
+neighbours and so on. In each of these shells, the signal reaches                   scopic (Si), mesoscopic (Lij, modularity) and macroscopic (P(S), N)
+all nodes approximately simultaneously, resulting in discrete time                  network characteristics into distinctive patterns of dynamic propa-
+intervals, which shape P(T) in a unique form of sequentially sepa-                  gation, all summarized in Fig. 2e.
+rated peaks, a distinctive structure that can be observed in Fig. 3g,h.
+Here, since response time is independent of degree, we predict that                 Universal dynamic metric for signal propagation
+the structure of P(T) is unaffected by P(S), and hence ER (top) and                 To simplify the observed signal propagation we seek a predictive met-
+SF (bottom) have similar P(T). In contrast, under degree-limited                    ric, L(j → i ) that transparently reflects the actual propagation times
+propagation, SF networks exhibit a much broader P(T), a conse-                      T(j →​  i); namely we seek a temporal distance L(j → i ) ∝ T (j → i )(ref. 1).
+quence of the delayed propagation caused by the hubs (Fig. 3i,j).                   Consider the shortest path Π​(j →​  i) =​  j →​  q →​  …​  →​  i from the source
+With P(S) being the prime determinant of the propagation in this                    j to the target i. Being shortest, this path is the main artery through
+regime, the discrete nature of Lij, responsible for the peaks in the                which j’s signal impacts i (ref. 4). Following equation (4), the delay
+distance-limited P(T), now plays no role in shaping the system’s                    incurred on each node p ∈​  Π​(j →​  i) scales as S pθ, therefore leading to
+temporal response patterns. Finally, in composite dynamics, P(T)                    the desired metric
+is shaped by both Lij and P(S), leading to a sequence of overlap-
+ping peaks (Fig. 3k,l). This captures the essence of the compos-                                                             
+                                                                                                                                           
+                                                                                                                                            
+                                                                                                                             
+                                                                                                                                           
+                                                                                                                                            
+ite regime: the mean propagation time is governed by Lij (peaks),                                                                         θ
+                                                                                                        L(j → i ) = min  ∑ S p  .                              (7)
+whereas at each distance, the variance is governed by P(S) (width                                                   Π(j →i )  p ∈Π(j →i )  
+                                                                                                                             
+                                                                                                                                           
+                                                                                                                                            
+of each peak), a composition of degrees and distances. Hence, our                                                             p ≠j         
+                                                                                                                                           
+predicted regimes (θ positive, negative or zero) are characterized by
+highly distinctive P(T), providing a clear fingerprint for each of the              The summation captures the accumulated lag time along each path,
+predicted propagation patterns.                                                     and the minimization selects the fastest of all shortest paths from j
+
+Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics                                                                                   409
+Articles                                                                                                                                                                                                     NAtuRe PHYsics
+
+                      a                                                                                                    b
+                                                                                                                                                                                             1,2
+
+
+
+
+                                                                                                                                                                              ∆xi (t )
+                                                                                                                                          θ=0
+                                                                                                                                   (j → 1) = (j → 2)
+                                                  Aij
+                                                                                                                                                                                                   t
+
+
+
+
+                                                                                                                                                                            ∆xi (t )
+                                                                                1                                                        θ>0
+                                      4                                                                                           (j → 1) > (j → 2)                                                    1
+                                                                  j                                                                                                                      2
+                                                                                     3
+                                                                            2                                                                                                                    t
+
+
+
+                                                                                                                                        θ<0
+
+
+
+
+                                                                                                                                                                            ∆xi (t )
+                                                                                                                                  (j → 1) < (j → 2)                                      1
+                                                                                                                                                                                                       2
+
+
+                                                                                                                                                                                                   t
+
+                      c                                                     d                                e                         f                      g                                  h
+                                                        1                                                          2
+                     Time
+
+
+
+
+                      i               30                                                        j                                                      k
+                                                                            1                               106
+                                      25                                                                               2
+                                                                                                                                                                      105
+                                      20                                                                    104
+                                                                                                                                                       1/T (j → i )
+                          T (j → i)
+
+
+
+
+                                                                                                T (j → i)
+
+
+
+
+                                                                                                                                                                      104
+                                      15
+                                                                                                            102
+                                      10                                                                                                                              103
+                                                                      N
+                                          5                                                                 100                                                       102
+
+                                              0                  5              10                                100 101 102 103 104                                       10–1 100            101        102   103
+                                                                  (j → i)                                                      (j → i)                                                       1/ ( j → i )
+
+                                                            ER                           SF2                                   PPI3                    ECO1                                            Epoch
+
+                                                            SF                           PPI1                                  PPI4                    ECO2                                            Epinions
+
+                                                            SF1                          PPI2                                  Brain                   UCIonline                                       ATN
+
+
+Fig. 6 | The universal temporal distance L(j → i ). a, The signal travelling from j (black) will feature different spreading patterns under different
+dynamics, which we capture through L(j → i). b, The signal will impact 1 and 2, both at topological distance Lj1 =​ Lj2 =​1, simultaneously if the dynamics
+is distance limited (top, blue); 2 before 1 under degree-limited propagation (centre, red) due to the delayed response of the hubs, and 1 before 2 in
+composite dynamics (bottom, green). In all cases, the temporal distance L(j → i) in equation (7) is designed to locate 1 and 2, as well as all other
+nodes, at the appropriate distance from j, depending on the propagation regime. c–h, We used L(j → i) to layout the nodes in each of our 41 test
+systems (detailed in Fig. 2), here re-displaying the original layouts of Fig. 3a–f. The unpredictable and inconsistent behaviour—that is, the zoo of
+Fig. 3—transforms into a well-organized concentric propagation pattern, in which the distance from the source naturally captures the actual travel time
+of the propagating signal. These layouts locate all nodes differentially, according to the system’s dynamics. For R 1 and N (blue) nodes are condensed
+into separated shells, corresponding to the discrete nature of Lij (peaks in P(T), Fig. 3g,h). In R 2 and P (red) the hubs become bottlenecks, and hence
+L(j → i) assigns a larger distance to paths enriched with hubs. Conversely, in M and E, L(j → i) places the slower low-degree nodes in the network
+periphery and shifts hubs towards the centre. Additional layouts from our empirical networks are shown in Supplementary Section 4. i, T(j →​ i) versus
+L(j → i) for all networks under the distance-limited R 1 (dark) and N (light) dynamics. The linear relationship indicates that L(j → i) precisely captures
+the actual patterns of propagation. j, T(j →​ i) versus L(j → i) in the degree-limited R 2 (dark) and P (light). Here T(j →​ i) and L(j → i) span several
+orders of magnitude, hence we use a logarithmic scale (black solid line represents a linear slope). k, For M (dark) and E (light) L(j → i) and T(j →​ i)
+inversely scale with the weighted degrees of nodes along each path. Therefore we use inverted axes 1/T(j →​ i) versus 1 ∕ L(j → i). In j and k we employed
+logarithmic binning44 (Supplementary Section 3.3).
+
+
+410                                                                                                                               Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics
+NAtuRe PHYsics                                                                                                                          Articles
+to i. Equation (7) provides the temporal distance between all pairs             sensitive to the microscopic rates of infection/recovery, which vary
+of nodes i and j, designed to naturally capture the system’s dynamic            across different diseases, but rather represents a robust property of
+signal propagation. As opposed to other common metrics, L(j → i )               the SIS model itself. Hence θ reduces the complexity of the micro-
+depends not only on Aij, but also on the dynamics M through θ                   scopic description to a small number of relevant parameters—here
+(equation (5)). Hence, for a given Aij the distances L(j → i ) are adap-        the leading powers of M. An analogous approach was successfully
+tive, relocating all nodes depending on the nature of the system’s              employed in the past to expose universality in particle systems37
+nonlinear interactions (Fig. 6a,b).                                             and we believe that this line of thought may lead to similar break-
+    To test equation (7) we used it to layout the SF networks shown             throughs in our understanding of complex network dynamics.
+in Fig. 3a–f, placing each node in its appropriate location, at dis-
+tance L(j → i ) from the perturbed source (Fig. 6c–h). The originally           Online content
+unpredictable spreading patterns (Fig. 3) collapse into a concentric            Any methods, additional references, Nature Research reporting
+propagation, with the desired T (j → i ) ∝ L(j → i ). The crucial point         summaries, source data, statements of data availability and asso-
+is that these layouts are dynamically adaptive. Hence, despite using            ciated accession codes are available at https://doi.org/10.1038/
+the same Aij the nodes are located differently as the dynamics is               s41567-018-0409-0.
+shifted from R1 and N (blue, θ =​  0) to R 2 and P (red, θ =​  1, 3/2),
+and further to M and E (green, θ =​  −​1). In Fig. 6i–k we show the             Received: 25 September 2017; Accepted: 13 December 2018;
+observed T(j →​  i) versus the analytically calculated L(j → i ) in equa-       Published online: 28 January 2019
+tion (7) for all our 41 model/empirical systems—each according to
+its classification (blue, red, green). Layouts of all remaining systems         References
+                                                                                1. Brockmann, D. & Helbing, D. The hidden geometry of complex,
+appear in Supplementary Section 4.                                                  network-driven contagion phenomena. Science 342, 1337–1342 (2013).
+                                                                                2. Kumar, J., Rotter, S. & Aertsen, A. Spiking activity propagation in
+Extended testing. In Supplementary Sections 5 and 6 we examine                      neuronal networks: reconciling different perspectives on neural coding.
+the application of our formalism to two real systems, capturing the                 Nat. Rev. Neurosci. 11, 615–627 (2010).
+spread of a global epidemic, and the propagation of a power cas-                3. Maslov, S. & Ispolatov, I. Propagation of large concentration changes in
+                                                                                    reversible protein-binding networks. Proc. Natl Acad. Sci. USA 104,
+cade. We further discuss the empirical relevance of our framework                   13655–13660 (2007).
+in Supplementary Sections 7 and 8. These applications and tests go              4. Barzel, B. & Barabási, A.-L. Universality in network dynamics. Nat. Phys. 9,
+beyond our analytical framework; therefore, they help us examine                    673–681 (2013).
+the relevance and applicability of our general approach: to first map           5. Barzel, B., Liu, Y.-Y. & Barabási, A.-L. Constructing minimal models for
+the timescales associated with individual components (τi), and then                 complex system dynamics. Nat. Commun. 6, 7186 (2015).
+                                                                                6. Holter, N. S., Maritan, A., Cieplak, M., Fedoroff, N. V. & Banavar, J. R.
+piece them together to obtain the global propagation patterns (for                  Dynamic modeling of gene expression data. Proc. Natl Acad. Sci. USA 98,
+example, P (T ), L(j → i )).                                                        1693–1698 (2001).
+                                                                                7. Afraimovich, V. S. & Bunimovich, L. A. Dynamical networks: interplay of
+Discussion and outlook                                                              topology, interactions and local dynamics. Nonlinearity 20, 1761–1771 (2007).
+                                                                                8. Kirst, C., Timme, M. & Battaglia, D. Dynamic information routing in
+Predicting the spread of information in a complex network environ-
+                                                                                    complex networks. Nat. Commun. 7, 11061 (2016).
+ment is at the heart of our ability to understand its dynamic behav-            9. Barrat, A., Barthélemy, M. & Vespignani, A. Dynamical Processes on
+iour, hence the widespread efforts to collect data on the topology of               Complex Networks (Cambridge Univ. Press, Cambridge, 2008).
+real biological, social and technological networks. Yet, if we wish to          10. Gao, J., Barzel, B. & Barabási, A.-L. Universal resilience patterns
+leverage these data into actual dynamic insights, we must system-                   in complex networks. Nature 530, 307–312 (2016).
+                                                                                11. Harush, U. & Barzel, B. Dynamic patterns of information flow in
+atically translate our findings on network structure into dynamic                   complex networks. Nat. Commun. 8, 2181 (2017).
+predictions. Our formalism offers such translation by separating                12. Kauffman, S. The ensemble approach to understand genetic
+the contribution of the topology, Aij, from that of the dynamics, M,                regulatory networks. Physica A 340, 733–740 (2004).
+using the exponent θ to obtain the different forms in which Aij gen-            13. Barzel, B. & Biham, O. Quantifying the connectivity of a network:
+erates signal propagation.                                                          the network correlation function method. Phys. Rev. E 80,
+                                                                                    046104 (2009).
+    A crucial aspect of our predicted propagation patterns is that they         14. Crucitti, P., Latora, V. & Marchiori, M. Model for cascading failures in
+are fully controlled by the system’s dynamics, independent of the                   complex networks. Phys. Rev. E 69, 045104 (2004).
+underlying topology. Therefore, being, for example, in the compos-              15. Dobson, I., Carreras, B. A., Lynch, V. E. & Newman, D. E. Complex systems
+ite class is an intrinsic fingerprint of the SIS model E, regardless of             analysis of series of blackouts: cascading failure, critical points, and
+whether it is implemented on Epoch or on UCIonline. Interestingly,                  self-organization. Chaos 17, 026103 (2007).
+                                                                                16. Voit, E. O. Computational Analysis of Biochemical Systems (Cambridge Univ.
+within the same dynamics, the propagation class may, generally,                     Press, New York, NY, 2000).
+change as the system transitions between states. For example, in                17. Alon, U. An Introduction to Systems Biology: Design Principles
+Supplementary Section 7.6 we show that the pandemic transition in                   of Biological Circuits (Chapman & Hall, London, 2006).
+E is also a transition from distance-limited to composite dynamics.             18. Karlebach, G. & Shamir, R. Modelling and analysis of gene
+This offers an additional layer by which to understand such state                   regulatory networks. Nat. Rev. 9, 770–780 (2008).
+                                                                                19. Barabási, A.-L. & Albert, R. Emergence of scaling in random networks.
+transitions: the system not only transfers from healthy to pandemic,                Science 286, 509–512 (1999).
+but also changes its propagation regime.                                        20. Opsahl, T. & Panzarasa, P. Clustering in weighted networks. Soc. Networks 31,
+    Although complex system dynamics can take almost unlimited                      155–163 (2009).
+forms, our formalism shows that the determinants of information                 21. Eckmann, J.-P., Moses, E. & Sergi, D. Entropy of dialogues creates
+spread are restricted to the few leading powers of M, as encapsulated               coherent structures in e-mail traffic. Proc. Natl Acad. Sci. USA 101,
+                                                                                    14333–14337 (2004).
+within Γ​(0) in equation (6). This groups together fundamentally                22. Ikehara, K. & Clauset, A. Characterizing the structural diversity of complex
+different dynamics under the same propagation class, for example,                   networks across domains. Preprint at https://arXiv.org/abs/1710.11304v1
+ecological interactions (M) and epidemics (E), which exhibit iden-                  (2017).
+tical spreading patterns. Most importantly, the dependence on the               23. Yu, H. et al. High-quality binary protein interaction map of the yeast
+                                                                                    interactome network. Science 322, 104–110 (2008).
+powers (Γ​(n)) as opposed to the coefficients (Cn), shows that our
+                                                                                24. Rual, J. F. et al. Towards a proteome-scale map of the human protein-protein
+predictions are intrinsic to the system’s dynamics, determined by                   interaction network. Nature 437, 1173–1178 (2005).
+the functional form of M, rather than by its specific rate constants.           25. Sporns, O., Tononi, G. & Kötter, R. The human connectome: a structural
+For instance, our prediction that E is in the composite regime is not               description of the human brain. PLoS Comput. Biol. 1, e42 (2005).
+
+Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics                                                                                411
+Articles                                                                                                                                     NAtuRe PHYsics
+26. Robertson, C. Flowers and Insects: Lists of Visitors of Four Hundred and          42. Pastor-Satorras, R. & Vespignani, A. Epidemic spreading in
+    Fifty-three Flowers (C. Robertson, Carlinville, Il., 1929).                           scale-free networks. Phys. Rev. Lett. 86, 3200–3203 (2001).
+27. Pastor-Satorras, R., Castellano, C., Van Mieghem, P. & Vespignani, A.             43. Dodds, P. S. & Watts, D. J. A generalized model of social and
+    Epidemic processes in complex networks. Rev. Mod. Phys. 87,                           biological contagion. J. Theor. Biol. 232, 587–604 (2005).
+    925–958 (2015).                                                                   44. Milojević, S. Power-law distributions in information science: making the case
+28. Stern, M., Sompolinsky, H. & Abbott, L. F. Dynamics of random neural                  for logarithmic binning. J. Am. Soc. Inf. Sci. Technol. 61, 2417–2425 (2010).
+    networks with bistable units. Phys. Rev. E 90, 062710 (2014).
+29. Gardiner, C. W. Handbook of Stochastic Methods (Springer-Verlag,                  Acknowledgements
+    Berlin, 2004).                                                                    C.H. thanks the Planning and Budgeting Committee (PBC) of the Council for Higher
+30. Castellano, C., Fortunato, S. & Loreto, V. Statistical physics of                 Education, Israel, and the INSPIRE-Faculty grant (code: IFA17-PH193) for support. This
+    social dynamics. Rev. Mod. Phys. 81, 591–646 (2009).                              work was supported by the US National Science Foundation-CRISP award no. 1735505,
+31. Hayes, J. F. & Ganesh Babu, T. V. J. Modeling and Analysis of                     the BIU Center for Research in Applied Cryptography and Cyber Security in conjunction
+    Telecommunications Networks (John Wiley & Sons, Inc, Hoboken, 2004).              with the Israel National Directorate in the Prime Minister’s office, and by a grant
+32. Kuramoto, Y. Chemical Oscillations, Waves and Turbulence (Springer-Verlag,        from the Ministry of Science & Technology, Israel & Ministry of Foreign Affairs and
+    Berlin, Heidelberg, 1984).                                                        International Cooperation General Directorate for Country Promotion, Italian Republic.
+33. Newman, M. E. J. Networks - An Introduction (Oxford Univ. Press,
+    New York, 2010).
+34. Schmetterer, L. & Sigmund, K. (eds) Hans Hahn Gesammelte Abhandlungen             Author contributions
+    Band 1/Hans Hahn Collected Works Vol. 1 (Springer, Vienna, Austria, 1995).        All authors designed and conducted the research. C.H. and U.H. analysed the data and
+35. Cohen, R. & Havlin, S. Scale-free networks are ultrasmall. Phys. Rev. Lett. 90,   performed the numerical simulations. B.B. was the lead principal investigator.
+    058701 (2003).
+36. Caldarelli, G. Scale-free Networks: Ccomplex Webs in Nature and Technology        Competing interests
+    (Oxford Univ. Press, New York, 2007).                                             The authors declare no competing interests.
+37. Wilson, K. G. The renormalization group: critical phenomena and
+    the Kondo problem. Rev. Mod. Phys. 47, 773 (1975).
+38. Bullmore, E. & Sporns, O. Complex brain networks: graph theoretical analysis      Additional information
+    of structural and functional systems. Nat. Rev. Neurosci. 10, 186–198 (2009).     Supplementary information is available for this paper at https://doi.org/10.1038/
+39. Wai, H.-T., Scaglione, A., Harush, U., Barzel, B. & Leshem, A. RIDS: robust       s41567-018-0409-0.
+    identification of sparse gene regulatory networks from perturbation               Reprints and permissions information is available at www.nature.com/reprints.
+    experiments. Preprint at https://arxiv.org/abs/1612.06565 (2017).                 Correspondence and requests for materials should be addressed to B.B.
+40. Novozhilov, A. S., Karev, G. P. & Koonin, E. V. Biological applications of the
+    theory of birth-and-death processes. Brief. Bioinform. 7, 70–85 (2006).           Publisher’s note: Springer Nature remains neutral with regard to jurisdictional claims in
+41. Hufnagel, L., Brockmann, D. & Geisel, T. Forecast and control of epidemics        published maps and institutional affiliations.
+    in a globalized world. Proc. Natl Acad. Sci. USA 101, 15124–15129 (2004).         © The Author(s), under exclusive licence to Springer Nature Limited 2019
+
+
+
+
+412                                                                                      Nature Physics | VOL 15 | APRIL 2019 | 403–412 | www.nature.com/naturephysics
+NAtuRe PHYsics                                                                                                                                                       Articles
+Methods                                                                                          where
+Derivation outline for the universal exponent θ. Although a detailed and                                                                                        −1
+rigorous derivation is provided in Supplementary Section 1, here we provide a                                                            d[M1(x )R(x )] 
+                                                                                                                              Y (x ) =                                                (18)
+rough derivation, outlining the main steps used to derive equations (4) and (5).                                                             dx          
+First we write equation (3) as
+                                                                                                 In the limit of large Si (small λi) we express Y(R−1(λi)) in equation (17) as a Hahn
+                         dx i
+                              = M0(xi(t )) + SiM1(xi(t ))Mi (t )                           (8)   series around λi =​  0
+                         dt
+                                                                                                                                                  ∞
+
+where Si = ∑ Nj =1 Aij is node i’s weighted degree, and                                                                        Y (R−1 (λi)) = ∑ CnλiΓ(n)                                  (19)
+                                                                                                                                                 n =0
+                                               N
+                                          1
+                            Mi (t ) =        ∑ A M (x (t ))
+                                          Si j =1 ij 2 j
+                                                                                           (9)   which, to leading order, provides us with τi ~ λi2λiΓ(0). Substituting Si−1 for λi, we
+                                                                                                 arrive at the desired scaling relationship
+represents the mean impact experienced by node i from its direct neighbourhood.                                                            τi ~ Siθ                                       (20)
+Under the configuration model framework, node i’s neighbours are extracted from
+a similar distribution to that of all other nodes, allowing us to substitute Mi (t ) by          where θ =​  −​2 −​  Γ​(0), as appears in equations (4) and (5).
+M(t ), omitting the index i, to signify the fact that, on average, i’s neighbourhood                   Interestingly, the scaling exponent θ is fully determined by the self-dynamic
+is identical to that of all other nodes (Supplementary Section 1.1). Using this                  functions M0(xi) and M1(xi), independent of the neighbours’ function M2(xj). This
+approximation in equation (8), and setting the derivative on the left-hand-side to               does not mean that propagation times are not affected by M2(xj), only that the
+zero we obtain the steady-state activities of all nodes                                          scaling relationship of equation (4) is not sensitive to this function. Indeed, M2(xj)
+                                                                                                 does impact the response time τi in equation (12) through M, which approximates
+                                         xi = R−1 (λi)                                 (10)
+                                                                                                 the steady-state value of Mi (t ) in equation (9). However, when seeking θ we are not
+                                                                                                 focused on the specific value of τi, but rather on its scaling with Si. Hence, although
+where R(x) =​  −​M1(x)/M0(x), λi = 1 ∕ MSi ∝ Si−1 and R−1(x) represents R’s inverse              M contributes to this specific value, being independent of i, it has no bearing on
+function (Supplementary Section 1.2). Omitting the argument t, we use xi and M                   τi’s scaling with Si. This separation is enabled by the configuration model, which
+to denote the steady-state values of xi(t) and M(t ). Next we consider the response              allows us to approximate Mi (t ) ≈ M(t ), relying on the vanishing correlation
+Δ​xi(t) of equation (8) to a small perturbation Δ​xm to one of i’s nearest neighbours,           between i’s degree and that of its neighbours (Supplementary Section 1.1).
+which, linearizing around the steady state, yields the non-homogeneous linear                          The expansion in equation (19) is defined if the dynamic functions M can
+equation (Supplementary Section 1.3)                                                             be expressed by a convergent Hahn series around R−1(0), excluding, for example,
+                      d Δx i                                                                     discontinuous threshold dynamics, which cannot be treated within the bounds of
+                                1
+                             = − Δxi(t ) + f (Si, t ) + O (Δx 2)                       (11)      our analytic framework.
+                       dt       τi
+                                                                                                 Example: mutualistic dynamics M. To extract θ for the M-dynamics (Fig. 2b) we
+with                                                                                             first write it as
+                                                1                                                                                                    x 
+                            τi = −                                                     (12)                                    M = x (1−x 2), x ,                                       (21)
+                                     M0′ (xi) + SiM1′ (xi) M                                                                                              
+                                                                                                                                                    1 + x 
+
+In equation (11) τi represents node i’s intrinsic response time, which is precisely              setting, for simplicity, all rate constants to unity. Here we have R(x)
+what we seek. In contrast, the non-homogeneous term f(Si, t) determines i’s final                =​  −​M1(x)/M0(x) =​  1/(x2 −​ 1), and therefore
+response Δ​xi(t →​  ∞​), but has no impact on its temporal dynamics towards this
+final state; hence in the present discussion we do not pursue this term any further                                                                      1
+                                                                                                                                               x + 1  2
+(see Supplementary Section 1.3 for a more detailed treatment). The derivatives                                                     R−1(x ) ~                                            (22)
+                                                                                                                                               x 
+Mq′ (xi) (q =​ 0, 1) represent dMq/dxi with xi taken at the steady state, as provided by
+equation (10). Using the fact that M0(x) =​  −​M1(x)/R(x) we write
+                                                                                                 Next we use equation (18) to write
+                           M ′ (x ) M (x )                                                                                                          −1
+             M0′ (xi) = − 1 i + 21 i R′ (xi) 
+                                                                                                                                                                 2
+                                                                                                                                    d  x             (x 2−1)
+                           R (x )  R (x )                                                                           Y (x ) =   2   = −                                     (23)
+                                     i              i
+                                                                  xi= R−1 (λi)                                                      dx  x −1       1+x  2
+                                                                                       (13)
+                            M1′ (R−1 (λi)) M1 (R−1 (λi)) R′ (R−1 (λi))
+                      = −                 +                                                      Taking R−1(x) from equation (22), the Hahn expansion in equation (19) takes
+                                  λi                   λi2                                       the form
+
+where in the last step we used the fact that R(R−1(λi)) =​  λi. In a similar fashion we                                                 1
+                                                                                                                              λ + 1  2    1
+express the second term in the denominator of equation (12) as                                           Y (R−1 (λi)) = Y   i       =      = λi−1−2λi0 + 4λi1 + O (λi2)         (24)
+                                                                                                                              λi   λi + 2λi2
+                                                         −1                                                                                
+                                                   M1′ (R (λi))
+                          SiM1′ (xi) M = M                                             (14)
+                                                         λi                                      for which the leading power is Γ​(0) =​  −​1. As a result we predict, using equation (5), that
+                                                                                                 θ =​  −​2 −​  Γ​(0) =​  −​1, a negative scaling, placing M in the composite regime. A detailed
+Collecting all terms we rewrite equation (12), preserving only the components                    analysis of this and all other models of Fig. 2b appears in Supplementary Section 2.
+that contribute to the scaling of τi with Si (or λi ∝ Si−1), ignoring, for instance, the
+nearest-neighbour average M, which is independent of Si. We arrive at                            The impact of modularity (Fig. 5). Although our quantitative predictions are
+          1 1                                                                                    valid under the configuration model (that is, a random network), they can still
+            ~ [R (R−1 (λi)) M1′ (R−1 (λi)) + M1 (R−1 (λi)) R′ (R−1 (λi))]              (15)      offer qualitative insights on more general structures. As an illustrative example, we
+          τi λi2                                                                                 consider the effect of network modularity on signal propagation. We constructed
+                                                                                                 two communities, linked through a single hub (Fig. 5), representing, topologically,
+where, once again, we used λi =​  R(R−1(λi)) to extract the pre-factor of λi−2 on the            two distinct functional modules45. The question is whether this topological
+right-hand-side. Interestingly, the terms in the square brackets are in the form of a            modularity translates also to dynamic modularity; namely, are the two modules
+product derivative, allowing us to further simplify equation (15) into                           functionally isolated. Indeed, this strongly depends on the dynamic regime of the
+                                                                                                 system, as the exponent θ crucially impacts the efficiency of information transfer
+                        1 1 d[M1 (xi) R (xi)]                                                    between the modules: in distance-limited propagation the signal first spreads
+                          ~                                                            (16)
+                        τi λi2    dx i                                                           within its own module, but then spills over to the neighbouring module within a
+                                                         xi= R−1 (λi)
+                                                                                                 short time, driven by the short paths linking across the modules (Fig. 5a,b, blue). In
+We can now write                                                                                 contrast, under degree-limited propagation the connecting hub responds extremely
+                                                                                                 slowly, acting as an effective shock-absorber, which restricts the signal for a very
+                                 τi ~ λi2Y (R−1 (λi))                                  (17)      long time within one module (Fig. 5c,d, red). Hence, in this regime the structural
+                                                                                                 modularity translates into an equally stiff dynamic modularity. In composite
+
+Nature Physics | www.nature.com/naturephysics
+Articles                                                                                                                                  NAtuRe PHYsics
+dynamics the picture is fundamentally different: the rapidly responding hub           Additional information is available from the corresponding author upon
+node, effectively renders the boundary between the two communities transparent        reasonable request. The only exception is the air-traffic network data, which the
+for signal propagation. Therefore, counter-intuitively, signals cross community       authors are restricted from sharing.
+boundaries almost instantaneously (Fig. 5e,f, green).
+
+Data availability                                                                     References
+All data and codes to reproduce the results presented here are freely accessible at   45. Ravaszi, E. B. & Barabási, A.-L. Hierarchical organization in complex
+https://github.com/CRHENS/Spatio-Temporal-/blob/master/README.md.                         networks. Phys. Rev. E 67, 026112 (2003).
+
+
+
+
+                                                                                                                        Nature Physics | www.nature.com/naturephysics
+

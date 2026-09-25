@@ -1,0 +1,60 @@
+key,folder,arxiv_id,first_author,status,title
+acebron2005,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,The Kuramoto model: A simple paradigm for synchronization phenomena
+rodrigues2016,01_kuramoto_foundations,1511.07139,,present,The Kuramoto model in complex networks
+ott_antonsen2008,01_kuramoto_foundations,0806.0004,,present,Low dimensional behavior of large systems of globally coupled oscillators
+dorfler_bullo2014,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Synchronization in complex networks of phase oscillators: A survey
+pazo2005,01_kuramoto_foundations,nlin/0509020,,present,Thermodynamic limit of the first-order phase transition in the Kuramoto model
+arenas2008,01_kuramoto_foundations,0805.2976,,present,Synchronization in complex networks
+ichinomiya2004,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Frequency synchronization in a random oscillator network
+restrepo2005_onset,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Onset of synchronization in large networks of coupled oscillators
+martens2009_bimodal,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Exact results for the Kuramoto model with a bimodal frequency distribution
+sakaguchi1988_noisy,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Cooperative Phenomena in Coupled Oscillator Systems under External Fields
+bertini2010_noisy_kuramoto,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Dynamical aspects of mean field plane rotators and the Kuramoto model
+pikovsky2016_common_noise,09_common_noise,,,error: HTTP Error 406: Not Acceptable,Interplay of coupling and common noise at the transition to synchrony in oscillator populations
+peter2019_microscopic_crosscorr,09_common_noise,,,error: HTTP Error 406: Not Acceptable,Microscopic Cross-Correlations in the Finite-Size Kuramoto Model of Coupled Oscillators
+nagai2010_common_noise_sync,09_common_noise,,,error: HTTP Error 406: Not Acceptable,Noise-Induced Synchronization of a Large Population of Globally Coupled Nonidentical Oscillators
+gomezgardenes2011,02_explosive_sync,1102.4823,,present,Explosive synchronization transitions in scale-free networks
+leyva2012,02_explosive_sync,1203.6508,,present,Explosive first-order transition to synchrony in networked chaotic oscillators
+peron2012,02_explosive_sync,1204.4768,,present,Determination of the critical coupling of explosive synchronization transitions in scale-free networks by mean-field approximations
+coutinho2013,02_explosive_sync,1211.5690,,present,Kuramoto model with frequency-degree correlations on complex networks
+ji2013,02_explosive_sync,1303.3498,,present,Cluster explosive synchronization in complex networks
+leyva2013_weighted,02_explosive_sync,1307.6755,,present,Explosive synchronization in weighted complex networks
+zou2014_basin,02_explosive_sync,1401.1262,,present,Basin of attraction determines hysteresis in explosive synchronization
+zhang2015_adaptive,02_explosive_sync,1410.2986,,present,Explosive synchronization in adaptive and multilayer networks
+boccaletti2016_review,02_explosive_sync,1610.01361,,present,Explosive transitions in complex networks' structure and dynamics: percolation and synchronization
+danziger2019,02_explosive_sync,1705.00241,,present,Dynamic interdependence and competition in multilayer networks
+dsouza2019_review,02_explosive_sync,1907.09957,,present,Explosive phenomena in complex networks
+synchronization_bombs2022,02_explosive_sync,2203.03728,,present,Self-organized explosive synchronization in complex networks: Emergence of synchronization bombs
+adaptive_competing2026,02_explosive_sync,2606.17944,,present,Explosive Transitions in Complex Networks with Adaptive Competing Interactions
+typeI_neurons2025,02_explosive_sync,2512.03600,,present,Explosive synchronization in networks of Type-I neurons with electrical synapses
+skardal_arenas2019,03_higher_order,1903.12131,,present,Abrupt desynchronization and extensive multistability in globally coupled oscillator simplexes
+skardal_arenas2020,03_higher_order,1909.08057,,present,Higher order interactions in complex networks of phase oscillators promote abrupt synchronization switching
+millan2020,03_higher_order,1912.04405,,present,Explosive higher-order Kuramoto dynamics on simplicial complexes
+battiston2020,03_higher_order,2006.01764,,present,Networks beyond pairwise interactions: structure and dynamics
+zhang2023_hyper_vs_simplicial,03_higher_order,2203.03060,,present,Higher-order interactions shape collective dynamics differently in hypergraphs and simplicial complexes
+hoi_random_hypergraphs2025,03_higher_order,2508.10992,,present,When higher-order interactions enhance synchronization: the case of the Kuramoto model on random hypergraphs
+rohden2012,04_inertia_cascades,,,error: HTTP Error 406: Not Acceptable,Self-organized synchronization in decentralized power grids
+olmi2014,04_inertia_cascades,1406.3724,,present,Hysteretic transitions in the Kuramoto model with inertia
+multiplex_inertia2017,04_inertia_cascades,1711.10679,,present,Multiplexing induced explosive synchronization in Kuramoto oscillators with inertia
+scheffer2009,05_early_warning,nature/08227,,present,Early-warning signals for critical transitions
+dakos2012_methods,05_early_warning,plosone/10.1371/journal.pone.0041010,,present,Methods for detecting early warnings of critical transitions in time series illustrated using simulated ecological data
+ashwin2012_tipping,05_early_warning,1103.0169,,present,"Tipping points in open systems: bifurcation, noise-induced and rate-dependent examples in the climate system"
+kuehn2011,05_early_warning,1101.2899,,present,"A mathematical framework for critical transitions: bifurcations, fast-slow systems and stochastic dynamics"
+hagstrom2021_phase_transitions_ews,05_early_warning,2110.12287,,present,Phase Transitions and the Theory of Early Warning Indicators for Critical Transitions
+kato_masuda2026,05_early_warning,2608.28320,,present,Early warning signals for synchronization transitions from partial observations
+ordinal_predictors2025,05_early_warning,2501.05202,,present,Local predictors of explosive synchronization with ordinal methods
+forced_desync_ews2020,05_early_warning,2003.11595,,present,Early warning signals for desynchronization in periodically forced systems
+bury2021_deep_learning_ews,05_early_warning,,,error: HTTP Error 406: Not Acceptable,Deep learning for early warning signals of tipping points
+persistent_entropy2026,05_early_warning,2602.09058,,present,Persistent Entropy as a Detector of Phase Transitions
+pseudo_coherence2026,05_early_warning,2603.07206,,present,Pseudo-Coherence and Stochastic Synchronization: A Non-Normal Route to Collective Dynamics without Oscillators
+sornette2003_crashes,06_finance,cond-mat/0301543,,present,Critical market crashes
+harmon2011_panic,06_finance,1102.2620,,present,Anticipating economic market crises using measures of collective panic
+filimonov_sornette2012,06_finance,1201.3572,,present,Quantifying reflexivity in financial markets: towards a prediction of flash crashes
+flash_crash_contagion2018,06_finance,1805.08454,,present,Understanding Flash Crash Contagion and Systemic Risk: A Micro-Macro Agent-Based Approach
+johnson2013_ultrafast,06_finance,scirep/srep02627,,present,Abrupt rise of new machine ecology beyond human response time
+haldane_may2011,06_finance,,,error: HTTP Error 406: Not Acceptable,Systemic risk in banking ecosystems
+bouchaud2010_endogenous,06_finance,1009.2928,,present,The endogenous dynamics of markets: price impact and feedback loops
+synchronization_market_asymmetry2006,06_finance,physics/0604137,,present,Synchronization Model for Stock Market Asymmetry
+mitra2018_nodal_robustness,07_novelty_checks,1801.02409,,present,Identifying nodal properties that are crucial for the dynamical robustness of multi-stable networks
+resilience_targeted_attacks2019,07_novelty_checks,1911.08465,,present,Resilience of networks of multi-stable chaotic systems to targetted attacks
+subsystem_resetting_kuramoto2026,07_novelty_checks,2604.04769,,present,Analytical approach to subsystem resetting in generalized Kuramoto models

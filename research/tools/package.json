@@ -1,0 +1,7 @@
+{
+  "name": "research-tools",
+  "private": true,
+  "description": "Build-time TeX -> SVG rendering for research/index.html",
+  "type": "module",
+  "dependencies": { "mathjax-full": "3.2.2" }
+}

@@ -1,0 +1,78 @@
+{
+  "pairwise": [
+    {
+      "model": "SIS epidemic (Hens E)",
+      "interaction": "M = (-Bx, 1-x, x)",
+      "D1 = G*G_xy - G_x*G_y": "0",
+      "product_separable (Hens eq. 3)": true,
+      "separable_rank": 1,
+      "decomposition": ""
+    },
+    {
+      "model": "Regulatory Michaelis-Menten (Hens R)",
+      "interaction": "M = (-Bx^a, 1, y^h/(1+y^h))",
+      "D1 = G*G_xy - G_x*G_y": "0",
+      "product_separable (Hens eq. 3)": true,
+      "separable_rank": 1,
+      "decomposition": ""
+    },
+    {
+      "model": "Mutualistic population (Hens M)",
+      "interaction": "M = (x(1-x^2), x, y/(1+y))",
+      "D1 = G*G_xy - G_x*G_y": "0",
+      "product_separable (Hens eq. 3)": true,
+      "separable_rank": 1,
+      "decomposition": ""
+    },
+    {
+      "model": "Kuramoto (GG2011, S1)",
+      "interaction": "sin(theta_j - theta_i)",
+      "D1 = G*G_xy - G_x*G_y": "1",
+      "product_separable (Hens eq. 3)": false,
+      "separable_rank": 2,
+      "decomposition": "sin(y)cos(x) - cos(y)sin(x)"
+    },
+    {
+      "model": "Sakaguchi-Kuramoto (phase lag)",
+      "interaction": "sin(theta_j - theta_i - alpha)",
+      "D1 = G*G_xy - G_x*G_y": "1",
+      "product_separable (Hens eq. 3)": false,
+      "separable_rank": 2,
+      "decomposition": "cos(a)[sin y cos x - cos y sin x] - sin(a)[cos y cos x + sin y sin x]"
+    },
+    {
+      "model": "Linear diffusive / Stuart-Landau coupling",
+      "interaction": "z_j - z_i",
+      "D1 = G*G_xy - G_x*G_y": "1",
+      "product_separable (Hens eq. 3)": false,
+      "separable_rank": 2,
+      "decomposition": "1*y + (-x)*1"
+    },
+    {
+      "model": "tanh diffusive (saturating)",
+      "interaction": "tanh(x_j - x_i)",
+      "D1 = G*G_xy - G_x*G_y": "((tanh(x)*tanh(y) - 1)**2 + (tanh(x) - tanh(y))**2)/((tanh(x)*tanh(y) - 1)**4*cosh(x)**2*cosh(y)**2)",
+      "product_separable (Hens eq. 3)": false,
+      "separable_rank": ">3 (not finite, Levi-Civita)",
+      "decomposition": ""
+    }
+  ],
+  "herding_additivity": {
+    "kuramoto": {
+      "max |d2F/dth1 dth2|": 0.0,
+      "pairwise_additive": true
+    },
+    "herding r_i": {
+      "max |d2F/dth1 dth2|": 0.47165372657113874,
+      "pairwise_additive": false
+    },
+    "herding r_i^2": {
+      "max |d2F/dth1 dth2|": 0.72953397742105,
+      "pairwise_additive": false
+    },
+    "r_i^2 variant == explicit triadic (hypergraph) sum": true
+  },
+  "herding_jacobian": {
+    "max abs error closed form vs autodiff (incl. row sum)": 2.6645352591003757e-15
+  }
+}

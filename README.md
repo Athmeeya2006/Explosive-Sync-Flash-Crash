@@ -2,6 +2,18 @@
 
 High-performance numerical framework for simulating synchronization transitions in coupled oscillator networks. Built from scratch in Python and C++17 (~2,300 lines across both languages), this codebase integrates Kuramoto and Stuart-Landau oscillators on Erdos-Renyi (ER) and Barabasi-Albert (BA) topologies, capturing critical phenomena like explosive (first-order) phase transitions, hysteresis loops, and flash-crash desynchronization events.
 
+## Start here
+
+| what | where |
+|---|---|
+| **Interactive simulation** of a crash spreading through the network, with every control explained | [`simulation/index.html`](simulation/index.html) |
+| **The model built up from one oscillator**, each term motivated, every assumption listed | [`research/reference.html`](research/reference.html) |
+| **All results**: reproductions, negative results, real-data tests | [`research/index.html`](research/index.html) |
+| **Reference text**: equations, 41 assumptions, what to remove, what to add | [`research/MODEL_REFERENCE.md`](research/MODEL_REFERENCE.md) |
+
+The `research/` directory supersedes the original `python/` and `cpp/` layers for every scientific
+claim. See the corrections below.
+
 ## Key Technical Achievements
 
 - **30x Simulation Speedup**: Rewrote the core ODE integration loop from Python (`scipy.integrate.solve_ivp`, adaptive RK45) into a hand-tuned C++ RK4 engine operating on sparse adjacency lists. For $N=400$ oscillators on an ER network ($p=0.05$, $K=2.0$, $T=50$), wall-clock time dropped from 4.50s to 0.15s per ensemble, enabling parameter sweeps that previously took hours to complete in minutes.
@@ -13,7 +25,18 @@ High-performance numerical framework for simulating synchronization transitions 
 
 ## Explosive Synchronization
 
-Explosive synchronization is a first-order phase transition in networked oscillators where the order parameter $R$ jumps discontinuously from near-zero to near-one as coupling $K$ crosses a critical value. Unlike the continuous (second-order) Kuramoto transition on homogeneous networks, the explosive transition exhibits hysteresis: the forward and backward critical couplings differ. This framework enforces frequency-degree correlation on heterogeneous networks to reliably trigger the explosive regime (Gomez-Gardenes et al., PRL 2011). The hysteresis sweep module quantifies the width of this bistable region by running 40-point forward and backward coupling ramps and measuring the gap between the two transition thresholds.
+Explosive synchronization is a first-order phase transition in networked oscillators where the order parameter $R$ jumps discontinuously from near-zero to near-one as coupling $K$ crosses a critical value. Unlike the continuous (second-order) Kuramoto transition on homogeneous networks, the explosive transition exhibits hysteresis: the forward and backward critical couplings differ. This framework enforces frequency-degree correlation on heterogeneous networks to trigger the explosive regime (Gomez-Gardenes et al., PRL 2011). The hysteresis sweep module quantifies the width of this bistable region by running 40-point forward and backward coupling ramps and measuring the gap between the two transition thresholds.
+
+> **Correction, measured in `research/s1_reproduce_gg2011.py`.** The degree-normalised coupling used by
+> the `python/analysis` layer (`K/d_i`, the form written in the Kuramoto equation below) **does not**
+> produce explosive synchronization: its hysteresis gap is 0.06 against 0.79 for the unnormalised
+> Gomez-Gardenes form. Degree normalisation destroys the mechanism. Use the unnormalised or adaptive
+> forms in `research/model.py` for any explosive-synchronization claim.
+>
+> **Second correction, measured in `research/s8c_correlation_corrected.py`.** A frequency-degree *rank*
+> correlation is not sufficient. With a Gaussian frequency distribution the transition stays continuous
+> at every correlation value from -1 to +1. The jump appears only when the tail of g(omega) matches the
+> tail of P(k). See `research/reference.html` step 6.
 
 ## Model overview
 
@@ -107,7 +130,7 @@ Generate an order-parameter time series (this runs in ~0.15s on the C++ backend 
 python python/analysis/run_kuramoto.py --model er --n 200 --p 0.05 --k 2.0 --tmax 50 --dt 0.05
 ```
 
-For explosive synchronization on BA networks, apply degree-weighted frequencies (`--freq-mode degree-weighted --omega-mean 1.0`).
+For explosive synchronization on BA networks, apply degree-weighted frequencies (`--freq-mode degree-weighted --omega-mean 1.0`). Note the correction above: with this layer's `K/d_i` normalisation the transition stays continuous regardless.
 
 Compute early warning indicators (rolling variance and lag-1 autocorrelation over a sliding window):
 

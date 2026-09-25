@@ -1,0 +1,2135 @@
+                                                            Predicting the patterns of spatio-temporal signal propagation
+                                                                                      in complex networks
+
+                                                               Chittaranjan Hens1 , Uzi Harush1 , Reuven Cohen1 & Baruch Barzel1
+
+                                                     1. Department of Mathematics, Bar-Ilan University, Ramat-Gan 52900, Israel
+
+
+                                                     A major achievement in the study of complex networks is the observation that di-
+                                                  verse systems, from sub-cellular biology [1–3] to social networks [4–6], exhibit universal
+                                                  topological characteristics [7–14]. Yet this universality does not naturally translate
+arXiv:1801.08854v1 [physics.soc-ph] 26 Jan 2018
+
+
+
+
+                                                  to the dynamics of these systems [15–18], hindering our progress towards a general
+                                                  theoretical framework of network dynamics. The source of this theoretical gap is the
+                                                  fact that the behavior of a complex system cannot be uniquely predicted from its
+                                                  topology, but rather depends also on the dynamic mechanisms of interaction between
+                                                  the nodes [19], hence systems with similar structure may exhibit profoundly different
+                                                  dynamic behavior. To bridge this gap, we derive here the patterns of network infor-
+                                                  mation transmission, indeed, the essence of a network’s behavior [20–22], by offering
+                                                  a systematic translation of topology into the actual spatio-temporal propagation of
+                                                  perturbative signals. We predict, for an extremely broad range of nonlinear dynamic
+                                                  models, that the propagation rules condense around three highly distinctive dynamic
+                                                  universality classes, characterized by the interplay between network paths, degree
+                                                  distribution and the interaction dynamics. Our formalism helps us leverage the ma-
+                                                  jor advances in the mapping of real world networks, into predictions on the actual
+                                                  dynamic propagation, from the spread of viruses in social networks [23–27] to the
+                                                  diffusion of genetic information in cellular systems [28, 29].
+                                                     The spread of information in a complex system is mediated by its underlying topology, with
+                                                  the metric of network paths commonly assumed to be the main determinant of the propagation
+                                                  [24, 29–31]. This rationale has motivated a widespread effort to retrieve the structure of many
+                                                  real world networks [32–34], which in turn emerged as a powerful tool to visualize and predict
+                                                  information propagation, such as epidemic spreading via air-traffic [24, 35] or neuronal activity
+                                                  patterns along the pathways of the connectome [36]. In all these cases, the network topology ex-
+                                                  poses the natural geometry of the propagation, with network distance being the main predictor of
+                                                  the spreading behavior. Yet, network topology does not always capture information propagation
+                                                  in such a transparent fashion, due to the diverse forms of nonlinear interactions that may take
+                                                                                                      2
+
+
+place between the nodes [37, 38]. Indeed, as we demonstrate below, slight modifications in the
+system’s dynamics can potentially have a profound impact on the observed propagation, causing
+similar networks to exhibit fundamentally different spreading patterns. This results in a seemingly
+unpredictable zoo of highly irregular propagation patterns, severely limiting our ability to system-
+atically translate network topology into spatio-temporal propagation. Therefore, our goal here is
+to (i) expose the potential propagation patterns; (ii) derive, analytically, the rules that predict
+these observed patterns and (iii) translate, based on our theoretical findings, the network topology
+into its predicted spatio-temporal spread, thus strengthening networks as the predictive tool of
+information propagation they are designed to be.
+
+
+                                   Observing signal propagation
+
+
+To illustrate the challenge we begin with a specific example, using the human protein-protein
+interaction network [39] to track the the propagation of biochemical signals in a sub-cellular en-
+vironment. Denoting the abundance of the ith protein by xi (t), we can capture the system’s
+                                     P
+dynamics through [40] ẋi = −Bi xαi + N
+                                      j=1 Aij H(xj ), in which the first term describes a protein’s
+
+self-dynamics, e.g., degradation (α = 1), dimerization (α = 2) or a more complicated chain re-
+action (fractional α, [41]), and the second term depicts i’s regulation by its interacting partners,
+often captured by a Hill function of the form [42] H(xj ) = xj /(1 + xj ); Aij is the protein inter-
+action network (Fig. 1c). Changes in the abundance of one protein propagate, through Aij , to
+affect the abundance levels of all other proteins, representing a spread of biochemical information
+in the system [29]. Hence we initiate a biochemical signal by introducing a perturbation ∆xj to
+the steady state abundance of the source j, and then track its propagation, as it penetrates the
+network, to impact all target nodes i = 1, . . . , N (Fig. 1a,b). This process is analogous to, e.g., an
+over-expression perturbation, a common procedure to track the spread of sub-cellular information
+[43].
+   In Fig. 1d-f we visualize this propagation, in selected time points, as obtained for three different
+values of the parameter α. The signal source is at the center of each layout, and the response of
+all target nodes is represented by their size and color depth, hence proteins that receive the signal
+at earlier times appear first in each snapshot. We find that the patterns of propagation are highly
+irregular, with the signal appearing in different locations, depending on the system’s dynamics
+(α). For instance, in case α = 1 the signal propagates, roughly, from the center to the periphery
+(blue), a rather intuitive form of propagation. Yet, on the same network, a slight modification
+                                                                                                   3
+
+
+of the dynamics (α = 1/2) leads to different behavior, as now the signal seems to skip the most
+adjacent nodes and appear first at more distant neighbors (red). To deepen our observation of
+the different response patterns, we focus on a specific pair of target nodes, highlighted in grey and
+black. In case α = 1 (blue) we find that these two nodes exhibit similar behavior, featuring an
+almost synchronous response (Fig. 1g). The picture dramatically changes, however, when α = 1/2
+(red), in which case the signal impacts the black node at a much later time (Fig. 1h). Strikingly,
+the sequence of responses is reversed when we set α = 2, now reaching black significantly before
+impacting grey (Fig. 1i).
+   This diversity of propagation patterns is also expressed by the time-scales of the traveling
+signal, ranging from t ∼ 10−2 in case α = 2 (green), to t ∼ 1 for α = 1 (blue), reaching t ∼ 103
+for α = 1/2 (red), several orders of magnitude difference in time-scales exhibited by the same
+network. Together, these results clearly show that signal propagation is not determined solely by
+the network topology, but rather by the intricate interplay between this topology and the system’s
+intrinsic dynamics, with even slight changes (value of α) having rather dramatic consequences.
+This illustrates the challenges in predicting information spread in networked systems, where even
+the relative response times, e.g., which nodes respond first and which later, or the typical time
+scales of the spread, ranging from 10−2 to 103 , are seemingly diverse and unpredictable.
+
+
+                                 Dynamic classes of propagation
+
+
+To advance from the specific observation above towards a systematic investigation of network signal
+propagation, we seek to separate the role of the network topology versus that of the dynamics.
+Therefore, we constructed a systematic testing ground combining a diverse body of model and
+empirical networks with a set of frequently encountered dynamical models. This includes Erdős-
+Rényi (ER) and scale-free [44] networks with different link weight distributions (SF, SF1, SF2),
+as well as empirical networks from social [45, 46], biological [39, 47] and ecological [48] domains.
+To scan the dynamics space, we collected relevant dynamic models, capturing epidemic spreading
+(E [49–51]), ecological interactions (M [52]), regulatory dynamics (R1 , R2 [3, 42]) and population
+dynamics (P1 , P2 [53–55]), together a broad spectrum of nonlinear models from diverse application
+fields. We arrive at a combination totaling 36 systems - each pairing a network with its relevant
+dynamics, e.g., ECO with population dynamics P - comprising together a rich testing ground on
+which we can systematically observe and decipher the potential signal propagation patterns (Fig.
+2a,b).
+                                                                                                     4
+
+
+   Introducing activity perturbations, as in Fig. 1, we examined signal propagation in each of our
+36 combined networks/dynamics. An example of the results, obtained from the weighted scale-free
+network SF, across all six dynamic models, is presented in Fig. 3a - f. As before, we find that despite
+the fact that the networks and layouts in all panels are identical, the spatio-temporal propagation
+patterns are visibly different, depending on the type of dynamics: in some cases propagating from
+the core to the periphery (R1 , P1 , blue), in others advancing from the periphery inwards (R2 , P2 ,
+red) and finally, in M and E, featuring a seemingly random scatter of early responding nodes
+(green).
+   To quantitatively analyze these different spreading patterns we measure the propagation time
+T (j → i) for the signal in j to reach the target node i. This is captured by ∆xi (t = T (j →
+i)) = η∆xi (t → ∞), namely T (j → i) represents the time when i has reached an η-fraction of its
+final response to the j-signal (typically setting η ∼ 1/2, the half-life of i’s response; Fig. 1b and
+Supplementary Section 3.2). We then measured the probability density function P (T ) for T (j → i)
+to be between T and T + dT . In Fig. 3g - l we show the resulting density functions as obtained
+from the ER (top) and SF (bottom) networks. We find that the diversity of observed propagation
+patterns condenses around three highly distinctive classes of spatio-temporal spread, helping us
+systematically categorize the observed zoo of propagation patterns:
+Distance driven propagation (Fig. 3g,h, blue). For R1 and P1 the density P (T ) is identical in
+both ER (top) and SF (bottom), indicating that T (j → i) is unaffected by the network’s degree
+distribution. The sharp peaks in P (T ) express the fact that the propagation occurs in discrete
+time intervals, corresponding to the countable steps along the paths between node pairs. Hence
+the spatio-temporal propagation is driven by the path length Lij between the source and the target
+nodes. Indeed, Fig. 3m,n shows that T (j → i) is linearly dependent on Lij , confirming the distance
+driven propagation. Such dynamics, in which the propagation is naturally depicted by the network
+paths, has been previously observed, e.g., in disease propagation [24], yet, our results expose that
+it represents but one of a variety of potential propagation patterns.
+Degree driven propagation (Fig. 3i,j, red). R2 and P2 portray a fundamentally different prop-
+agation pattern, with P (T ) unaffected by the discrete nature of Lij . The weighted degree dis-
+tribution, on the other hand, has a profound effect on P (T ): for ER (top) we find that P (T ) is
+bounded, while for SF (bottom) it is extremely heterogeneous, with T (j → i) spanning several
+orders of magnitude. This represents a degree-driven propagation, in which the weighted degree
+distribution is the main determinant of the spatio-temporal spreading patterns. Consequently, we
+find that T (j → i) is almost independent of Lij , and in fact, for the SF network, even decreases with
+                                                                                                      5
+
+
+distance - a striking disparity between the network topology and the actual patterns of information
+transfer (Fig. 3o,p).
+Composite propagation (Fig. 3k,l, green). The third class is represented by M and E, where
+P (T ) is affected both by Lij and by the SF topology. To observe this we show both P (T ), the
+general T (j → i) distribution, and P (T |Lij ), which represents T (j → i) at given distances, depicted
+by the inner peaks in different shades of green. We find that P (T |Lij ) shows a distance driven
+delay, with the peak density successively progressing as Lij is increased. On the other hand, the
+variance of these inner peaks depends on the degrees, narrow in ER, and broad, and therefore
+overlapping, in SF. Hence, the resulting spreading patterns are a composition of network distance
+and degree heterogeneity: on the one hand T (j → i) ∼ Lij , as confirmed by Fig. 3q,r, a distance
+driven feature, yet on the other hand, within each Lij shell we observe heterogeneity (i.e. variance
+of P (T |Lij )), that is driven by the bounded/fat-tailed nature of the degree distribution.
+   This classification represents our first key observation, advancing us towards systematically
+understanding the rules of information propagation on networks. It indicates that the irregular
+and seemingly unpredictable propagation presented in Figs. 1d - f and 3a - f, features recurring
+characteristic patterns, suggesting the existence of hidden rules that bind together these diverse
+behaviors. While Fig. 3 covers our 24 model systems, in Supplementary Section 4 we further verify
+these dynamics classes on our set of 12 additional empirical systems, detailed in Fig. 2a.
+   Along the way our classification exposes a delicate balance between diversity and universality,
+whose theoretical roots we explore below: (i) identical networks may exhibit highly distinctive
+spreading patterns, depending on the dynamics; (ii) different networks (SF vs. ER) may sometimes
+follow similar propagation patterns (Fig. 3g,h); (iii) the observed propagation patterns can be
+binned into discrete universality classes (blue, red, green), with similar behavior within each class.
+Next, we show that this extremely rich behavior can be analytically derived from the complex
+interplay between the network structure and the system’s intrinsic nonlinear interaction dynamics.
+
+
+              Analytically predicting the patterns of spatio-temporal propagation
+
+
+To understand the roots of the observed propagation patterns we develop a general formulation,
+that can capture, within a unified framework, the behavior of all the diverse dynamic models used
+in Figs. 1 and 3. Therefore we consider the universal equation (Fig. 2c)
+                                             N
+                           dxi             X                        
+                               = M0 xi (t) +   Aij M1 xi (t) M2 xj (t) ,                            (1)
+                           dt
+                                                j=1
+                                                                                                     6
+
+
+in which the nonlinear functions M = (M0 (x), M1 (x), M2 (x)) can cover each of the systems included
+in our testing ground (Fig. 2a,b), as well as a broad range of additional steady-state dynamics, in the
+context of social [56], biological [40, 57], neuronal [58, 59] and technological [55] interactions. For
+instance, the regulatory models R1 , R2 are covered by (1) through M = (−Bxα , 1, xh /(1 + xh ));
+similarly, the classic susceptible-infected-susceptible (SIS) model (E) can be cast into (1) using
+M = (−Bx, 1 − x, x). Therefore Eq. (1) provides a universal description of network dynamics,
+applicable for a broad range of relevant systems.
+   To link the dynamics (1) to the observed spatio-temporal propagation patterns, we first focus on
+each node’s individual response time τi to a directly incoming signal. Indeed, the signal propagation
+time, T (j → i), which captures the complete spatio-temporal propagation, is an aggregation of all
+individual responses along the trajectory from j to i. Hence predicting τi can help us construct
+the desired T (j → i) as a sequence of individual responses. In Supplementary Section 1 we show,
+                                                                                P
+based on linear response theory, that we can link τi to i’s weighted degree Si = Nj=1 Aij through
+
+the universal scaling relationship
+                                               τi ∼ Siθ ,                                          (2)
+
+where
+                                           θ = −2 − Γ(0).                                          (3)
+
+The parameter Γ(0) is fully determined by the system’s dynamics M = (M0 (x), M1 (x), M2 (x))
+through the leading powers of the Hahn series expansion [60]
+                                             X  ∞
+                                  Y R−1 (x) =        Cn xΓ(n) ,                                    (4)
+                                                     n=0
+                      
+              d[M1 R] −1
+where Y (x) =              , R(x) = −M1 (x)/M0 (x) and R−1 (x) denotes its inverse function. The
+                 dx
+Hahn expansion in (4) is a generalization of the Taylor expansion, to include both negative and
+real powers; hence Γ(n), n = 0, . . . , ∞, represents a sequence of real powers in ascending order,
+i.e. Γ(n + 1) > Γ(n). Equation (3) relates the exponent θ in (2) to the leading power Γ(0) of (4),
+hence directly linking τi to the system’s dynamics M (see Supplementary Section 2 for detailed
+application of (3) and (4) on all dynamics of Fig. 2b).
+   Equations (2) - (4) represent our first analytical prediction, showing that the individual response
+times of all nodes are driven by the interplay between the topology Aij , through Si in (2), and
+the dynamics M through θ (3). Therefore, the exponent θ advances us towards our main goal: it
+helps us translate the static network structure into dynamic insight, by mapping a node’s temporal
+response (τi ), a dynamic property, to that node’s weighted degree (Si ), a topological characteristic.
+                                                                                                      7
+
+
+To test this prediction, we measured τi vs. Si for each of the 36 systems summarized in Fig. 2a. The
+results, presented in Fig. 4, are in excellent agreement with our theoretically predicted scaling: for
+R1 and P1 Eq. (3) predicts θ = 0 (Fig. 4a,b); for R2 and P2 it predicts θ = 3/2 (Fig. 4c) and θ = 1
+(Fig. 4d), respectively; for M and E the prediction is θ = −1 (Fig. 4e,f), all perfectly confirmed by
+our simulation results.
+   Another important aspect of our prediction is that θ is intrinsic to the system’s dynamics M,
+independent of the network topology Aij . Indeed, we observe that Fig. 4 groups together our 36
+systems into six classes, each exhibiting the exact same scaling relationship (2), based on their
+shared dynamics. This exposes a striking universality sustained across diverse networks, ranging
+in size, density and structural heterogeneity. More broadly, it indicates that θ is a fingerprint of the
+system’s dynamic model, providing the desired separation of topology vs. dynamics: the topology
+(Aij ) determines the degrees Si and hence the weighted degree distribution P (S); the dynamic
+model (M) translates these into τi through θ (Fig. 2d).
+   Next, we show that θ (3) not only provides the local response times τi , but also exposes the
+origins of the three universality classes observed in Fig. 3:
+Distance driven propagation (R1 , P1 , blue). In case θ = 0 we have τi in (2) independent of
+Si . This implies that regardless of P (S), fat-tailed or bounded, all nodes exhibit approximately
+uniform response times. Therefore, as the signal propagates along the network paths, each node
+in its trajectory causes, on average, the same delay, and hence the propagation time T (j → i)
+is primarily governed by the number of nodes along the path from j to i, precisely the distance
+driven propagation observed in Fig. 3m,n. This form of propagation condenses all nodes into
+discrete shells, comprising the nearest neighbors of the signal, the next nearest neighbors and so
+on. In each of these shells, the signal reaches all nodes approximately simultaneously, resulting
+in the discrete time intervals, which shape the separated peaks of P (T ) (Fig. 3g,h). Finally,
+with response time being independent of degree the structure of P (T ) is unaffected by the degree
+distribution, explaining the similar propagation patterns observed across the highly distinct ER
+and SF networks.
+Degree driven propagation (R2 , P2 , red). In case θ > 0 Eq. (2) predicts that hubs respond at a
+slower rate than low degree nodes, in effect being the bottlenecks of signal propagation. This gives
+rise to the degree driven propagation observed in Fig. 3i,j where SF networks (bottom) exhibit a
+much broader P (T ), in comparison to ER networks (top), a consequence of the delayed propagation
+caused by the hubs. The greater is θ, the more pronounced is the effect. In this class the path
+length Lij between the source and the target is of little importance compared to the degrees of
+                                                                                                    8
+
+
+the nodes along these paths. Indeed, in SF networks paths are extremely short (of order ∼ log N
+or smaller [61]), while degrees range over orders of magnitude. Consequently, the propagation
+patterns are dominated by P (S) rather than by Lij , as confirmed by Fig. 3o,p.
+Composite propagation (E, M, green). For θ < 0 the hubs respond rapidly, hence signal
+propagation is primarily limited by the path length from the source to the target. However, within
+each shell around the signal source we observe a diversity in T (j → i), driven by the degree
+heterogeneity (P (S)), with hubs responding earlier than small nodes. The result is composite
+dynamics, combining separated peaks, which overlap due to degree heterogeneity (Fig. 3k,l).
+   Hence we find that the zoo of diverse spreading behaviors observed in Figs. 1 and 3 is, in fact, a
+consequence of a deep universality that can be fully predicted by our formalism through the single,
+analytically tractable, universal exponent θ in (3). This exponent helps shed light on the link
+between structure and dynamics, a central theoretical challenge in the study of complex systems
+[19, 33]. For example, we can now uncover the dynamic consequences associated with two of the
+most profound characteristics of real networks: (i) most real networks exhibit extremely short
+paths between all nodes, with the average path length often following hLij i ∼ log N [61]; (ii) the
+(weighted) degree distribution P (S) of many real systems is fat-tailed, often scale-free, with highly
+connected hubs coexisting alongside a majority of low degree nodes [9]. Here we show that these
+two topological hallmarks impact the propagation of signals in a rather distinctive fashion. While
+the short paths accelerate the propagation of signals, the impact of degree heterogeneity depends
+on the dynamics of the system through θ: hubs may either expedite the propagation of signals
+(θ < 0, green, Fig. 5c), have no effect on the propagation (θ = 0, blue, Fig. 5a) or cause delays
+(θ > 0, red, Fig. 5b).
+   To observe the consequences of this interplay between P (S) and T (j → i), we consider the
+average propagation time hT i, representing the typical time-scale for signals to penetrate the
+entire network. The smaller is hT i the more efficient is the network in spreading local information.
+Our dynamic universality classes predict three levels of propagation efficiency: Efficient spread
+(θ = 0, R1 , P1 , Fig. 5d). For distance driven dynamics we have T (j → i) ∼ Lij , and hence, for a
+random network hT i ∼ hLij i ∼ log N , a rapid coverage that grows only logarithmically with the
+system’s size. Slow spread (θ > 0, R2 , P2 , Fig. 5e). For degree driven dynamics the propagation
+times are governed by the hubs, whose degrees increase with N , hence for a large system (N → ∞),
+signals require an extremely long time to penetrate the network. For a scale free network this leads
+to a scaling behavior hT i ∼ N α , an inefficient propagation in which hT i diverges polynomially
+with the size of the system. Therefore, despite the fact that the scale-free property decreases
+                                                                                                    9
+
+
+the topological distance (Lij ) [61], under degree driven dynamics it dramatically increases the
+effective temporal distance (T (j → i)), emphasizing again the non-trivial translation from topology
+to dynamics that our theory allows us to predict. Ultra-efficient spread (θ < 0, E, M, Fig. 5f). In
+composite dynamics signals rapidly propagate thanks to the hubs, which effectively shrink the paths
+between all nodes. Consequently, the propagation time is primarily determined by the response
+of the target nodes, which is independent of N or of the path length. The resulting propagation
+is extremely efficient, with hT i ∼ const, being effectively independent of N . Indeed, in Fig. 5f we
+find that networks of vastly different size, ranging over more than four orders of magnitude, are
+all covered within approximately the same hT i, a counter-intuitive form of propagation, that is yet
+fully predicted by our formalism.
+
+
+                        Universal dynamic metric for signal propagation
+
+
+To simplify the observed flow of information we seek a predictive metric, L(j → i) that transpar-
+ently reflects the actual propagation times T (j → i) [24], namely we seek a temporal distance
+L(j → i), for which T (j → i) ∼ L(j → i). Consider the shortest path from the source j to the
+target i, denoted by the sequence Π(j → i) = j → p → q → · · · → i. This path, being short-
+est, will dominate the spread of the signal ∆xj to the target i [37], hence T (j → i) depends
+mainly on the travel time along Π(j → i). We can evaluate this travel time using (2) to be
+T (j → i) ∼ Spθ + Sqθ + · · · + Siθ , the total lag time accumulated on all nodes along Π(j → i) (Fig.
+6a). In general, we can write
+
+                                                       (                    )
+                                                             X
+                                 L(j → i) = min                       Spθ                         (5)
+                                              Π(j→i)
+                                                           p∈Π(j→i)
+                                                             p6=j
+
+where the minimization selects the fastest of all shortest paths between j and i. Equation (5)
+represents our final result, providing the temporal distance between all pairs of nodes i and j,
+designed to naturally capture the system’s dynamic signal propagation. As opposed to other
+common metrics, L(j → i) depends not only on the topology, but also on the dynamics M through
+the exponent θ (3), therefore accounting for the interplay between structure and dynamics. Hence,
+for a given Aij the distances L(j → i) are adaptive, relocating all nodes depending on the nature
+of the system’s nonlinear interactions.
+   To test (5) we used it to layout the scale-free networks shown in Fig. 3a - f, placing each node in
+its appropriate location, at distance L(j → i) from the perturbed source (Fig. 6b - g; for the layout
+                                                                                                   10
+
+
+of our empirical networks see Supplementary Section 4). The originally unpredictable spreading
+patterns (Fig. 3) collapse into a concentric propagation, with the desired T (j → i) ∼ L(j → i). The
+crucial point is that these layouts, which we predict a priori, i.e. before observing the simulation
+results, are dynamically adaptive, appropriately locating the nodes according to the predicted
+dynamic universality class. Hence, despite using the same Aij the nodes are located differently as
+the dynamics is shifted from R1 and P1 (blue, θ = 0) to R2 and P2 (red, θ > 0), and further to M
+and E (green, θ < 0). In Fig. 6h - j we show the observed T (j → i) vs. the analytically calculated
+L(j → i) for all of our 36 model/empirical systems - each in the appropriate class (blue, red, green).
+We find that (5) consistently captures the actual patterns of propagation, satisfying the desired
+T (j → i) ∼ L(j → i), thus providing a highly predictive, dynamically adaptive universal distance
+metric for signal propagation (few minor discrepancies appearing in specific systems are discussed
+in Supplementary Section 4).
+
+
+                                      Discussion and outlook
+
+
+Predicting the spread of information in complex networks is at the heart of our ability to under-
+stand their dynamic behavior, hence the widespread efforts to collect data on the topology of real
+biological, social and technological networks. Yet, if we wish to leverage these data into actual
+dynamic insights, we must systematically translate our findings on network structure into dynamic
+predictions on information flow. Our formalism offers such translation by separating the contri-
+bution of the topology, Aij , from that of the dynamics, M, through the analytically predicted
+exponent θ, exposing highly distinctive dynamic universality classes that characterize the connec-
+tion between Aij and the dynamic spreading behavior. The distinctions between these classes are
+multi-faceted, providing an array of testable predictions, from P (T ), through τi (2) to the scaling
+of hT i with N , highly distinctive features that provide a set of clear observable fingerprints by
+which to classify a system’s dynamics.
+   While complex system dynamics can take almost unlimited forms, our formalism shows that the
+determinants of information spread are restricted to the few leading powers of M, as encapsulated
+within Γ(0) in (4). This groups together fundamentally different dynamics under the same univer-
+sality class, e.g., ecological interactions (M) and epidemics (E), which exhibit identical spreading
+patterns - a surprising observation, predicted by (3).
+   Most importantly, these powers (Γ(n)) as opposed to the coefficients (Cn ) are intrinsic to the
+system’s dynamics, depending on the functional form of M, but not on its specific rate constants.
+                                                                                                11
+
+
+For instance, in the SIS model (E) we have M0 (x) ∼ −x, M1 (x) ∼ 1 − x and M2 (x) ∼ x (Fig. 2b).
+The structure of these three functions, and hence their leading powers, is intrinsic to the dynamic
+mechanisms of infection and recovery. Therefore our prediction that E is in the composite univer-
+sality class (θ = −1, green) is not sensitive to the microscopic rates of infection/recovery, which
+vary across different diseases, but rather represents a robust property of the SIS model, unifying
+all communicable diseases whose spreading mechanism is captured by the SIS framework. Such
+universality is a crucial component in our effort to construct a theory of complex system dynamics,
+as most complex systems are multi-parametric [52], allowing no access, or analytical treatment, of
+their detailed microscopic parameters. Hence we seek empirically observable macroscopic functions
+that can be directly traced to a small number of the system’s relevant and intrinsic parameters,
+such as the leading powers of M. An analogous approach was successfully employed in the past
+to expose universality in particle systems [62] - we believe that this line of thought may lead to
+similar breakthroughs in our understanding of complex networked systems.
+                                                                                                      12
+
+
+                                              References
+
+
+ [1] A.-L. Barabási and Z.N. Oltvai. Network biology: understanding the cell’s functional organization.
+    Nat. Rev. Gen., 5:101, 2004.
+ [2] H. Jeong, B. Tombor, R. Albert, Z.N. Oltvai and A.-L. Barabási. The large-scale organization of
+    metabolic networks. Nature, 407:651–654, 2000.
+ [3] U. Alon. An Introduction to Systems Biology: Design Principles of Biological Circuits. Chapman &
+    Hall, London, U.K., 2006.
+ [4] G. Palla, I. Derényi, I. Farkas and T. Vicsek. Uncovering the overlapping community structure of
+    complex networks in nature and society. Nature, 435:814–818, 2005.
+ [5] S. Boccaletti, V. Latora, Y. Moreno, M. Chavez and D.-U. Hwang. Complex networks: Structure and
+    dynamics. Physics Reports, 424:175–308, 2006.
+ [6] M. Girvan and M. E. J. Newman. Community structure in social and biological networks. Proc. Natl.
+    Acad. Sci. USA, 99:7821 – 26, 2002.
+ [7] R.M. D’Souza. Complex networks: Structure comes to random graphs. Nature Physics, 5:627–628,
+    2009.
+ [8] D. Achlioptas, R.M. D’Souza and J. Spencer. Explosive percolation in random networks. 323:1453–1455,
+    2009.
+ [9] G. Caldarelli. Scale-free networks: complex webs in nature and technology. Oxfrod University Press,
+    New York, 2007.
+[10] S.N. Drogovtsev and J.F.F. Mendez. Evolution of networks: from biological nets to the Internet and
+    WWW. Oxford University Press, Oxford, 2003.
+[11] S.H. Strogatz. Exploring complex networks. Nature, 410:268–276, 2001.
+[12] D. Helbing, J. Jost and H. Kantz, eds. Networks and complexity. Networks and Heterogeneous Media
+    (NHM), 3:185–411, 2008. AIMS, Springfield, MO., USA.
+[13] M.E.J. Newman. Networks - an introduction. Oxford University Press, New York, 2010.
+[14] R. Pastor-Satorras and A. Vespignani. Evolution and structure of the Internet: A statistical physics
+    approach. Cambridge University Press, Cambridge, U.K., 2004.
+[15] A. Barrat, M. Barthélemy and A. Vespignani. Dynamical Processes on Complex Networks. Cambridge
+    University Press, Cambridge, 2008.
+[16] N.S. Holter, A. Maritan, M. Cieplak, N.V. Fedoroff and J.R. Banavar. Dynamic modeling of gene
+    expression data. Proc. Natl. Acad. Sci. USA, 98:1693–1698, 2001.
+[17] S.H. Strogatz. From Kuramoto to Crawford: exploring the onset of synchronization in populations of
+    coupled oscillators. Physica D, 143:1–20, 2000.
+[18] A. Arenas, A. Dı́az-Guilera, J. Kurths, Y. Moreno and C. Zhou. Synchronization in complex networks.
+    Physics Reports, 469:93–153, 2008.
+[19] B. Barzel and O. Biham. Quantifying the connectivity of a network: The network correlation function
+                                                                                                          13
+
+
+     method. Phys. Rev. E, 80:046104–15, 2009.
+[20] Z. Toroczkai and K.E. Bassler. Network dynamics: Jamming is limited in scale-free systems. Nature,
+     428:716, 2004.
+[21] S.P. Borgatti. Centrality and network flow. Social Networks, 27:55–71, 2005.
+[22] A. Vespignani. Modelling dynamical processes in complex socio-technical systems. Nature Physics,
+     8:32–39, 2012.
+[23] R. Pastor-Satorras, C. Castellano, P. Van Mieghem and A. Vespignani. Epidemic processes in complex
+     networks. Rev. Mod. Phys., 87:925–958, 2015.
+[24] D. Brockmann and D. Helbing. The hidden geometry of complex, network-driven contagion phenomena.
+     342:1337–1342, 2013.
+[25] M. Barthélémy, A. Barrat, R. Pastor-Satorras and A. Vespignani. Velocity and hierarchical spread of
+     epidemic outbreaks in scale-free networks. Phys. Rev. Lett., 92:178701, 2004.
+[26] M. Barthélémy, A. Barrat, R. Pastor-Satorras and A. Vespignani. Dynamical patterns of epidemic
+     outbreaks in complex heterogeneous networks. J. Theor. Bio., 235:275–288, 2005.
+[27] A.L. Lloyd and R.M. May. How viruses spread among computers and people. 292:1316–1317, 2001.
+[28] D. Endy and R. Brent. Modelling cellular behaviour. Nature, 409:391–395, 2001.
+[29] S. Maslov and I. Ispolatov. Propagation of large concentration changes in reversible protein-binding
+     networks. Proc. Natl. Acad. Sci. USA, 104:13655–60, 2007.
+[30] J.D. Noh and H. Rieger. Random walks on complex networks. Phys. Rev. Lett., 92:1187011–4, 2004.
+[31] A. Maayan et al. Formation of regulatory patterns during signal propagation in a mammalian cellular
+     network. Science, 309:1078–1083, 2005.
+[32] D.J. Watts and S.H. Strogatz. Collective dynamics of ’small-world’ networks. Nature, 393:440–442,
+     1998.
+[33] R. Albert and A.-L. Barabási. Statistical mechanics of complex networks. Rev. Mod. Phys., 74:47,
+     2002.
+[34] R. Cohen and S. Havlin. Complex networks: Structure, robustness and function. Cambridge University
+     Press, Cambridge, UK, 2010.
+[35] D. Balcan, H. Hu, B. Goncalves, P. Bajardi, C. Poletto, J.J. Ramasco, D. Paolotti, N. Perra, M. Tizzoni,
+     W. Van den Broeck, V. Colizza and A. Vespignani. Seasonal transmission potential and activity peaks
+     of the new influenza A(H1N1): a Monte Carlo likelihood analysis based on human mobility. BMC
+     Medicine, 7:45–56, 2009.
+[36] J. Kumar, S. Rotter and A. Aertsen. Spiking activity propagation in neuronal networks: reconciling
+     different perspectives on neural coding. Nature Reviews Neuroscience, 11:615–627, 2010.
+[37] B. Barzel and A.-L. Barabási. Universality in network dynamics. Nature Physics, 9:673 – 681, 2013.
+[38] B. Barzel, Y.-Y. Liu and A.-L. Barabási. Constructing minimal models for complex system dynamics.
+     Nature Communications, 6:7186, 2015.
+[39] J.F. Rual et al. Towards a proteome-scale map of the human protein-protein interaction network.
+                                                                                                           14
+
+
+     Nature, 437:1173–1178, 2005.
+[40] E.O. Voit. Computational Analysis of Biochemical Systems. Cambridge University Press, New York,
+     NY, 2000.
+[41] K.J. Laidler. Chemical Kinetics. Pergamon Press, Oxford, 1987.
+[42] G. Karlebach and R. Shamir. Modelling and analysis of gene regulatory networks. Nature Reviews,
+     9:770–780, 2008.
+[43] S. Kauffman. The ensemble approach to understand genetic regulatory networks. Physica A, 340:733–
+     740, 2004.
+[44] A.-L. Barabási and R. Albert. Emergence of scaling in random networks. Science, 286:509–512, 1999.
+[45] T. Opsahl and P. Panzarasa. Clustering in weighted networks. Social Networks, 31:155–163, 2009.
+[46] J.-P. Eckmann, E. Moses and D. Sergi. Entropy of dialogues creates coherent structures in e-mail
+     traffic. Proc. Natl. Acad. Sci. USA, 101:14333–7, 2004.
+[47] H. Yu et al. High-quality binary protein interaction map of the yeast interactome network. Science,
+     322:104–110, 2008.
+[48] C. Robertson. Flowers and insects lists of visitors of four hundred and fifty three flowers. Carlinville,
+     Carlinville, Il., 1929.
+[49] R. Pastor-Satorras and A. Vespignani. Epidemic spreading in scale-free networks. Phys. Rev. Lett.,
+     86:3200–3203, 2001.
+[50] L. Hufnagel, D. Brockmann and T. Geisel. Forecast and control of epidemics in a globalized world.
+     Proc. Natl. Acad. Sci. USA, 101:15124–9, 2004.
+[51] P.S. Dodds and D.J. Watts. A generalized model of social and biological contagion. Journal of Theo-
+     retical Biology, 232:587–604, 2005.
+[52] J. Gao, B. Barzel and A.-L. Barabási. Universal resilience patterns in complex networks. Nature,
+     530:307312, 2016.
+[53] C.W. Gardiner. Handbook of Stochastic Methods. Springer-Verlag, Berlin, 2004.
+[54] A.S. Novozhilov, G.P. Karev and E.V. Koonin. Biological applications of the theory of birth-and-death
+     processes. Briefings in Bioinformatics, 7:70–85, 2006.
+[55] J.F. Hayes and T.V.J. Ganesh Babu. Modeling and Analysis of Telecommunications Networks. John
+     Wiley & Sons, Inc., Hoboken, NJ, USA, 2004.
+[56] C. Castellano, S. Fortunato and V. Loreto. Statistical physics of social dynamics. Rev. Mod. Phys.,
+     81:591–646, 2009.
+[57] R.M. May. Simple mathematical models with very complicated dynamics. Nature, 261:459–467, 1976.
+[58] M. Stern, H. Sompolinsky and L. F. Abbott. Dynamics of random neural networks with bistable units.
+     Phys. Rev. E, 90:062710, 2014.
+[59] N. Li, K. Daie, K. Svoboda and S. Druckmann. Robust neuronal dynamics in premotor cortex during
+     motor planning. Nature, 532:459464, 2016.
+[60] L. Schmetterer and K. Sigmund (Eds.). Hans Hahn Gesammelte Abhandlungen Band 1/Hans Hahn
+                                                                                                         15
+
+
+    Collected Works Volume 1. Springer, Vienna, Austria, 1995.
+[61] R. Cohen and S. Havlin. Scale-free networks are ultrasmall. Phys. Rev. Lett., 90:058701–4, 2003.
+[62] K.G. Wilson. The renormalization group: Critical phenomena and the Kondo problem. Rev. Mod.
+    Phys., 47:773, 1975.
+[63] S. Milojević. Power-law distributions in information science: making the case for logarithmic binning.
+    Journal of the American Society for Information Science and Technology, 61:2417–2425, 2010.
+                                                                                                            16
+
+
+                      Figures and captions (See full scale images on Page 22)
+
+
+
+
+FIG. 1: Propagation of signals in a complex networks. The dynamic behavior of a complex network is
+captured by its patterns of information, or signal, propagation. (a) A local signal in the form of an activity
+perturbation ∆x1 , applied on the source node 1 (black) spreads through the network, impacting all other
+nodes 2, 3, . . . . (b) This spatio-temporal propagation is captured by the response ∆xi (t), here depicted for
+nodes 2 and 3. The propagation time T (j → i) captures the time in which ∆xi reaches an η-fraction of its
+final response, here illustrated for η = 1/2 (half-life). (c) To model network dynamics we use a two layer
+description, exemplified here on the human protein-protein interaction network [39]. The first layer is the
+topology Aij (top). The second layer is the system’s dynamics (equation, bottom), designed to capture
+the inner mechanisms driving the system’s observed behavior. Here proteins are depleted at a rate xα     i and
+activated by their neighboring proteins via the Hill function H(xj ) = xhj /(1 + xhj ), where we set h = 1
+[3, 42]. (d) Signal propagation as obtained for α = 1. The response ∆xi (t) is represented by the node’s
+size and color depth. (e) - (f) Changing the value of α impacts the propagation patterns, showing that
+Aij alone is insufficient to predict information spread. (g) The temporal response, ∆x vs. t, of two specific
+nodes, marked in black and grey in the network layouts. For α = 1 these two nodes exhibit a synchronous
+response, namely the signal reaches both at approximately the same time. (h) When α = 1/2, however, the
+same two nodes receive the signal at different times, with grey responding approximately 102 times earlier
+than black. (i) The sequence of responses is reversed for α = 2, as now black responds before grey. Hence,
+minor changes in the dynamic equation in (c), may have profound and unpredictable consequences on the
+propagation.
+                                                                                                               17
+
+
+
+
+FIG. 2: Testing ground for network signal propagation. (a) We tested signal propagation on 36
+relevant combinations constructed from 10 networks and 6 dynamic models, for example, epidemic spreading
+E on the social networks UCIonline and Epoch (shaded boxes). The networks (Supplementary Section 3.4):
+ER - Erdős-Rényi; SF, SF1, SF2 - scale-free networks with binary, uniformly and scale-free distributed
+weights, respectively; PPI1/2 - yeast/human protein interaction networks [39, 47]; ECO1/2 - plant pollinator
+network of Carlinville Illinois [48], collapsed on to the plants/pollinators; UCIonline - University of California
+Irvine online instant messaging network [45]; Epoch - email correspondence network [46]. We tested all
+dynamic models on our four model networks (24 shaded boxes - top) and on the appropriate empirical
+networks (12 shaded boxes - bottom). (b) The dynamics (Supplementary Section 2): R1 , R2 represent
+gene regulation via the Michaelis-Menten model [3, 42] with different exponents for the self-dynamics (1
+vs. 0.4) and for the regulating Hill function (1 vs. 0.2); P1 , P2 capture population dynamics through birth-
+death processes [53–55]; M describes mutualsitic interactions, e.g., plant-pollinator relationships in ecological
+networks [52] and E is the susceptible-infected-susceptible (SIS) model for epidemic spreading [49–51]. (c) We
+offer to capture all these dynamics, as well as a broad family of additional pairwise dynamics [37] through
+the universal equation (1). Its generic nonlinear terms capture the mechanisms driving each node’s self
+dynamics (M0 (x)) and its pairwise interaction with its direct neighbors (M1 (x), M2 (x)). (d) The propagation
+patterns emerge from the interplay of the weighted topology Aij and the system’s intrinsic dynamics M =
+(M0 (x), M1 (x), M2 (x)). The topology provides the path lengths Lij and the weighted degree distribution
+P (S); the dynamics determine how these topological features translate into τi through θ (2). Combining
+the two contributions, e.g., Eq. (5), provides the spatio-temporal propagation T (j → i).
+                                                                                                                18
+
+
+
+
+FIG. 3: Classifying the zoo of propagation patterns. (a) Propagation on the weighted scale-free
+network SF under regulatory dynamics R1 . At t = 0 we introduce a perturbation in the activity of a
+randomly selected source node (center), then track the propagation, presenting three snapshots observed at
+selected time points. The size and color depth of each node represent its response, hence nodes that received
+the signal at earlier times appear first. (b) - (f) We repeated this experiment on the same network and
+the same source node, using different dynamic models (Fig. 2b). We observe different propagation patterns
+depending on the dynamics, resulting in a zoo of seemingly unpredictable propagation patterns, reminiscent
+of the ones observed in the specific example of Fig. 1d - f. (g) - (h) The probability density function P (T )
+vs. T as obtained from R1 and P1 on ER (top) and SF (bottom). We find that P (T ) exhibits multiple sharp
+peaks in both ER and SF, indicating that the (weighted) degree distribution P (S) has little impact on the
+propagation. (i) - (j) In R2 and P2 P (T ) has a fundamentally different form with no discrete peaks. Here
+P (T ) is broader in SF (bottom) compared to ER (top), showing that now P (S) has a significant impact on
+the propagation. (k) - (l) M and E exhibit a third class with P (T ) featuring multiple overlapping peaks. To
+highlight these peaks we show (in shades of green) P (T |Lij ), capturing the distribution of T (j → i) among
+i, j pairs at equal distance, i.e. all pairs at distance Lij = 1, 2, . . . . The total density P (T ) equals to the
+sum of these peaks. The inner peaks are broader and hence overlap in SF (bottom) compared to ER (top).
+Therefore in this class the propagation is affected both by distance, i.e. discrete peaks, and by P (S), i.e.
+variance within each peak. (m) - (n) T (j → i) vs. Lij exhibits a linear relationship for both SF and ER.
+(o) - (p) T (j → i) is almost independent of Lij in the case of R2 and P2 , exhibiting a propagation that is
+indifferent to network distance. (q) - (r) For M and E we again have T (j → i) ∼ Lij . Together our analysis
+shows that the diverse propagation patterns of (a) - (f) categorize into three discrete classes - blue (distance
+driven), red (degree-driven) and green (composite). Similar results from all our 36 model/empirical systems,
+i.e. the testing ground of Fig. 2, appear in Supplementary Section 4.
+                                                                                                               19
+
+
+
+
+FIG. 4: Dynamic universality classes of signal propagation. We measured the local response times
+τi of all nodes vs. their weighted degree Si , for our 36 networks and dynamics, detailed in Fig. 2a. (a) - (b)
+For R1 and P1 (symbols) we find that τi ∼ Siθ with θ = 0 (black solid line), in perfect agreement with the
+prediction of Eqs. (2) and (3). This scaling relationship is sustained across diverse model (ER, SF, SF1, SF2)
+and empirical networks (PPI1, PPI2, ECO1, ECO2), confirming that θ is independent of Aij . (c) - (d) For
+R2 and P2 we predict θ = 3/2 and θ = 1 respectively (solid lines), in perfect agreement with the observed
+results (symbols). (e) - (f) For M and E we predict θ = −1, as confirmed for both the model and relevant
+empirical networks. The value of θ defines the dynamic universality class of each system, determined by
+the dynamics through (3), and independent of Aij , hence grouping together highly distinct networks, that
+feature the exact same scaling relationship within each dynamic class (panels). This scaling relationship
+helps us bridge between the topological characteristics Si , P (S) and their dynamic translation into τi , P (T ),
+and ultimately T (j → i) (Eq. 5)). Data points represent logarithmic bins [63] in Si (Supplementary Section
+3.3).
+                                                                                                              20
+
+
+
+
+FIG. 5: The efficiency of signal propagation. The average propagation time hT i on an Erdős-Rényi
+(ER) and a scale-free (SF) network with identical average degree. (a) For distance driven dynamics (R1 , P1 ,
+θ = 0) hT i is not significantly affected by the ER/SF networks, other than a minor decrease in hT i for SF, a
+consequence of the typically shorter paths characterizing SF networks [61]. (b) For degree driven dynamics
+(R2 , P2 , θ > 0) the hubs delay the propagation, and hence the SF topology translates to a significant
+increase in hT i. Therefore, in this class, degree heterogeneity causes inefficient propagation, slowing the rate
+of information spread. The effect is more pronounced when θ is large: indeed, for R2 (θ = 3/2) we observe a
+612% increase in hT i, while for P2 (θ = 1) the delay is less than half, 278%. (c) For composite dynamics (M,
+E, θ < 0) hT i is again unaffected by hubs, dominated mainly by the response time of the small nodes, which
+is roughly the same in ER and SF. For both ER and SF, however, hT i is much smaller than in the two other
+classes (blue, red) due to the fast response of the hubs along the pathways from source to target, leading to
+an ultra-efficient propagation. (d) The average propagation time hT i vs. the number of nodes N as obtained
+from R1 (triangles) and P1 (circles). In distance driven propagation we find that hT i ∼ log N (solid line),
+a logarithmic dependence on system size, corresponding to the efficient spread predicted by our theory. (e)
+In degree driven dynamics we predict slow spread, in which hT i ∼ N α (solid line represents α = 1/2). Here,
+despite the fact that SF shrinks the topological distance hLi, it dramatically inflates the temporal distance
+hT i. (f) In composite dynamics we predict ultra-efficient spread, namely hT i ∼ const, independent of system
+size. Here N spans four orders of magnitude, while hT i is practically constant, confirming our prediction.
+Data points represent logarithmic bins [63] in N (Supplementary Section 3.3).
+                                                                                                            21
+
+
+
+
+FIG. 6: The universal temporal distance L(j → i). (a) A signal propagating from the source S to
+two targets X and Y , both at distance LSX = LSY = 2. The signal will reach X and Y simultaneously if
+the dynamics is distance driven (top, blue); X before Y in case of degree driven dynamics (center, red) due
+to the slowly responding hubs along the path Π(S → Y ), and Y before X in composite dynamics (bottom,
+green). The temporal distance L(j → i) in (5) is designed to locate X and Y at the appropriate distance
+from S, depending on the dynamic class of the propagation. (b) - (g) We used L(j → i) to layout the nodes
+in each of our 36 test systems (Fig. 2), here displaying the results obtained for SF, as appear in the original
+layouts of Fig. 3a - f. The unpredictable and inconsistent behavior, i.e. the zoo of Fig. 3, transforms into
+a well-organized concentric propagation pattern, in which the distance from the source naturally captures
+the actual travel time of the propagating signal. These layouts locate all nodes differentially, according to
+the system’s dynamics. For the distance-driven R1 and P1 (blue) nodes are condensed into separated shells,
+corresponding to the discrete nature of the path lengths (peaks in P (T ), Fig. 3). In the degree-driven R2
+and P2 (red) the hubs become bottlenecks, and hence L(j → i) assigns a larger distance to paths that are
+enriched with hubs. In the composite M and E our universal L(j → i) places the slower low degree nodes in
+the network periphery and shifts hubs towards the center. Additional layouts from our empirical networks
+are shown in Supplementary Section 4. (h) T (j → i) vs. L(j → i) for all networks under R1 (dark) and P1
+(light) dynamics. The linear relationship indicates that L(j → i) precisely captures the actual patterns of
+propagation. (i) T (j → i) vs. L(j → i) in the degree-driven R2 (dark) and P2 (light). Here, since θ > 0,
+T (j → i) and L(j → i) span several orders of magnitude, hence we use a logarithmic scale (black solid line
+represents a linear slope). (j) For the composite M (light) and E (dark) L(j → i) and T (j → i) inversely
+scale with the weighted degrees of nodes along each path. Therefore we use inverted axes 1/T (j → i) vs.
+1/L(j → i). In (i) and (j) we employed logarithmic binning [63] (Supplementary Section 3.3). Together
+(h) - (j) feature results from all our 36 systems; a specific focus on our 12 empirical systems appears in
+Supplementary Section 4.
+                                                       22
+
+
+                  Full scale Figures
+
+
+
+
+FIG 1. Propagation of signals in a complex networks.
+                                                        23
+
+
+
+
+FIG 2. Testing ground for network signal propagation.
+                                                      24
+
+
+
+
+FIG 3. Classifying the zoo of propagation patterns.
+                                                             25
+
+
+
+
+FIG 4. Dynamic universality classes of signal propagation.
+                                               26
+
+
+
+
+FIG 5. The efficiency of signal propagation.
+                                                   27
+
+
+
+
+FIG 6. The universal temporal distance L(j → i).
+                                                  Predicting the patterns of spatio-temporal signal
+                                                           propagation in complex networks
+                                                                Supplementary Material
+arXiv:1801.08854v1 [physics.soc-ph] 26 Jan 2018
+
+
+
+
+                                                  Chittaranjan Hens, Uzi Harush, Reuven Cohen & Baruch Barzel
+
+                                                                       January 29, 2018
+Contents
+1 Analytical derivations - from M to τi                                                      1
+  1.1   Configuration model . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        2
+  1.2   Steady state analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      4
+  1.3   The scaling of τi . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    5
+
+2 Classification of the dynamic models                                                      10
+  2.1   Regulatory dynamics - R1 and R2 . . . . . . . . . . . . . . . . . . . . . .         10
+  2.2   Population dynamics - P1 and P2 . . . . . . . . . . . . . . . . . . . . . .         11
+  2.3   Epidemics - E . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     12
+  2.4   Mutualistic dynamics in ecology - M . . . . . . . . . . . . . . . . . . . .         13
+
+3 Methods and data analysis                                                                 17
+  3.1   Numerical integration . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     17
+  3.2   Measuring T (j → i) and τi . . . . . . . . . . . . . . . . . . . . . . . . . .      17
+  3.3   Logarithmic binning . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       19
+  3.4   Model and empirical networks . . . . . . . . . . . . . . . . . . . . . . . .        21
+
+4 Additional results from empirical networks                                                24
+  4.1   Distance driven propagation . . . . . . . . . . . . . . . . . . . . . . . . .       24
+  4.2   Degree driven propagation . . . . . . . . . . . . . . . . . . . . . . . . . .       26
+  4.3   Composite propagation . . . . . . . . . . . . . . . . . . . . . . . . . . . .       26
+
+5 Additional validation                                                                     31
+  5.1   The effect of large perturbations . . . . . . . . . . . . . . . . . . . . . . .     31
+  5.2   The effect of clustering . . . . . . . . . . . . . . . . . . . . . . . . . . . .    32
+  5.3   The effect of degree-degree correlations . . . . . . . . . . . . . . . . . . .      33
+1     Analytical derivations - from M to τi
+To construct the propagation times T (j → i) we must first obtain the individual response
+times τi , capturing the transient response of each node i to direct incoming perturbations
+from its interacting neighbors. Indeed, as we show in the main paper (Eq. (5)), the
+propagation times T (j → i) can be constructed from the sequence of local responses
+τi along each path, giving rise to the observed universality classes. Hence we use a
+perturbative approach to derive the response time of a node to a neighboring perturbation
+∆xj . Starting from the dynamic equation
+
+
+
+                                          XN
+                      dxi
+                          = M0 (xi (t)) +     Aij M1 (xi (t))M2 (xj (t)),             (1.1)
+                      dt                  j=1
+
+
+we obtain the steady state xi by setting the derivative on the l.h.s. to zero, and then
+introduce a time-independent perturbation xm (t) = xm + ∆xm on the activity of node
+m, one of i’s nearest neighbors. Node i’s response will follow
+
+
+                                     xi (t) = xi + ∆xi (t),                           (1.2)
+
+with τi representing the relaxation time of ∆xi (t). Below, we show in detail how to
+calculate τi .
+
+Our theoretical framework. Our derivation predicts the scaling relationship be-
+tween τi and each node’s weighted degree Si , directly from the system’s dynamics
+M = (M0 (x), M1 (x), M2 (x)) in (1.1). Throughout this derivation we rely on two main
+approximate assumptions:
+
+    • Perturbative limit. We assume that the signal ∆xm is small, namely we take the
+       limit ∆xm → dxm , allowing us to employ the tools of linear response theory to
+       treat (1.1) analytically.
+
+    • Configuration model. We allow Aij to feature any arbitrary degree/weight distri-
+       bution, including scale-free or other fat-tailed density functions, but assume that
+
+
+
+                                               1
+      it is otherwise random [1]. Such approximation may overlook certain characteris-
+      tics pertaining to the network’s fine-structure, such as degree-degree correlations
+      [2], or clustering, which, in the limit of sparse networks (hki  N → ∞) become
+      negligible due to the random connectivity.
+
+In Sec. 5 we systematically test the robustness of our predictions against these approxi-
+mations. We examine the impact of large perturbtaions, including the system’s response
+to complete node knockout, an unambiguously large perturbation. We also observe our
+theory’s performance under increasing levels of degree-correlations and clustering. We
+find, that our predictions are highly insensitive to these approximations, successfully
+withstanding empirically relevant levels of clustering and degree-correlations as well as
+large signals, all of which have but a marginal - and in fact non-visible - effect on our pre-
+dicted scaling and universality classes. The origins of this robustness are also discussed
+in Sec. 5.
+
+1.1    Configuration model
+
+Throughout our analysis below we use the configuration model framework to analyze
+Aij [1]. Within this framework Aij represents a general weighted network with arbitrary
+degree and weight distributions, but otherwise random structure. Hence we assume neg-
+ligible correlation between the number of neighbors of a node ki , and its link weights
+Aij , namely P (Aij = a|ki ) = P (Aij = a). Another significant implication of the con-
+figuration model assumption is that we neglect minor structural correlations between
+nodes and their immediate environment. For instance, while two nodes, i and j, may
+have extremely different topological characteristics, say i is a hub and j is a low degree
+node, their neighborhoods are assumed to share similar statistical properties, namely i’s
+(many) neighbors are extracted from the same statistical pool as j’s (few) neighbors.
+Specifically, let us denote by G(S) the group of all nodes whose weighted degrees are
+between S and S + dS. This group can be characterized by one or more random variables
+Qi , capturing, for instance the activity xi (t) or the relaxation time τi associated with a
+randomly selected node i ∈ G(S). The corresponding distribution
+
+                                                           
+                            PS (Qi = q) = P Qi = q i ∈ G(S)                              (1.3)
+
+                                              2
+is unique to G(S), since nodes in G(S) are distinct from nodes in G(S 0 ), hence, in general
+PS (Qi = q) 6= PS 0 (Qi = q). This distinction translates also to statistical properties
+extracted from G(S), for instance the mean value of Qi , expressed by
+
+                                              1    X
+                                 Q(S) =              Qi ,                              (1.4)
+                                            |G(S)|
+                                                        i∈G(S)
+
+(|G(S)| represents the number of nodes in G(S)) may differ from Q(S 0 ). For example,
+the typical response time of nodes in S is potentially different than that of nodes in S 0 .
+   Next we consider the random variable
+
+                                                    N
+                                             1 X
+                                   Qi,     =        Ain Qn ,                           (1.5)
+                                             Si n=1
+
+a weighted average over i’s nearest neighbors, whose probability distribution is given by
+P (Qi, = q). Averaging over nodes in G(S) we obtain
+
+                                 X              X 1X N
+                            1              1
+                Q (S) =            Qi, =                Ain Qn ,                       (1.6)
+                          |G(S)|         |G(S)|   S n=1
+                                  i∈G(S)                         i∈G(S)
+
+analogous to Q(S) in (1.4). According to the configuration model the nearest neighbors
+of i ∈ G(S) and j ∈ G(S 0 ) follow similar statistics, hence we have
+
+                                                             
+                    P Qi, = q i ∈ G(S) = P Qi, = q i ∈ G(S 0 ) ,                       (1.7)
+
+or more generally
+
+                                            
+                          P Qi, = q i ∈ G(S) = P (Qi, = q),                            (1.8)
+
+substituting the specific distribution extracted from nodes in G(S) by the general distri-
+bution over all nodes in the network. The meaning is that while the statistical properties
+of Qi may, generally, depend on S, with Q(S) 6= Q(S 0 ), those of Qi, are independent of
+S, providing Q (S) = Q (S 0 ), ultimately providing Q (S) = hQi , an average over all
+nodes in the network. This translates to
+
+
+
+
+                                                3
+                              X 1X N              N      N
+                         1                     1 X 1 X
+           Q (S) ≡                    Ain Qn =              Ain Qn ≡ hQi                (1.9)
+                       |G(S)|   S n=1          N i=1 Si n=1
+                                i∈G(S)
+
+where the l.h.s. represents a nearest neighbor average over nodes within G(S) and the
+r.h.s. represents a nearest neighbor average over all nodes, a characteristic of the network,
+independent of S.
+
+
+1.2    Steady state analysis
+
+We consider systems of the form (1.1) that exhibit at least one fully positive steady
+state xi (i = 1, . . . , N ). We focus on the dependence of this steady-state, xi , on a
+                                         P
+node’s weighted (incoming) degree Si = N    j=1 Aij . Therefore, we seek the average (time-
+
+dependent) activity x(S, t) characterizing all nodes i ∈ G(S), which, substituting xi (t)
+for the random variable Qi in (1.4), provides
+
+                                                1    X
+                                  x(S, t) =            xi (t).                        (1.10)
+                                              |G(S)|
+                                                      i∈G(S)
+
+Using (1.1) we write
+
+
+
+        dx(S, t)     1    X h          X N
+                                                                   i
+                 =           M0 xi (t) +     Ain M1 xi (t) M2 xn (t) ,                (1.11)
+          dt       |G(S)|                n=1
+                            i∈G(S)
+
+
+which we approximate by
+
+
+
+                                                  X XN
+       dx(S, t)                           1                        
+                = M0 x(S, t) + M1 x(S, t)               Ain M2 xn (t) .               (1.12)
+         dt                                |G(S)|   n=1     i∈G(S)
+
+
+Equation (1.12) is exact in the limit where
+                                                                              
+                         1       X                           1       X
+                                         Mq (xi ) ≈ Mq                      xi  ,   (1.13)
+                       |G(S)|                              |G(S)|
+                                i∈G(S)                              i∈G(S)
+
+(q = 0, 1). We can now use (1.9) to express the sum on the r.h.s. of (1.12) as
+
+
+                                                  4
+                     1    X XN
+                                                D       E
+                                Ain M2 xn (t) = S M2 x(t)   ,                       (1.14)
+                   |G(S)|   n=1
+                           i∈G(S)
+
+
+where M2 (x(t))    , an average over all nearest neighbor nodes in the network, is inde-
+pendent of S. Equation (1.12) then takes the form
+
+                  dx(S, t)                          
+                           = M0 x(S, t) + SM1 x(S, t) M2 (x(t))         .           (1.15)
+                    dt
+To obtain the steady state we set the l.h.s. of (1.15) to zero, providing
+
+                                                     1
+                                   R x(S) =                      ,                  (1.16)
+                                                  M2 (x)     S
+
+where
+
+                                                  M1 (x)
+                                     R(x) = −            .                          (1.17)
+                                                  M0 (x)
+Extracting x(S) from (1.16) we write
+
+
+                                      x(S) ∼ R−1 (λ) ,                              (1.18)
+
+where R−1 (x) is the inverse function of R(x) and
+
+                                             1
+                                    λ=                  ∼ S −1                      (1.19)
+                                         M2 (x)     S
+
+is the inverse weighted degree. Equation (1.18) expresses the average steady-state activity
+over all nodes with in-degree S (i ∈ G(S)) in function of their inverted degree λ ∼ S −1 .
+
+
+1.3     The scaling of τi
+
+We now calculate the response time τi of a node to a neighboring perturbation. Hence,
+we induce a small permanent perturbation dxm on the steady state activity of node m,
+a nearest neighbor of i, setting
+
+
+                                     xm (t) = xm + dxm .                            (1.20)
+
+
+                                              5
+The dynamic equation (1.1) then becomes
+
+
+
+                                             XN
+           d
+              (xi + dxi ) = M0 (xi + dxi ) +     Aij M1 (xi + dxi )M2 (xj + dxj )
+           dt                                j=1
+                                                 j6=m
+                         + Aim M1 (xi + dxi )M2 (xm + dxm ),                        (1.21)
+
+
+where dxi and dxj (j = 1, . . . , N, j 6= m) are all time dependent, while dxm is constant.
+Linearizing around the steady state we obtain
+
+
+                                                                   
+                                                    XN
+                 d
+                    (dxi ) = M00 (xi ) + M10 (xi )     Aij M2 (xj ) dxi (t)
+                 dt                                 j=1
+                                        N
+                                        X
+                           + M1 (xi )         Aij M20 (xj )dxj (t) + O(dx2 ),       (1.22)
+                                        j=1
+
+
+where Mq0 (x) (q = 0, 1, 2) represents the derivative dMq /dx with x taken at the steady
+state, which according to (1.18) can be expressed by x = R−1 (λ). Next, following a
+similar derivation as the one leading to (1.15), we average of over all nodes in G(S) to
+obtain a direct equation for the response of nodes with weighted degree S
+
+                                            1    X
+                             dx(S, t) =            dxi (t).                         (1.23)
+                                          |G(S)|
+                                                    i∈G(S)
+
+Using (1.22) to express the time derivative of dxi (t) in (1.23) and neglecting the higher
+order terms O(dx2 ), we obtain
+
+
+                                                                
+                                               X XN
+    d                                  1
+       dx(S, t) = M00 x(S) + M10 x(S)               Aij M2 (xj ) dx(S, t)
+    dt                                  |G(S)|   j=1         i∈G(S)
+
+                                        X XN
+                                  1
+                   + M1 x(S)                  Aij M20 (xj )dxj (t),                 (1.24)
+                                 |G(S)|   j=1
+                                          i∈G(S)
+
+
+where x(S) is the steady state activity of nodes in G(S), as expressed in (1.18). Finally,
+
+
+
+                                                6
+the configuration model assumption, allows us to simplify the first sum on the r.h.s. using
+(1.9), providing us with
+
+
+
+        d                                                                  
+           dx(S, t) = M00 x(S) + SM10 x(S) M2 (x)                                   dx(S, t) + f (S, t), (1.25)
+        dt
+
+where
+
+                                               X XN
+                                         1
+                  f (S, t) = M1 x(S)                 Aij M20 (xj )dxj (t).                              (1.26)
+                                        |G(S)|   j=1i∈G(S)
+
+Equation (1.25) can be written in the form
+
+                             d                 1
+                                dx(S, t) = −       dx + f (S, t),                                       (1.27)
+                             dt              τ (S)
+in which the average relaxation time τ (S) follows
+
+                           1                       
+                              = M00 x(S) + SM10 x(S) M2 (x)                           .                 (1.28)
+                        τ (S)
+Equation (1.27) is a non-homogeneous linear differential equation, describing the average
+time dependent response dx(S, t) of nodes in G(S) to a neighboring permanent pertur-
+bation dxm . Its solution takes the form
+
+                                                          Z t
+                                          t          t                         t0
+                                     − τ (S)    − τ (S)
+                       dx(S, t) = Ce           +e                f (S, t0 )e τ (S) dt0 ,                (1.29)
+                                                             0
+
+where the constant C is set to zero to satisfy the initial condition dx(S, t = 0) = 0. The
+relaxation of dx(S, t) (1.29) to its final, perturbed, state is governed by τ (S) (1.28), which
+depends on the weighted degree S, both explicitly, and implicitly through x(S) in (1.18).
+To observe this we focus on each of the two terms on the r.h.s. of (1.28) independently.
+First we write
+
+                                          dM0
+                                M00 x(S) =               ,                                              (1.30)
+                                            dx x=R−1 (λ)
+
+a derivative around the steady state x(S), which we expressed using (1.18). Using the
+definition of R(x) (1.17) we further develop (1.30) and write
+
+                                                7
+                                                         
+                                      M10 (x) M1 (x) 0
+                M00     x(S) =       −        + 2    R (x)
+                                       R(x)    R (x)
+                                                               x=R−1 (λ)
+                                                                    
+                                 M10 R−1 (λ)     M1 R−1 (λ) R0 R−1 (λ)
+                             = −               +                        ,               (1.31)
+                                      λ                   λ2
+
+where in the last step we used R(R−1 (λ)) = λ. In a similar fashion we express the second
+term of (1.28) as
+
+                                                                       
+                                                          M10 R−1 (λ)
+                        SM10 x(S) M2 (x)     = M2 (x)                    .              (1.32)
+                                                                λ
+Collecting all the terms we arrive at
+
+                                                                     
+                       1       M10 R−1 (λ)        M1 R−1 (λ) R0 R−1 (λ)
+                          ∼ c1               + c2                        ,              (1.33)
+                    τ (S)           λ                      λ2
+where the coefficients are
+
+
+
+
+                                     c1 = 1 − M2 (x)
+
+                                     c2 = −1.                                           (1.34)
+
+
+As we are only interested in the scaling of τ (S) with S (or λ) in the limit of large S
+(small λ), we can rewrite (1.33) without the coefficients. Indeed, for sufficiently large S,
+only the leading terms where S is raised to the highest power dominate the equation,
+providing 1/τ (S) ∼ c1 S a + c2 S b ∼ S max(a,b) , independent of c1 and c2 . Hence, preserving
+only the terms relevant to the scaling, Eq. (1.33) becomes
+
+
+
+             1    1h     −1
+                                 0 −1          −1
+                                                        0 −1  i
+                ∼    R R    (λ)  M1 R (λ) + M1 R    (λ) R R (λ)
+          τ (S)   λ2
+                        1 d            
+                    =    2
+                             M1 (x)R(x)            ,                                    (1.35)
+                        λ dx             x=R−1 (λ)
+
+
+where, once again, we used λ = R(R−1 (λ)), leading to the extracted pre-factor of λ−2 .
+
+                                              8
+We can now write
+
+                                                              
+                                  τ (S) ∼ λ2 Y R−1 (λ)                              (1.36)
+
+where
+
+                                                           −1
+                                                  d(M1 R)
+                                 Y (x) =                          .                 (1.37)
+                                                    dx
+Equation (1.36) expresses τ (S) as a function of λ (1.19), from which its dependence on
+S can be obtained. It indicates that the scaling of τ (S) with S is determined directly by
+the dynamical functions M1 (x) and R(x), or, using (1.17), M1 (x) and M0 (x). Next we
+express Y (R−1 (λ)) as a Hahn series [3] around λ = 0
+
+                                          ∞
+                                        X
+                                       −1
+                                Y R (λ) =   Cn λΓ(n) ,                              (1.38)
+                                                      n=0
+
+allowing us to systematically consider the asymptotic behavior at S → ∞, equivalent to
+λ → 0. The Hahn series is a generalization of the Taylor expansion to allow for both
+negative and real powers, as represented by Γ(n), a countable set of real numbers, ordered
+such that Γ(n − 1) < Γ(n) < Γ(n + 1). Hence the leading power of (1.38) is Γ(0), the next
+leading power is ΓR (1), etc.. For large S we only keep the leading order term, namely
+λΓ(0) . This provides us with (1.36)
+
+
+                                       τ (λ) ∼ λ2 λΓ(0) ,                           (1.39)
+
+or, substituting S −1 for λ,
+
+
+                                            τ (S) ∼ S θ ,                          (1.40)
+
+where
+
+
+                                       θ = −2 − Γ(0),                              (1.41)
+
+
+as presented in Eqs. (2) - (4) in the main paper text.
+
+
+
+                                                  9
+2     Classification of the dynamic models
+We analyzed the propagation patterns in six different frequently used dynamic models,
+for each obtaining θ (1.41), and hence their class as distance driven (θ = 0), degree driven
+(θ > 0) or composite (θ < 0). The detailed derivations appear below.
+
+
+2.1    Regulatory dynamics - R1 and R2
+
+Gene regulation is often modeled using Michaelis-Menten dynamics, in which the activity,
+i.e. expression, of all genes follows [4, 5],
+
+
+
+                                            XN
+                               dxi      a
+                                   = −Bxi +     Aij H(xj ),                             (2.1)
+                               dt           j=1
+
+
+where H(xj ) is the Hill function describing the activation/inhibition of xi by xj . Since
+regulation depends primarily on the presence or absence of xj , with little sensitivity to
+j’s specific abundance, the Hill function is designed to be a switch-like function satisfying
+H(xj ) → 1 (H(xj ) → 0) for large (small) xj in case xj activates xi , or H(xj ) → 1
+(H(xj ) → 0) for small (large) xj in the case of inhibition. A most common choice is [4, 5]
+
+
+
+                                            XN
+                              dxi                     xhj
+                                  = −Bxai +     Aij        h
+                                                             ,                          (2.2)
+                              dt            j=1
+                                                    1 +  x j
+
+
+
+where the Hill coefficient h governs the rate of saturation of H(xj ). Equation (2.2) can
+be cast in the form (1.1) with M0 (x) = −Bxa , M1 (x) = 1 and M2 (x) = xh /(1 + xh ).
+Hence R(x) (1.17) becomes R(x) = −B −1 x−a , and its inverse follows
+
+                                                    1   1             1
+                                  R−1 (x) = B − a x− a ∼ x− a .                         (2.3)
+
+Next we use (1.37) to write
+
+                                                           −1
+                                                    dM1 R
+                                    Y (x) =                       ,                     (2.4)
+                                                     dx
+
+
+                                                10
+which taking the above R(x) becomes
+
+                                                   −1
+                                             dx−a
+                               Y (x) =                    ∼ x(a+1) .                   (2.5)
+                                              dx
+Using (2.3) in (2.5) we arrive at the Hahn expansion of (1.38)
+
+                                              1    a+1
+                              Y R−1 (λ) ∼ Y λ− a ∼ λ− a ,                              (2.6)
+
+whose leading (indeed, only) power is Γ(0) = −(a + 1)/a. Finally, we predict θ from
+(1.41) to be
+
+                                                      a+1   1−a
+                          θ = −2 − Γ(0) = −2 +            =     .                     (2.7)
+                                                       a     a
+
+
+For R1 we set a = 1 and h = 1, predicting θ = 0, a distance driven dynamics; for R2 we
+set a = 0.4 and h = 0.2, predicting θ = 3/2, a degree driven system. Both predictions
+are perfectly confirmed on both model and real networks in Fig. 3 of the main text.
+
+
+2.2    Population dynamics - P1 and P2
+
+Birth-death processes have many applications in population dynamics [6], queuing theory
+[7] or biology [6]. We consider a network in which the nodes represent sites, each site i
+having a population xi , where population flow is enabled between neighboring sites. This
+process can be described by
+
+                                              XN
+                                 dxi      b
+                                     = −Bxi +     Aij xaj ,                            (2.8)
+                                 dt           j=1
+
+where the first term on the r.h.s. represents the internal dynamics of site i, characterized
+by the exponent b, which distinguished between processes such as [8] in/out flux (b = 0),
+mortality (b = 1), pairwise annihilation (b = 2), etc.. The second term describes the
+nonlinear flow from i’s neighboring sites j into i. Here we have M0 (x) = −Bxb , M1 (x) = 1
+and M2 (x) = xa , therefore R(x) = −B −1 x−b . Following the same steps leading from (2.3)
+to (2.6) we find
+
+
+
+
+                                               11
+                                             b+1
+                                Y R−1 (λ) ∼ λ− b ,                                    (2.9)
+
+
+predicting
+
+
+
+                                                     b+1
+                            θ = −2 − Γ(0) ∼ −2 +         .                          (2.10)
+                                                      b
+
+
+For P1 we set b = 1 and a = 0.25, predicting θ = 0, a distance driven dynamics; for P2
+we set b = 0.5 and a = 0.2, predicting θ = 1, a degree driven system, both in perfect
+agreement with Fig. 3 of the main text.
+
+
+2.3    Epidemics - E
+
+In the susceptible-infected-susceptible (SIS) model, each node may be in one of two
+potential states: infected (I) or susceptible (S). The spreading dynamics is driven by the
+two process
+
+
+                                       I + S → 2I,                                  (2.11)
+
+where a susceptible node becomes infected by contact with one of its infected neighbors,
+and
+
+
+                                          I → S,                                    (2.12)
+
+an infected node recovering and becoming susceptible again. The activity xi (t) denotes
+the probability that i is in the infected state. The infection and recovery processes above
+can be captured by [9]
+
+                                          XN
+                             dxi
+                                 = −Bxi +     Aij (1 − xi )xj .                     (2.13)
+                             dt           j=1
+
+The first term on the r.h.s. accounts for the process of recovery and the second term
+accounts for the process of infection, where a node could only become infected if its in
+
+                                            12
+the susceptible state, with probability 1 − xi , and its neighbor is in the infected state,
+with probability xj . We have M0 (x) = −Bx, M1 (x) = 1 − x and M2 (x) = x, providing
+(1.17)
+
+                                                      1−x
+                                             R(x) =       ,                         (2.14)
+                                                       Bx
+and therefore
+
+                                                          1
+                                         R−1 (x) =            .                     (2.15)
+                                                       1 + Bx
+Equation (1.37) takes the form
+
+                                                          !−1
+                                                       2
+                                         d    (1 − x)                    1
+                        Y (x) =                                 ∼           ,     (2.16)
+                                        dx       x                    1 − x−2
+
+allowing us to obtain the Hahn expansion (1.38) as
+
+
+                              
+        −1              1                    1         1 −1 1 0 1 1
+ Y R (λ) = Y                       ∼                 ∼    λ + λ + Bλ + O(λ2 ), (2.17)
+                      1 + Bλ           1 − (1 + Bλ)2   2B    4   8
+
+whose leading power is Γ(0) = −1. Using (1.41) this predicts
+
+
+                           θ = −2 − Γ(0) = −2 − (−1) = −1,                          (2.18)
+
+
+a composite dynamics, in which hubs respond most rapidly (Fig. 3 in main paper).
+
+
+2.4       Mutualistic dynamics in ecology - M
+
+We consider symbiotic eco-systems, such as plant-pollinator networks, in which the inter-
+acting species exhibit symbiotic relationships. The species populations follow the dynamic
+equation
+
+                                              X N
+                    dxi               xai (t)                          
+                        = Bxi (t) 1 −          +     Aij xi (t)F xj (t) .           (2.19)
+                    dt                  C        j=1
+
+The self dynamics
+
+                                                  13
+                                                   
+                                                 xa
+                                 M0 (x) = Bx 1 −                                    (2.20)
+                                                 C
+is a generalization of the frequently used logistic growth: when the population is small,
+the species reproduce at a rate B, yet, as xi approaches the carrying capacity of the
+system C, growth is hindered by competition over limited resources [10], captured by the
+nonlinear −xa+1
+            i   term. For a = 1 we arrive at the classic quadratic growth deficiency
+term, in which competition scales with the number of competing pairs. In case a > 1
+growth is hindered through higher order internal competition within a species.
+   The mutualistic inter-species interactions are captured by
+
+
+                                     M1 (x) = x
+                                                                                    (2.21)
+                                     M2 (x) = F (x),
+
+where F (x) represents the functional response, describing the positive impact that species
+j has on species i. This functional response can take one of several forms [11]:
+Type I: linear impact
+                                       F (x) = αx.                                  (2.22)
+
+Type II: saturating impact
+                                                 αx
+                                     F (x) =          .                             (2.23)
+                                               1 + αx
+Type III: A generalization of Type II, where
+
+                                                 αxh
+                                    F (x) =            .                            (2.24)
+                                               1 + αxh
+
+In our simulations we used Type II mutualistic interactions and set the competition term
+to a = 2, providing
+                                                           !
+                                                x2
+                                M0 (x) = Bx 1 −
+                                                C
+                                M1 (x) = x                                          (2.25)
+
+                                                αx
+                                M2 (x) =             ,
+                                              1 + αx
+where, for simplicity, we set B = C = α = 1. Hence we have (1.17)
+
+                                            14
+                                                   1
+                                        R(x) =          ,                           (2.26)
+                                                 1 − x2
+and therefore
+
+                                                           12
+                                     −1              x−1
+                                   R (x) ∼                        .                 (2.27)
+                                                      x
+Next we use (1.37) to write
+
+                                                    !−1            2
+                                    d         x               1 − x2
+                        Y (x) =                             =           .           (2.28)
+                                   dx       1 − x2            1 + x2
+
+Consequently, the Hahn expansion (1.38) takes the form
+
+
+                               
+                           12
+                       λ−1          1
+      Y R−1 (λ) = Y              = 2     = −λ−1 − 2λ0 + 5λ1 + O(λ2 ),              (2.29)
+                         λ         2λ − λ
+
+
+for which the leading power Γ(0) = −1. As a result we predict (1.41)
+
+
+
+                                  θ = −2 − Γ(0) = −1,                              (2.30)
+
+
+classifying M in the composite dynamics class, as fully confirmed by the results presented
+in Fig. 3 of the main paper.
+
+
+
+
+                                               15
+Table 1: Dynamic models. Summary and classification of all dynamic models.
+
+
+
+
+                                   16
+3     Methods and data analysis
+
+3.1    Numerical integration
+
+To numerically test our predictions we constructed Eq. (1.1) for each of the systems in
+Table 1, using the appropriate Aij (Scale-free, Erdős-Rényi, empirical, etc.). We then used
+a fourth-order Runge-Kutta stepper (Matlab’s ode45) to numerically solve the resulting
+equations. Starting from an arbitrary initial condition xi (t = 0), i = 1, . . . , N we allowed
+the system to reach its steady state by waiting for ẋi → 0. To numerically realize this
+limit we implemented the termination condition
+
+                                  N     xi (tn ) − xi (tn−1 )
+                                  max                         < ε,                       (3.1)
+                                  i=1        xi (tn )∆tn
+where tn is the time stamp of the nth Runge-Kutta step and ∆tn = tn − tn−1 . As the
+system approaches the steady-state, the activities xi (tn ) become almost independent of
+time, and the numerical derivative ẋi = xi (tn ) − xi (tn−1 )/∆tn becomes small compared
+to xi (tn ). The condition (3.1) guarantees that the maximum of ẋi /xi over all activities
+xi (tn ) is smaller than the pre-defined termination variable ε. Across the six systems we
+tested we set ε ≤ 10−12 , a rather strict condition, to ensure that our system is sufficiently
+close to the true steady state.
+
+
+3.2    Measuring T (j → i) and τi
+
+To observed the spatio-temporal propagation of a perturbation we set the initial condi-
+tion of the system to its numerically obtained steady-state above. We then introduce a
+boundary condition on the source node j, as
+
+
+
+
+                                      xj (t) = xj + ∆xj ,                                (3.2)
+
+
+a signal in the form of a permanent perturbation to j’s steady state activity xj . In
+our simulated results we used ∆xj = αxj , setting α = 0.1, a 10% perturbation. The
+remaining N − 1 nodes continue to follow the original dynamics (1.1), responding to the
+
+
+                                                17
+propagating signal ∆xj . To be explicit, we simulate this propagating perturbation by
+numerically solving the perturbed Eq. (1.1), which now takes the form
+                   
+                   
+                    dxj
+                   
+                          = 0
+                    dt
+                                                                          ,            (3.3)
+                   
+                   
+                                    P
+                    dxi = M0 (xi ) + N
+                   
+                                       n=1 Aij M1 (xi )M2 (xn ) i 6= j
+                     dt
+in which the perturbation on j is held constant in time, and the remaining N − 1 nodes
+respond via the system’s intrinsic dynamics. The system’s response is then obtained as
+
+
+                                   xi (t) = xi + ∆xij (t),                             (3.4)
+
+in which ∆xij (t) represents i’s temporal response to the signal ∆xj . We continue running
+(3.3) until the termination condition (3.1) is realized again, and the system reaches its
+new perturbed state with ∆xij (t → ∞) = ∆xij , i’s final response to j’s signal. To focus
+on the response time of each node, we define i’s normalized response as
+
+                                                 ∆xij (t)
+                                     fij (t) =            ,                            (3.5)
+                                                  ∆xij
+which transitions smoothly between fij (t) = 0 at t = 0 to fij (t) = 1 at t → ∞, as i
+approaches its final response. The function fij (t) captures the spatio-temporal response
+of the system in the discrete network space, namely the level of response obtained at
+time t in location i. When fij (t) = η, we say that i has reached an η-fraction of its final
+response to the traveling signal dxj . For instance, setting η = 1/2 allows us to evaluate
+the half-life of i’s response. This allows us to evaluate the propagation time T (j → i) as
+the time when
+
+                                                   
+                                  fij t = T (j → i) = η                                (3.6)
+
+or alternatively
+
+
+                                    T (j → i) = fij−1 (η).                             (3.7)
+
+The parameter η can be set to any value between zero and unity, η ∈ (0, 1), with the
+
+                                             18
+typical choice being of order η ∼ 1/2. All results presented in the main paper were
+obtained for η = 0.7, however, as we show in Fig. 1 changing the value of η has no
+detectable effect on the observed behavior of τi and hence of T (j → i).
+Local response. To obtain the local response τi we must measure the response time to
+a signal in the direct vicinity of i, namely T (j → i) where j is directly linked to i. Hence
+we denote by Ki the group of incoming neighbors of i
+
+
+                               Ki = {j = 1, . . . , N |Aij 6= 0}                        (3.8)
+
+and average i’s response time to these neighbors as
+
+                                          1 X
+                                  τi =             T (j → i),                           (3.9)
+                                         |Ki | j∈K
+                                                 i
+
+
+where |Ki | is the number of nodes in Ki .
+Visualizing the spatio-temporal spread. To construct the visualizations of Fig. 2a
+- f in the main paper we used Gephi [12] to layout the weighted scale-free network SF,
+placing the source node j at the center. As the propagation unfolds we measured the
+response of all nodes i = 1, . . . , N , setting the size and color depth of each node to be
+linearly proportional to fij (t) (3.5). Later, in Fig. 5 of the main text we present the
+exact same data only this time we laid out the nodes according to our universal metric
+L(j → i), as described in Eq. (5) of the main text. Hence we located j at the center as
+before (L(j → j) = 0), and placed all target nodes i at a radial distance r proportional
+to L(j → i), with randomly selected azimuth ϕ ∈ [0, 2π]. In the case of degree-driven
+propagation (θ > 0, red) since L(j → i) (and T (j → i)) span several orders of magnitude
+we set r ∼ ln L(j → i).
+
+
+3.3    Logarithmic binning
+
+The scaling τi ∼ Siθ is shown in log-scale in Fig. 3 of the main paper, with θ captured by
+the linear slope of τi vs. Si . To construct these plots we employed logarithmic binning
+[13]. First we divide all nodes into W bins
+
+
+
+
+                                               19
+Figure 1: The impact of the arbitrary parameter η. Measuring the response times
+requires to select the value of η in (3.7), an arbitrary parameter between zero and unity.
+To test the impact of this parameter we tested our results for the scaling θ (1.40) under
+different selected values of η. As expected, we find that our results are not affected by η.
+
+
+
+
+                                            20
+                               
+                         B(w) = i = 1, . . . , N cw−1 < Si ≤ cw ,                   (3.10)
+
+where w = 1, ..., W and c is a constant. In (3.10) the wth bin includes all nodes i whose
+weighted degrees Si are between cw−1 and cw . The parameter c is selected such that the
+unity of all bins ∪W
+                   w=1 B(w) includes all nodes, hence we set c
+                                                               W
+                                                                 = max Si . We then plot
+the average degree of the nodes in each bin
+
+                                                   1    X
+                            Sw = hSi ii∈B(w) =            Si                        (3.11)
+                                                 |B(w)|
+                                                       i∈B(w)
+
+versus the average response time of nodes in that bin
+
+                                                   1    X
+                            τw = hτi ii∈B(w) =            τi .                      (3.12)
+                                                 |B(w)|
+                                                       i∈B(w)
+
+To evaluate the measurement error for each bin we first calculated the variance in the
+observed τi across all nodes in the bin σw2 = hτi2 ii∈B(w) − hτi i2i∈B(w) . We then set the
+error-bar to represent the 95% confidence interval as [14]
+
+                                          1.96σw
+                                     Ew = p       .                                 (3.13)
+                                           |B(w)|
+
+A similar scheme was used to present T (j → i) vs. N in Fig. 4d - f and T (j → i) vs.
+L(j → i) in Fig. 5h - j of the main paper. In most cases the error bars were tiny, smaller
+than the size of the plot markers.
+
+
+3.4    Model and empirical networks
+
+To test our predictions we constructed several model and real networks with highly diverse
+topological characteristics, as summarized below:
+ER. An Erdős-Rényi random network with N = 6, 000 nodes and an average degree of
+hSi = 4.
+SF. A binary scale-free network with N = 6, 000 nodes, hSi = 4 and a degree distribution
+following P (S) ∼ S −γ with γ = 3, constructed using the Barabási-Albert model [15].
+SF1. Using the underlying topology of SF we added uniformly distributed weights ex-
+
+
+                                            21
+Table 2: Model networks. Summary of all model networks used to exemplify our
+formalism.
+
+
+tracted from W ∼ U(0.1 − 0.9).
+SF2. Using the underlying topology of SF we extracted the weights Wij from a scale-
+free probability density function P (w) ∼ w−ν with ν = 3, resulting in an extremely
+heterogeneous network, featuring a scale-free topology with scale-free weights.
+UCIonline. An instant messaging network from the University of California Irvine
+[16], capturing 61, 040 transactions between 1, 893 users during a T = 218 day period.
+Connecting all individuals who exchanged messages throughout the period, we obtain a
+network of 1, 893 nodes with 27, 670 links, exhibiting a fat-tailed degree distribution.
+Email Epoch. This dataset monitors ∼ 3 × 105 emails exchanged between 3, 185 indi-
+viduals over the course of T ∼ 6 months [17], giving rise to a scale-free social network
+with 63, 710 binary links.
+Protein-protein interaction network PPI1. The yeast scale-free protein-protein
+interaction network, consisting of 1, 647 nodes (proteins) and 5, 036 undirected links,
+representing chemical interactions between proteins [18].
+PPI2. The human protein-protein interaction network, a scale-free network, consisting
+of N = 2, 035 nodes (protein) and L = 13, 806 protein-protein interaction links [19].
+ECO1 and ECO2. To construct mutualistic networks we collected data on symbiotic
+ecological interactions of plants and pollinators in Carlinville Illinois from [20]. The re-
+sulting 456 × 1, 429 network Mik is a bipartite graph linking the 456 plants with their
+1, 429 pollinators. When a pair of plants is visited by the same pollinators they mutually
+benefit each other indirectly, by increasing the pollinator populations. Similarly pollina-
+
+                                            22
+Table 3: Real networks. We implemented our theory on a set of highly diverse
+empirical networks, including social, biological and ecological networks. For each network
+we characterize the weighted degree distribution P (S), bounded versus scale-free (SF),
+and show the empirically extracted scaling exponent γ, where relevant. For the weighted
+networks ECO1/2 we also present the scaling exponent ν of P (w). On each network we
+ran the relevant models, e.g., epidemic spreading (E) on the social networks.
+
+
+tors sharing the same plants also posses an indirect mutualistic interaction. Hence we
+can collapse Mik to construct two mutualistic networks: The 1, 429 × 1, 429 pollinator
+network ECO1 and the 456 × 456 plant network ECO2. The resulting networks are
+
+                                          456
+                                          X   M M
+                                  Bkl =       Pnik il ,                             (3.14)
+                                          i=1  s=1 Mis
+
+for the pollinator network (ECO1), and
+
+                                          1,429
+                                          X Mik Mjk
+                                  Aij =       Pn       ,                            (3.15)
+                                          k=1  s=1 Msk
+
+for the plant network (ECO2). In both networks the numerator equals to the number
+of mutual plants (Bkl ) or pollinators (Aij ). For each mutual plant i (pollinator k) we
+divide by the overall number of plants (pollinators) that share i (k). Hence, the weight of
+the mutualistic interaction in, e.g., Aij is determined by the density of mutual symbiotic
+relationships between all plants, where: (i) the more mutual pollinators k that plants i
+and j share the stronger the mutualistic interaction between them; (ii) on the other hand
+
+
+                                              23
+the more plants pollinated by k the smaller is its contribution to each plant. A similar
+logic applies also for the pollinator network Bij . This process potentially allows us to
+have isolated components, e.g., single disconnected nodes. The state of these isolated
+nodes is decoupled from the state of the rest of the network, and hence in our analysis we
+only focused on the giant connected component of Aij and Bij , comprising all 456 plants,
+rendering Aij to be a fully connected component, but only 1, 044 pollinators, eliminating
+385 isolated pollinators.
+
+
+
+4     Additional results from empirical networks
+To complement the results presented in the main paper we include here observations
+extracted from our set of empirical networks (Sec. 3.4), comprising 12 combinations of
+networks and dynamics, as appear in Table 3. The scaling relationship τi ∼ Siθ has
+already been tested in the main text (Fig. 4) on all 36 systems, including our empirical
+networks, hence we focus below on the structure of P (T ) and the layouts predicted by
+our universal metric L(j → i) (Eq. (5) in main text).
+
+
+4.1    Distance driven propagation
+
+In Fig. 2a - d we show P (T ) vs. T (blue) as obtained for the distance driven R1 and P1
+implemented on PPI1 and PPI2 (R1 ) and on ECO1 and ECO2 (P1 ). As predicted for
+these distance driven dynamics, P (T ) exhibits separated sharp peaks, corresponding to
+the discrete lengths of all paths Lij . The effect is clearly pronounces in PPI1 and PPI2,
+and slightly less sharp in ECO1 and ECO2. The reason is that these ecological networks
+have distributed weights (Table 3), and hence at each distance, we observe some level of
+variance in the response times, a consequence of the weight heterogeneity along all paths,
+which is reflected in P (T ) by the width of the observed peaks. Also note, that ECO1 and
+ECO2 are rater dense, and therefore have only two or three shells, with max(Lij ) being
+only 2 for ECO2 and 3 for ECO1, hence the small number of peaks for these systems.
+    We further tested our universal dynamic metric L(j → i), as predicted in Eq. (5) of
+the main text. The results, presented in Fig. 4 confirm that indeed, these four systems all
+exhibit distance driven propagation, expressed through the discrete shells characterizing
+
+                                            24
+Figure 2: Response time density function in empirical networks. (a) - (b) P (T )
+vs. T as obtained from R1 on the protein interaction networks PPI1 and PPI2. (c) - (d)
+P (T ) vs. T as obtained from P1 on the ecological networks ECO1 and ECO2. Here we
+observe fewer peaks due to the short paths in these systems. The width of the peaks
+is driven by the weight distribution, creating variance within each shell of equidistant
+nodes. (e) - (h) P (T ) for the degree driven R2 and P2 on the same networks as above. (i)
+- (l) In the composite dynamics M and E, P (T ) is characterized by multiple overlapping
+peaks. The density P (T |Lij ), capturing the response times within each Lij -shell, is also
+shown (shades of green). ECO2, whose diameter equals 2 shows only two peaks, as
+expected. ECO1, Epoch and UCIonline exhibit each two or three peaks within each shell
+- a consequence of the composite dynamics, in which low degree nodes respond at later
+times.
+
+
+
+
+                                            25
+the traveling signals. For ECO1 and ECO2 we only observe 2 or 3 shells, due, again, to
+the relatively small diameter of these systems.
+
+
+4.2    Degree driven propagation
+
+Our testing ground includes four degree driven systems: R2 combined with PPI1/2 and
+P2 combined with ECO1/2. The density P (T ) for these systems is presented in Fig. 2e -
+h (red), following precisely the anticipated form, as predicted and observed on the model
+networks of Fig. 3 of the main text. The spatio-temporal layout, L(j → i), for these four
+systems appears in Fig. 5. While the results for PPI1/2 and ECO1 follow our predictions
+with high accuracy, we find that for ECO2, the L(j → i) prediction exhibits rather high
+levels of noise (Fig. 5d). Still, the average propagation is well approximated by L(j → i)
+(Fig. 5f). Indeed, ECO2, a small (N = 456) and relatively dense (hSi = 62) network, is
+characteirzed by many loops (C ≈ 0.1), and extremely short paths (max(Lij ) = 2), and
+hence does not adhere to our model assumptions. This has little effect on our macroscopic
+predictions, θ, P (T ), average L(j → i) vs. T (j → i), but does impact the quality of the
+more node-specific layouts of Fig. 5d.
+
+
+4.3    Composite propagation
+
+Our four empirical systems in the composite class include M, applied to ECO1 and
+ECO2, and E, applied to UCIonline and Epoch. In Fig. 2i - l we show P (T ) (green),
+as obtained from these four systems. As predicted, we find multiple overlapping peaks -
+the fingerprint of the composite dynamic class. Interestingly, in these empirical settings
+the composite interplay between Lij and P (S) is more complex that that observed on
+the model networks. For instance in ECO1, Epoch and UCIonline, the inner functions
+representing P (T |Lij ) (shades of green) indeed show the anticipated effect of network
+distance, with the progression of the inner peaks as Lij is increased. However, these three
+systems also feature secondary peaks within the same shell, i.e. P (T ) within Lij = 2
+(dark green) is bi-modal, showing that within the same distance, we observe two typical
+response times. This is a direct consequence of the composite dynamics, in which P (T )
+depends both on Lij and on Si . To observe this we focus on these three systems in Fig.
+
+
+                                            26
+Figure 3: A close up on the composite structure of P (T ). We focus on P (T ) vs.
+T on (a) M on ECO1; (b) E on Epoch and (c) E on UCIonline. The different peaks, in
+these systems, correspond to the low degree target nodes, which respond late (large T )
+under composite dynamics. This structure of P (T ) exposes the interplay of distance and
+degrees, characterizing the composite universality class.
+
+
+3, this time showing P (T |Si ), the T (j → i) density of target nodes with a given degree
+Si . We find, indeed, that the secondary peaks are driven by the low degree nodes within
+each shell, whose response time is large, due to their low weighted degree (θ < 0). This
+illustrates the essence of the composite class, where T (j → i) is determined both by the
+Lij -shells, but also by the distribution of Si within each shell, leading, in the case of these
+empirical networks, to such non-trivial structure of P (T ). The spatio-temporal layouts
+for these systems appear in Fig. 6.
+
+
+
+
+                                              27
+Figure 4: The universal distance L(j → i) in empirical networks. Results obtained
+from our four distance driven systems.
+
+
+
+
+                                       28
+Figure 5: The universal distance L(j → i) in empirical networks. Results obtained
+from our four degree driven systems.
+
+
+
+
+                                       29
+Figure 6: The universal distance L(j → i) in empirical networks. Results obtained
+from our four composite systems.
+
+
+
+
+                                       30
+5     Additional validation
+Our analytical derivations, outlined in Secs. 1 and 2 are exact under two main assump-
+tions: (i) the perturbative limit of small signals dx, which allows us to use linear response
+theoretic tools; (ii) the configuration model [1] pertaining to Aij , according to which node
+i’s nearest neighbor statistics are independent of i. In real scenarios we are often con-
+fronted by large perturbations, or by empirical networks, which may violate, to some
+extent, the clean picture of the configuration model. Therefore we tested the robustness
+of our analytically predicted scaling, (1.40), against deviations from assumptions (i) and
+(ii) above. Specifically, regarding (i), we test the impact of large perturbations, ranging
+from 10% to 100%, culminating in full node knockout. Regarding (ii) we introduce two
+topological features that are frequently observed in real networks, but violate the config-
+uration model framework: degree-degree correlations [2] and clustering. These non-local
+topological characteristics are a fingerprint of non-random connectivity, overriding the
+essential ingredient of the configuration model.
+
+
+5.1    The effect of large perturbations
+
+Measuring T (j → i) entails introducing a signal, ∆xj , to the steady state activity xj of
+the source node j, and observing the flow of information as it propagates from j to i. In
+our derivations we resort to the perturbative limit (∆xj → dxj ), where α = dxj /xj  1,
+a small perturbation, that allows us to use linearization to achieve analytical advances.
+Specifically, in our numerical experiments we set the magnitude of our signals to 10% of
+the source’s steady state, namely α = 0.1. In Fig. 7 we examine the impact of larger
+perturbations, setting α = 0.4 (squares), a 40% perturbation, α = 0.7 (down-triangles),
+a larger perturbation of 70%, and even α = 1 (up-triangles) a signal of the same size as
+the node’s unperturbed activity. We find that the predicted scaling θ is extremely robust,
+with the size of the perturbation having no visible effect. We further tested information
+propagation under the full knockout of the source node, namely removing node j and
+observing the spatio-temporal system response (diamonds). Such node removal represents
+a common procedure to observe sub-cellular dynamics via controlled genetic knockouts
+[21]. It also arises in naturally occurring settings, such as in spontaneous component
+
+
+                                             31
+failure in e.g., the power grid [?]. We find that even under these extreme conditions our
+predicted scaling remains valid, indicating that our predictions are highly robust against
+perturbation size.
+   This lack of sensitivity is rooted in the well-established robustness of scaling rela-
+tionships, which are often unaffected by small deviations and discrepancies [22]. This
+is especially relevant in a network environment, where local perturbations rapidly decay
+(exponentially) as they penetrate the network [23]. Under these conditions even a large
+local perturbations will have only a small effect on all individual nodes in its vicinity.
+Therefore, the consequent responses of the signal’s direct neighbors, next neighbors and
+so on, can be well-approximated by the perturbative limit, even if the original j-signal
+was in violation of this limit. Hence we find that the linear response framework remains
+valid even under unambiguously large perturbations.
+
+
+5.2    The effect of clustering
+
+Next we consider the impact of clustering C, representing the network’s tendency to
+from triads, in which there is an increased probability for an n, m link, if n and m share
+a mutual neighbor i. Under the configuration model assumption, clustering tends to zero
+if the network is sparse and N → ∞ [1]. Most empirical networks, however, feature
+non vanishing levels of clustering, in some cases reaching an order of C ∼ 10−1 [24],
+significantly higher than that expected in a random connectivity. To measure node i’s
+clustering we write
+
+                                        N
+                                        X
+                                                Aim Ain Anm
+                                        m,n=1
+                                 Ci =                       ,                      (5.1)
+                                                 ki
+                                                 2
+in which the numerator counts the number of actual triads involving nearest neighbors of
+i, and the denominator equals to the number of possible triads around i, i.e. the number
+of potential pairs among i’s ki nearest neighbors. Hence 0 ≤ Ci ≤ 1 is the fraction
+of potential triads that are actually present among i’s neighbors. The clustering of the
+network is then obtained by averaging over all nodes as
+
+
+                                            32
+                                                  N
+                                            1 X
+                                      C=          Ci .                                  (5.2)
+                                            N i=1
+
+In Table 4 we show the clustering C as obtained from our set of empirical networks. We
+find that for some of these networks C is rather high, in some cases reaching as much as
+C = 0.2567 (Epoch). Still, as demonstrated in the main text, our analytical predictions
+performed well, even under these challenging conditions of extreme clustering. This
+indicates that our predictions are robust against empirically observed levels of clustering.
+To further examine the effects of clustering in a controlled fashion, we used the scale-free
+network SF, and gradually rewired it to increase its clustering to C1 = 0.05, C2 = 0.1
+and C3 = 0.15 (Table 4), generating three model networks, SFC1 - SFC3, with controlled
+levels of clustering. We then measured τi vs. Si on each of these networks. We find again
+that even extreme levels of clustering (C = 0.15 is two orders of magnitude higher than
+the configuration model expectation value), our theoretical predictions are consistently
+sustained (Fig. 8).
+
+
+5.3    The effect of degree-degree correlations
+
+As our final test, we examine the effect of degree correlations Q, as defined in Ref. [2]. As
+before, we first observe the correlation levels exhibited by our set of empirical networks,
+finding that they feature rather high levels of degree correlations (Table 4). The fact that
+our predictions cover these networks is, as before, an indication of our theory’s robustness
+against empirically observed correlations. To complement this finding we rewired SF, once
+again, this time to exhibit increasing levels of positive and negative degree correlations,
+producing SFQ1 - SFQ4, as detailed in Table 4. As in the case of clustering, the results,
+presented in Fig. 9, show that our predictions are largely unharmed by Q, indicating their
+low sensitivity to the configuration model assumption of Sec. 1.
+
+Robustness of predicted universality classes. Our theory provides both quantita-
+tive as well as qualitative predictions. At the quantitative level, we predict the precise
+value of θ, allowing us to provide the precise response times of all nodes (Fig. 4 in
+main text). No less important are, however, our qualitative predictions, that allow us to
+
+
+
+                                             33
+translate θ into direct insights on the macroscopic propagation patterns of a networked
+system. This is observed by the distinct structures of P (T ) (Fig. 3g - l in main text),
+the different roles of network paths Lij (Fig. 3m - r in main text), and the class-specific
+contribution of P (S) (Fig. 5 in main text). All of these observations represent macro-
+level dynamic patterns that determine how the system (as opposed to specific nodes)
+manifests information propagation. Such intrinsic characteristics are seldom sensitive to
+microscopic discrepancies.
+   We further argue that even if the precise value of θ deviates due to some specific
+departures from our model assumptions - deviations that we have not observed in our
+extensive numerical tests - still, the implications on the macro-scale behavior of the
+system, indeed, the qualitative insight that our theory aims to provide, will ultimately
+be marginal. For instance, consider a deviation in one of our dynamics, say the degree
+driven R2 , which under some hypothetical conditions features, e.g., a decrease in its
+observed θ from the theoretically predicted θ = 3/2 to, say, θ ≈ 1. This may constitute
+a significant discrepancy in terms of our quantitatively predicted scaling, but will not
+significantly impact the observed propagation patterns, which will remain within the
+degree-driven class. Indeed, micro, or even meso-scopic discrepancies from our model
+assumptions cannot cause a qualitative shift to a different class, turning, for instance
+from degree-driven to distance-driven or composite. Such transition can only be done
+by altering the system’s internal mechanisms, such as shifting from R2 (θ = 3/2) to E
+(θ = −1), a change in the physics of the node interactions, which requires a fundamental
+intervention, unattainable by minor discrepancies.
+
+
+
+
+                                            34
+Table 4: Degree correlations (Q) and clustering (C) of our model and empirical
+networks. We measured Q and C from our set of empirical networks. Our results seem
+to have been unaffected by the high levels of Q, C. We also rewired our model scale-free
+network SF to increase its clustering (SFC1 - SFC3) and degree-correlations (SFQ1 -
+SFQ4) in a controlled fashion.
+
+
+
+
+                                          35
+Figure 7: The effect of perturbation size. To test the limits of our linear response
+framework we measured τi vs. Si , as obtained for large signals, representing an α = 10%
+(circles), 40% (squares), 70% (down-triangles) and 100% (up-triangles) perturbation.
+We also tested the scaling under complete node knockout (Removal, diamonds). We find
+that perturbation size has no visible effect on the macroscopic patterns of flow, with θ
+consistently adhering to the theoretically predicted value (solid lines).
+
+
+
+
+                                          36
+Figure 8: The impact of clustering C. τi vs. Si as obtained from SFC1 - SFC3,
+featuring increasing levels of clustering C = 0.05 to 0.15. Despite the clustering the
+predicted scaling in each dynamics (θ, solid lines) remains valid.
+
+
+
+
+                                         37
+Figure 9: The impact of degree correlations Q. τi vs. Si as obtained from SFQ1
+- SFQ4, featuring negative and positive degree correlations. Despite these correlation
+levels the predicted scaling in each dynamics (θ, solid lines) remains valid.
+
+
+
+
+                                         38
+References
+ [1] M.E.J. Newman. Networks - an introduction. Oxford University Press, New York,
+    2010.
+
+ [2] M.E.J. Newman. Assortative mixing in networks. Phys. Rev. Lett., 89:208701 – 4,
+    2002.
+
+ [3] L. Schmetterer and K. Sigmund (Eds.). Hans Hahn Gesammelte Abhandlungen Band
+    1/Hans Hahn Collected Works Volume 1. Springer, Vienna, Austria, 1995.
+
+ [4] U. Alon. An Introduction to Systems Biology: Design Principles of Biological Cir-
+    cuits. Chapman & Hall, London, U.K., 2006.
+
+ [5] G. Karlebach and R. Shamir. Modelling and analysis of gene regulatory networks.
+    Nature Reviews, 9:770–780, 2008.
+
+ [6] A.S. Novozhilov, G.P. Karev and E.V. Koonin. Biological applications of the theory
+    of birth-and-death processes. Briefings in Bioinformatics, 7:70–85, 2006.
+
+ [7] J.F. Hayes and T.V.J. Ganesh Babu. Modeling and Analysis of Telecommunications
+    Networks. John Wiley & Sons, Inc., Hoboken, NJ, USA, 2004.
+
+ [8] B. Barzel and O. Biham. Binomial moment equations for stochastic reaction systems.
+    Phys. Rev. Lett., 106:150602–5, 2011.
+
+ [9] P.S. Dodds and D.J. Watts. A generalized model of social and biological contagion.
+    Journal of Theoretical Biology, 232:587–604, 2005.
+
+[10] R.M. May. Simple mathematical models with very complicated dynamics. Nature,
+    261:459–467, 1976.
+
+[11] C.S. Holling. Some characteristics of simple types of predation and parasitism. The
+    Canadian Entomologist, 91:385–398, 1970.
+
+[12] M. Bastian, S. Heymann and M. Jacomy. Gephi: an open source software for ex-
+    ploring and manioulating networks. In International AAAI Conference on Weblogs
+    and Social Media. Associaltion for Advancement of Artificial Intelligence, 2009.
+
+                                            39
+[13] S. Milojević. Power-law distributions in information science: making the case for
+    logarithmic binning. Journal of the American Society for Information Science and
+    Technology, 61:2417–2425, 2010.
+
+[14] D.R. Cox and D.V. Hinkley. Theoretical Statistics. Chapman & Hall, London, 1974.
+
+[15] R. Albert and A.-L. Barabási. Rev. Mod. Phys., 74:47, 2002.
+
+[16] T. Opsahl and P. Panzarasa. Clustering in weighted networks. Social Networks,
+    31:155–163, 2009.
+
+[17] J.-P. Eckmann, E. Moses and D. Sergi. Entropy of dialogues creates coherent struc-
+    tures in e-mail traffic. Proc. Natl. Acad. Sci. USA, 101:14333–7, 2004.
+
+[18] H. Yu et al. High-quality binary protein interaction map of the yeast interactome
+    network. Science, 322:104–110, 2008.
+
+[19] J.F. Rual et al. Towards a proteome-scale map of the human protein-protein inter-
+    action network. Nature, 437:1173–1178, 2005.
+
+[20] Interaction web database. http://www.nceas.ucsb.edu/interactionweb/resources.
+
+[21] S. Kauffman. The ensemble approach to understand genetic regulatory networks.
+    Physica A, 340:733–740, 2004.
+
+[22] K.G. Wilson. The renormalization group: Critical phenomena and the Kondo prob-
+    lem. Rev. Mod. Phys., 47:773, 1975.
+
+[23] B. Barzel and A.-L. Barabási. Universality in network dynamics. Nature Physics,
+    9:673 – 681, 2013.
+
+[24] R. Albert and A.-L. Barabási. Statistical mechanics of complex networks. Rev. Mod.
+    Phys., 74:47, 2002.
+
+
+
+
+                                           40
+

@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flash Crash Propagation, herding oscillators on a trader network</title>
+<style>
+  :root{
+    --bg:#04050a;
+    --panel:#080a12;
+    --panel-2:#0c0f1a;
+    --line:#161b2b;
+    --line-2:#222941;
+    --dim:#9fabc4;
+    --mid:#ccd6e8;
+    --fg:#ffffff;
+    --hot:#ff2e63;      /* selling  */
+    --cold:#00e0ff;     /* buying   */
+    --neutral:#1b2438;
+    --amber:#ffb703;
+    --orange:#ff6b35;
+    --violet:#a78bfa;
+    --green:#22d3a6;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:var(--mono); font-size:14.5px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+    overflow-x:hidden;
+  }
+  .wrap{max-width:2000px; margin:0 auto; padding:18px 22px 34px;}
+
+  header{display:flex; align-items:flex-start; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:12px;}
+  h1{font-size:22px; font-weight:600; margin:0 0 3px; letter-spacing:.02em; color:#eaf0ff;}
+  .sub{color:#c8d2e4; font-size:14px; margin:0; max-width:78ch;}
+  .eq{color:var(--mid); font-size:11px; margin:6px 0 0; white-space:nowrap; overflow-x:auto; max-width:100%;}
+  .eq b{color:var(--cold); font-weight:400;}
+
+  .stagebox{
+    min-width:280px; border:1px solid var(--line-2); border-radius:6px; padding:9px 13px;
+    background:var(--panel); position:relative; overflow:hidden;
+  }
+  .stagebox .lbl{font-size:11px; letter-spacing:.16em; color:var(--dim); text-transform:uppercase;}
+  .stagebox .val{font-size:24px; font-weight:600; letter-spacing:.04em; margin-top:1px;}
+  .stagebox .note{font-size:12.5px; color:var(--mid); margin-top:2px; min-height:15px;}
+  .stagebox .bar{position:absolute; left:0; top:0; bottom:0; width:3px;}
+
+  .grid{display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:16px; align-items:start;}
+  @media (max-width:1250px){ .grid{grid-template-columns:minmax(0,1fr);} }
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:9px 10px;}
+  .card h3{
+    margin:0 0 9px; font-size:12px; font-weight:500; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--dim); display:flex; justify-content:space-between; gap:8px;
+  }
+  .card h3 span{color:var(--mid); letter-spacing:0; text-transform:none; font-size:12px;}
+  canvas{display:block; width:100%; border-radius:4px;}
+  #net{background:#000; cursor:crosshair;}
+
+  .side{display:flex; flex-direction:column; gap:12px;}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top:8px;}
+  .stat{background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:5px 7px;}
+  .stat .k{font-size:11.5px; color:#a9b5cc; letter-spacing:.07em;}
+  .stat .v{font-size:19px; font-variant-numeric:tabular-nums; margin-top:1px;}
+
+  .controls{margin-top:12px; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:11px 13px;}
+  .ctlgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:15px 24px;}
+  .ctl label{display:flex; justify-content:space-between; font-size:13px; color:var(--mid); margin-bottom:3px;}
+  .ctl label b{color:var(--fg); font-weight:500; font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%; accent-color:#00e0ff; height:22px; background:transparent; cursor:pointer;}
+  .btns{display:flex; gap:7px; flex-wrap:wrap; margin-top:11px; padding-top:11px; border-top:1px solid var(--line);}
+  button{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.05em; text-transform:uppercase;
+    background:var(--panel-2); color:var(--fg); border:1px solid var(--line-2);
+    padding:9px 14px; border-radius:4px; cursor:pointer; transition:background .12s,border-color .12s;
+  }
+  button:hover{background:#141a2b; border-color:#39435f;}
+  button:focus-visible{outline:2px solid var(--cold); outline-offset:1px;}
+  button.on{background:rgba(0,224,255,.13); border-color:var(--cold); color:#bff4ff;}
+  button.danger{border-color:#5d2138; color:#ffb3c6;}
+  button.danger:hover{background:rgba(255,46,99,.14);}
+  button.halt{border-color:#40356b; color:#cfc2ff;}
+  button.halt:hover{background:rgba(167,139,250,.14);}
+
+  .phases{display:grid; gap:5px; margin-top:2px;}
+  .ph{display:grid; grid-template-columns:9px 1fr; gap:8px; align-items:start; padding:4px 0; opacity:.62; transition:opacity .2s;}
+  .ph.active{opacity:1;}
+  .ph .sw{width:9px; height:9px; border-radius:2px; margin-top:3px;}
+  .ph .nm{font-size:13px; font-weight:600; letter-spacing:.05em;}
+  .ph .ds{font-size:12.5px; color:#b6c2d8; line-height:1.35;}
+
+  .ins-empty{color:var(--dim); font-size:12px; margin:0; line-height:1.5;}
+  .ins-role{font-size:15px; font-weight:600; letter-spacing:.06em; margin-bottom:5px;}
+  .ins-why{color:#c8d2e4; font-size:12.5px; line-height:1.45; margin:0 0 8px;}
+  .ins-grid{display:grid; grid-template-columns:auto 1fr; gap:3px 10px; font-size:12px;
+            font-variant-numeric:tabular-nums; margin-bottom:8px;}
+  .ins-grid .k{color:#a9b5cc;}
+  .ins-grid .v{color:var(--fg);}
+  .ins-eq{background:#05070e; border:1px solid var(--line-2); border-radius:4px; padding:10px 11px;
+          font-size:12.5px; line-height:1.8; color:#dbe4f5; overflow-x:auto; white-space:nowrap;}
+  .ins-eq b{color:var(--cold); font-weight:400;}
+  .ins-eq i{color:var(--amber); font-style:normal;}
+  .ins-verdict{margin-top:9px; padding:8px 10px; border-radius:4px; font-size:12.5px; line-height:1.55; font-weight:600;}
+  .legend{display:flex; align-items:center; gap:11px; margin-top:9px; font-size:12px; color:var(--dim);}
+  .ramp{flex:1; height:7px; border-radius:2px;
+        background:linear-gradient(90deg,#ff2e63,#7a2440,#1b2438,#1d5f77,#00e0ff);}
+  footer{margin-top:22px; color:#b6c2d8; font-size:12.5px; border-top:1px solid var(--line); padding-top:10px;}
+  code{color:var(--mid);}
+  .explain{margin-top:26px; border-top:1px solid var(--line-2); padding-top:20px;}
+  .explain h2{font-size:19px; margin:0 0 16px; color:#ffffff; font-weight:600;}
+  .ex-block{margin-bottom:24px; max-width:118ch;}
+  .ex-block h4{font-size:14.5px; margin:0 0 8px; color:#8fe9ff; font-weight:600;}
+  .ex-block p, .ex-block li{font-size:13.5px; line-height:1.72; color:#d6dfef; margin:0 0 9px;}
+  .ex-block ul, .ex-block ol{margin:0 0 9px; padding-left:20px;}
+  .ex-block li{margin-bottom:6px;}
+  .ex-block b{color:#ffffff; font-weight:600;}
+  .ex-block i{color:#ffd79a; font-style:normal;}
+  .ex-eq{background:#05070e; border:1px solid var(--line-2); border-radius:5px; padding:12px 14px;
+         font-size:14px; line-height:1.9; margin:10px 0 12px; overflow-x:auto; white-space:nowrap; color:#ffffff;}
+  .ex-terms{display:grid; grid-template-columns:auto 1fr; gap:10px 18px; margin:6px 0 0;}
+  .ex-terms dt{font-size:13.5px; font-weight:600; white-space:nowrap; color:#ffffff;}
+  .ex-terms dd{margin:0; font-size:13.5px; line-height:1.68; color:#d6dfef;}
+  @media (max-width:760px){ .ex-terms{grid-template-columns:1fr; gap:3px 0;} .ex-terms dd{margin-bottom:10px;} }
+.ui-tab{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;}
+  .ui-tab th,.ui-tab td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;line-height:1.62;}
+  .ui-tab th{background:#0d111d;color:#9fabc4;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+  .ui-tab td{color:#d6dfef;}
+  .ui-tab td b{color:#ffffff;}
+  .ui-tab td:first-child{white-space:nowrap;color:#ffffff;}
+  .ui-sub{font-size:13px;color:#8fe9ff;margin:20px 0 4px;font-weight:600;}
+  kbd{font-family:var(--mono);font-size:11.5px;background:#0d111d;border:1px solid var(--line-2);
+      border-bottom-width:2px;border-radius:3px;padding:1px 6px;color:#ffffff;}
+  .t1,dt.t1{color:#ffd79a;} .t2,dt.t2{color:#8fe9ff;} .t3,dt.t3{color:#ffb703;}
+  .t4,dt.t4{color:#c0a8ff;} .t5,dt.t5{color:#7dffc4;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Flash Crash Propagation</h1>
+    <p class="sub">Herding oscillators on a network of trading desks. Every node is a desk with a phase
+      θ<sub>i</sub>; its order flow is q<sub>i</sub> = sin θ<sub>i</sub>. Colour is order flow. Cyan buying,
+      red selling, dark when flat. Edges brighten as their two endpoints fall into phase, so a cascade is
+      visible spreading link by link.</p>
+    <p class="eq">dθ<sub>i</sub> = [ ω<sub>i</sub> + (<b>λ</b>/⟨k⟩)·<b>r<sub>i</sub></b>·Σ<sub>j</sub> A<sub>ij</sub> sin(θ<sub>j</sub>−θ<sub>i</sub>) + ε·s<sub>i</sub>·sin(−π/2 − θ<sub>i</sub>) ] dt + <b>σ</b> dW<sub>i</sub> + <b>σ<sub>c</sub></b> dW<sub>c</sub></p>
+  </div>
+  <div class="stagebox">
+    <div class="bar" id="stagebar"></div>
+    <div class="lbl">Market phase</div>
+    <div class="val" id="stagename">INCOHERENT</div>
+    <div class="note" id="stagenote">Phases spread, orders cancel out.</div>
+  </div>
+</header>
+
+<div class="grid">
+  <div>
+    <div class="card">
+      <h3>Observation network: who watches whose order flow <span id="netmeta"></span></h3>
+      <canvas id="net"></canvas>
+      <div class="legend">
+        <span>SELL q=−1</span><div class="ramp"></div><span>BUY q=+1</span>
+        <span style="margin-left:10px">node size = degree k<sub>i</sub> · glow = local agreement r<sub>i</sub></span>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k">R  SYNCHRONY</div><div class="v" id="sR">0.000</div></div>
+        <div class="stat"><div class="k">Q  ORDER FLOW</div><div class="v" id="sQ">0.000</div></div>
+        <div class="stat"><div class="k">PRICE</div><div class="v" id="sP">100.0</div></div>
+        <div class="stat"><div class="k">DRAWDOWN</div><div class="v" id="sD">0.0%</div></div>
+        <div class="stat"><div class="k">LOCKED</div><div class="v" id="sL">0%</div></div>
+        <div class="stat"><div class="k">λ COUPLING</div><div class="v" id="sLam">2.00</div></div>
+        <div class="stat"><div class="k">Ψ HERD PHASE</div><div class="v" id="sPsi">-</div></div>
+        <div class="stat"><div class="k">FPS</div><div class="v" id="sFps">-</div></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="ctlgrid">
+        <div class="ctl"><label>λ  herding coupling <b id="vLam">2.00</b></label>
+          <input type="range" id="cLam" min="0" max="8" step="0.02" value="2"></div>
+        <div class="ctl"><label>σ  idiosyncratic news <b id="vSig">0.30</b></label>
+          <input type="range" id="cSig" min="0" max="1.2" step="0.01" value="0.3"></div>
+        <div class="ctl"><label>σ<sub>c</sub>  common market mode <b id="vSigC">0.00</b></label>
+          <input type="range" id="cSigC" min="0" max="0.8" step="0.01" value="0"></div>
+        <div class="ctl"><label>f  herding fraction <b id="vF">1.00</b></label>
+          <input type="range" id="cF" min="0" max="1" step="0.05" value="1"></div>
+        <div class="ctl"><label>shock ε <b id="vEps">1.20</b></label>
+          <input type="range" id="cEps" min="0" max="3" step="0.05" value="1.2"></div>
+        <div class="ctl"><label>shock reach φ <b id="vPhi">0.15</b></label>
+          <input type="range" id="cPhi" min="0.02" max="1" step="0.01" value="0.15"></div>
+        <div class="ctl"><label>halt length τ <b id="vTau">6.0</b></label>
+          <input type="range" id="cTau" min="0.5" max="20" step="0.5" value="6"></div>
+        <div class="ctl"><label>speed <b id="vSpd">1×</b></label>
+          <input type="range" id="cSpd" min="0" max="6" step="1" value="2"></div>
+      </div>
+      <div class="btns">
+        <button id="bPause" class="on">⏸ pause</button>
+        <button id="bShock" class="danger">⚡ sell shock</button>
+        <button id="bShockHub" class="danger">⚡ shock hubs</button>
+        <button id="bHalt" class="halt">⛔ trading halt</button>
+        <button id="bRamp">↗ auto ramp λ (hysteresis)</button>
+        <button id="bNet">⛓ network: ER ⟨k⟩=12</button>
+        <button id="bMode">◑ colour: order flow</button>
+        <button id="bReset">⟲ reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h3>Market phases <span id="phclock"></span></h3>
+      <div class="phases" id="phases"></div>
+    </div>
+    <div class="card" id="inspcard">
+      <h3>Desk inspector <span id="inspHint">click any node</span></h3>
+      <div id="insp"><p class="ins-empty">Click a node in the network to see what that desk is doing,
+        the field it feels, and whether it is locked, with its own numbers substituted into the equation.</p></div>
+    </div>
+    <div class="card">
+      <h3>Synchrony R and order flow Q</h3>
+      <canvas id="ts"></canvas>
+    </div>
+    <div class="card">
+      <h3>Price <span id="pxnote"></span></h3>
+      <canvas id="px"></canvas>
+    </div>
+    <div class="row2">
+      <div class="card">
+        <h3>Phase circle</h3>
+        <canvas id="circ"></canvas>
+      </div>
+      <div class="card">
+        <h3>R vs λ</h3>
+        <canvas id="hyst"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Phase timeline</h3>
+      <canvas id="tl"></canvas>
+    </div>
+  </div>
+</div>
+
+
+<section class="explain">
+  <h2>How this works</h2>
+
+  <div class="ex-block">
+    <h4>1. Every node is a trading desk, and its whole state is one angle</h4>
+    <p>A desk <b>i</b> has a phase <b>&theta;<sub>i</sub></b>, its position in a buy/sell cycle. Its net
+    order flow is the projection <b>q<sub>i</sub> = sin &theta;<sub>i</sub></b>. So &theta; = +90&deg; is
+    peak buying, &theta; = &minus;90&deg; is peak selling, and &theta; = 0&deg; or 180&deg; means flat.
+    The market-wide imbalance that moves the price is the average,
+    <b>Q = &lang;sin &theta;<sub>i</sub>&rang;</b>.</p>
+    <p>This is why colour is the honest readout: a red node is <i>selling right now</i>, a cyan node is
+    buying. A calm market looks dark because most desks sit near q = 0 and cancel each other out.</p>
+  </div>
+
+  <div class="ex-block">
+    <h4>2. The equation, term by term</h4>
+    <div class="ex-eq">d&theta;<sub>i</sub> = [ <span class="t1">&omega;<sub>i</sub></span>
+      + <span class="t2">(&lambda;/&lang;k&rang;)&middot;r<sub>i</sub>&middot;&Sigma;<sub>j</sub>
+      A<sub>ij</sub> sin(&theta;<sub>j</sub>&minus;&theta;<sub>i</sub>)</span>
+      + <span class="t3">&epsilon;&middot;s<sub>i</sub>&middot;sin(&minus;&pi;/2 &minus; &theta;<sub>i</sub>)</span>
+      ] dt + <span class="t4">&sigma; dW<sub>i</sub></span> + <span class="t5">&sigma;<sub>c</sub> dW<sub>c</sub></span></div>
+    <dl class="ex-terms">
+      <dt class="t1">&omega;<sub>i</sub></dt>
+      <dd><b>Its own pace.</b> How fast this desk cycles if it ignored everyone. Economically this is the
+      inverse trading horizon: a high-frequency market maker has large |&omega;|, a pension fund has small
+      |&omega;|. The <i>spread</i> of &omega; across desks is strategy diversity, and it is the only thing
+      resisting synchronisation. Drawn from a Gaussian with mean exactly zero.</dd>
+
+      <dt class="t2">coupling</dt>
+      <dd><b>Imitation.</b> Each neighbour j that desk i watches pulls &theta;<sub>i</sub> toward
+      &theta;<sub>j</sub>. <b>&lambda;</b> is how hard desks copy; <b>A<sub>ij</sub></b> is the observation
+      network; <b>&lang;k&rang;</b> normalises so the &lambda; axis is comparable across networks.
+      <b>r<sub>i</sub></b> is the herding gain: local agreement among i's neighbours, 0 if they are split
+      and 1 if unanimous. That factor is what makes the transition explosive, because a desk copies
+      <i>harder</i> when the desks it watches already agree, which is positive feedback.</dd>
+
+      <dt class="t3">&epsilon;&middot;s<sub>i</sub></dt>
+      <dd><b>The shock.</b> A common sell signal pushing the selected desks (s<sub>i</sub> = 1) toward
+      &theta; = &minus;90&deg;. This is the "sell shock" button. &epsilon; is its strength, &phi; is what
+      fraction of desks it reaches.</dd>
+
+      <dt class="t4">&sigma; dW<sub>i</sub></dt>
+      <dd><b>Idiosyncratic news.</b> Independent random kicks, different for every desk. This is what keeps
+      a calm market disordered, and also what can randomly trigger a crash when &lambda; sits inside the
+      bistable window.</dd>
+
+      <dt class="t5">&sigma;<sub>c</sub> dW<sub>c</sub></dt>
+      <dd><b>Common market mode.</b> The <i>same</i> random kick applied to every desk at once. Set it above
+      zero and watch: individual assets start co-moving, because each one loads on the shared shock with
+      weight cos &theta;<sub>i</sub>, and those weights align exactly when the phases align. With
+      &sigma;<sub>c</sub> = 0 the model produces literally zero return correlation no matter how
+      synchronised it is, which is a defect this term fixes.</dd>
+    </dl>
+  </div>
+
+  <div class="ex-block">
+    <h4>3. The one inequality that decides everything</h4>
+    <p>A desk either <b>locks</b> to the crowd or <b>drifts</b> at its own pace. It locks when the pull it
+    feels beats its own detuning:</p>
+    <div class="ex-eq">lock &nbsp;&hArr;&nbsp; |&omega;<sub>i</sub> &minus; &Omega;| &nbsp;&le;&nbsp;
+      h<sub>i</sub>, &nbsp;&nbsp; where &nbsp; h<sub>i</sub> = (&lambda;/&lang;k&rang;)&middot;&alpha;<sub>i</sub>&middot;k<sub>i</sub>&middot;r<sub>i</sub></div>
+    <p>Click any node to see both sides of this inequality computed with that desk's real numbers.
+    Three things follow immediately, and you can watch all three:</p>
+    <ul>
+      <li><b>Hubs lock first.</b> h<sub>i</sub> is proportional to k<sub>i</sub>, so a desk with 22
+      neighbours feels roughly ten times the pull of one with 2. That is the whole reason hub-targeted
+      shocks work with so few desks hit.</li>
+      <li><b>Slow desks lock first.</b> Small |&omega;<sub>i</sub>| means a small left-hand side.
+      Extreme-horizon desks are the last to join and the first to leave.</li>
+      <li><b>Locking is self-reinforcing.</b> Once neighbours agree, r<sub>i</sub> rises, which raises
+      h<sub>i</sub>, which locks more desks, which raises r again. That runaway is the cascade.</li>
+    </ul>
+  </div>
+
+
+  <div class="ex-block">
+    <h4>4. Every readout on screen, and what it is telling you</h4>
+    <table class="ui-tab">
+      <tr><th>readout</th><th>range</th><th>what it means</th></tr>
+      <tr><td><b>R SYNCHRONY</b></td><td>0 to 1</td>
+        <td>The order parameter, the length of the average phase arrow.
+        <b>0</b> = desks point everywhere and cancel out (a working market).
+        <b>1</b> = every desk is doing the identical thing. Above 0.75 the page calls it a crash.
+        This is the single most important number on the page.</td></tr>
+      <tr><td><b>Q ORDER FLOW</b></td><td>&minus;1 to +1</td>
+        <td>Net buying minus selling across the whole market, Q = &lang;sin &theta;<sub>i</sub>&rang;.
+        Turns <span style="color:#ff5c7a">red when below &minus;0.2</span> (market-wide selling) and
+        <span style="color:#5fe3ff">cyan above +0.2</span> (buying). A crash needs R high <em>and</em> Q
+        strongly negative; R high with Q positive is a melt-up.</td></tr>
+      <tr><td><b>PRICE</b></td><td>starts at 100</td>
+        <td>The index, driven by accumulated order flow, P = 100e<sup>x</sup>. It falls while Q is
+        negative, so a locked crash produces a steady slide rather than a single gap down.</td></tr>
+      <tr><td><b>DRAWDOWN</b></td><td>0% to &minus;100%</td>
+        <td>How far the price is below its own running peak. Turns red past &minus;5%. This is the number
+        a risk desk would actually care about.</td></tr>
+      <tr><td><b>LOCKED</b></td><td>0% to 100%</td>
+        <td>Share of desks whose local agreement r<sub>i</sub> exceeds 0.72, i.e. that have been captured
+        by their neighbours. Watch this run ahead of R during a cascade: desks lock locally first, and
+        global synchrony follows.</td></tr>
+      <tr><td><b>&lambda; COUPLING</b></td><td>0 to 8</td>
+        <td>The current herding strength. Mirrors the &lambda; slider, and moves on its own during auto
+        ramp. Compare it against &lambda;<sub>b</sub> = 3.1 and &lambda;<sub>f</sub> = 4.1.</td></tr>
+      <tr><td><b>&Psi; HERD PHASE</b></td><td>&minus;180&deg; to +180&deg;</td>
+        <td>Which way the herd's average arrow points. <b>&minus;90&deg; is everyone selling</b>,
+        +90&deg; is everyone buying, 0&deg; or 180&deg; is flat. Only meaningful when R is high; when
+        R &asymp; 0 the direction of a near-zero arrow is noise.</td></tr>
+      <tr><td><b>FPS</b></td><td>typically 60</td>
+        <td>Rendering speed only. It tells you nothing about the market, just whether your browser is
+        keeping up. Not a physics quantity.</td></tr>
+    </table>
+
+    <h5 class="ui-sub">The legend under the network</h5>
+    <table class="ui-tab">
+      <tr><td><b>SELL q=&minus;1 &rarr; BUY q=+1</b></td>
+        <td>The colour ramp. Every node is coloured by its own order flow q<sub>i</sub> = sin
+        &theta;<sub>i</sub>: hot red is selling hard, cyan is buying hard, near-black is flat. A calm
+        market looks dark because most desks sit near zero.</td></tr>
+      <tr><td><b>node size = degree k<sub>i</sub></b></td>
+        <td>Bigger circle means that desk is watched by, and watches, more others. The biggest node here
+        has 22 neighbours against a mean of 12.</td></tr>
+      <tr><td><b>glow = local agreement r<sub>i</sub></b></td>
+        <td>A halo appears when a desk's neighbours are unanimous. Glow spreading across the screen is
+        literally the cascade recruiting desks.</td></tr>
+    </table>
+  </div>
+
+  <div class="ex-block">
+    <h4>5. Every slider, and what physically changes</h4>
+    <table class="ui-tab">
+      <tr><th>slider</th><th>range</th><th>what moving it does</th></tr>
+      <tr><td><b>&lambda; herding coupling</b></td><td>0 to 8</td>
+        <td>How hard desks copy the desks they watch. <b>The master control.</b> Below 3.1 a crash cannot
+        persist. Between 3.1 and 4.1 the market is bistable and a shock decides the outcome. Above 4.1 it
+        crashes unprompted. Drag it slowly across 4.1 and watch R jump rather than glide.</td></tr>
+      <tr><td><b>&sigma; idiosyncratic news</b></td><td>0 to 1.2</td>
+        <td>Independent random kicks, a different one per desk. Raising it blurs the transition and lets
+        noise alone trigger a crash inside the window. Push it high and synchrony is destroyed outright:
+        disagreement beats imitation.</td></tr>
+      <tr><td><b>&sigma;<sub>c</sub> common market mode</b></td><td>0 to 0.8</td>
+        <td>One shared random kick hitting every desk at once. It barely changes <em>whether</em> a crash
+        happens, but it controls whether the crash is <em>visible</em> as correlated returns. At
+        &sigma;<sub>c</sub> = 0 the model's assets have literally zero pairwise correlation at any level of
+        synchrony, which is the defect this parameter exists to fix.</td></tr>
+      <tr><td><b>f herding fraction</b></td><td>0 to 1</td>
+        <td>What share of desks use the agreement-amplified coupling r<sub>i</sub> rather than plain
+        imitation. <b>Set it to 0 and the crash mechanism disappears</b>: you get the ordinary Kuramoto
+        model with a smooth transition and no hysteresis. This is the cleanest way to see that herding,
+        not the network, is what makes the transition explosive.</td></tr>
+      <tr><td><b>shock &epsilon;</b></td><td>0 to 3</td>
+        <td>How hard the sell shock pushes the desks it hits toward &theta; = &minus;90&deg;. Sets the
+        <em>strength</em> of the trigger, not whether it sticks; persistence is decided by &lambda;.</td></tr>
+      <tr><td><b>shock reach &phi;</b></td><td>2% to 100%</td>
+        <td>What fraction of desks the shock touches. Inside the bistable window, 10 to 15% is usually
+        enough to flip the whole market, and far fewer if you aim at hubs.</td></tr>
+      <tr><td><b>halt length &tau;</b></td><td>0.5 to 20</td>
+        <td>How long trading is suspended when you press the halt button. Short halts fail: the herd has
+        not dephased yet and re-crashes on resumption. There is a minimum safe duration that grows with
+        &lambda; and shrinks with the spread of trading horizons.</td></tr>
+      <tr><td><b>speed</b></td><td>0.25&times; to 16&times;</td>
+        <td>How much simulated time passes per frame. <b>Use 0.25&times; to watch a cascade propagate desk
+        by desk</b>; use 8&times; or 16&times; to reach a steady state quickly. It changes only the
+        viewing rate, never the physics.</td></tr>
+    </table>
+  </div>
+
+  <div class="ex-block">
+    <h4>6. Every button</h4>
+    <table class="ui-tab">
+      <tr><th>button</th><th>key</th><th>what it does</th></tr>
+      <tr><td><b>&#9208; pause / &#9654; run</b></td><td><kbd>space</kbd></td>
+        <td>Freezes the integration. Rendering continues, so you can pause mid-cascade and click nodes to
+        inspect them without the state moving under you.</td></tr>
+      <tr><td><b>&#9889; sell shock</b></td><td><kbd>s</kbd></td>
+        <td>The lightning bolt means an <b>exogenous shock</b>, news arriving from outside the market.
+        This one fires a common sell signal at a <em>randomly chosen</em> &phi; fraction of desks for 8
+        time units, then switches off. Whether the market heals or stays crashed afterwards is the whole
+        point: it depends on &lambda;, not on the shock.</td></tr>
+      <tr><td><b>&#9889; shock hubs</b></td><td></td>
+        <td>The same shock and the same &epsilon; and &phi;, but aimed at the <b>highest-degree desks</b>
+        instead of random ones. Because the pull a desk feels scales with its degree, this is far more
+        efficient: hubs lock first and then recruit everyone else. Run both at &phi; = 0.08 and compare.</td></tr>
+      <tr><td><b>&#9940; trading halt</b></td><td><kbd>h</kbd></td>
+        <td>A circuit breaker. Severs all coupling for &tau; time units: halted desks neither see others
+        nor are seen, so each free-runs at its own &omega; and the cluster dephases. Halted nodes get a
+        violet outline and the canvas dims. This is the only control that fights a crash rather than
+        causing one.</td></tr>
+      <tr><td><b>&#8599; auto ramp &lambda;</b></td><td></td>
+        <td>Sweeps &lambda; from 0 up to 8 and back down, plotting R against &lambda; in the panel.
+        <b>The two curves do not retrace.</b> The market crashes on the way up at 4.1 but does not recover
+        until 3.1 on the way down. That loop is hysteresis, the reason a crash outlives its trigger.</td></tr>
+      <tr><td><b>&#9939; network</b></td><td></td>
+        <td>Switches between <b>ER &lang;k&rang;=12</b> (uniform connectivity, the configuration whose
+        bistable window the research measured) and <b>BA scale-free</b> (has real hubs, but almost no
+        bistable window). Use ER for hysteresis, BA for the hub-targeting story.</td></tr>
+      <tr><td><b>&#9689; colour</b></td><td></td>
+        <td>Cycles three ways. <b>order flow</b>: red/cyan by q<sub>i</sub>, the default.
+        <b>phase &theta;</b>: a cyclic map, so you see waves travel even when nothing is crashing.
+        <b>cascade trail</b>: nodes flare bright the moment they lock and fade over time, which makes the
+        propagation front visible sweeping outward. Pair that one with 0.25&times; speed.</td></tr>
+      <tr><td><b>&#8635; reset</b></td><td><kbd>r</kbd></td>
+        <td>New random phases and a new seed, keeping your current slider settings. Clears the history,
+        the price peak and the hysteresis loop.</td></tr>
+    </table>
+    <p style="margin-top:12px">Clicking any <b>node</b> opens the desk inspector in the right column: its
+    degree, its own frequency, its phase, its order flow, its local agreement, the field it feels, and the
+    locking inequality worked out with its own numbers.</p>
+  </div>
+
+  <div class="ex-block">
+    <h4>7. Quick reference: what each control changes</h4>
+    <dl class="ex-terms">
+      <dt>&lambda;</dt><dd>Herding strength. Below &lambda;<sub>b</sub> = 3.1 the market cannot stay
+      crashed. Between 3.1 and &lambda;<sub>f</sub> = 4.1 it is <b>bistable</b>: calm and crashed are both
+      stable, and a shock decides which one you get. Above 4.1 it crashes on its own.</dd>
+      <dt>&sigma;</dt><dd>Idiosyncratic news. Raising it smears the transition and lets noise alone trigger
+      crashes inside the window. Very high &sigma; destroys synchrony entirely.</dd>
+      <dt>&sigma;<sub>c</sub></dt><dd>Common market mode. Does not change whether a crash happens; changes
+      whether the crash is <i>visible</i> in return correlations.</dd>
+      <dt>f</dt><dd>Fraction of desks using the herding gain r<sub>i</sub>. At f = 0 you get the plain
+      Kuramoto model and a smooth, second-order transition with no hysteresis. Turn f down and watch the
+      bistable window close.</dd>
+      <dt>&epsilon;, &phi;</dt><dd>Shock strength and reach. Inside the window, hitting only 10 to 15% of
+      desks is enough to flip the market permanently.</dd>
+      <dt>&tau;</dt><dd>Halt length. During a halt the coupling is severed, so desks free-run at their own
+      &omega; and the cluster dephases at a rate set by the <i>spread</i> of &omega;. Too short a halt and
+      the market re-crashes the moment trading resumes.</dd>
+      <dt>speed</dt><dd>0.25&times; to 16&times;. Use 0.25&times; with the cascade colour mode to watch the
+      front propagate desk by desk.</dd>
+    </dl>
+  </div>
+
+  <div class="ex-block">
+    <h4>8. Reading the side panels</h4>
+    <dl class="ex-terms">
+      <dt>R and Q</dt><dd><b>R</b> is synchrony, the length of the average phase vector, 0 = disordered and
+      1 = everyone identical. <b>Q</b> is net order flow. A crash is R high <i>and</i> Q strongly negative.
+      R high with Q positive is a melt-up, which this model produces just as readily.</dd>
+      <dt>Phase circle</dt><dd>Every desk plotted at its angle, radius set by its local agreement. Watch it
+      go from an even ring (disordered) to a tight clump near SELL. The white arrow is the order parameter
+      R&middot;e<sup>i&Psi;</sup>: its length is R and its direction is the herd's phase.</dd>
+      <dt>R vs &lambda;</dt><dd>Press <b>auto ramp</b>. &lambda; sweeps up (cyan) then back down (red). The
+      two curves do not retrace: the market crashes at 4.1 but does not recover until 3.1. That gap is
+      <b>hysteresis</b>, and it is why a crash can persist long after its trigger is gone.</dd>
+      <dt>Phase timeline</dt><dd>The regime history, colour-coded, so you can see the sequence
+      calm &rarr; cascade &rarr; locked &rarr; halt &rarr; recovery at a glance.</dd>
+    </dl>
+  </div>
+
+  <div class="ex-block">
+    <h4>9. Three things to try</h4>
+    <ol>
+      <li><b>See the cascade.</b> Set speed 0.25&times;, colour mode to <i>cascade trail</i>, &lambda; to
+      3.5, then fire a hub shock. Freshly locked desks glow bright and fade, so the propagation front is
+      visible sweeping out from the hubs.</li>
+      <li><b>See hysteresis.</b> Press auto ramp and watch the R vs &lambda; panel trace a loop.</li>
+      <li><b>See why circuit breakers are hard.</b> Crash the market, then halt with &tau; = 1. It
+      re-crashes. Halt with &tau; = 8 and it does not. The minimum safe halt grows with &lambda; and
+      shrinks with strategy diversity.</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  Dynamics identical to <code>research/model.py</code> (stochastic Heun, verified to 4×10<sup>−13</sup> by
+  <code>simulation/validate_physics.py</code>). Network: <span id="footnet"></span>.
+  On the default ER ⟨k⟩=12 network an adiabatic sweep here gives λ<sub>b</sub> = 3.1, λ<sub>f</sub> = 4.1
+  (max hysteresis gap 0.80), reproducing the window [3.21, 3.96] measured in S2 for the same
+  configuration. The scale-free network has almost no bistable window (S2: heterogeneous networks
+  resist herding-induced bistability), so use it for the hub-targeting story, not for hysteresis.
+  Verified by <code>simulation/validate_scenarios.js</code>.
+</footer>
+</div>
+
+<div id="errbar" hidden style="position:fixed;left:0;right:0;bottom:0;z-index:99;background:#3d0d1c;
+  color:#ffd9e2;border-top:1px solid #ff2e63;padding:7px 12px;font-size:11px;white-space:pre-wrap"></div>
+<script>
+window.addEventListener('error', function(e){
+  var b=document.getElementById('errbar');
+  if(b){ b.hidden=false; b.textContent='JSERROR: '+(e.message||e)+'  @'+(e.filename||'')+':'+(e.lineno||''); }
+  document.title='JSERROR '+(e.message||'');
+});
+</script>
+<script src="network.js"></script>
+<script src="sim.js"></script>
+<script>
+(function(){
+'use strict';
+const NETS = window.NETWORKS;
+if(!NETS){ throw new Error('network.js did not load (run simulation/build_network.py)'); }
+const KEYS = Object.keys(NETS);
+const NETLABEL = {er12:'ER ⟨k⟩=12', ba6:'BA scale-free'};
+let netKey = 'er12';
+let NET = NETS[netKey];
+let sim = new Sim(NET, {lam:2.0, sigma:0.3, sigmaC:0.0, f:1.0, seed:7});
+
+/* ---------------------------------------------------------------- phases */
+const PHASES = [
+  {id:'INCOHERENT',  c:'#9fabc4', nm:'INCOHERENT',      ds:'R < 0.25. Phases spread around the circle, buys and sells cancel. This is a working market.'},
+  {id:'CLUSTERING',  c:'#00b4d8', nm:'CLUSTERING',      ds:'Partial synchrony. Sub-groups lock, R flickers upward but no global cluster yet.'},
+  {id:'SHOCK',       c:'#ffb703', nm:'SHOCK APPLIED',   ds:'A common sell signal is driving a subset of desks toward θ = −π/2.'},
+  {id:'CASCADE',     c:'#ff6b35', nm:'CASCADE',         ds:'R rising fast. Locked desks recruit neighbours; the front spreads along edges from hubs outward.'},
+  {id:'CRASH',       c:'#ff2e63', nm:'LOCKED CRASH',    ds:'R ≥ 0.75 with Q < −0.3. One giant cluster, everyone selling together. Self-sustaining.'},
+  {id:'HALT',        c:'#a78bfa', nm:'TRADING HALT',    ds:'Coupling severed. Desks free-run at their own ω and the cluster dephases at rate Δω.'},
+  {id:'DESYNC',      c:'#7dd3fc', nm:'DESYNCHRONISING', ds:'R falling. Diversity of trading horizons is pulling the herd apart.'},
+  {id:'RECOVERY',    c:'#22d3a6', nm:'RECOVERY',        ds:'Back below R < 0.3 after a crash. If λ is still above λ_b the market can re-crash.'}
+];
+const PH = Object.fromEntries(PHASES.map(p=>[p.id,p]));
+const phWrap = document.getElementById('phases');
+PHASES.forEach(p=>{
+  const d=document.createElement('div'); d.className='ph'; d.id='ph-'+p.id;
+  d.innerHTML='<div class="sw" style="background:'+p.c+'"></div><div><div class="nm" style="color:'+p.c+'">'+p.nm+'</div><div class="ds">'+p.ds+'</div></div>';
+  phWrap.appendChild(d);
+});
+
+/* ---------------------------------------------------------------- colour */
+function mix(a,b,t){return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t];}
+const C_SELL=[255,46,99], C_MID=[27,36,56], C_BUY=[0,224,255];
+function flowColor(q){ return q<0 ? mix(C_MID,C_SELL,Math.min(1,-q)) : mix(C_MID,C_BUY,Math.min(1,q)); }
+/* cyclic map for phase mode: dark -> cyan -> white -> red -> dark, period 2pi */
+function phaseColor(th){
+  const u=((th%(Math.PI*2))+Math.PI*2)%(Math.PI*2)/(Math.PI*2);
+  const stops=[[27,36,56],[0,224,255],[220,245,255],[255,46,99],[27,36,56]];
+  const s=u*4, i=Math.min(3,Math.floor(s));
+  return mix(stops[i],stops[i+1],s-i);
+}
+const rgba=(c,a)=>'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')';
+
+/* ---------------------------------------------------------------- canvas */
+function setup(id,h){
+  const c=document.getElementById(id), dpr=Math.min(window.devicePixelRatio||1,2);
+  const w=c.clientWidth||600; c.height=h; c.style.height=h+'px';
+  c.width=Math.max(1,Math.round(w*dpr)); c.height=Math.max(1,Math.round(h*dpr));
+  const x=c.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+  return {c,x,w,h};
+}
+let NETC,TSC,PXC,CIRC,HYSC,TLC;
+function layout(){
+  const big=Math.max(360,Math.min(720,Math.round((document.querySelector('#net').clientWidth)*0.62)));
+  NETC=setup('net',big); TSC=setup('ts',118); PXC=setup('px',96);
+  CIRC=setup('circ',148); HYSC=setup('hyst',148); TLC=setup('tl',54);
+}
+window.addEventListener('resize',()=>{layout();});
+
+/* ---------------------------------------------------------------- state */
+let N,EDG,NE,maxDeg,nx,ny,deg,lockPulse,wasLocked;
+function bindNet(){
+  N=NET.meta.n; EDG=NET.edges; NE=EDG.length/2; maxDeg=NET.meta.maxDeg;
+  nx=NET.x; ny=NET.y; deg=NET.deg;
+  lockPulse=new Float32Array(N); wasLocked=new Uint8Array(N);
+  lockTime=new Float64Array(N); lockTime.fill(NaN); selected=-1;
+  document.getElementById('netmeta').textContent =
+    'N='+N+'  E='+NE+'  ⟨k⟩='+NET.meta.meanDeg.toFixed(2)+'  k_max='+maxDeg+'  κ='+NET.meta.kappa.toFixed(2);
+  document.getElementById('footnet').textContent =
+    NET.meta.model+', E='+NE+', κ='+NET.meta.kappa.toFixed(2)+', C='+NET.meta.clustering.toFixed(3)+
+    ', assortativity '+NET.meta.assortativity.toFixed(3);
+}
+const hist={t:[],R:[],Q:[],P:[],stage:[]};
+const loop={fwd:[],bwd:[]};
+const SPEEDS=[0.25,0.5,1,2,4,8,16];
+let dt=0.02, speedIdx=2, speed=SPEEDS[2], paused=false, mode='flow';
+let stepAcc=0;               // fractional-substep accumulator, so 0.25x really is slow motion
+let lockTime=null;           // sim-time at which each node most recently locked (NaN = never)
+let selected=-1, tx={ox:0,oy:0,S:1};   // node inspector + the current canvas transform
+let peak=100, drawdown=0, stage='INCOHERENT', stageNote=PH.INCOHERENT.ds;
+let everCrashed=false, dR=0, lastR=0, shockUntil=-1, rampDir=0, fps=0, fpsAcc=0, fpsN=0;
+
+/* ---------------------------------------------------------------- stage */
+function classify(){
+  if(sim.halted) return ['HALT',PH.HALT.ds];
+  const R=sim.R, Q=sim.Q;
+  if(R>=0.75 && Q<-0.30){ everCrashed=true; return ['CRASH',PH.CRASH.ds]; }
+  if(sim.shockEps>0) return ['SHOCK',PH.SHOCK.ds];
+  if(dR>0.05 && R>0.30) return ['CASCADE',PH.CASCADE.ds];
+  if(everCrashed && dR<-0.04) return ['DESYNC',PH.DESYNC.ds];
+  if(everCrashed && R<0.30) return ['RECOVERY',PH.RECOVERY.ds];
+  if(R>=0.25) return ['CLUSTERING',PH.CLUSTERING.ds];
+  return ['INCOHERENT',PH.INCOHERENT.ds];
+}
+
+/* ---------------------------------------------------------------- draw: network */
+const EDGE_BUCKETS=10;
+function drawNet(){
+  const {x,w,h}=NETC; const S=Math.min(w,h);
+  const ox=(w-S)/2, oy=(h-S)/2;
+  tx.ox=ox; tx.oy=oy; tx.S=S;
+  x.fillStyle='#000'; x.fillRect(0,0,w,h);
+
+  const th=sim.theta, q=sim.q, rl=sim.rLocal, act=sim.active;
+  /* edges bucketed by alignment so each bucket is one path */
+  const paths=[]; for(let b=0;b<EDGE_BUCKETS;b++) paths.push([]);
+  for(let e=0;e<NE;e++){
+    const i=EDG[2*e], j=EDG[2*e+1];
+    const a=Math.cos(th[j]-th[i]);
+    if(a<=0.05) continue;
+    const b=Math.min(EDGE_BUCKETS-1,(a*EDGE_BUCKETS)|0);
+    paths[b].push(i,j);
+  }
+  /* dim base layer so the topology is always readable */
+  x.lineWidth=0.5; x.strokeStyle='rgba(70,86,120,0.10)'; x.beginPath();
+  for(let e=0;e<NE;e++){
+    const i=EDG[2*e], j=EDG[2*e+1];
+    x.moveTo(ox+nx[i]*S,oy+ny[i]*S); x.lineTo(ox+nx[j]*S,oy+ny[j]*S);
+  }
+  x.stroke();
+  for(let b=0;b<EDGE_BUCKETS;b++){
+    const p=paths[b]; if(!p.length) continue;
+    const a=(b+0.5)/EDGE_BUCKETS;
+    let qs=0; for(let k=0;k<p.length;k++) qs+=q[p[k]];
+    qs/=p.length;
+    const col=flowColor(qs*1.15);
+    x.strokeStyle=rgba(col,0.05+0.55*a*a);
+    x.lineWidth=0.45+1.15*a*a;
+    x.beginPath();
+    for(let k=0;k<p.length;k+=2){
+      const i=p[k], j=p[k+1];
+      x.moveTo(ox+nx[i]*S,oy+ny[i]*S); x.lineTo(ox+nx[j]*S,oy+ny[j]*S);
+    }
+    x.stroke();
+  }
+  /* lock pulses: a ring when a node newly locks, showing the front spreading */
+  x.lineWidth=1;
+  for(let i=0;i<N;i++){
+    if(lockPulse[i]<=0) continue;
+    const p=lockPulse[i]; lockPulse[i]=p-0.022;
+    const r0=2+(1-p)*17;
+    x.strokeStyle=rgba(q[i]<0?C_SELL:C_BUY, p*0.5);
+    x.beginPath(); x.arc(ox+nx[i]*S,oy+ny[i]*S,r0,0,6.2832); x.stroke();
+  }
+  /* nodes */
+  for(let i=0;i<N;i++){
+    const R0=1.5+4.6*Math.sqrt(deg[i]/maxDeg);
+    let col;
+    if(mode==='cascade'){
+      /* heat trail: how long ago this desk locked. Bright = just locked, so the propagation
+         front of the cascade is visible sweeping outward from wherever it started. */
+      const age=sim.t-lockTime[i];
+      col = isFinite(age) ? mix([255,240,180], [120,20,45], Math.min(1,age/12)) : [22,28,44];
+    } else col = mode==='flow' ? flowColor(q[i]) : phaseColor(th[i]);
+    const lum=0.30+0.70*rl[i];
+    const px=ox+nx[i]*S, py=oy+ny[i]*S;
+    if(rl[i]>0.55 && Math.abs(q[i])>0.35){
+      x.fillStyle=rgba(col,0.12*lum);
+      x.beginPath(); x.arc(px,py,R0*2.9,0,6.2832); x.fill();
+    }
+    x.fillStyle= act[i] ? rgba(col,0.35+0.65*lum) : 'rgba(90,100,125,0.35)';
+    x.beginPath(); x.arc(px,py,R0,0,6.2832); x.fill();
+    if(!act[i]){ x.strokeStyle='rgba(167,139,250,0.55)'; x.lineWidth=0.8; x.stroke(); }
+    if(sim.shockEps>0 && sim.shockMask[i]){
+      x.strokeStyle='rgba(255,183,3,0.85)'; x.lineWidth=1.1;
+      x.beginPath(); x.arc(px,py,R0+2.6,0,6.2832); x.stroke();
+    }
+  }
+  if(selected>=0 && selected<N){
+    const px=ox+nx[selected]*S, py=oy+ny[selected]*S;
+    const R0=1.5+4.6*Math.sqrt(deg[selected]/maxDeg);
+    x.strokeStyle='#ffffff'; x.lineWidth=1.4;
+    x.beginPath(); x.arc(px,py,R0+5,0,6.2832); x.stroke();
+    x.strokeStyle='rgba(255,255,255,0.28)';
+    x.beginPath(); x.arc(px,py,R0+10,0,6.2832); x.stroke();
+  }
+  if(sim.halted){
+    x.fillStyle='rgba(167,139,250,0.10)'; x.fillRect(0,0,w,h);
+    x.fillStyle='#cfc2ff'; x.font='600 12px '+getComputedStyle(document.body).fontFamily;
+    x.fillText('TRADING HALTED: coupling severed, τ remaining '+Math.max(0,sim.haltUntil-sim.t).toFixed(1),12,20);
+  }
+}
+
+/* ---------------------------------------------------------------- draw: panels */
+function axes(C,pad){
+  const {x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  x.strokeStyle='#161b2b'; x.lineWidth=1;
+  x.beginPath(); x.moveTo(pad,h-pad); x.lineTo(w-2,h-pad); x.stroke();
+}
+function drawTS(){
+  const C=TSC,{x,w,h}=C; axes(C,16);
+  const n=hist.R.length; if(n<2) return;
+  const x0=18, ww=w-x0-3, hh=h-22;
+  x.strokeStyle='#1b2133'; x.setLineDash([2,3]);
+  [0.25,0.5,0.75].forEach(v=>{const y=4+hh*(1-v); x.beginPath(); x.moveTo(x0,y); x.lineTo(w-3,y); x.stroke();});
+  x.setLineDash([]);
+  const st=Math.max(1,Math.ceil(n/ww));
+  /* Q in [-1,1] mapped onto the same box */
+  x.strokeStyle='rgba(255,183,3,0.75)'; x.lineWidth=1; x.beginPath();
+  for(let i=0,k=0;i<n;i+=st,k++){ const X=x0+ww*(i/(n-1)), Y=4+hh*(1-(hist.Q[i]+1)/2); k?x.lineTo(X,Y):x.moveTo(X,Y); }
+  x.stroke();
+  x.strokeStyle='#00e0ff'; x.lineWidth=1.4; x.beginPath();
+  for(let i=0,k=0;i<n;i+=st,k++){ const X=x0+ww*(i/(n-1)), Y=4+hh*(1-hist.R[i]); k?x.lineTo(X,Y):x.moveTo(X,Y); }
+  x.stroke();
+  x.fillStyle='#9fabc4'; x.font='10.5px '+getComputedStyle(document.body).fontFamily;
+  x.fillText('1',4,10); x.fillText('0',4,h-18);
+  x.fillStyle='#00e0ff'; x.fillText('R',x0+3,11);
+  x.fillStyle='#ffb703'; x.fillText('Q',x0+16,11);
+}
+function drawPX(){
+  const C=PXC,{x,w,h}=C; axes(C,14);
+  const n=hist.P.length; if(n<2) return;
+  let lo=Infinity,hi=-Infinity; for(let i=0;i<n;i++){lo=Math.min(lo,hist.P[i]);hi=Math.max(hi,hist.P[i]);}
+  if(hi-lo<0.6){hi=lo+0.6;}
+  const x0=26, ww=w-x0-3, hh=h-20, st=Math.max(1,Math.ceil(n/ww));
+  x.strokeStyle='rgba(76,86,112,0.5)'; x.setLineDash([2,3]); x.beginPath();
+  const y100=4+hh*(1-(100-lo)/(hi-lo)); x.moveTo(x0,y100); x.lineTo(w-3,y100); x.stroke(); x.setLineDash([]);
+  x.strokeStyle=drawdown<-3?'#ff2e63':'#c9d3e6'; x.lineWidth=1.3; x.beginPath();
+  for(let i=0,k=0;i<n;i+=st,k++){ const X=x0+ww*(i/(n-1)), Y=4+hh*(1-(hist.P[i]-lo)/(hi-lo)); k?x.lineTo(X,Y):x.moveTo(X,Y); }
+  x.stroke();
+  x.fillStyle='#9fabc4'; x.font='10.5px '+getComputedStyle(document.body).fontFamily;
+  x.fillText(hi.toFixed(1),2,11); x.fillText(lo.toFixed(1),2,h-13);
+}
+function drawCirc(){
+  const C=CIRC,{x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  const cx=w/2, cy=h/2, R=Math.min(w,h)/2-16;
+  x.strokeStyle='#1b2133'; x.lineWidth=1; x.beginPath(); x.arc(cx,cy,R,0,6.2832); x.stroke();
+  x.fillStyle='#9fabc4'; x.font='10px '+getComputedStyle(document.body).fontFamily;
+  x.fillText('BUY',cx-9,cy-R-4); x.fillText('SELL',cx-10,cy+R+11);
+  const th=sim.theta, rl=sim.rLocal;
+  for(let i=0;i<sim.n;i++){
+    const rr=R*(0.55+0.45*rl[i]);
+    const px=cx+rr*Math.cos(th[i]), py=cy-rr*Math.sin(th[i]);
+    const col= mode==='flow'? flowColor(Math.sin(th[i])) : phaseColor(th[i]);
+    x.fillStyle=rgba(col,0.55); x.beginPath(); x.arc(px,py,1.3,0,6.2832); x.fill();
+  }
+  x.strokeStyle='#eaf0ff'; x.lineWidth=1.6; x.beginPath(); x.moveTo(cx,cy);
+  x.lineTo(cx+R*sim.R*Math.cos(sim.psi), cy-R*sim.R*Math.sin(sim.psi)); x.stroke();
+  x.fillStyle='#eaf0ff'; x.beginPath();
+  x.arc(cx+R*sim.R*Math.cos(sim.psi), cy-R*sim.R*Math.sin(sim.psi),2.6,0,6.2832); x.fill();
+}
+function drawHyst(){
+  const C=HYSC,{x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  const x0=20,y0=h-16, ww=w-x0-6, hh=h-24;
+  x.strokeStyle='#161b2b'; x.beginPath(); x.moveTo(x0,y0); x.lineTo(w-4,y0); x.moveTo(x0,y0); x.lineTo(x0,4); x.stroke();
+  x.fillStyle='#9fabc4'; x.font='10px '+getComputedStyle(document.body).fontFamily;
+  x.fillText('λ',w-11,h-5); x.fillText('R',3,11); x.fillText('0',x0-6,h-5); x.fillText('8',w-9,h-5);
+  const pt=(p,col)=>{ x.fillStyle=col;
+    for(const d of p){ x.fillRect(x0+ww*(d[0]/8)-0.9, y0-hh*d[1]-0.9, 1.9,1.9); } };
+  pt(loop.fwd,'rgba(0,224,255,0.75)'); pt(loop.bwd,'rgba(255,46,99,0.75)');
+  x.fillStyle='#eaf0ff';
+  x.beginPath(); x.arc(x0+ww*(sim.lam/8), y0-hh*sim.R, 2.4,0,6.2832); x.fill();
+}
+function drawTL(){
+  const C=TLC,{x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  const n=hist.stage.length; if(!n) return;
+  const bw=w/Math.max(n,1);
+  for(let i=0;i<n;i++){ x.fillStyle=PH[hist.stage[i]].c; x.fillRect(i*bw,6,Math.ceil(bw),h-22); }
+  x.fillStyle='#9fabc4'; x.font='10px '+getComputedStyle(document.body).fontFamily;
+  x.fillText('t−'+(n*0.4).toFixed(0),2,h-4); x.fillText('now',w-20,h-4);
+}
+
+/* ---------------------------------------------------------------- inspector */
+function hitTest(cx,cy){
+  let best=-1,bd=1e9;
+  for(let i=0;i<N;i++){
+    const px=tx.ox+nx[i]*tx.S, py=tx.oy+ny[i]*tx.S;
+    const d=(px-cx)*(px-cx)+(py-cy)*(py-cy);
+    if(d<bd){bd=d;best=i;}
+  }
+  return bd<=400?best:-1;
+}
+document.getElementById('net').addEventListener('click',e=>{
+  const r=e.currentTarget.getBoundingClientRect();
+  selected=hitTest(e.clientX-r.left, e.clientY-r.top);
+  renderInspector();
+});
+
+function renderInspector(){
+  const box=document.getElementById('insp');
+  if(selected<0||selected>=N){
+    box.innerHTML='<p class="ins-empty">Click a node in the network to see what that desk is doing, '+
+      'the field it feels, and whether it is locked, with its own numbers in the equation.</p>';
+    document.getElementById('inspHint').textContent='click any node';
+    return;
+  }
+  const i=selected, k=deg[i], w=sim.omega[i], th=sim.theta[i];
+  const q=Math.sin(th), r=sim.rLocal[i], adapt=sim.adaptive[i]===1;
+  const alpha = adapt ? r : 1;
+  /* amplitude of the pull this desk feels: (lambda/<k>) * alpha_i * k_i * r_i */
+  const h = (sim.lam/NET.meta.meanDeg)*alpha*k*r;
+  const detune = Math.abs(w - 0);          // herd frequency is ~0 because <omega> = 0 by construction
+  const locked = detune <= h;
+  const sorted = deg.slice().sort((a,b)=>b-a);
+  const hubCut = sorted[Math.floor(N*0.10)], periCut = sorted[Math.floor(N*0.75)];
+  let role,roleCol,why;
+  if(k>=hubCut){ role='HUB'; roleCol='#ff9a3c';
+    why='Top 10% by degree. The pull a desk feels scales with its degree, h<sub>i</sub> &prop; k<sub>i</sub>, '+
+        'so hubs are entrained first and then act as the seed that recruits everyone else. This is why '+
+        'shocking hubs spreads a crash with the fewest desks hit.'; }
+  else if(k<=periCut){ role='PERIPHERAL'; roleCol='#6fb3ff';
+    why='Bottom quartile by degree. It feels a weak field, so it locks late and unlocks early. '+
+        'Shocking the periphery is the least effective way to start a cascade.'; }
+  else { role='TYPICAL DESK'; roleCol='#b9c4da';
+    why='Middling degree. It follows the cascade rather than leading it.'; }
+
+  const g=(a,b)=>'<div class="k">'+a+'</div><div class="v">'+b+'</div>';
+  box.innerHTML =
+    '<div class="ins-role" style="color:'+roleCol+'">node '+i+' &middot; '+role+'</div>'+
+    '<p class="ins-why">'+why+'</p>'+
+    '<div class="ins-grid">'+
+      g('k<sub>i</sub> degree', k+'  (max '+maxDeg+', mean '+NET.meta.meanDeg.toFixed(1)+')')+
+      g('&omega;<sub>i</sub> own frequency', w.toFixed(3))+
+      g('&theta;<sub>i</sub> phase', (th*180/Math.PI).toFixed(0)+'&deg;')+
+      g('q<sub>i</sub> order flow', (q>=0?'+':'')+q.toFixed(3)+(q<-0.3?'  selling':(q>0.3?'  buying':'  flat')))+
+      g('r<sub>i</sub> local agreement', r.toFixed(3))+
+      g('&alpha;<sub>i</sub> herding gain', adapt?('r<sub>i</sub> = '+r.toFixed(3)):'1 (not a herder)')+
+      g('h<sub>i</sub> field it feels', h.toFixed(3))+
+      g('|&omega;<sub>i</sub>| detuning', detune.toFixed(3))+
+    '</div>'+
+    '<div class="ins-eq">d&theta;<sub>'+i+'</sub>/dt = <b>'+w.toFixed(3)+'</b>'+
+      ' + (<b>'+sim.lam.toFixed(2)+'</b>/'+NET.meta.meanDeg.toFixed(1)+')&middot;<b>'+alpha.toFixed(3)+'</b>'+
+      '&middot;&Sigma;<sub>j</sub> sin(&theta;<sub>j</sub>&minus;&theta;<sub>'+i+'</sub>)'+
+      '<br>&nbsp;&nbsp;&nbsp;= <i>'+w.toFixed(3)+'</i> (its own pace) <i>'+
+      (h>=0?'&plusmn;'+h.toFixed(3):'')+'</i> (pull from '+k+' neighbours)</div>'+
+    '<div class="ins-verdict" style="background:'+(locked?'rgba(255,46,99,.15)':'rgba(0,224,255,.12)')+
+      ';color:'+(locked?'#ff8fab':'#8fe9ff')+'">'+
+      (locked
+        ? 'LOCKED: |&omega;<sub>i</sub>| = '+detune.toFixed(3)+' &le; h<sub>i</sub> = '+h.toFixed(3)+
+          '. The crowd out-pulls its own pace, so it is dragged to the herd phase.'
+        : 'DRIFTING: |&omega;<sub>i</sub>| = '+detune.toFixed(3)+' &gt; h<sub>i</sub> = '+h.toFixed(3)+
+          '. Its own pace beats the crowd, so it keeps cycling and contributes ~0 to R.')+
+    '</div>';
+  document.getElementById('inspHint').textContent='node '+i+' (k='+k+')';
+}
+
+/* ---------------------------------------------------------------- loop */
+let acc=0, lastT=performance.now(), sample=0;
+function frame(now){
+  const elapsed=Math.min(90,now-lastT); lastT=now;
+  fpsAcc+=elapsed; fpsN++;
+  if(fpsN>=20){ fps=1000/(fpsAcc/fpsN); fpsAcc=0; fpsN=0; document.getElementById('sFps').textContent=fps.toFixed(0); }
+
+  if(!paused){
+    stepAcc+=speed;
+    const nsub=Math.floor(stepAcc); stepAcc-=nsub;
+    for(let s=0;s<nsub;s++){
+      sim.step(dt);
+      if(sim.shockEps>0 && sim.t>shockUntil){ sim.clearShock(); }
+      if(rampDir!==0){
+        let L=sim.lam+rampDir*0.0022;
+        if(L>=8){L=8; rampDir=-1;} else if(L<=0){L=0; rampDir=0; document.getElementById('bRamp').classList.remove('on');}
+        sim.lam=L;
+        (rampDir>=0?loop.fwd:loop.bwd).push([L,sim.R]);
+        document.getElementById('cLam').value=L; document.getElementById('vLam').textContent=L.toFixed(2);
+      }
+    }
+    /* lock pulses */
+    for(let i=0;i<N;i++){
+      const lk=sim.rLocal[i]>0.72?1:0;
+      if(lk && !wasLocked[i]){ lockPulse[i]=1; lockTime[i]=sim.t; }
+      if(!lk) lockTime[i]=NaN;
+      wasLocked[i]=lk;
+    }
+    /* dR/dt in units of R per unit of simulated time, smoothed */
+    const rate=nsub>0?(sim.R-lastR)/(nsub*dt):0; lastR=sim.R;
+    dR=dR*0.90+rate*0.10;
+    peak=Math.max(peak,sim.price); drawdown=100*(sim.price/peak-1);
+    const [st,note]=classify();
+    if(st!==stage){ document.getElementById('ph-'+stage)?.classList.remove('active'); }
+    stage=st; stageNote=note;
+    document.getElementById('ph-'+stage)?.classList.add('active');
+
+    sample++;
+    if(sample%8===0){
+      hist.t.push(sim.t); hist.R.push(sim.R); hist.Q.push(sim.Q); hist.P.push(sim.price); hist.stage.push(stage);
+      if(hist.R.length>900){ hist.t.shift();hist.R.shift();hist.Q.shift();hist.P.shift();hist.stage.shift(); }
+    }
+  }
+
+  sim.computeLocal();
+  if(selected>=0) renderInspector();
+  drawNet(); drawTS(); drawPX(); drawCirc(); drawHyst(); drawTL();
+  const p=PH[stage];
+  document.getElementById('stagename').textContent=p.nm;
+  document.getElementById('stagename').style.color=p.c;
+  document.getElementById('stagebar').style.background=p.c;
+  document.getElementById('stagenote').textContent=stageNote;
+  document.getElementById('sR').textContent=sim.R.toFixed(3);
+  document.getElementById('sQ').textContent=(sim.Q>=0?'+':'')+sim.Q.toFixed(3);
+  document.getElementById('sQ').style.color=sim.Q<-0.2?'#ff2e63':(sim.Q>0.2?'#00e0ff':'#c9d3e6');
+  document.getElementById('sP').textContent=sim.price.toFixed(1);
+  document.getElementById('sD').textContent=drawdown.toFixed(1)+'%';
+  document.getElementById('sD').style.color=drawdown<-5?'#ff2e63':'#c9d3e6';
+  let locked=0; for(let i=0;i<N;i++) if(sim.rLocal[i]>0.72) locked++;
+  document.getElementById('sL').textContent=(100*locked/N).toFixed(0)+'%';
+  document.getElementById('sLam').textContent=sim.lam.toFixed(2);
+  document.getElementById('sPsi').textContent=(sim.psi*180/Math.PI).toFixed(0)+'°';
+  document.getElementById('phclock').textContent='t = '+sim.t.toFixed(1);
+  document.getElementById('pxnote').textContent='peak '+peak.toFixed(1);
+  requestAnimationFrame(frame);
+}
+
+/* ---------------------------------------------------------------- controls */
+const $=id=>document.getElementById(id);
+const bind=(c,v,f,fmt)=>{ const el=$(c); el.addEventListener('input',()=>{ const x=parseFloat(el.value); $(v).textContent=fmt(x); f(x); }); };
+bind('cLam','vLam',x=>sim.lam=x,x=>x.toFixed(2));
+bind('cSig','vSig',x=>sim.sigma=x,x=>x.toFixed(2));
+bind('cSigC','vSigC',x=>sim.sigmaC=x,x=>x.toFixed(2));
+bind('cF','vF',x=>sim.setHerdingFraction(x),x=>x.toFixed(2));
+bind('cEps','vEps',()=>{},x=>x.toFixed(2));
+bind('cPhi','vPhi',()=>{},x=>x.toFixed(2));
+bind('cTau','vTau',()=>{},x=>x.toFixed(1));
+$('cSpd').addEventListener('input',()=>{
+  speedIdx=parseInt($('cSpd').value,10); speed=SPEEDS[speedIdx];
+  $('vSpd').textContent=(speed<1?speed:speed.toFixed(0))+'\u00d7';
+});
+
+$('bPause').addEventListener('click',()=>{ paused=!paused;
+  $('bPause').textContent=paused?'▶ run':'⏸ pause'; $('bPause').classList.toggle('on',!paused); });
+function fire(rule){
+  sim.applyShock(parseFloat($('cEps').value), parseFloat($('cPhi').value), rule);
+  shockUntil=sim.t+8;
+}
+$('bShock').addEventListener('click',()=>fire('random'));
+$('bShockHub').addEventListener('click',()=>fire('hubs'));
+$('bHalt').addEventListener('click',()=>sim.halt(parseFloat($('cTau').value),1.0));
+$('bRamp').addEventListener('click',()=>{
+  const on=rampDir===0; rampDir=on?1:0; $('bRamp').classList.toggle('on',on);
+  if(on){ loop.fwd.length=0; loop.bwd.length=0; sim.lam=0; $('cLam').value=0; $('vLam').textContent='0.00'; }
+});
+const MODES=['flow','phase','cascade'];
+const MODELBL={flow:'◑ colour: order flow', phase:'◑ colour: phase θ', cascade:'◑ colour: cascade trail'};
+$('bMode').addEventListener('click',()=>{
+  mode=MODES[(MODES.indexOf(mode)+1)%MODES.length];
+  $('bMode').textContent=MODELBL[mode];
+});
+$('bReset').addEventListener('click',()=>{
+  sim.reset(7+((Math.random()*1000)|0));
+  hist.t.length=hist.R.length=hist.Q.length=hist.P.length=hist.stage.length=0;
+  loop.fwd.length=0; loop.bwd.length=0;
+  peak=100; drawdown=0; everCrashed=false; dR=0; rampDir=0; $('bRamp').classList.remove('on');
+  sim.lam=parseFloat($('cLam').value); sim.sigma=parseFloat($('cSig').value);
+  sim.sigmaC=parseFloat($('cSigC').value);
+});
+window.addEventListener('keydown',e=>{
+  if(e.key===' '){e.preventDefault(); $('bPause').click();}
+  if(e.key==='s') $('bShock').click();
+  if(e.key==='h') $('bHalt').click();
+  if(e.key==='r') $('bReset').click();
+});
+
+$('bNet').addEventListener('click',()=>{
+  netKey = KEYS[(KEYS.indexOf(netKey)+1) % KEYS.length];
+  NET = NETS[netKey];
+  sim = new Sim(NET, {lam:parseFloat($('cLam').value), sigma:parseFloat($('cSig').value),
+                      sigmaC:parseFloat($('cSigC').value), f:parseFloat($('cF').value), seed:7});
+  bindNet();
+  $('bNet').textContent='⛓ network: '+NETLABEL[netKey];
+  hist.t.length=hist.R.length=hist.Q.length=hist.P.length=hist.stage.length=0;
+  loop.fwd.length=0; loop.bwd.length=0;
+  peak=100; drawdown=0; everCrashed=false; dR=0; lastR=0; rampDir=0; $('bRamp').classList.remove('on');
+});
+
+/* deep-linkable scenarios, e.g. index.html?lam=3.45&warmup=90&shock=random
+   also how the headless screenshot tests drive the page into a given market phase */
+(function(){
+  const qp=new URLSearchParams(location.search);
+  if(qp.has('net') && NETS[qp.get('net')]){ netKey=qp.get('net'); NET=NETS[netKey];
+    sim=new Sim(NET,{lam:2.0,sigma:0.3,sigmaC:0.0,f:1.0,seed:7});
+    $('bNet').textContent='⛓ network: '+NETLABEL[netKey]; }
+  const num=(k,f)=>{ if(qp.has(k)){ const v=parseFloat(qp.get(k)); if(isFinite(v)) f(v); } };
+  num('lam',v=>{ sim.lam=v; $('cLam').value=v; $('vLam').textContent=v.toFixed(2); });
+  num('sigma',v=>{ sim.sigma=v; $('cSig').value=v; $('vSig').textContent=v.toFixed(2); });
+  num('sigmac',v=>{ sim.sigmaC=v; $('cSigC').value=v; $('vSigC').textContent=v.toFixed(2); });
+  bindNet();
+  const warm=parseFloat(qp.get('warmup')||'0');
+  if(warm>0){
+    const steps=Math.min(40000,Math.round(warm/dt));
+    for(let i=0;i<steps;i++){
+      sim.step(dt);
+      if(i%8===0){ hist.t.push(sim.t);hist.R.push(sim.R);hist.Q.push(sim.Q);
+        hist.P.push(sim.price);hist.stage.push(sim.R>=0.75&&sim.Q<-0.3?'CRASH':(sim.R>=0.25?'CLUSTERING':'INCOHERENT'));
+        if(hist.R.length>900){hist.t.shift();hist.R.shift();hist.Q.shift();hist.P.shift();hist.stage.shift();}
+        peak=Math.max(peak,sim.price); }
+    }
+    lastR=sim.R;
+  }
+  if(qp.has('shock')){
+    sim.applyShock(parseFloat($('cEps').value), parseFloat($('cPhi').value), qp.get('shock'));
+    shockUntil=sim.t+8;
+    for(let i=0;i<Math.round(8/dt);i++) sim.step(dt);
+    sim.clearShock();
+    for(let i=0;i<Math.round(40/dt);i++){ sim.step(dt);
+      if(i%8===0){ hist.t.push(sim.t);hist.R.push(sim.R);hist.Q.push(sim.Q);hist.P.push(sim.price);
+        hist.stage.push(sim.R>=0.75&&sim.Q<-0.3?'CRASH':(sim.R>=0.25?'CLUSTERING':'INCOHERENT'));
+        if(hist.R.length>900){hist.t.shift();hist.R.shift();hist.Q.shift();hist.P.shift();hist.stage.shift();}
+        peak=Math.max(peak,sim.price); } }
+    lastR=sim.R;
+  }
+  if(qp.has('halt')) sim.halt(parseFloat(qp.get('halt'))||6,1.0);
+})();
+
+layout();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

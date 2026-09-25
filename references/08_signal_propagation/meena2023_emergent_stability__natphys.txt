@@ -1,0 +1,2190 @@
+         Emergent stability in complex network dynamics
+           Chandrakala Meena,1−3 Chittaranjan Hens,4,5 Suman Acharyya,1,2 Simcha Haber,1
+                                  Stefano Boccaletti6−8 & Baruch Barzel1,2,9
+        1. Department of Mathematics, Bar-Ilan University, Ramat-Gan, Israel
+        2. Gonda Multidisciplinary Brain Research Center, Bar-Ilan University, Ramat-Gan, Israel
+        3. Chemical Engineering and Process Development, CSIR-National Chemical Laboratory, Pune, India
+        4. Physics and Applied Mathematics Unit, Indian Statistical Institute, Kolkata, India
+        5. Center for Computational Natural Sciences and Bioinformatics, International Institute of Information
+           Technology, Gachibowli, Hyderabad-500032, Telangana, India
+        6. CNR - Institute of Complex Systems, Florence, Italy
+        7. Moscow Institute of Physics and Technology (National Research University), Moscow, Russian Federation
+        8. Universidad Rey Juan Carlos, calle Tulipán s/n, 28933 Móstoles, Madrid, Spain
+        9. Network Science Institute, Northeastern University, Boston, MA., USA
+
+
+                                                                             In memory of Prof. Robert May
+ 1   The stable functionality of networked systems is a hallmark of their natural ability
+ 2   to coordinate between their multiple interacting components. Yet, strikingly, real-
+ 3   world networks seem random and highly irregular, apparently lacking any design for
+ 4   stability. What then are the naturally emerging organizing principles of complex-
+ 5   system stability? Encoded within the system’s stability matrix, the Jacobian, the
+ 6   answer is obscured by the scale and diversity of the relevant systems, their broad
+ 7   parameter space, and their nonlinear interaction dynamics. To make advances, we
+ 8   introduce here the dynamic Jacobian ensemble, which allows us to systematically
+ 9   investigate the fixed-point dynamics of a range of relevant network-based models.
+10   Within this ensemble, we find, complex systems exhibit discrete stability classes,
+11   from asymptotically unstable, where stability is unattainable, to sensitive, in which
+12   stability abides within a bounded range of the system’s parameters. Most cru-
+13   cially, alongside these two classes, we uncover a third class, asymptotically stable,
+14   in which a sufficiently large and heterogeneous network acquires a guaranteed stabil-
+15   ity, independent of its microscopic parameters, and therefore insensitive to external
+16   perturbation. Hence, in this ensemble, two of the most ubiquitous characteristics
+17   of real-world networks - scale and heterogeneity - emerge as natural organizing
+18   principles to ensure fixed-point stability in the face of changing environmental con-
+19   ditions.
+20   The study of complex social, biological and technological systems, is often directed towards
+21   dramatic events, such as cascading failures 1–5 or abrupt state transitions. 6–10 In reality, however,
+22   these represent the exception rather than the rule. In fact, the truly intriguing phenomenon
+23   is that, despite enduring constant perturbations and local obstructions, many systems continue
+24   to sustain reliably stable dynamics. 11–14 This is achieved in the absence of a detailed design,
+25   as indeed, the dynamics of the majority of complex systems are mediated by random, often
+26   extremely heterogeneous, networks, comprising a large number of interacting components, and
+27   driven by a vast space of microscopic parameters. What then are the roots of this observed
+28   stability?
+29   To address this we seek the system’s linear stability matrix, namely its Jacobian J, whose
+
+
+                                                           1
+30   principal eigenvalue λ determines its response to perturbation. 15,16 According to linear stability
+31   theory, perturbations may either grow exponentially (Re(λ) > 0), capturing instability, or decay
+32   exponentially (Re(λ) < 0), if the system is stable. These distinct behaviors depend on the
+33   detailed structure of J, and therefore predicting complex system stability boils down to two
+34   crucial challenges:
+35   Theoretical. The first challenge is of mathematical nature - how do we uncover the structure of
+36   J, given the scale, diversity and multiple parameters characterizing real-world complex systems?
+37   Indeed, for low-dimensional systems, with just few interacting components, J can be calculated
+38   explicitly around each of the system’s potential states. Yet, such explicit construction becomes
+39   intractable as the number of components N is increased. 17 A common paradigm to bypass this
+40   difficulty is to extract J from random matrix ensembles, allowing a simple construction, with
+41   well-established spectral properties. 18–20 This approach, however, overlooks emergent patterns
+42   in J, rooted in the system’s dynamic mechanisms, that have profound impact on stability. 21
+43   Practical. Regardless of our ability to calculate J, it remains unclear how real systems calibrate
+44   their structural/dynamic parameters to ensure that this J is stable. Indeed, random matrix
+45   theory indicates that, unless specifically designed for stability, a random J is extremely unlikely
+46   to have Re(λ) < 0. 18 We, therefore, seek to uncover naturally emerging organizing principles that
+47   secure stability without having to fine-tune the system’s vast number of microscopic parameters.
+48   Here, we address both challenges by extracting the structure of the Jacobian matrix directly from
+49   the system’s intrinsic nonlinear dynamics. We focus on a family of frequently encountered forms
+50   of interaction, from which we derive the dynamic Jacobian ensemble, a non-random matrix
+51   contruction, in which topology and dynamics are deeply intertwined. Under this ensemble,
+52   stability is determined by a small set of analytically attainable parameters that capture the
+53   combined contribution of both topology and dynamics. Most crucially, the ensemble includes a
+54   broad class of systems, for which the stability of selected fixed-points becomes inevitable in the
+55   limit of N → ∞. Such emergent stability, asymptotically independent of the majority of the
+56   system’s microscopic parameters, offers the desired natural design principles to ensure complex
+57   system stability. 22–24
+
+58   Fixed-point dynamics
+59   Consider a complex system of N interacting components (nodes), whose dynamic activities
+60   x(t) = (x1 (t), . . . , xN (t))> are driven by pairwise interactions, potentially nonlinear. The sys-
+61   tem’s fixed-points xα capture static states, which, unperturbed, remain independent of time.
+62   The dynamics in the vicinity of these fixed-point can be examined through the system’s response
+63   to small perturbations δx(t), which, in the linear regime, can be approximated by
+
+                                            dδx
+                                                = Jδx + O(δx2 ).                                      (1)
+                                             dt
+64   Here J, an N × N matrix, represents the system’s Jacobian around xα , which approximates,
+65   through a set of linear equations, the original nonlinear system’s dynamics in the perturbative
+66   limit, i.e. small activity changes x(t) = xα +δx(t). Hence, J’s spectral properties, and specifically
+67   its principal eigenvalue λ, are of crucial importance in characterizing the system’s fixed-point
+68   behavior.
+69   Two factors shape J - the system’s topology, i.e. who interacts with whom, and its internal
+70   dynamics, namely what is the nature of these interactions:
+
+
+                                                      2
+ 71   Topology. The first ingredient that impacts the structure of J is the network topology A, a
+ 72   binary matrix (Aij ∈ (0, 1), Aii = 0), which is typically sparse and often highly heterogeneous. 25
+ 73   As J is designed to capture the direct response between i and j, its off-diagonal terms vanish
+ 74   in case there is no direct i, j link, i.e. Aij = 0 ⇐⇒ Jij = 0 for all i 6= j. If, however Aij = 1,
+ 75   then the relevant term is assigned a weight Wij that captures the strength of the i, j linear
+ 76   dependence. Together, this leads to
+
+
+                                              J = (A − I) ⊗ W,                                        (2)
+
+ 77   where the Hadamard product ⊗ represents matrix multiplication element by element, and I is
+ 78   the N × N identity matrix. In (2) the network structure (A) determines the non-vanishing off-
+ 79   diagonal terms in J, and W determined their weights. The diagonal entries Jii are introduced
+ 80   through the second term in (2), I ⊗ W , where Wii quantifies xi (t)’s self-linear dependence.
+ 81   Dynamics - the random matrix paradigm. To complete the construction of (2) we must
+ 82   assign all weights W . In many of the traditional analyses these unknown weights are extracted
+ 83   from two pre-selected distributions, P0 (w) and P1 (w), capturing the probability density functions
+ 84   of the diagonal (P0 ) and off-diagonal (P1 ) weights. This gives rise to the Jacobian ensemble
+ 85   E(A, P0 , P1 ), in which one first sets the topology A, then assigns diagonal and off-diagonal
+ 86   weights from P0 (w) and P1 (w), respectively (Fig. 1a-c).
+ 87   As a classic example for this ensemble, we consider May’s 18 construction, in which A is an Erdős-
+ 88   Rényi (ER) network, the off-diagonal weights are extracted via Wij ∼ N (0, σ 2 ), a zero-mean
+ 89   normal distribution, and the diagonal entries are taken uniformly as Wii = 1. This captures the
+ 90   fact that the interaction strengths are potentially random, hence the distributed nature of Wij ,
+ 91   while the self-dynamics are driven by the system’s intrinsic relaxation timescales, as expressed
+ 92   by the fixed value of all Wii , here gauged to unity.
+ 93   More generally, one can consider more realistic Aij , e.g., small-world 26 or scale-free, 19 which
+ 94   have, indeed, been shown to impact (2)’s spectral properties. Similarly, P0 (w) and P1 (w) can
+ 95   be conditioned to account for specific patterns that arise from known dynamic processes. For
+ 96   example, in predator prey relationships a positive Wij must be matched with a negative Wji , 20
+ 97   capturing the asymmetry in the benefit/loss of the predator and its prey. More complex dynamic
+ 98   constraints may further impact the statistical properties of W , limiting the Jacobian to a selected
+ 99   subset of the random matrix ensemble. 21
+100   Yet, even under these more grounded constructions, the E(A, P0 , P1 ) ensemble, continues to have
+101   two crucial shortcomings: (i) it provides no explicit guidelines on how to connect P0 (w) and P1 (w)
+102   with the system’s specific nonlinear interactions; (ii) by assigning A and W independently, it
+103   ignores the potential interplay between the network structure and J’s dynamic weights. This
+104   stands in sharp contrast with the frequently observed fact that the system’s response patterns
+105   emerge from both structure and dynamics. 27–29
+106   How then do we appropriately assign the wights W in (2) to capture this interplay? For low
+107   dimensional systems of few components, this can be done on a case by case basis, by explicitly
+108   calculating all linear dependencies. However, for complex, often highly heterogeneous networks,
+109   in which not only is N  1, but all individual nodes are also potentially diverse, we lack a sys-
+110   tematic construction of J, limiting our ability to predict complex system fixed-point dynamics.
+111   We, therefore, now seek the rules that govern the structure of J, i.e. the relevant J-ensemble,
+112   for a set of frequently encountered forms of network dynamics.
+
+
+                                                       3
+113   The dynamic Jacobian ensemble
+114   To construct predictive J matrices we consider each system’s specific interaction mechanisms.
+115   For example, in epidemic dynamics, individuals interact through infection and recovery, 30–32
+116   in biological networks, proteins, genes and metabolites are linked through biochemical pro-
+117   cesses 33–36 and in population dynamics, species undergo competitive or symbiotic exchanges. 37–40
+118   Quite generally, these dynamic mechanisms can be represented by 27
+
+                                                     N
+                        dxi                     X                                     
+                            = M0 xi (t), f0i + g   Aij M1 xi (t), f1i Gij M2 xj (t), f2j ,                   (3)
+                        dt
+                                                    j=1
+
+119   where M0 (xi , f0i ) captures the self-dynamics of all nodes, and the product function M1 (xi , f1i ) ×
+120   M2 (xj , f2j ) describes the i, j pairwise interaction. Each of these functions, Mq (x, fqi ), q = 0, 1, 2,
+121   is characterized by a set of parameters fqi , or - collectively f , capturing rate constants, that
+122   may be potentially distributed across the system’s components. Hence, the functional form of
+123   Mq (x) is uniform throughout the network, yet the specific rates and coefficients f are node/link
+124   specific. In a similar fashion, the global interaction rate g increases/decreases the strength
+125   of all interactions, while the specific i, j interaction strength is governed by the potentially
+126   diverse weight matrix Gij . Together, (3) provides a generic template, allowing, by appropriately
+127   selecting Mq (x), to cover a range of frequently used models in social, 30,31 biological 33–37 and
+128   technological 41 systems, as demonstrated by our set of examples summarized in Fig. 2; see
+129   Methods Section 2 and Supplementary Section 1 for an expanded discussion of Eq. (3).
+130   Dynamic Jacobians (Fig. 1h). To obtain J we relinquish the random matrix construction
+131   E(A, P0 , P1 ), and extract the Jacobian directly from Eq. (3). In Supplementary Section 2, we
+132   show that this leads to a currently unexplored matrix ensemble, in which the Jacobian weights
+133   W in (2) are strongly intertwined with the weighted topology A, G via
+
+                                                Wii ∼ C(f , g)dηnn dµi                                       (4)
+
+134   for the diagonal weights Jii = −Wii , and
+
+
+                                                   Wij ∼ dνi Gij dρj                                         (5)
+
+135   for the off-diagonal weights Jij = Aij Wij (i 6= j).
+      In (4) and (5) di = N
+                           P
+136
+                             j=1 Aij Gij represents the weighted degree of node i, and
+
+
+                                                         N       N
+                                                 1 X 1 X
+                                           dnn =         Aij Gij dj                                          (6)
+                                                 N   di
+                                                      i=1        j=1
+
+137   represents the average weighted degree of a nearest neighbor node. 7 Together these parameters
+138   capture the role of the weighted network topology (Fig. 1g). The four exponents, Ω = (η, µ, ν, ρ)
+139   are determined by the dynamics, i.e. the functions Mq (x), hence capturing the role of the sys-
+140   tem’s internal driving mechanisms (Fig. 1e). In case of multiple fixed-points, we have Ω1 , Ω2 etc.,
+141   an exponent set per each fixed-point. The analytical extraction of Ω from Mq (x) is summarized
+142   in Methods Section 3. Finally, the coefficient C(f , g) > 0 is governed by the rate constants f
+143   and g, which do not play a role in the scaling exponents Ω (Fig. 1f).
+144   The resulting dynamic Jacobian in (4) and (5), our first key result, is fundamentally distinct
+
+                                                             4
+145   from the existing random matrix based constructions. On the one hand, the network structure
+146   A continues to determine the non-zero entries, similar to the classic ensemble E(A, P0 , P1 ). Also,
+147   the typical magnitude of the diagonal entries is determined by the system’s rates parameters
+148   through C(f , g), once again, analogous, albeit not identical, to the selection of P0 (w) in the
+149   existing ensemble. However, the similarity ends there, as (4) and (5), in contrast to E(A, P0 , P1 ),
+150   also capture the role of the system’s nonlinearity. Specifically, they predict emergent patterns in
+151   the structure of J, that are rooted in the interplay between topology and dynamics: the degrees
+152   dnn , di , dj are extracted from the weighted network topology A ⊗ G (Fig. 1g), while the scaling
+153   exponents Ω are derived from the dynamic functions Mq (x) (Fig. 1e).
+154   Therefore, we arrive at a new Jacobian ensemble E(A, G, Ω), which, unlike the random matrix-
+155   based treatment of E(A, P0 , P1 ), accounts for the effect of the system-specific nonlinear in-
+156   teraction dynamics. Consequently, in E(A, G, Ω), identical networks may give rise to highly
+157   distinctive Jacobian matrices, depending on whether the interactions are, e.g., social, biolog-
+158   ical or ecological, or even on the specific fixed-point within each interaction. Indeed, each of
+159   these systems/states is characterized by its unique set of exponents Ω, and, hence, its unique
+160   fixed-point dynamics (Fig. 1h).
+161   Testing E(A, G, Ω). To examine predictions (4) and (5) we constructed a broad testing ground,
+162   on which we implemented seven relevant dynamic models from different domains: Epidemic. The
+163   SIS model 30–32 for disease spreading • Regulatory. The Michaelis-Menten model 33 for gene regu-
+164   lation • Inhibitory. Growth suppression in pathogen-host interactions 39 • Biochemical. Protein-
+165   protein interactions 34–36 in sub-cellular networks • Population 1, 2. Mutualistic 37 interactions
+166   in population dynamics • Power. Load distribution in electric transmission networks. Applying
+167   each of these dynamics to five different model and relevant empirical networks, we arrive at a
+168   total of 35 combinations of networks/dynamics, upon which we test our predicted J-ensemble
+169   (for a detailed description of all dynamic models and networks see Supplementary Sections 4
+170   and 7; for additional dynamic systems generalizing Eq. (3) see Supplementary Section 5).
+171   In Fig. 2 we present, for each system, its dynamic equation (blue), and the list of relevant
+172   networks upon which it was tested (violet). In some cases the system features several fixed-
+173   points, for example, Epidemic (Fig. 2a) exhibits a healthy state (inactive x0 ) and a pandemic
+174   state (active x1 ). These states are presented using a 3D visualization. The network is laid out on
+175   the x, y plane, and the activities xi of all nodes are captured by the vertical z-axis displacement.
+176   Hence under x0 all nodes remain on the x, y plane (z = 0), while in the active state x1 they
+177   all have xi > 0. Finally, we display our predicted dynamic exponents Ω = (η, µ, ν, ρ) for each
+178   system around its active state (orange); see Supplementary Section 4, where we also derive Ω
+179   for the inactive states.
+180   Perturbing the system around its active fixed-point, we constructed the Jacobian matrix J for
+181   each of our 35 systems (Supplementary Section 7.2). In Fig. 3 we find that, indeed, the diagonal
+182   (Wii ) and off-diagonal (Wij ) weights of our numerically obtained J (blue symbols) follow the
+183   predicted scaling of (4) and (5) (orange solid lines). For example, in Epidemic we predict µ = 1,
+184   while for Regulatory we have µ = 0, both scaling relationships clearly evident in Fig. 3b and
+185   d. This means that extracting all diagonal terms independently from P0 (w), as in E(A, P0 , P1 ),
+186   misses the actual patterns that arise from the nonlinear Epidemic/Regulatory dynamics. Simi-
+187   larly, the off-diagonal terms are proportional to d−1      0                           0      −2
+                                                         i Gij dj in Epidemic (Fig. 3c) and di Gij dj in
+188   Regulatory (Fig. 3e) - once again, in striking agreement with our theoretical predictions (orange
+189   solid lines). And yet, in stark contrast with the random construction E(A, P0 , P1 ), where Wij
+
+
+                                                       5
+190   are extracted independently from P1 (w).
+191   Our analysis further predicts that these scaling relationships, encapsulated within our analyt-
+192   ically predicted Ω, depend only on Mq (x), thus independent of the network structure A, its
+193   weights G, or the specific coefficients f and g. We examine this in Fig. 3, by testing each of our
+194   dynamics on a diverse set of networks, with different degree/weight distributions. As predicted,
+195   we find that η, µ, ν and ρ are, indeed, universal, conserved across our distinct model (Erdős-
+196   Rényi, Scale-free 1, Scale-free 2) and relevant empirical (Social 1,2, PPI 1,2, etc.) networks.
+197   Hence, Ω captures the intrinsic, and most crucially, hitherto overlooked, contribution of the
+198   nonlinear dynamics in (3) to the structure of J.
+199   Together, our derivation demonstrates that: (i) dynamic J matrices, extracted from Eq. (3) are
+200   fundamentally distinct from the commonly used random ensembles; (ii) contrary to the random
+201   J ensembles, our dynamic Jacobians feature non-random scaling patterns in which topology
+202   (dnn , di , dj ) and dynamics (Ω) are deeply intertwined; (iii) these patterns can be analytically
+203   traced to the system’s dynamics Mq (x) through Eqs. (4) and (5), giving rise to our new dynamic
+204   Jacobian ensemble E(A, G, Ω). Next, we use E(A, G, Ω) to derive the conditions for Eq. (3)’s
+205   dynamic stability.
+
+206   Dynamic stability
+207   The dynamic stability of (3) around a given fixed-point is governed by J’s principal eigenvalue λ,
+208   requiring that Re(λ) < 0. To obtain λ, let us first focus on the role of the network topology A, G.
+209   The ingredients of J ∈ E(A, G, Ω), as expressed in Eqs. (4) and (5), suggest that λ is strongly
+210   linked to the network’s weighted degree density function P (d). This is indicated directly through
+211   the dependence on di and dj , but also indirectly through the nearest neighbor degree dnn , whose
+212   magnitude depends on the system’s degree-heterogeneity. 42 For instance, in a randomly wired
+213   network we have dnn = hd2 i/hdi, 7,19 in which the second moment hd2 i increases with P (d)’s
+214   variance, and consequently with A, G’s heterogeneity. In case P (d) is fat-tailed, we have 42
+
+
+                                                  dnn ∼ N β ,                                        (7)
+
+215   an asymptotic divergence with system size. Hence, β is driven by the network’s degree-heterogeneity,
+216   being β = 0 for homogeneous networks, in which P (d) is concentrated around its mean, and
+217   β > 0 for heterogeneous A, G, where the variance is unbounded.
+218   The remaining ingredients in (4) and (5) which may impact λ are Ω = (η, µ, ν, ρ) and C(f , g).
+219   Combining all three contributions together, we show in Supplementary Section 3 that in E(A, G, Ω),
+220   the principal eigenvalue asymptotically follows
+                                                              
+                                                    Q C(f , g)
+                                        Re(λ) ∼ N  1−            ,                                   (8)
+                                                       NS
+                                 
+221   where Q = β 1 + ν + ρ − η/2 and
+
+
+                                          S = β(s + ν + ρ − µ − η).                                  (9)
+
+222   In (9), the parameter s depends on the sign of the interactions, being s = 1 under cooperative
+223   interactions (positive Jij ), such as in Epidemic or Regulatory, and s = 0 if the interactions are
+224   adversarial (negative Jij ), e.g, Inhibitory or Biochemical.
+
+
+                                                        6
+225   Equations (8)-(9), our second key result, uncover the asymptotic behavior of λ in the limit of a
+226   large complex system N → ∞. Contrary to E(A, P0 , P1 ), in which λ is fully determined by A
+227   and G, here the exponents S and Q depend also on dynamics, via Ω. Most importantly, these
+228   equations have crucial implications regarding the system’s fixed-point stability, giving rise to
+229   three potential stability classes, uniquely predicted within our dynamic J-ensemble (Fig. 1i):
+230   Asymptotic instability (S > 0, Fig. 1i, red). In case S in (8) is positive, we have, for suf-
+231   ficiently large N , Re(λ) ∼ N Q > 0. Therefore, as the system size N is increased, such states
+232   inevitably become unstable • Asymptotic stability (S < 0, Fig. 1i, blue). For S < 0 we have
+233   N S → 0, the r.h.s. of (8) is dominated by the negative term, and hence Re(λ) < 0. Consequently,
+234   here in the limit N → ∞, stability becomes unconditionally guaranteed • Sensitive stability
+235   (S = 0, Fig. 1i, green). Under S = 0 the system lacks an asymptotic behavior, and therefore,
+236   its stability depends on C(f , g) in (8). If C(f , g) > 1 the system is stable, otherwise it becomes
+237   unstable. Hence, in this class stability is not driven by the system size N , but rather by the
+238   coefficient C(f , g), and consequently by Eq. (3)’s rate parameters f and g.
+239   Stability classifier. The stability classifier S in (9) helps group all J ∈ E(A, G, Ω) into distinct
+240   stability classes. It achieves this by identifying the relevant topological (β) and dynamic (Ω)
+241   control parameters that help analytically predict the stability of any system within the form of
+242   Eq. (3). We can therefore use S to predict a priori whether a specific combination of topology
+243   and dynamics will exhibit stable functionality or not.
+244   The derivation of S in Supplementary Section 3, relies on a star-approximation, in which we
+245   reduce the complexity of a degree-heterogeneous network into that of a single hub, i.e. a star
+246   network. This, of course, represents a rather crude simplification, and therefore, to examine
+247   S’s predictive power in an actual network setting, we tested it extensively against a diverse set
+248   of complex networks. Specifically, we used our model and empirical networks to extract 7, 387
+249   Jacobian matrices from the E(A, G, Ω) ensemble, with different sets of η, µ, ν and ρ. In Fig. 4a
+250   we show the principal eigenvalue λ vs. S for the entire 7, 387 Jacobian sample. As predicted,
+251   we find that the parameter S sharply splits the sample into three classes. The asymptotically
+252   unstable class (red, top-right) has S > 0 and consequently also λ > 0, a guaranteed instability.
+253   The asymptotically stable class (blue, bottom-left) is observed for S < 0, and has, in all cases
+254   λ < 0, i.e. stable dynamics. Finally, for S = 0 we observe sensitive stability, with λ having
+255   no asymptotic positive/negative assignment (green). A small fraction (∼ 8%) of our sampled J
+256   matrices were inaccurately classified by S (grey), an expected consequence of the approximate
+257   nature of S’s derivation.
+258   Figures 3 and 4, together, corroborate our theoretical path up to this point: first, Fig. 3 shows
+259   that dynamic J matrices exhibit the internal scaling patterns predicted in (4) and (5). Next,
+260   Fig. 4a shows that the resulting Jacobian ensemble E(A, G, Ω) has a rich stability profile that
+261   is fully characterized by a single parameter - our analytically predicted classifier S. We can
+262   now use S to analyze the structural and dynamic ingredients that contribute to complex system
+263   stability.
+
+264   The ingredients of dynamic stability
+265   The parameter S in (9) reduces Eq. (3)’s dynamic stability into five relevant exponents. The first
+266   four Ω = (η, µ, ν, ρ) are determined by the system’s intrinsic dynamics Mq (x), around each of
+267   its fixed-points. The remaining exponent in (9), β, is independent of the dynamics, determined
+268   solely by A, G, specifically by the weighted degree density function P (d), through (7). Therefore,
+
+
+                                                       7
+269   together, S captures the roles of both topology and dynamics, whose interplay determines the
+270   system’s stability class around a specific fixed-point - stable, unstable or sensitive.
+271   The only remaining factor in (8) is the coefficient C(f , g), whose value is driven by Eq. (3)’s
+272   rate parameters f , g. Yet, as our analysis indicates, this factor is sidelined for large N when
+273   S 6= 0. We interpret this to mean that under asymptotic stability or instability, the system’s
+274   countless microscopic parameters turn irrelevant, and the stable/unstable fixed-points of (3)
+275   become ingrained into the system’s intrinsic dynamics, i.e. the functional form of Mq (x); see
+276   Methods Section 2 and Supplementary Section 1 for an expanded discussion on this distinction.
+277   To gain deeper insight, consider, for example, the factors that drive a system towards the
+278   loss of stability. Most often such events result from external stress or changes in environmental
+279   conditions. 7 Such forces impact the system by perturbing its dynamic parameters, e.g., changing
+280   the rates of specific processes. Seldom, however, do these environmental perturbations affect
+281   the system’s built-in interaction mechanisms. Indeed, these mechanisms are ingrained in the
+282   physics of the interacting components, and therefore they are unaffected by external conditions.
+283   Hence, asymptotic stability (S < 0, N → ∞) depicts robust dynamic states, that are insensitive
+284   to changes in the system’s microscopic parameters.
+285   The role of degree-heterogeneity. The prevalence of fat-tailed P (d) is among the defining
+286   features of many real-world complex systems, from biological 43 to social 44,45 and technologi-
+287   cal 46,47 networks, with far-reaching implications on their observed dynamic behavior. 7,19,27 Our
+288   analysis indicates that this universal network characteristic may also play a crucial role in the
+289   context of dynamic stability.
+290   To understand this, consider a homogeneous P (d), such as an ER network with randomly
+291   assigned weights. Here the weighted degrees follow a Poisson distribution, having β = 0. Under
+292   these conditions we have S = 0 in (9), the system has no defined asymptotic behavior, and hence
+293   it is sensitively stable - i.e. its stability depends on model parameters via C(f , g). Therefore,
+294   our predicted asymptotically stable/unstable classes, which depend on β > 0, emerge as a direct
+295   consequence of degree-heterogeneity. This suggests that degree/weight-heterogeneity serves as
+296   a dynamically stabilizing structural characteristic, locking-in specific fixed-points, in the face of
+297   a persistently fluctuating environment.
+298   To further uncover the roots of asymptotic stability/instability, we consider again E(A, G, Ω)’s
+299   principal eigenvalue λ in (8). Its structure portrays stability as a balance between the posi-
+300   tive, i.e. destabilizing, effect mediated by the network interactions, vs. the negative, stabilizing,
+301   feedback, driven by the parameter C(f , g) in J’s diagonal, as expressed in Eq. (4); Fig. 4b. It
+302   is, therefore, natural to enhance stability by increasing C(f , g), which, in effect, translates to
+303   strengthening each node’s intrinsic negative feedback. Equation (8) predicts that J becomes
+304   stable if C(f , g) exceeds a critical value
+
+
+                                                   C0 ∼ N S ,                                         (10)
+
+305   beyond which λ turns negative. For asymptotically stable systems (S < 0) we have, for suffi-
+306   ciently large N , C0 → 0, a guaranteed stability even under arbitrarily small C(f , g). In contrast,
+307   for asymptotically unstable systems (S > 0) we have C0 → ∞, hence such systems are im-
+308   possible to stabilize even under extremely large C(f , g). We emphasize that C(f , g) is the only
+309   component in (8) that is dependent on the system’s tunable parameters, and therefore having
+310   an unbounded range of C-values under which the system remains stable (or unstable) guar-
+
+
+                                                       8
+311   antees that λ is, indeed, unaffected by parameter perturbation, e.g., changing environmental
+312   conditions.
+                                               BOX I. Will a large complex system be stable?
+313   To test Eq. (10), in Fig. 4c-k we This question, first posed by May in 1972, 18 captures a
+314   extract a set of three specific J long standing challenge, fueled by the seeming contra-
+315   matrices from E(A, G, Ω), represent- diction between theory and practice. While empirical
+316   ing systems from our three stabil- reality answers with an astounding yes, May’s mathe-
+317   ity classes: JAS , asymptotically sta- matical analysis, based on random matrix theory, sug-
+318   ble with Ω = (2, 2, 2, −1); JSS , sensi- gests the contrary, giving rise to the diversity-stability
+319   tively stable with Ω = (0, −1, −2, 0); debate.
+320   and JAU , asymptotically unstable
+                                               In the works that followed it became clear that real-
+321   with Ω = (1, −2, −1, 2). For each
+                                               world complex systems are not random. Rather they in-
+322   of these we plot C0 vs. N , captur-
+                                               corporate unique structural 20,48,49 and dynamic 21,23,24
+323   ing the level of negative feedback re-
+                                               constraints - or organizing principles - that enhance
+324   quired to ensure the system’s stabil-
+                                               stability. Our dynamic Jacobian ensemble offers such
+325   ity. Under ER (β = 0, Fig. 4i-k) we
+                                               organizing principles, that emerge quite naturally in
+326   do not observe a defined asymptotic
+                                               a variety of real-world systems, that can be captured
+327   behavior. The critical C0 does not
+                                               within Eq. (3). The resulting non-random J-ensemble
+328   scale with N , indicating that suffi-
+                                               exhibits built-in scaling patterns, which, in turn, predict
+329   cient perturbation to the model pa-
+                                               a broad class of asymptotically stable dynamics. This
+330   rameters can, indeed, affect J’s sta-
+                                               offers quite broad conditions in which May’s original
+331   bility.
+                                               question receives a clear answer: large complex systems
+332   In contrast, constructing the same J not only can, but, often must be stable.
+333   matrices from our scale-free network
+334   SF1 (β = 0.6), we now observe a clear asymptotic behavior, congruent with the prediction
+335   of (10). For JAS we have C0 ∼ N −1.2 , while under JAU we observe C0 ∼ N 1.8 (Fig. 4f-h,
+336   squares), precisely as predicted (solid lines). Finally, in JSS , having S = 0, the system, again
+337   lacks an asymptotic behavior, and therefore can be stabilized (or destabilized) under finite C0 ,
+338   independently of system size N (Fig. 4g). Together, Eq. (10) helps us link the scale N of
+339   a complex system with its observed stability. As opposed to the random matrix viewpoint
+340   of E(A, P0 , P1 ), in which N has a destabilizing effect, 18 our dynamic ensemble uncovers broad
+341   conditions where the contrary is true, and N → ∞, is, in fact, what anchors the system’s stability
+342   (Box I). Next, we return to our testing ground of dynamical systems (Fig. 2) to examine this
+343   asymptotic stability, not just on artificially constructed J, but under the full nonlinear setting
+344   of Eq. (3).
+345   Emergent stability. The stabilizing/destabilizing effect of N and P (d) is especially relevant
+346   if (3) exhibits multiple fixed-points, for example, an undesirable x0 and a desirable x1 . For a
+347   low-dimensional system (N small) transitions between these points are controlled by the system
+348   parameters. This is also the case if the system is large (N → ∞) but homogeneous (β = 0).
+349   Indeed, both cases belong to the sensitively stable class, in which λ in (8) shows no asymptotic
+350   trend - either due to the finite value of N or due to the fact that β = 0 in (9). Such parameter-
+351   driven state transitions capture the classic view of dynamic stability: the potential fixed-points
+352   are rooted in the system’s intrinsic nonlinear dynamics, their stability, on the other hand, is
+353   determined by its specific parameters. 7
+354   The picture, however, changes fundamentally when the network is large and heterogeneous, i.e.
+355   N → ∞ and β > 0. This is because in E(A, G, Ω) each of the system’s fixed-points may be
+
+
+                                                       9
+356   potentially characterized by a unique set of dynamic exponents, x0 ’s Jacobian having the set
+357   Ω0 and x1 having Ω1 (Fig. 5a,b). If, for instance, Ω0 has S > 0 in (9) and Ω1 has S < 0, then
+358   x0 becomes asymptotically unstable and x1 becomes asymptotically stable. Such system will be
+359   guaranteed to reside only in x1 , unaffected by perturbation to f or g.
+360   To observe this we return to our testing ground of Fig. 2, this time focusing on dynamic models
+361   that have multiple fixed-points. This includes Regulatory, Epidemic and Inhibitory, each of
+362   which exhibits on top of its active state x1 , in which all xi > 0, an inactive state x0 = (0, . . . , 0)> ,
+363   where all activities vanish (Population 1,2 also exhibit an inactive x0 , however it is never stable,
+364   see Supplementary Section 4.3).
+365   First, we simulated Regulatory on an ER network, and varied the model’s two parameters fi ,
+366   the individual node degradation rate, and g, the global interaction strength. We find that when
+367   the average hf i is large or, alternatively, when g is small the system resides in x0 , whereas in
+368   the opposite limit, it favors x1 (Fig. 5c-e, diamonds). This is precisely the sensitive stability, in
+369   which the system’s fixed-point behavior is driven by its microscopic parameters. Repeating the
+370   same experiment on our scale-free network SF1, we observe that x1 is sustained for a broader
+371   range of hf i and g, hence SF1 is comparably insensitive to changes in these parameters (Fig.
+372   5d-f, triangles). This robustness is a direct outcome of our classifier: x0 has Ω0 = (0, 0, 0, 0),
+373   which in (9) predicts S = β > 0, while x1 has Ω1 = (0, 0, 0, −2), and hence S = −β < 0.
+374   Therefore, on a large (N → ∞) scale-free (β > 0) network, x0 becomes asymptotically unstable,
+375   and the system is forced to reside in the asymptotically stable x1 .
+376   To observe this systematically we seek the critical global weight gc , below which x1 becomes
+377   unstable, and the system transitions to x0 . Varying the system size N over 4 orders of mag-
+378   nitude, from 10 to 2 × 104 , we observe first hand x1 ’s asymptotic stability: while under ER gc
+379   is almost independent of N (Fig. 5g, diamonds), in SF1 it scales negatively with system size,
+380   approaching gc → 0 in the limit N → ∞ (triangles). Hence, as predicted, SF1 remains stable
+381   even under arbitrarily small gc . This reconfirms prediction (10), but this time, not on theoreti-
+382   cally constructed J from E(A, G, Ω), as shown in Fig. 4f-k, but rather on the actual numerically
+383   simulated dynamics of Eq. (3). Similar stability patterns are also observed in Epidemic and
+384   Inhibitory (Fig. 5h,i and Supplementary Sections 4.1 and 4.5).
+385   The role of the hub nodes. Taken together, we observe a qualitative difference between
+386   homogeneous vs. fat-tailed P (d), in which degree-heterogeneity can potentially afford the net-
+387   work a guaranteed stability, that is asymptotically independent of microscopic parameters. This
+388   phenomenon is rooted in the dominance of the hub nodes, whose dynamic behavior forces the
+389   entire system towards stability/instability. In that sense, one can think of our classifier S as a
+390   mathematical tool to predict precisely what will be the dynamic role of the hubs - whether the
+391   hubs serve as stabilizers (S < 0), destabilizers (S > 0) or neither (S = 0).
+392   Generality and limitations the E(A, G, Ω) ensemble. Our ensemble E(A, G, Ω) was an-
+393   alytically derived under the conditions defined by Eq. (3). Despite its general structure, we
+394   wish to emphasize that this equation still excludes several families of dynamics. For example,
+395   non-additive interactions or threshold models. 50 Similarly, if the system incorporates a mixture
+396   of distinct interaction mechanisms, such that every node/link is driven by its own idiosyncratic
+397   processes, the dynamics cannot be cast into the form M0 (x), M1 (x), M2 (x).
+398   We note, however, that while our analytical derivations are, indeed, bounded by these restric-
+399   tions, the family of potential dynamics included within the E(A, G, Ω) ensemble may, in fact,
+400   be broader. Specifically, in Supplementary Section 5 we consider several expansions to Eq. (3)
+
+
+                                                          10
+401   that help us examine the applicability limits of our dynamic Jacobians • Non-factorizable in-
+402   teractions. Our testing ground includes Power dynamics, in which the interaction term cannot
+403   be partitioned into a product M1 (xi )M2 (xj ), but rather incorporates a diffusive mechanism
+404   of the form M (xj − xi ). Such dynamics, excluded from (3), arise in different contexts, from
+405   reaction-diffusion to synchronization, 51,52 and despite the fact that they are not covered by our
+406   anaytical framework, our analysis of Power indicates that they continue to fall within E(A, G, Ω)
+407   • Non-additive interactions. Another outlier in Fig. 2 is Population 2, in which the linear sum
+      PN                                     PN
+408
+         j=1 M2 (xj ) is replaced by M2 ( j=1 xj ), again - outside the bounds of (3). Still, as shown,
+409   e.g., in Fig. 3n,o, this system also has J ∈ E(A, G, Ω) • Mixed dynamics. The last assumption we
+410   challenge is the notion that all components are driven by similar dynamic processes, as expressed
+411   by the uniform functional form of Mq (x) across all nodes. In Supplementary Sections 5.4 and
+412   5.5 we examine, numerically, systems with two or three competing self or interaction dynamics.
+413   The Jacobians of such systems, we find, exhibit coexisting scaling relationships with exponent
+414   sets Ω1 , Ω2 , . . . , corresponding to the network’s distinct dynamic mechanisms. This captures a
+415   natural generalization of E(A, G, Ω), that indicates the potential qualitative insight offered by
+416   our analysis, even beyond Eq. (3)’s technical limits.
+
+417   Discussion and outlook
+418   The linear stability matrix J carries crucial information on the dynamic behavior of complex
+419   systems. Here, we exposed distinct patterns in the structure of J that (i) arise from the nature
+420   of the system’s interaction dynamics; (ii) affect its principal eigenvalue, and thus, its stability
+421   profile. These patterns are expressed through the four dynamic exponents Ω = (η, µ, ν, ρ), which
+422   we link analytically to the system’s dynamic functions, Mq (x), independently of the weighted
+423   network topology A, G or parameters f , g. We interpret this to mean that Ω is hardwired into
+424   the system’s innate interaction dynamics, determined by the dynamic model, e.g., Epidemic or
+425   Regulatory, but not by the specific model parameters or the system’s underlying connectivity
+426   patterns. Therefore, our predicted Jacobian ensemble in (4) and (5), as well as its associated
+427   stability classifier S in (9), both capture highly robust and distinctive characteristics of the
+428   system’s dynamics, that cannot be perturbed or otherwise affected by shifting environmental
+429   conditions.
+430   Our predicted asymptotic stability/instability is driven by the limit of large d, i.e. the hubs.
+431   It is therefore mainly relevant for degree-heterogeneous networks. While extreme heterogeneity
+432   is, indeed, common in many biological and social systems, there are areas, such as in ecological
+433   systems, 53 were the networks tend to be more homogeneous. Under such conditions, our theory
+434   predicts that the system is in the sensitive class: it could be stable, but its stability is not
+435   guaranteed in the face of parameter perturbation.
+436   Our asymptotic predictions capture the system’s global stability, but have no bearing on the
+437   dynamic stability of small motifs or sub-networks, which may be locally unstable. Still in an
+438   asymptotically stable system, the global impact of such unstable motifs, vanishes in the limit
+439   of large N , and hence the system as a whole remains insensitive to these local discrepancies
+440   (Supplementary Section 6).
+441   Graph spectral analysis represents a central mathematical tool to translate network structure
+442   into dynamic predictions. 54–56 A network’s spectrum, i.e. its set of eigenvalues and eigenvectors,
+443   captures information on its dynamic timescales, potential states, and - in the present context -
+444   its dynamic stability. Most often, spectral analysis is applied to the network topology, namely
+445   we seek the graph’s eigenvalues, thus overlooking information on the nonlinear dynamics that
+
+                                                      11
+446   occur on that graph. As an alternative, our E(A, G, Ω) ensemble suggests to apply spectral
+447   analysis, not to the topology A (or the weighted A ⊗ G), but rather to the derived Jacobian in
+448   (4) and (5), which, thanks to Ω preserves the information of both structure and dynamics.
+449   In a broader perspective, the interplay between topology and dynamics is one of the major
+450   theoretical obstacles along the path to predict, understand and control complex system be-
+451   havior. 57–60 The problem is that we lack sufficient theoretical tools to treat the challenging
+452   combination of nonlinear dynamics with complex, random and often highly heterogeneous net-
+453   work structures. Consequently, advances are often system specific, requiring dedicated tools,
+454   and hence, lacking the breadth of a general network dynamics theory. The Jacobian ensemble
+455   presented here, transforms the nonlinear Eq. (3) into an effective linear system, whose weights
+456   incorporate the nonlinear structure of Mq (x) through Ω. It can, therefore, allow us to exploit
+457   the powerful tools of spectral graph theory, even in this nonlinear dynamic setting. This may
+458   offer a basis for systematic analysis of nonlinear network dynamics.
+
+459   Code and data availability. Upon acceptance, all codes/data to reproduce and improve our
+460   analysis will be made freely available online.
+461   Acknowledgments. C.M. thanks the Planning and Budgeting Committee (PBC) of the Council
+462   for Higher Education, Israel for support. C.M. is also supported by the INSPIRE-Faculty grant
+463   (code: IFA19-PH248) of the Dept. of Science and Technology, India. C.H. is supported by the
+464   INSPIRE-Faculty grant (code: IFA17-PH193) of the Dept. of Science and Technology, India. S.H.
+465   has contributed to this work while visiting the Mathematics Department of Rutgers University,
+466   New Brunswick. S.B. acknowledges funding from the project EXPLICS granted by the Italian
+467   Ministry of Foreign Affairs and International Cooperation. This research was also supported
+468   by the Israel Science Foundation (grant No. 499/19), the Israel-China ISF-NSFC joint research
+469   program (grant No. 3552/21), the US National Science Foundation-CRISP award No. 1735505,
+470   and by the Bar-Ilan University Data Science Institute grant for data science research.
+
+
+
+
+                                                    12
+471   Methods
+472   1. Deriving the dynamic Jacobian ensemble
+473   While we provide a complete and rigorous derivation of the E(A, G, Ω) ensemble in Supplemen-
+474   tary Sections 1-3, below we include a shorthand version of this derivation, tracking the main
+475   steps and important mathematical transitions leading to Eqs. (4), (5) and (9). For simplicity,
+476   in this abbreviated analysis, we limit ourselves to systems with uniform weights/parameters.
+477   Hence, in Eq. (3) we set the global and individual weights to g = Gij = 1, and take fqi = fqj for
+478   all i, j = 1, . . . , N . Under these simplifications, we rewrite Eq. (3) as
+
+                                                          N
+                              dxi                       X              
+                                  = M0 xi (t) + M1 xi (t)   Aij M2 xj (t) ,                       (11)
+                              dt
+                                                                     j=1
+
+479   omitting the link weights g, Gij and the parameters fqi , which are now identical for all nodes.
+480   We emphasize that in our full derivation, as well as in our reported results and simulations,
+481   we do not rely on these simplified assumptions, and only employ them here for brevity and
+482   conciseness.
+483   Fixed-point analysis. Starting from (11), we seek the system’s potential fixed-points via
+
+                                                           N
+                                                           X
+                                     M0 (xi ) + M1 (xi )         Aij M2 (xj ) = 0,                (12)
+                                                           j=1
+
+484   where we use xi (omitting the t dependence) to denote the fixed-point xi = xi (t → ∞). To
+485   express the summation over j in the l.h.s. we use
+
+                                                                N
+                                                      1 X
+                                        hM2 (x)ii   =     Aij M2 (xj ),                           (13)
+                                                      di
+                                                            j=1
+
+486   capturing a weighted average over M2 (xj ) across all of i’s nearest neighbors. Here, with all
+      link weights set to unity, di = N
+                                      P
+487
+                                         j=1 Aij represents i’s binary degree. This generalizes to i’s
+488   weighted degree if we reintroduce our weights g, Gij . In (13) we use the notation to represent
+489   a neighborhood average, namely an average over i’s surrounding nodes i . Substituting (13)
+490   into (12) we obtain
+
+
+                                      M0 (xi ) + di M1 (xi )hM2 (x)ii = 0,                        (14)
+
+491   which we further simplify to
+
+
+                                                    R(xi ) = qi                                   (15)
+
+492   where R(x) = −M1 (x)/M0 (x) and
+
+                                                           1
+                                               qi =                                               (16)
+                                                      hM2 (x)ii di
+
+493   is node i’s inverse weighted degree. In Eq. (15), the function R(x) is only defined in case
+494   M0 (x) 6= 0. The treatment of M0 (x) = 0 is done separately in Supplementary Section 2.5. We
+
+
+                                                           13
+495   can now extract the fixed-point xi by inverting R(xi ) to obtain
+
+
+                                                 xi = R−1 (qi ),                                            (17)
+
+496   allowing us to express the fixed-point activity of node i in function of its inverse degree qi . Here,
+497   we rely on the implicit assumption that R(x) is invertible, allowing us to write R−1 (qi ) in (17).
+498   As above, we employ this assumption here only for simplicity; in our complete derivation in
+499   Supplementary Section 2, we show how to obtain xi also under non-invertible R(x).
+500   Jacobian scaling - diagonal weights Wii . We now return to Eq. (11) to extract the Jacobian
+501   weights Wii and Wij around the fixed-point obtained in (17). Starting with the diagonal terms,
+502   we write
+
+                                                                                 
+                                                                    N
+                         ∂ ẋi                                      X
+                   Wii =                   = M00 (xi ) + M10 (xi )   Aij M2 (xj )                     ,   (18)
+                         ∂xi xi =R−1 (qi )
+                                                                       j=1
+                                                                                        xi =R−1 (qi )
+
+503   where Mq0 (x) = ∂Mq /∂x. Equation (18) represents a derivative of the r.h.s. of (11) taken around
+504   the fixed-point xi , which we express via (17), namely using R−1 (qi ). Next we use R(x) =
+505   −M1 (x)/M0 (x) to write M0 (x) = −M1 (x)/R(x), allowing us to express the first derivative on
+506   the r.h.s. of (18) as
+
+                                                     M10 (xi ) M1 (xi )R0 (xi )
+                                     M00 (xi ) = −            +                 ,                           (19)
+                                                     R(xi )       R2 (xi )
+
+507   which, setting xi = R−1 (qi ), provides
+
+                                       M 0 R−1 (qi )          M1 R−1 (qi ) R0 R−1 (qi )
+                                                                                     
+                            M00 (x) = − 1                   +                            .                  (20)
+                                            qi                            qi2
+
+508   To obtain the denominators, qi and qi2 on the r.h.s. of (20) we used the fact that R(R−1 (qi )) = qi .
+      We can now use (13) to express the sum on the r.h.s. of (18) as N
+                                                                        P
+509
+                                                                          j=1 Aij M2 (xj ) = di hM2 (x)ii ,
+510   which, according to (16) is equal to 1/qi . Collecting all the terms we arrive at
+
+                             M10 R−1 (qi )     M1 R−1 (qi ) R0 R−1 (qi )     M10 R−1 (qi )
+                                                                                       
+                     Wii = −                 +                             +                ,               (21)
+                                  qi                       qi2                    qi
+
+511   which in turn provides
+
+                                                       1       −1
+                                                                        
+                                             Wii =         Y R    (q i )  ,                                 (22)
+                                                       qi2
+
+512   where Y (x) = M1 (x)R0 (x).
+513   Equation (22) expresses the diagonal Jacobian weight Wii in terms of i’s inverse degree qi ∼ d−1
+                                                                                                    i .
+514
+                                                                                                 −1
+      In the asymptotic limit of large di (small qi ) we can approximate (22) by expanding Y (R (qi ))
+515   around qi = 0. We, therefore, express this function as a Hahn 61 power series expansion in the
+516   form
+
+
+
+
+                                                            14
+                                                                  ∞
+                                                                             Φ
+                                                                  X
+                                                 −1
+                                                         
+                                           Y R        (qi ) =           B n qi n ,                     (23)
+                                                                  n=0
+
+517   allowing us below to examine the limit qi → 0.
+518   The Hahn series in (23) represents a generalization of the Taylor expansion to allow for negative
+519   and real powers, hence Φn ∈ R captures a sequence of real powers in ascending order, i.e.
+520   Φ0 < Φ1 and so on. In the limit qi → 0 we take only the leading term qiΦ0 , which in (22)
+521   provides the scaling relationship
+
+                                                                    µ
+                                      Wii ≈ B0 qi−µ = B0 hM2 (x)ii di ,                                (24)
+
+522   where µ = 2 − Φ0 . In the last step of (24) we reintroduced di using the definition of qi in (16),
+523   hence also adding the i neighborhood average hM2 (x)ii .
+524   Equation (24) describes the weight of the diagonal Jacobian entry associated with a specific
+525   node i. It is found to depend on the node’s degree di , but also on the activity of its neighboring
+526   nodes via hM2 (x)ii . To complete the scaling of Wii with i’s degree di we must characterize the
+527   di -dependence of hM2 (x)ii . The crucial point is that hM2 (x)ii captures an average over i’s
+528   neighborhood, not over the node i itself, and hence, on average, it is only indirectly affected by
+529   i’s degree di . To express this more rigorously we write
+
+
+                                         hM2 (x)ii ≈ hM2 (x)i f (di ),                                 (25)
+
+530   replacing the average over i’s neighborhood (i ) with the ensemble average ( ). This ensemble
+      average hM2 (x)i = (1/N ) N
+                                    P
+531
+                                        i=1 hM2 (x)ii represents an aggregation over all nodes in the
+532   network, and hence it is independent of i or di . To account for the potential di dependence,
+533   we include, on the r.h.s. of (25), the implicit function f (di ). This function, defined as f (di ) =
+534   hM2 (x)ii /hM2 (x)i , captures the distinction between the conditional i-neighborhood average
+535   (i ) vs. the network’s ensemble average ( ). It, therefore, helps quantify potential statistical
+536   dependencies between i and its interacting neighbors i . Hence, if the network is randomly
+537   wired, i.e. lacks degree-correlations, 42 we have f (di ) = 1, independently of i. However, if
+538   correlations are present, it will be expressed through a non-trivial f (di ).
+539   Extracting only the terms that depend on di we rewrite Eq. (24) as Wii ∼ f µ (di )dµi , omitting
+540   the terms B0 , hM2 (x)i , which are independent of di . Finally, if f (di ) is sub-polynomial, it does
+541   not contribute to the di scaling in the limit of large di . This allows us to write
+
+
+                                                       Wii ∼ dµi ,                                     (26)
+
+542   recovering the asymptotic scaling relationship of Eq. (4). In (26) we eliminated all terms that do
+543   not contribute to the polynomial dependence on di , thus focusing solely on the obtained scaling
+544   relationship. These terms may, however, depend on other parameters of (3). For example, quite
+545   expectedly the term hM2 (x)i , an average driven by the activity of all nearest neighbor nodes,
+546   is, potentially dependent on the nearest neighbor degree dnn in (6). Similarly, the coefficient
+547   B0 is, most often, a function of the parameters f and g in (3). These additional dependencies
+548   are precisely what gives rise the pre-factors C(f , g)dηnn in (4), which we ignored in the present
+549   derivation (see Supplementary Section 2 for the complete derivation, which covers also these
+
+
+                                                             15
+550   terms).
+551   The substitution leading to Eqs. (25) and (26) represents our first approximation, where we
+552   assume that hM2 (x)ii is only weakly dependent on i’s degree di . This weak dependence is
+553   precisely defined by the assumption that f (di ) is sub-polynomial, e.g., f (di ) ∼ log di . This
+554   implies that the neighbors of a node i with degree di are, to a sufficient degree, statistically
+555   similar to those of j whose degree is dj . Under this approximation, averaging over a node’s
+556   neighborhood, conditional on that node’s degree, as we do in the r.h.s. of (24) is (almost)
+557   the same as averaging over the neighbors of any other node, independently of degree (indeed,
+558   up to the sub-polynomial correction f (di )). In Supplementary Section 1.2 we elaborate on the
+559   relevance of this approximation, and in Supplementary Fig. 2 we explicitly measure f (di ) for our
+560   entire testing ground of networks/dynamics. We find that f (di ) is, indeed, at most logarithmic,
+561   supporting the relevance of our approximation for our set of real/model networks.
+562   Off-diagonal weights Wij . To extract the off-diagonal terms i 6= j of E(A, G, Ω) we return to
+563   Eq. (11), this time writing
+
+                                                                                            
+                                                                             N
+                        ∂ ẋi                ∂                              X
+                Wij =                     =     M0 (xi ) + M1 (xi )                Ain M2 (xn )                   .   (27)
+                        ∂xj xi =R−1 (qi )   ∂xj
+                                                                             n=1                   xi =R−1 (qi )
+                            xj =R−1 (qj )
+                                                                                                   xj =R−1 (qj )
+
+564   Keeping only the terms that explicitly depend on xj we obtain
+
+
+                    Wij = M1 (xi )Aij M20 (xj ) xi =R−1 (qi ) = M1 R−1 (qi ) Aij M20 R−1 (qj ) ,
+                                                                                             
+                                                                                                                       (28)
+                                                  xj =R−1 (qj )
+
+      helping us identify the two relevant dynamic functions M1 R−1 (qi ) and M20 R−1 (qj ) , whose
+                                                                                             
+565
+
+566   leading powers determine the scaling of Wij . Expressing these functions as Hahn series we write
+
+                                                                     ∞
+                                                                     X
+                                            M1 R−1 (qi )                   Kn qiΠn
+                                                            
+                                                                 =                                                     (29)
+                                                                     n=0
+                                                                     X∞
+                                            M20 R−1 (qj )                  Ln qjΘn ,
+                                                            
+                                                                 =                                                     (30)
+                                                                     n=0
+
+567   and in the limit of large di and dj (small qi , qj ) take only the leading terms ∼ qiΠ0 and ∼ qjΘ0 .
+568   Substituting these terms into (28), and using the fact that qi ∼ d−1  i , we arrive at
+
+
+                                                   Wij ∼ dνi Aij dρj ,                                                 (31)
+
+569   where ν = −Π0 and ρ = −Θ0 , recovering the prediction of Eq. (5), under the current setting of
+570   Gij = 1, i.e. unweighted.
+571   The obtained exponents µ, ν and ρ are all extracted from the leading powers of our derived
+572   dynamic functions Y (R−1 (x)) in (23), M1 (R−1 (x)) in (29) and M20 (R−1 (x)) in (30). These
+573   functions, in turn, are directly linked to Mq (x) in (3), and hence offer a direct procedure by
+574   which to extract the E(A, G, Ω) Jacobian scaling relationships, as outlined in Fig. 1. The forth
+575   and final exponent η in (4) can be extracted in a similar fashion, as we show in Supplementary
+576   Section 2.
+
+
+                                                                16
+577   2. The ingredients of E(A, G, Ω)
+578   In Eq. (3) we distinguish between the nonlinear form of the functions Mq (x) and their specific
+579   parameters fqi . The former, we argue, are designed to mathematically represent the nodes’
+580   intrinsic driving mechanisms, distinguishing between, e.g., Epidemic vs. Biochemical dynamics.
+581   The latter, on the other hand, describes the specific rates of these mechanistic processes, which
+582   may, potentially change across nodes/links, or under different environmental conditions. To root
+583   this distinction on mathematical grounds we refer again to the Hahn expansion, and express each
+584   of the functions Mq (x, fqi ) via
+                                                         ∞
+                                                                      Γ
+                                                         X
+                                        Mq (xi , fqi ) =   Cqn (fqi )xi qn .                       (32)
+                                                      n=0
+
+585   In (32) we distinguish between the role of the powers Γqn and that of the coefficients Cqn .
+586   The powers, in most cases, characterize the functional form of Mq (x, fqi ), differentiating, for
+587   example, between Mq (x, fqi ) ∼ x2 or Mq (x, fqi ) ∼ x/(1 + x). These different functions are
+588   designed to represent, mathematically, distinct microscopic mechanisms, e.g., social interactions
+589   vs. biological processes. As these mechanisms are ingrained into the physics of the interacting
+590   components, we take them, in our formulation, to be fixed and uniform across all nodes/links. In
+591   contrast, the coefficients Cqn are often tunable, depending on the particular rates characterizing
+592   each node’s dynamics, and hence they depend on the node specific parameters fqi .
+593   To better understand this distinction let us consider a specific example of logistic growth, a
+594   common mechanism in population dynamics. Within the dynamic framework of Eq. (3) this
+595   mechanism is captured by M0 (xi ) = bi xi (1 − xi /ci ), which written in the form (32), provides
+596   M0 (xi ) = bi xi − (bi /ci )x2i . Namely the coefficients are C00 = bi and C01 = −bi /ci , and the
+597   corresponding powers are Γ00 = 1 and Γ01 = 2. The crucial point is that while bi and ci , i.e.
+598   the species growth rate and the system’s carrying capacity, are node dependent, and potentially
+599   affected by environmental conditions, the functional form Mq (xi ) ∼ xi (1 − xi ) is intrinsic to
+600   logistic growth, and cannot be easily perturbed. This is precisely captured by the separate role
+601   of powers vs. coefficients: the tunable parameters bi , ci are expressed only within Cqn , whereas
+602   the logistic growth functional form is embedded within the powers Γqn - here describing linear
+603   growth (Γ00 = 1) followed by quadratic attenuation (Γ01 = 2) as driven by the intra-species
+604   competition.
+605   Hence, from a strictly mathematical perspective, we define parameters as the factors affecting
+606   the coefficients Cqn in (32), and functional form via the set of participating powers Γqn . Our
+607   interpretation of this mathematical distinction is that the powers are more intrinsic than the
+608   coefficients. Indeed, in our logistic growth example, the two powers arise from the system’s
+609   ingrained driving mechanisms - of growth (linear) vs. competition (quadratic). In contrast, the
+610   coefficients depend on the parameters bi , ci , which may assume any value within the logistic
+611   growth framework, and can even change due to external conditions.
+612   The crucial point is that our Jacobian scaling exponents Ω depend only on the powers Γqn ,
+613   and are unrelated to the coefficients Cqn . Hence, in our example, all systems driven by logistic
+614   growth (and a matching interaction dynamics) will have similar Ω, regardless of the specific
+615   parameters bi , ci . This portrays Ω and its resulting S, as an innate built-in characteristic of the
+616   system’s dynamics, detached from its multitude of microscopic parameters. Consequently, our
+617   asymptotic stable/unstable classes are intrinsic to the system’s dynamics, insensitive to external
+618   perturbation or to microscopic discrepancies.
+
+
+
+                                                       17
+619   3. Practical summary - calculating Ω
+620   While the derivation in Method Sections 1,2 may be elaborate, its practical outcome is rather
+621   straightforward, providing a step-by-step recipe by which to construct the exponent set Ω =
+622   (η, µ, ν, ρ) in Eqs. (4) and (5). First, we use the dynamic functions M0 (x), M1 (x) and M2 (x) of
+623   eq. (3) to construct the three secondary functions
+
+                                  M1 (x)
+                       R(x) = −          , Y (x) = M1 (x)R0 (x), Z(x) = R(x)M2 (x).                         (33)
+                                  M0 (x)
+
+624   The functions R(x) and Y (x) are introduced in Methods Section 1 above; Z(x) is derived in
+625   Supplementary Section 2. From (33) we extract four additional functions, which we express
+626   through a Hahn power-series expansion as
+
+                                              ∞
+                                              X                                        ∞
+                                                                                       X
+                                                           Ψn
+                               Z −1 (x)                                  R−1 (x)             Cn xΦn ,
+                                                                              
+                          M2              =         Gn x        ,    Y             =
+                                              n=0                                      n=0
+                                                                                                        .   (34)
+                                     ∞                   ∞
+                                   X      Πn
+                                                       X
+                              −1
+                          M1 R (x) =           0  −1
+                                       Kn x , M2 R (x) =   Ln xΘn
+                                              n=0                                      n=0
+
+627   We use R−1 (x) and Z −1 (x) to denote the inverse functions of R(x) and Z(x). The leading
+628   powers (n = 0) in these Hahn series directly provide Ω via
+
+
+                         µ = 2 − Φ0 , ν = −Π0 , ρ = −Θ0 , η = −Ψ0 (µ − ν − ρ).                              (35)
+
+629   Hence, to construct J ∈ E(A, G, Ω) we first generate the weighted network A ⊗ G, then extract
+630   the weighted degrees di , dj of all nodes and the nearest neighbor degree dnn of Eq. (6). The
+631   resulting J satisfies
+                                            Jii ∼ −C(f , g)dηnn dµi                             (36)
+
+                                              Jij    ∼ dνi Aij Gij dρj ,                                    (37)
+
+632   where the coefficient C(f , g) > 0 encapsulates the system’s specific rate parameters (we do not
+633   attempt to predict this coefficient in this formalism). The detailed derivation of Ω appears
+634   in Supplementary Section 2, followed by a step by step application on all our testing ground
+635   dynamics (Fig. 2) in Supplementary Section 4.
+636   In the above formulation we have assumed that R(x) and Z(x) are invertible, writing R−1 (x)
+637   and Z −1 (x) in (34). In Supplementary Section 2 we explain how to properly treat non-invertible
+638   R(x), Z(x). In these sections, we also demonstrate how to extract J for system’s with multiple
+639   fixed-points, and, specifically, in Supplementary Section 2.5, how to construct J around a trivial
+640   fixed-point x = (0, . . . , 0)> .
+
+
+
+
+                                                                18
+                                              The random ensemble 𝔼(𝑨, 𝑷𝟎 , 𝐏𝟏 )
+                    (a)                      (b)                                                  (c)
+                            Network                         Weights                                     𝑱 ∈ 𝔼(𝑨, 𝑷𝟎 , 𝑷𝟏 )
+                                               𝑷𝟎 (𝒘)
+                                                                               𝑱= 𝑨−𝑰 ⊗𝑾
+                                                                 𝑷𝟏 (𝒘)
+
+
+
+
+                                        The dynamic Jacobian ensemble 𝔼(𝑨, 𝑮, 𝛀)
+                   (d)                                              𝑵
+                                      𝐝𝒙𝒊
+                                          = 𝑴𝟎 𝒙𝒊 , 𝐟𝟎𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑴𝟏 𝒙𝒊 , 𝐟𝟏𝒊 𝑮𝒊𝒋 𝑴𝟐 (𝒙𝒋 , 𝐟𝟐𝒊 )
+                                      𝐝𝒕
+                                                                   𝒋=𝟏
+
+
+
+                    (e) 𝑴𝟎 , 𝑴𝟏 , 𝑴𝟐                       (f)          𝐟, 𝒈                    (g)          𝑨𝒊𝒋 , 𝑮𝒊𝒋
+                            Dynamics                              Parameters                     Weighted network
+
+
+
+
+                          𝛀 = (𝜼, 𝝁, 𝝂, 𝝆)                           𝑪(𝐟, 𝒈)                            𝑷 𝒅 , 𝒅𝐧𝐧 , 𝜷
+
+                    (h)           𝑱 ∈ 𝔼 𝑨, 𝑮, 𝛀                                 (i)
+                                                                                           Stability classifier
+                                                                                      𝑺 = 𝜷(𝐬 + 𝝂 + 𝝆 − 𝝁 − 𝜼)
+                                                       𝝁
+                                                   𝒅𝒊
+                                                                                      𝑺<𝟎               𝑺=𝟎              𝑺>𝟎
+                                                                                                          Sensitive
+
+
+
+                                                                                                                         Unstable
+                                                                                       Stable
+
+
+
+
+                                                   𝝆
+                                             𝒅𝝂𝒊 𝒅𝒋
+
+
+Figure 1: The dynamic Jacobian ensemble. To predict dynamic stability we seek the system’s stability
+matrix J. (a)-(b) The classic approach is to structure J around the network topology A, with weights extracted
+from two distributions: P0 (w) for the diagonal entries Jii and P1 (w) for the interactions strengths Jij , i 6= j. (c)
+Together this provides J ∈ E(A, P0 , P1 ), a random matrix based construction, whose stability is determined by
+the the structure A and the random weights W . (d) In the dynamic J ensemble we seek emergent patterns in J
+that arise from the system specific nonlinear dynamics. This is characterized by three factors: (e) The functional
+form of Mq (x) (orange) captures the system’s ingrained dynamics, e.g., social, biological or technological. Our
+formalism derives the exponents Ω in Eqs. (4) and (5) directly from these three functions. Hence, around a given
+fixed-point, Ω is intrinsic to the the system’s dynamics. (f) The system’s microscopic parameters f , g (turquoise)
+provide the specific rate-constants for (3)’s dynamic processes. For example, the infection rate in Epidemic
+(top), or the degradation rate in Biochemical (bottom). These parameters are potentially influenced by external
+conditions, such as changes in social behavior (Epidemic) or temperature (Biochemical). Their impact on J is
+encapsulated within the coefficient C(f , g) in Eq. (4). (g) A, G represent the weighted network (purple), which
+is expressed in J via the density function P (d), the nearest neighbor degree dnn in (6) and β in (7). (h) The
+resulting J-ensemble, E(A, G, Ω), exhibits non-random scaling patterns driven by the the interplay between A, G
+and Ω. Similar to the random E(A, P0 , P1 ), the non-vanishing terms correspond to the network links, however,
+in contrast to the random weights of E(A, P0 , P1 ), here the weight of the i, j entry depends on di and dj , as well
+as on Ω (orange captions). The result is a dynamic ensemble, in which identical networks (A, G) yield highly
+distinctive J matrices depending on Mq (x), e.g., Regulatory (left), Epidemic (center) or Biochemical (right). (i)
+The stability of J can be reduced to the classifier S in (9), whose value depends only on the degree heterogeneity
+(β, purple) and on the dynamic exponents (orange terms), but not the parameters f , g. Therefore, it provides a
+robust classification into stable (blue) or unstable (red) dynamics, that are asymptotically insensitive to changes
+in f , g. Under S = 0 the system becomes sensitive (green), and then stability is driven precisely by f , g.
+
+
+
+
+                                                                         19
+                                                                                                          Testing ground for 𝔼(𝑨, 𝑮, 𝛀)
+
+  (a)           Epidemic                             (b)            Regulatory                           (c)         Population 1                            (d)                   Inhibitory                      (e)       Biochemical
+
+                        𝑵                                                   𝑵                                                         𝑵                                                            𝑵                                       𝑵
+   𝐝𝒙𝒊                                                   𝐝𝒙𝒊                             𝒙𝒉𝒋             𝐝𝒙𝒊             𝒙𝒊                                  𝐝𝒙𝒊          𝒙𝒊        𝒙𝒊                     𝒙𝒊        𝐝𝒙𝒊
+       = −𝒇𝒊 𝒙𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝟏 − 𝒙𝒊 𝒙𝒋                      = −𝒇𝒊 𝒙𝒂𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋                         = 𝒃𝒊 𝒙𝒊 𝟏 −    + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒊 𝑭(𝒙𝒋 )              = 𝒙𝒊 𝟏 −              − 𝟏 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋                 = 𝒇𝒊 − 𝒃𝒊 𝒙𝒊 − 𝓰 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒊 𝒙𝒋
+   𝐝𝒕                                                    𝐝𝒕                          𝟏 + 𝒙𝒋𝒉             𝐝𝒕              𝒄𝒊                                  𝐝𝒕           𝒃𝒊        𝒄𝒊                   𝟏 + 𝒙𝒋𝒉     𝐝𝒕
+                        𝒋=𝟏                                                𝒋=𝟏                                                     𝒋=𝟏                                                          𝒋=𝟏                                       𝒋=𝟏
+
+
+
+
+                                                                                                                                                                                                                             𝒙𝒊
+                                                                                                                                                               𝒙𝒊
+
+
+
+
+                                                                                                                                                                                           𝒙𝒊
+                            𝒙𝒊
+
+
+
+
+                                                    𝒙𝒊
+ 𝒙𝒊
+
+
+
+
+                                                                           𝒙𝒊
+
+
+
+
+                                                                                                                                 𝒙𝒊
+                                                                                                           𝒙𝒊
+      Inactive 𝐱 𝟎                   Active 𝐱𝟏           Inactive 𝐱 𝟎            Active 𝐱𝟏                      Inactive 𝐱 𝟎          Active 𝐱𝟏                     Inactive 𝐱 𝟎                Active 𝐱𝟏                          Active 𝐱𝟏
+
+
+                                                               𝒂−𝟏        𝒉+𝟏              𝒉                                                                              𝟏    𝟏
+      𝛀 = 𝟎, 𝟏, −𝟏, 𝟎                  𝐒 = −𝜷        𝛀 = 𝟎,        , 𝟎, −               𝐒=− 𝜷                  𝛀 = 𝟎, 𝟏, 𝟏, −𝟐            𝐒 = −𝜷                     𝛀 = − , 𝟏, , −𝟏               𝐒 = −𝜷             𝛀 = −𝟏, 𝟏, −𝟏, 𝟎            𝐒 = −𝜷
+                                                                𝒂          𝒂               𝒂                                                                              𝟐    𝟐
+
+                              Erdős-Rényi                                       Erdős-Rényi                                       Erdős-Rényi                                              Erdős-Rényi                                    Erdős-Rényi
+                              Scale-free 1                                      Scale-free 1                                      Scale-free 1                                             Scale-free 1                                   Scale-free 1
+                              Scale-free 2                                      Scale-free 2                                      Scale-free 2                                             Scale-free 2                                   Scale-free 2
+                              Social 1                                          PPI 1                                             Microbial 1                                              PPI 1                                          PPI 1
+                              Social 2                                          PPI 2                                             Microbial 2                                              PPI 2                                          PPI 2
+
+
+
+
+                                                                    Extended dynamics                                                                                               (h)    Model networks:
+                                                                                                                                                                                           Size: 𝑁 = 6,000, Av. degree 𝑘 = 6, Av. weight 𝐺 = 1.
+  (f)                                      Power                                           (g)                            Population 2
+                                                                                                                                                                                           • Erdős-Rényi. 𝐺𝑖𝑗 ∼ 𝒩(1, 0.1)
+                                 𝑵                                                                                                                                                         • Scale-free 1. 𝑃 𝑘 ∼ 𝑘 −2.5 , 𝐺𝑖𝑗 ∼ 𝒩(1,0.1)
+  𝐝𝟐 𝒙𝒊           𝐝𝒙𝒊                                                                          𝐝𝒙𝒊             𝒙𝒊         σ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒋
+        = 𝒇𝒊 − 𝒃𝒊     + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝐬𝐢𝐧 𝒙𝒋 − 𝒙𝒊                                                    = 𝒃𝒊 𝒙𝒊 𝟏 −    + 𝒈𝒙𝒊
+                                                                                                                                                                                           • Scale-free 2. 𝑃 𝑘 ∼ 𝑘 −2.5 , 𝑃 𝐺 ∼ 𝐺 −3
+
+
+
+
+                                                                                                                                                   𝒙𝒊
+                                                          𝒙𝒊
+
+
+
+
+  𝐝𝒕𝟐             𝐝𝒕                                                                           𝐝𝒕              𝒄𝒊       𝟏 + σ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒋
+                              𝒋=𝟏
+
+                                                                                                                                                                                           Empirial networks:
+                            Erdős-Rényi                        Active 𝐱𝟏                                           Erdős-Rényi                          Active 𝐱𝟏
+                            Scale-free 1                                                                           Scale-free 1                                                            • Social 1/2. Epoch/UCIonline social networks
+                            Scale-free 2                                                                           Scale-free 2                                                            • PPI 1/2. Protein interactions in yeast/human
+                            Power 1                                                                                Microbial 1             𝛀 = 𝟎, 𝟎, −𝟐, 𝟎          𝐒 = −𝜷                 • Microbial 1/2. Human gut microbiome
+                                                   𝛀 = 𝟎, 𝟏, 𝟎, 𝟎          𝐒=𝟎
+                            Power 2                                                                                Microbial 2                                                             • Power 1/2. Power grids G.B. and Poland
+
+
+
+Figure 2: Testing ground for the E(A, G, Ω) ensemble. We constructed different combinations of (weighted)
+networks A, G and dynamics Mq (x) to examine our J-ensemble. (a) Epidemic. We implemented the susceptible-
+infected-susceptible (SIS) dynamics (grey box) on a set of model and real-world networks (violet box). This system
+exhibits two potential fixed-points (3D plots): the inactive x0 , in which all activities vanish, i.e. healthy, and the
+active x1 , in which all xi > 0, namely the pandemic state. In this 3D visualization the nodes i = 1, . . . , N are laid
+out on the x, y plane and their fixed-point activity xi is represented by color (red - low, blue - high) and vertical
+displacement (z-axis). Therefore, in x0 all nodes are on the x, y plane (z = 0), and in x1 they are distributed
+along z > 0 and range from red to blue. In each of these states the system has a different set of exponents
+Ω and hence a different Jacobian J. Here we present Ω and S for the non-vanishing state x1 (orange box).
+The remaining panels follow a similar format. (b) Regulatory. Sub-cellular dynamics following the Michaelis-
+Menten model. Here, around the active state, Ω, S depend on the model exponents a and h. (c) Population
+1. Mutualistic interactions in, e.g., microbial communities. (d) Inhibitory. Suppression dynamics, e.g., between
+hosts and pathogens. (e) Biochemical. Protein-protein interactions modeled via mass-action kinetics. This system
+exhibits a single fixed-point, and therefore includes a single 3D plot. (f) Power. Synchronization dynamics between
+power system components.P(g) Population 2. Mutualistic population       PN dynamics with non-additive interactions,
+namely replacing the term N     j=1 Aij Gij M2 (xj ) in Eq. (3) by M2 (  j=1 Aij Gij xj ). (h) Our network set, including
+Erdős-Rényi and scale-free with both normally and power-law distributed weights, as well as relevant empirical
+networks. For a detailed description of all networks see Supplementary Section 7.4. Together we arrive at a set of
+35 combinations of networks/dynamics upon which we test our theoretical framework. A detailed analysis of all
+dynamic models appears in Supplementary Section 4. Note that Population 2 and Power are not in the form of
+Eq. (3), and hence they expand our testing ground beyond the bounds of our analytical framework. We provide
+a dedicated analysis of these models, together with additional generalizations in Supplementary Section 5.
+
+
+
+
+                                                                                                                                  20
+ (a)        𝑨𝒊𝒋 , 𝑮𝒊𝒋
+                                     Simulation                            (b)                                        (c)
+                                                                                                      𝝁=𝟏                   𝝂 = −𝟏
+                                                                                                                            𝝆=𝟎
+
+
+
+
+                                                                                 Epidemic
+
+
+
+
+                                                                                                                      𝑾𝒊𝒋
+                                                                                                𝑾𝒊𝒊
+                              𝐟, 𝓰
+
+                                                                  𝝁
+                                                     𝑾𝒊𝒊 ∼ 𝒅𝒊
+                                                                  𝝆                                                                    𝝆
+  𝐌 = (𝑴𝟎 , 𝑴𝟏 , 𝑴𝟐 )                    Theory    𝑾𝒊𝒋 ∼ 𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                     𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+
+ (d)                       𝝁=𝟎
+                                          (e)      𝝂=𝟎
+                                                                           (f)                        𝝁=𝟏
+                                                                                                                      (g)   𝝂=𝟏
+
+
+
+
+                                                                                 Population 1
+       Regulatory
+
+
+
+
+                                                   𝝆 = −𝟐                                                                   𝝆 = −𝟐
+                                          𝑾𝒊𝒋
+                     𝑾𝒊𝒊
+
+
+
+
+                                                                                                𝑾𝒊𝒊
+
+
+
+
+                                                                                                                      𝑾𝒊𝒋
+                                                              𝝆                                                                        𝝆
+                              𝒅𝒊                     𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                         𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+
+ (h)                       𝝁=𝟏
+                                          (i)      𝝂 = 𝟎. 𝟓
+                                                                           (j)                        𝝁=𝟏
+                                                                                                                      (k)   𝝂 = −𝟏
+
+
+
+
+                                                                                  Biochemical
+                                                   𝝆 = −𝟏                                                                   𝝆=𝟎
+        Inhibitory
+
+
+
+
+                                                                                                                      𝑾𝒊𝒋
+                                          𝑾𝒊𝒋
+                     𝑾𝒊𝒊
+
+
+
+
+                              𝒅𝒊
+                                                              𝝆
+                                                     𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                 𝑾𝒊𝒊     𝒅𝒊
+                                                                                                                                       𝝆
+                                                                                                                              𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+
+                                                          Extended dynamics
+ (l)                       𝝁=𝟏
+                                          (m)      𝝂=𝟎                     (n)                        𝝁=𝟎
+                                                                                                                      (o)   𝝂 = −𝟐
+                                                                                 Population 2
+
+
+
+
+                                                   𝝆=𝟎                                                                      𝝆=𝟎
+       Power
+
+
+
+
+                                          𝑾𝒊𝒋
+
+
+
+
+                                                                                                                      𝑾𝒊𝒋
+                     𝑾𝒊𝒊
+
+
+
+
+                                                                                                𝑾𝒊𝒊
+
+
+
+
+                                                              𝝆                                                                        𝝆
+                              𝒅𝒊                     𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                         𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+  Legend:                  Erdős-Rényi            Scale-free 1             Scale-free 2                 Empirical 1         Empirical 2
+
+Figure 3: Emergent patterns in the dynamic ensemble E(A, G, Ω). We implemented our seven dynamic
+models, Epidemic, Regulatory, Population 1 etc., on a set of relevant model and empirical networks, as detailed
+in our testing ground of Fig. 2; see legend at bottom. Focusing on the non-vanishing state x1 , we perturbed all
+nodes around their numerically obtained fixed-point to construct the Jacobian J. (a) The numerical simulations
+incorporate the full complexity of Eq. (3), including the weighted network (purple), the diverse parameters
+(turquoise) and the nonlinear mechanisms (orange). This helps us observe the real Jacobian matrices for each
+of our systems, as obtained from actual numerical runs of the nonlinear network models (Simulation, blue, top).
+We then compare in each panel the simulation results with our theoretical predictions based on the E(A, G, Ω)
+ensemble (Theory, orange, bottom). (b) The diagonal weights Wii vs. the weighted degree di as obtained from
+Epidemic dynamics (symbols). We observe the scaling relationship of Eq. (4) with µ = 1 (orange solid line)
+confirming our predicted J-patterns for this dynamics. We also find that this scaling is independent of the
+specific network, observed consistently on all our model/empirical networks, and hence it is intrinsic to the
+Epidemic dynamics, as predicted. (c) The off-diagonal weights Wij vs. our theoretically derived weights in (5),
+here setting ν = −1, ρ = 0, the predicted exponents for Epidemic (symbols). Once again, we observe a perfect
+agreement with our theoretical prediction (orange solid line). We also include results obtained from two relevant
+empirical networks, Social 1 and Social 2 (light blue circles/squares), capturing online social dynamics. (d)-(e)
+Similar results are observed under Regulatory dynamics (µ = ν = 0, ρ = −2) on both model and empirical
+networks (PPI 1 and PPI 2); (f)-(g) Population 1 dynamics (µ = ν = 1, ρ = −2, empirical networks: Microbial 1
+and Microbial 2); (h)-(i) Inhibitory dynamics (µ = 1, ν = 1/2, ρ = −1, empirical networks: PPI 1 and PPI 2); (j)-
+(k) Biochemical dynamics (µ = 1, ν = −1, ρ = 0, empirical networks: PPI 1 and PPI 2). (l)-(m) Power dynamics
+(µ = 1, ν = ρ = 0, empirical networks: Power 1 and Power 2); (n)-(o) Population 2 dynamics (µ = 0, ν = −2, ρ = 0,
+empirical networks: Microbial 1 and Microbial 2). In all systems, we find that real Jacobian matrices (blue
+symbols) are well approximated by our theoretically predicted scaling laws (orange solid lines). Data in all panels
+are logarithmically binned. 62 Details on the numerical calculation of J, log-binning and the construction of all
+networks appear in Supplementary Section 7.
+
+
+                                                                      21
+                     (a)                                   𝑺                                  (b)
+                                                                                                             𝑱
+                                                                         Asymptotically
+
+
+
+
+                                              Sensitive 𝑺 = 𝟎
+                                                                         unstable 𝑺 > 𝟎
+
+
+
+
+                                                                                                                   − 𝑪
+                     𝝀
+
+                                                                                                       𝑱𝒊𝒋                     𝑱𝒊𝒊
+                             Asymptotically
+                             stable 𝑺 < 𝟎 −𝟏. 𝟐                                                      Positive                Negative
+                                                                𝟎     𝟏. 𝟖                          feedback                feedback
+
+
+
+                                      𝑱𝐀𝐒                                     𝑱𝐒𝐒                                    𝑱𝐀𝐔
+                     (c)                                        (d)                                  (e)
+
+
+                                      𝝀=𝟎                                               𝝀=𝟎                                  𝝀=𝟎
+
+
+
+
+                                                                                                      𝝀
+                       𝝀
+
+
+
+
+                                                                 𝝀
+                                𝑪𝟎
+
+
+
+
+                                                                               𝑪𝟎
+
+
+
+
+                                                                                                                     𝑪𝟎
+                                  𝑪                                             𝑪                                      𝑪
+                     (f)                                    (g)                                      (h)
+                              Scale-free                                     Scale-free                            Scale-free
+                                 𝑺 = −𝟏. 𝟐                                     𝑺=𝟎                               𝑺 = 𝟏. 𝟖
+                     𝑪𝟎
+
+
+
+
+                                                           𝑪𝟎
+
+
+
+
+                                                                                                     𝑪𝟎
+
+
+
+
+                                  𝑵                                                 𝑵                                  𝑵
+
+                     (i)                                        (j)                                  (k)
+                              Erdős-Rényi                                    Erdős-Rényi                           Erdős-Rényi
+                                𝑺=𝟎                                            𝑺=𝟎                                    𝑺=𝟎
+                     𝑪𝟎
+
+
+
+
+                                                                𝑪𝟎
+
+
+
+
+                                                                                                      𝑪𝟎
+
+
+
+
+                                     𝑵                                              𝑵                                  𝑵
+Figure 4: Three classes of dynamic stability in real and model networks. We extracted 7, 387 Jacobian
+matrices from the E(A, G, Ω) ensemble, using combinations of model/empirical networks with different dynamic
+exponents Ω. For each J we calculated the principal eigenvalue λ and the stability classifier S in (9). (a) λ vs. S
+for all 7, 387 J-matrices. We observe the three predicted classes: Asymptotically unstable (red) in which S > 0
+and hence, as predicted, we have also λ > 0; Sensitively stable (green), where S = 0 and λ can be both positive
+or negative; Asymptotically stable (blue), where S < 0 and therefore λ < 0. Our classification was inaccurate in
+∼ 4% of the cases on binary networks, ∼ 5% on weighted networks and ∼ 15% on weighted/negative networks,
+amounting to a total discrepancy of ∼ 8% (grey dots) over the entire ensemble. (b) The value of λ emerges
+from the competition between J’s off-diagonal terms, representing positive feedback, and the strength of the
+diagonal terms Jii (negative feedback). Therefore one can force a system towards stability (λ < 0) by increasing
+the coefficient C in (4). (c)-(e) Taking three specific J matrices from each class, we plot λ vs. C, seeking the
+critical C0 , in which λ becomes negative (grey lines). This represents the critical C, above which stability is
+ensured. (f) For the stable JAS (S = −1.2) we find that C0 decreases with N (squares), capturing the asymptotic
+stability, in which for large systems (N → ∞) stability is sustained even under arbitrarily small C. The theoretical
+scaling predicted in Eq. (10) is also shown (solid line, slope −1.2). (g) For JSS we have S = 0, the critical C0 is
+independent of N , hence the system’s stability can be affected by finite changes to its dynamic parameters, e.g.,
+environmental perturbations. (h) The asymptotically unstable JAU (S = 1.8) has C0 → ∞ in the limit of large
+N , in perfect agreement with Eq. (10) (solid line). Here, for a sufficiently large system (N → ∞), no matter
+how large is C, the fixed-point associated with JAU is always unstable. (i)-(k) For a homogeneous P (d), e.g.,
+Erdős-Rényi, β vanishes and hence S = 0 in (9). Under these conditions, regardless of Ω, the system is always
+sensitively stable and therefore C0 does not scale with N . This demonstrates the role of degree-heterogeneity in
+ensuring stability, in the face of changing environmental conditions.
+
+
+                                                                               22
+                                                     Regulatory dynamics                                                       Asymptotic stability
+                                                                      𝑵
+                                                 𝐝𝒙𝒊                          𝒙𝒋                                       (g)
+                                                     = −𝒇𝒊 𝒙𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋                                                               Regulatory
+                                                 𝐝𝒕                         𝟏 + 𝒙𝒋
+                                                                      𝒋=𝟏
+
+                                                                                                                                                        ER
+ (a)                             Inactive 𝒙𝟎                                (b)                Active 𝒙𝟏                     𝟏𝟎−𝟏
+
+
+
+
+                                                                                                                       𝒈𝒄
+                                                     𝑱𝒊𝒋                                                         𝑱𝒊𝒋
+𝒙𝒊
+
+
+
+
+                                                                                                                                                       SF1
+
+
+
+
+                                                                       𝒙𝒊
+                                                                                                                             𝟏𝟎−𝟐
+
+                                                                                                                                    𝟏𝟎𝟏   𝟏𝟎𝟐     𝟏𝟎𝟑            𝟏𝟎𝟒
+                          𝛀 = 𝟎, 𝟎, 𝟎, 𝟎             𝐒=𝜷                                 𝛀 = 𝟎, 𝟎, 𝟎, −𝟐     𝐒 = −𝜷                              𝑵
+
+ (c)                                                                                                                   (h)                 Epidemic
+                          𝒈 = 𝟎. 𝟎𝟑                        𝒈 = 𝟎. 𝟏                 𝒈 = 𝟎. 𝟑                𝒈=𝟏
+Erdős-Rényi
+
+
+
+
+                                                                                                                                                        ER
+                                                                                                                             𝟏𝟎−𝟏
+               𝒙𝒊
+
+
+
+
+                                           𝒙𝒊
+
+
+
+
+                                                                                                    𝒙𝒊
+                                                                                                                                                (i)
+                                                                      𝒙𝒊
+
+
+
+
+                                                                                                                       𝒈𝒄
+                                                                                                                                                       SF1
+                                                                                                                             𝟏𝟎−𝟐
+ (d)                       𝟏𝟎𝟏                                              (e) 𝟏𝟎𝟏
+                                                                                                                                    𝟏𝟎𝟏   𝟏𝟎𝟐     𝟏𝟎𝟑        𝟏𝟎𝟒
+                          𝟏𝟎−𝟑                                                    𝟏𝟎−𝟑                                                           𝑵
+                    〈𝐱〉
+
+
+
+
+                                                                            〈𝐱〉
+
+
+
+
+                                  SF1
+                                                ER                                             ER          SF1
+                          𝟏𝟎−𝟕                                                    𝟏𝟎−𝟕                                 (i)                 Inhibitory
+                           𝟎                                                       𝟎
+                                 𝟏𝟎−𝟐      𝟏𝟎−𝟏             𝟏𝟎𝟎                        𝟏𝟎𝟎          𝟏𝟎𝟏     𝟏𝟎𝟐              𝟏𝟎−𝟏                           ER
+                                           𝒈                                                        〈𝑓〉
+ (f)                                                                                                                         𝟏𝟎−𝟐
+                                                                                                                       𝒈𝒄
+Scale-free 1
+
+
+
+
+                                                                                                                             𝟏𝟎−𝟑                      SF1
+               𝒙𝒊
+
+
+
+
+                                                                                                    𝒙𝒊
+                                           𝒙𝒊
+
+
+
+
+                                                                       𝒙𝒊
+
+
+
+
+                                                                                                                             𝟏𝟎−𝟒
+                                                                                                                                    𝟏𝟎𝟏   𝟏𝟎𝟐         𝟏𝟎𝟑        𝟏𝟎𝟒
+                          𝒈 = 𝟎. 𝟎𝟑                   𝒈 = 𝟎. 𝟏                    𝒈 = 𝟎. 𝟑                  𝒈=𝟏                                  𝑵
+
+Figure 5: Emergent stability in large heterogeneous networks. (a)-(b) Regulatory dynamics exhibit two
+fixed points (3D plots), each with its own J ∈ E(A, G, Ω), shown to the right of each plot. The inactive x0 has
+Ω = (0, 0, 0, 0) and S = β > 0, and hence it is asymptotically unstable. The active x1 has a different J, with
+Ω = (0, 0, 0, −2) and S = −β < 0, asymptotically stable. (c) The state of Regulatory as obtained from numerical
+simulations on our Erdős-Rényi (ER) network under varying g. The system transitions from x1 (right) to x0 (left)
+under small g. This represents sensitive stability, as indeed predicted for ER, in which parameters, here g, affect
+the state of the system. (d) To examine this systematically we plot the mean activity hxi vs. g as obtained for
+ER (diamonds) and for our scale-free network SF1 (triangles). Both systems exhibit a critical gc , below which x1
+becomes unstable and the system transitions to x0 . The crucial point is, however, that thanks to its heterogeneity
+SF1 exhibits an increased robustness against g variations, with gc an order of magnitude lower than that observed
+for ER. (e) hxi vs. hf i shows a similar behavior. Here increasing hf i causes the system to collapse to x0 , and,
+as predicted, SF1 can incur higher hf i than ER. (f) The state of SF1 under the same four conditions shown in
+panel (c). As predicted, SF1 remains at x1 even when ER has already collapsed to x0 . (g) gc vs. the system size
+N as obtained from numerically simulating Regulatory dynamics. For ER we observe gc ∼ const (diamonds),
+hence there is a typical gc below which the system transitions to x0 . Consequently x1 can be destabilized via
+parameter perturbation. Note that while N spans over four orders of magnitude, gc varies by a mere ∼ 40%. In
+contrast, for SF1 we find that gc exhibits negative scaling with N , approaching gc → 0 in the limit N → ∞. This
+captures precisely the predicted asymptotic stability, in which a sufficiently large and heterogeneous network is
+guaranteed to stably reside in x1 even under arbitrarily small g (or large hf i). (h)-(i) Repeating this experiment
+for Epidemic and Inhibitory, we continue to observe our predicted asymptotic stability: under the heterogeneous
+SF1 we have gc → 0 as N → ∞, whereas under the homogeneous ER gc is (almost) independent of N .
+
+
+
+                                                                                             23
+References
+ [1] S.V. Buldyrev, R. Parshani, G. Paul, H.E. Stanley and S. Havlin. Catastrophic cascade of failures in
+     interdependent networks. Nature, 464:1025–1028, 2010.
+
+ [2] I. Dobson, B.A. Carreras, V.E. Lynch and D.E. Newman. Complex systems analysis of series of blackouts:
+     Cascading failure, critical points, and self-organization. Chaos, 17:026103, 2007.
+
+ [3] D. Duan, C. Lv, S. Si, Z. Wang, D. Li, J. Gao, S. Havlin, H.E. Stanley and S. Boccaletti. Universal behavior
+     of cascading failures in interdependent networks. Proc. Natl. Acad. Sci. USA, 116:22452–57, 2019.
+
+ [4] A.E. Motter and Y.-C. Lai. Cascade-based attacks on complex networks. Physical Review E, 66:065102,
+     2002.
+ [5] P. Crucitti, V. Latora and M. Marchiori. Model for cascading failures in complex networks. Phys. Rev. E,
+     69:045104–7, 2004.
+
+ [6] D. Achlioptas, R.M. D’Souza and J. Spencer. Explosive percolation in random networks. Science, 323:1453–
+     1455, 2009.
+
+ [7] J. Gao, B. Barzel and A.-L. Barabási. Universal resilience patterns in complex networks. Nature, 530:307312,
+     2016.
+ [8] S. Boccaletti, J.A. Almendral, S. Guana, I. Leyvad, Z. Liua, I.S. Nadal, Z. Wang and Y. Zou. Explosive
+     transitions in complex networks structure and dynamics: Percolation and synchronization. Physics Reports,
+     660:1–94, 2016.
+
+ [9] S. Boccaletti, V. Latora, Y. Moreno, M. Chavez and D.-U. Hwang. Complex networks: Structure and
+     dynamics. Physics Reports, 424:175–308, 2006.
+
+[10] Michael M Danziger, Ivan Bonamassa, Stefano Boccaletti, and Shlomo Havlin. Dynamic interdependence
+     and competition in multilayer networks. Nature Physics, 15(2):178–185, 2019.
+
+[11] K.Z. Coyte, J. Schluter and K.R. Foster. The ecology of the microbiome: Networks, competition, and
+     stability. Science, 350:663–666, 2015.
+
+[12] R.V. Solé and J.M. Montoya. Complexity and fragility in ecological networks. Proc. R. Soc. London Ser. B,
+     268:2039–2045, 2001.
+
+[13] H.I. Schreier, Y. Soen and N. Brenner. Exploratory adaptation in large random networks. Nature Commu-
+     nications, 8:14826, 2017.
+
+[14] L.M. Pecora and T.L. Carroll. Master stability functions for synchronized coupled systems. Phys. Rev. Lett.,
+     80:2109, 1998.
+
+[15] V.I. Arnold. Ordinary Differential Equations. MIT Press, Cambridge, MA, 1973.
+
+[16] M.W. Hirsch and S. Smale. Differential Equations, Dynamical Systems and Linear Algebra. Academic Press,
+     New York, 1974.
+
+[17] B. Barzel and O. Biham. Quantifying the connectivity of a network: The network correlation function
+     method. Phys. Rev. E, 80:046104–15, 2009.
+
+[18] R.M. May. Will a large complex system be stable? Nature, 238:413 – 414, 1972.
+
+[19] G. Yan, N.D. Martinez and Y.-Y. Liu. Degree heterogeneity and stability of ecological networks. Journal of
+     The Royal Society Interface, 14:131, 2017.
+
+[20] S. Allesina and S. Tang. Stability criteria for complex ecosystems. Nature, 483:205208, 2012.
+
+[21] P. Kirk, D.M.Y. Rolando, A.L. MacLean and M.P.H. Stumpf. Conditional random matrix ensembles and
+     the stability of dynamical systems. New Journal of Physics, 17:080325, 2015.
+
+[22] K.S. McCann. The diversity–stability debate. Nature, 405(6783):228–233, 2000.
+
+[23] J.D. OSullivan, R.J. Knell and A.G. Rossberg. Metacommunity-scale biodiversity regulation and the self-
+     organised emergence of macroecological patterns. Ecology Letters, 22:1428, 2019.
+
+[24] M. Barbier, C. de Mazancourt, M. Loreau and G. Bunin. Fingerprints of high-dimensional coexistence in
+     complex ecosystems. Phys. Rev. X, 11:011009, 2021.
+
+[25] G. Caldarelli. Scale-free networks: complex webs in nature and technology. Oxfrod University Press, New
+     York, 2007.
+
+[26] D.J. Watts and S.H. Strogatz. Collective dynamics of ’small-world’ networks. Nature, 393:440–442, 1998.
+
+
+                                                       24
+[27] B. Barzel and A.-L. Barabási. Universality in network dynamics. Nature Physics, 9:673 – 681, 2013.
+
+[28] U. Harush and B. Barzel. Dynamic patterns of information flow in complex networks. Nature Communica-
+     tions, 8:2181, 2017.
+
+[29] C. Hens, U. Harush, R. Cohen, S. Haber and B. Barzel. Spatiotemporal propagation of signals in complex
+     networks. Nature Physics, 15:403, 2019.
+
+[30] R. Pastor-Satorras, C. Castellano, P. Van Mieghem and A. Vespignani. Epidemic processes in complex
+     networks. Rev. Mod. Phys., 87:925–958, 2015.
+
+[31] P.S. Dodds, R. Muhamad and D.J. Watts. An experimental study of search in global social networks. Science,
+     301:827–829, 2003.
+
+[32] D. Brockmann, V. David and A.M. Gallardo. Human mobility and spatial disease dynamics. Reviews of
+     Nonlinear Dynamics and Complexity, 2:1, 2009.
+
+[33] G. Karlebach and R. Shamir. Modelling and analysis of gene regulatory networks. Nature Reviews, 9:770–780,
+     2008.
+[34] J.D. Murray. Mathematical Biology. Springer, Berlin, 1989.
+
+[35] B. Barzel and O. Biham. Binomial moment equations for stochastic reaction systems. Phys. Rev. Lett.,
+     106:150602–5, 2011.
+
+[36] B. Barzel and O. Biham. Stochastic analysis of complex reaction networks using binomial moment equations.
+     Phys. Rev. E, 86:031126, 2012.
+
+[37] C.S. Holling. Some characteristics of simple types of predation and parasitism. The Canadian Entomologist,
+     91:385–398, 1959.
+
+[38] J.N. Holland, D.L. DeAngelis and J.L. Bronstein. Population dynamics and mutualism: functional responses
+     of benefits and costs. American Naturalist, 159:231–244, 2002.
+
+[39] D. Wodarz, J.P. Christensen and A.R. Thomsen. The importance of lytic and nonlytic immune responses in
+     viral infections. Trends in Immunology, 23:194–200, 2002.
+
+[40] E.L. Berlow, J.A. Dunne, N.D. Martinez, P.B. Stark, R.J. Williams and U. Brose. Simple prediction of
+     interaction strengths in complex food webs. Proceedings of the National Academy of Sciences, 106:187–191,
+     2009.
+[41] J.F. Hayes and T.V.J. Ganesh Babu. Modeling and Analysis of Telecommunications Networks. John Wiley
+     & Sons, Inc., Hoboken, NJ, USA, 2004.
+
+[42] M.E.J. Newman. Networks - an introduction. Oxford University Press, New York, 2010.
+
+[43] A.-L. Barabási and Z.N. Oltvai. Network biology: understanding the cell’s functional organization. Nat.
+     Rev. Gen., 5:101, 2004.
+
+[44] T. Opsahl and P. Panzarasa. Clustering in weighted networks. Social Networks, 31:155–163, 2009.
+
+[45] J.-P. Eckmann, E. Moses and D. Sergi. Entropy of dialogues creates coherent structures in e-mail traffic.
+     Proc. Natl. Acad. Sci. USA, 101:14333–7, 2004.
+
+[46] M. Faloutsos, P. Faloutsos and C. Faloutsos. On power-law relationships of the Internet topology. Compute.
+     Commun. Rev., 29:251–262, 1999.
+
+[47] G. Caldarelli and M. Catanzaro. Networks: A very short introduction. Oxfrod University Press, New York,
+     2012.
+[48] W. Tarnowski, I. Neri and P. Vivo. Universal transient behavior in large dynamical systems on networks.
+     Phys. Rev. Research, 2:023333, 2020.
+
+[49] S. Sinha and S. Sinha. Evidence of universality for the May-Wigner stability theorem for random networks
+     with local dynamics. Phys. Rev. E, 71(2):020902, 2005.
+
+[50] M. Granovetter. Threshold models of collective behavior. The Americn journal of Sociology, 83:6, 1420–43,
+     2002.
+[51] Y. Kuramoto. Chemical oscillations, waves and turbulance. Springer-Verlag Berlin, Heidelberg, 1984.
+
+[52] P. Kundu, C. Hens, B. Barzel and P. Pal. Perfect synchronization in networks of phase-frustrated oscillators.
+     Europhysics Letters, 120:40002, 2018.
+
+[53] D.B. Stouffer, J. Camacho, R. Guimerà, C.A. Ng and L.A. Nunes Amaral. Quantitive patterns in the strcture
+     of model and empirical food webs. Ecology, 86:1301–1311, 2005.
+
+
+                                                       25
+[54] J.A. Almendral and A. Dı́az-Guilera. Dynamical and spectral properties of complex networks. New Journal
+     of Physics, 9:187–187, 2007.
+
+[55] P. Van Mieghem. Epidemic phase transition of the SIS type in network. Europhysics Letters, 97(4):48004,
+     2012.
+[56] P. Van Mieghem. Graph Spectra for Complex Networks. Cambridge University Press, Cambridge, UK, 2010.
+
+[57] V.S. Afraimovich and L.A. Bunimovich. Dynamical networks: interplay of topology, interactions and local
+     dynamics. Nonlinearity, 20:1761–1771, 2007.
+
+[58] C. Kirst, M. Timme and D.Battaglia. Dynamic information routing in complex networks. Nature Commu-
+     nications, 7:11061, 2016.
+
+[59] A. Barrat, M. Barthélemy and A. Vespignani. Dynamical Processes on Complex Networks. Cambridge
+     University Press, Cambridge, 2008.
+
+[60] G. Yan, G. Tsekenis, B. Barzel, J.-J. Slotine, Y.-Y. Liu and A.-L. Barabási. Spectrum of controlling and
+     observing complex networks. Nature Physics, 11:779786, 2015.
+
+[61] L. Schmetterer and K. Sigmund (Eds.). Hans Hahn Gesammelte Abhandlungen Band 1/Hans Hahn Collected
+     Works Volume 1. Springer, Vienna, Austria, 1995.
+
+[62] S. Milojević. Power-law distributions in information science: making the case for logarithmic binning. Journal
+     of the American Society for Information Science and Technology, 61:2417–2425, 2010.
+
+
+
+
+                                                        26
+                          The random ensemble 𝔼(𝑨, 𝑷𝟎 , 𝐏𝟏 )
+(a)                      (b)                                                  (c)
+        Network                         Weights                                     𝑱 ∈ 𝔼(𝑨, 𝑷𝟎 , 𝑷𝟏 )
+                           𝑷𝟎 (𝒘)
+                                                           𝑱= 𝑨−𝑰 ⊗𝑾
+                                             𝑷𝟏 (𝒘)
+
+
+
+
+                    The dynamic Jacobian ensemble 𝔼(𝑨, 𝑮, 𝛀)
+(d)                                             𝑵
+                  𝐝𝒙𝒊
+                      = 𝑴𝟎 𝒙𝒊 , 𝐟𝟎𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑴𝟏 𝒙𝒊 , 𝐟𝟏𝒊 𝑮𝒊𝒋 𝑴𝟐 (𝒙𝒋 , 𝐟𝟐𝒊 )
+                  𝐝𝒕
+                                               𝒋=𝟏
+
+
+
+(e) 𝑴𝟎 , 𝑴𝟏 , 𝑴𝟐                       (f)          𝐟, 𝒈                    (g)          𝑨𝒊𝒋 , 𝑮𝒊𝒋
+        Dynamics                              Parameters                     Weighted network
+
+
+
+
+      𝛀 = (𝜼, 𝝁, 𝝂, 𝝆)                           𝑪(𝐟, 𝒈)                            𝑷 𝒅 , 𝒅𝐧𝐧 , 𝜷
+
+(h)           𝑱 ∈ 𝔼 𝑨, 𝑮, 𝛀                                 (i)
+                                                                       Stability classifier
+                                                                  𝑺 = 𝜷(𝐬 + 𝝂 + 𝝆 − 𝝁 − 𝜼)
+                                   𝝁
+                               𝒅𝒊
+                                                                  𝑺<𝟎               𝑺=𝟎              𝑺>𝟎
+                                                                                      Sensitive
+
+
+
+                                                                                                     Unstable
+                                                                   Stable
+
+
+
+
+                               𝝆
+                         𝒅𝝂𝒊 𝒅𝒋
+
+
+               Figure 1 - full size. The dynamic Jacobian ensemble.
+
+
+
+
+                                                     27
+                                                                                                       Testing ground for 𝔼(𝑨, 𝑮, 𝛀)
+
+
+
+
+                                                                                                                                                                                                                                                            Figure 2 - full size. Testing ground for the E(A, G, Ω) ensemble.
+ (a)           Epidemic                             (b)            Regulatory                         (c)           Population 1                             (d)                   Inhibitory                      (e)       Biochemical
+                       𝑵                                                   𝑵                                                          𝑵                                                            𝑵                                       𝑵
+  𝐝𝒙𝒊                                                   𝐝𝒙𝒊                           𝒙𝒋𝒉             𝐝𝒙𝒊             𝒙𝒊                                     𝐝𝒙𝒊          𝒙𝒊        𝒙𝒊                     𝒙𝒊        𝐝𝒙𝒊
+      = −𝒇𝒊 𝒙𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝟏 − 𝒙𝒊 𝒙𝒋                      = −𝒇𝒊 𝒙𝒊𝒂 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋                       = 𝒃𝒊 𝒙𝒊 𝟏 −    + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒊 𝑭(𝒙𝒋 )                 = 𝒙𝒊 𝟏 −              − 𝟏 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋                 = 𝒇𝒊 − 𝒃𝒊 𝒙𝒊 − 𝓰 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒊 𝒙𝒋
+  𝐝𝒕                                                    𝐝𝒕                          𝟏 + 𝒙𝒋𝒉           𝐝𝒕              𝒄𝒊                                     𝐝𝒕           𝒃𝒊        𝒄𝒊                   𝟏 + 𝒙𝒋𝒉     𝐝𝒕
+                       𝒋=𝟏                                                𝒋=𝟏                                                      𝒋=𝟏                                                          𝒋=𝟏                                       𝒋=𝟏
+
+
+
+
+                                                                                                                                                                                                                             𝒙𝒊
+                                                                                                                                                               𝒙𝒊
+
+
+
+
+                                                                                                                                                                                           𝒙𝒊
+                           𝒙𝒊
+
+
+
+
+                                                   𝒙𝒊
+𝒙𝒊
+
+
+
+
+                                                                          𝒙𝒊
+
+
+
+
+                                                                                                                                 𝒙𝒊
+                                                                                                       𝒙𝒊
+     Inactive 𝐱 𝟎                   Active 𝐱𝟏           Inactive 𝐱 𝟎            Active 𝐱𝟏                   Inactive 𝐱 𝟎              Active 𝐱𝟏                     Inactive 𝐱 𝟎                Active 𝐱𝟏                          Active 𝐱𝟏
+                                                              𝒂−𝟏        𝒉+𝟏              𝒉                                                                               𝟏    𝟏
+     𝛀 = 𝟎, 𝟏, −𝟏, 𝟎                  𝐒 = −𝜷        𝛀 = 𝟎,        , 𝟎, −               𝐒=− 𝜷                𝛀 = 𝟎, 𝟏, 𝟏, −𝟐               𝐒 = −𝜷                     𝛀 = − , 𝟏, , −𝟏               𝐒 = −𝜷             𝛀 = −𝟏, 𝟏, −𝟏, 𝟎            𝐒 = −𝜷
+                                                               𝒂          𝒂               𝒂                                                                               𝟐    𝟐
+                             Erdős-Rényi                                       Erdős-Rényi                                        Erdős-Rényi                                              Erdős-Rényi                                    Erdős-Rényi
+                             Scale-free 1                                      Scale-free 1                                       Scale-free 1                                             Scale-free 1                                   Scale-free 1
+
+
+
+
+                                                                                                                                                                                                                                                                                                                                28
+                             Scale-free 2                                      Scale-free 2                                       Scale-free 2                                             Scale-free 2                                   Scale-free 2
+                             Social 1                                          PPI 1                                              Microbial 1                                              PPI 1                                          PPI 1
+                             Social 2                                          PPI 2                                              Microbial 2                                              PPI 2                                          PPI 2
+                                                                   Extended dynamics                                                                                                (h)    Model networks:
+                                                                                                                                                                                           Size: 𝑁 = 6,000, Av. degree 𝑘 = 6, Av. weight 𝐺 = 1.
+(f)                                       Power                                          (g)                             Population 2
+                                                                                                                                                                                           • Erdős-Rényi. 𝐺𝑖𝑗 ∼ 𝒩(1, 0.1)
+                                𝑵                                                                                                                                                          • Scale-free 1. 𝑃 𝑘 ∼ 𝑘 −2.5 , 𝐺𝑖𝑗 ∼ 𝒩(1,0.1)
+ 𝐝𝟐 𝒙𝒊           𝐝𝒙𝒊                                                                         𝐝𝒙𝒊             𝒙𝒊            σ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒋
+       = 𝒇𝒊 − 𝒃𝒊     + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝐬𝐢𝐧 𝒙𝒋 − 𝒙𝒊                                                   = 𝒃𝒊 𝒙𝒊 𝟏 −    + 𝒈𝒙𝒊
+                                                                                                                                                                                           • Scale-free 2. 𝑃 𝑘 ∼ 𝑘 −2.5 , 𝑃 𝐺 ∼ 𝐺 −3
+
+
+
+
+                                                                                                                                                   𝒙𝒊
+                                                         𝒙𝒊
+ 𝐝𝒕𝟐             𝐝𝒕                                                                          𝐝𝒕               𝒄𝒊         𝟏 + σ 𝑨𝒊𝒋 𝑮𝒊𝒋 𝒙𝒋
+                             𝒋=𝟏
+                                                                                                                                                                                           Empirial networks:
+                           Erdős-Rényi                        Active 𝐱𝟏                                            Erdős-Rényi                          Active 𝐱𝟏
+                           Scale-free 1                                                                            Scale-free 1                                                            • Social 1/2. Epoch/UCIonline social networks
+                           Scale-free 2                                                                            Scale-free 2                                                            • PPI 1/2. Protein interactions in yeast/human
+                           Power 1                                                                                 Microbial 1             𝛀 = 𝟎, 𝟎, −𝟐, 𝟎          𝐒 = −𝜷                 • Microbial 1/2. Human gut microbiome
+                                                  𝛀 = 𝟎, 𝟏, 𝟎, 𝟎          𝐒=𝟎
+                           Power 2                                                                                 Microbial 2                                                             • Power 1/2. Power grids G.B. and Poland
+(a)        𝑨𝒊𝒋 , 𝑮𝒊𝒋
+                                    Simulation                            (b)                                        (c)
+                                                                                                     𝝁=𝟏                   𝝂 = −𝟏
+                                                                                                                           𝝆=𝟎
+
+
+
+
+                                                                                Epidemic
+
+
+
+
+                                                                                                                     𝑾𝒊𝒋
+                                                                                               𝑾𝒊𝒊
+                             𝐟, 𝓰
+
+                                                                 𝝁
+                                                    𝑾𝒊𝒊 ∼ 𝒅𝒊
+                                                                 𝝆                                                                    𝝆
+ 𝐌 = (𝑴𝟎 , 𝑴𝟏 , 𝑴𝟐 )                    Theory    𝑾𝒊𝒋 ∼ 𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                     𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+
+(d)                       𝝁=𝟎
+                                         (e)      𝝂=𝟎
+                                                                          (f)                        𝝁=𝟏
+                                                                                                                     (g)   𝝂=𝟏
+
+
+
+
+                                                                                Population 1
+      Regulatory
+
+
+
+
+                                                  𝝆 = −𝟐                                                                   𝝆 = −𝟐
+                                         𝑾𝒊𝒋
+                    𝑾𝒊𝒊
+
+
+
+
+                                                                                               𝑾𝒊𝒊
+
+
+
+
+                                                                                                                     𝑾𝒊𝒋
+                                                             𝝆                                                                        𝝆
+                             𝒅𝒊                     𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                         𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+
+(h)                       𝝁=𝟏
+                                         (i)      𝝂 = 𝟎. 𝟓
+                                                                          (j)                        𝝁=𝟏
+                                                                                                                     (k)   𝝂 = −𝟏
+
+
+
+
+                                                                                 Biochemical
+                                                  𝝆 = −𝟏                                                                   𝝆=𝟎
+       Inhibitory
+
+
+
+
+                                                                                                                     𝑾𝒊𝒋
+                                         𝑾𝒊𝒋
+                    𝑾𝒊𝒊
+
+
+
+
+                                                                                               𝑾𝒊𝒊
+                                                             𝝆                                                                        𝝆
+                             𝒅𝒊                     𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                         𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+
+                                                         Extended dynamics
+(l)                       𝝁=𝟏
+                                         (m)      𝝂=𝟎                     (n)                        𝝁=𝟎
+                                                                                                                     (o)   𝝂 = −𝟐
+                                                                                Population 2
+
+
+
+
+                                                  𝝆=𝟎                                                                      𝝆=𝟎
+      Power
+
+
+
+
+                                         𝑾𝒊𝒋
+
+
+
+
+                                                                                                                     𝑾𝒊𝒋
+                    𝑾𝒊𝒊
+
+
+
+
+                                                                                               𝑾𝒊𝒊
+
+
+
+
+                                                             𝝆                                                                        𝝆
+                             𝒅𝒊                     𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋                                         𝒅𝒊                    𝒅𝝂𝒊 𝑮𝒊𝒋 𝒅𝒋
+
+Legend:                   Erdős-Rényi            Scale-free 1             Scale-free 2                 Empirical 1         Empirical 2
+
+
+
+      Figure 3 - full size. Emergent patterns in the dynamic ensemble E(A, G, Ω).
+
+
+
+
+                                                                     29
+    (a)                                    𝑺                                  (b)
+                                                                                             𝑱
+                                                         Asymptotically
+
+
+
+
+                              Sensitive 𝑺 = 𝟎
+                                                         unstable 𝑺 > 𝟎
+
+
+
+
+                                                                                                   − 𝑪
+    𝝀
+
+
+
+
+                                                                                       𝑱𝒊𝒋                     𝑱𝒊𝒊
+             Asymptotically
+             stable 𝑺 < 𝟎 −𝟏. 𝟐                                                      Positive                Negative
+                                                𝟎     𝟏. 𝟖                          feedback                feedback
+
+
+
+                      𝑱𝐀𝐒                                     𝑱𝐒𝐒                                    𝑱𝐀𝐔
+    (c)                                         (d)                                  (e)
+
+
+                      𝝀=𝟎                                               𝝀=𝟎                                  𝝀=𝟎
+
+                                                                                      𝝀
+      𝝀
+
+
+
+
+                                                 𝝀
+                𝑪𝟎
+
+
+
+
+                                                               𝑪𝟎
+
+
+
+
+                                                                                                     𝑪𝟎
+                  𝑪                                             𝑪                                      𝑪
+    (f)                                     (g)                                      (h)
+             Scale-free                                      Scale-free                            Scale-free
+                 𝑺 = −𝟏. 𝟐                                     𝑺=𝟎                               𝑺 = 𝟏. 𝟖
+     𝑪𝟎
+
+
+
+
+                                           𝑪𝟎
+
+
+
+
+                                                                                     𝑪𝟎
+
+
+
+
+                  𝑵                                                 𝑵                                  𝑵
+
+    (i)                                         (j)                                  (k)
+             Erdős-Rényi                                     Erdős-Rényi                           Erdős-Rényi
+                𝑺=𝟎                                            𝑺=𝟎                                    𝑺=𝟎
+     𝑪𝟎
+
+
+
+
+                                                𝑪𝟎
+
+
+
+
+                                                                                      𝑪𝟎
+
+
+
+
+                     𝑵                                              𝑵                                  𝑵
+Figure 4 - full size. Three classes of dynamic stability in real and model networks.
+
+
+
+
+                                                                30
+                                                      Regulatory dynamics                                                          Asymptotic stability
+                                                                       𝑵
+                                                  𝐝𝒙𝒊                          𝒙𝒋                                          (g)
+                                                      = −𝒇𝒊 𝒙𝒊 + 𝒈 ෍ 𝑨𝒊𝒋 𝑮𝒊𝒋                                                                  Regulatory
+                                                  𝐝𝒕                         𝟏 + 𝒙𝒋
+                                                                       𝒋=𝟏
+
+                                                                                                                                                            ER
+ (a)                                Inactive 𝒙𝟎                              (b)                  Active 𝒙𝟏                      𝟏𝟎−𝟏
+
+
+
+
+                                                                                                                           𝒈𝒄
+                                                      𝑱𝒊𝒋                                                            𝑱𝒊𝒋
+𝒙𝒊
+
+
+
+
+                                                                                                                                                           SF1
+
+
+
+
+                                                                        𝒙𝒊
+                                                                                                                                 𝟏𝟎−𝟐
+
+                                                                                                                                        𝟏𝟎𝟏   𝟏𝟎𝟐     𝟏𝟎𝟑            𝟏𝟎𝟒
+                          𝛀 = 𝟎, 𝟎, 𝟎, 𝟎              𝐒=𝜷                                    𝛀 = 𝟎, 𝟎, 𝟎, −𝟐     𝐒 = −𝜷                              𝑵
+
+ (c)                                                                                                                       (h)                 Epidemic
+                          𝒈 = 𝟎. 𝟎𝟑                         𝒈 = 𝟎. 𝟏                 𝒈 = 𝟎. 𝟑                   𝒈=𝟏
+Erdős-Rényi
+
+
+
+
+                                                                                                                                                            ER
+                                                                                                                                 𝟏𝟎−𝟏
+               𝒙𝒊
+
+
+
+
+                                            𝒙𝒊
+
+
+
+
+                                                                                                       𝒙𝒊
+                                                                                                                                                    (i)
+                                                                       𝒙𝒊
+
+
+
+
+                                                                                                                           𝒈𝒄
+                                                                                                                                                           SF1
+                                                                                                                                 𝟏𝟎−𝟐
+ (d)                       𝟏𝟎𝟏                                               (e) 𝟏𝟎𝟏
+                                                                                                                                        𝟏𝟎𝟏   𝟏𝟎𝟐     𝟏𝟎𝟑        𝟏𝟎𝟒
+                               −𝟑                                                       −𝟑
+                          𝟏𝟎                                                       𝟏𝟎                                                                𝑵
+                    〈𝐱〉
+
+
+
+
+                                                                             〈𝐱〉
+
+
+
+
+                                     SF1
+                                                 ER                                               ER           SF1
+                          𝟏𝟎−𝟕                                                     𝟏𝟎−𝟕                                    (i)                 Inhibitory
+                           𝟎                                                        𝟎
+                                    𝟏𝟎−𝟐    𝟏𝟎−𝟏             𝟏𝟎𝟎                        𝟏𝟎𝟎            𝟏𝟎𝟏      𝟏𝟎𝟐              𝟏𝟎−𝟏                           ER
+                                            𝒈                                                          〈𝑓〉
+ (f)                                                                                                                             𝟏𝟎−𝟐
+                                                                                                                           𝒈𝒄
+Scale-free 1
+
+
+
+
+                                                                                                                                 𝟏𝟎−𝟑                      SF1
+               𝒙𝒊
+
+
+
+
+                                                                                                       𝒙𝒊
+                                            𝒙𝒊
+
+
+
+
+                                                                        𝒙𝒊
+
+
+
+
+                                                                                                                                 𝟏𝟎−𝟒
+                                                                                                                                        𝟏𝟎𝟏   𝟏𝟎𝟐         𝟏𝟎𝟑        𝟏𝟎𝟒
+                          𝒈 = 𝟎. 𝟎𝟑                    𝒈 = 𝟎. 𝟏                    𝒈 = 𝟎. 𝟑                     𝒈=𝟏                                  𝑵
+
+
+
+                    Figure 5 - full size. Emergent stability in large heterogeneous networks.
+
+
+
+
+                                                                                                 31
+
