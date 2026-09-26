@@ -88,47 +88,138 @@
 
 <header class="top">
   <h1>Building a flash-crash model, starting from one oscillator</h1>
-  <p class="lede">This is the whole model in the order you would actually discover it. Each step starts
-  with the simplest thing that could work, shows precisely where it breaks, and adds exactly one term to
-  fix it. By the end you have the equation the repository integrates, you know why every term is there,
-  and you know which parts have been tested against real markets and which have failed.</p>
-  <p class="meta">Companion to <code>research/MODEL_REFERENCE.md</code> &middot;
+  <p class="lede">This began as one question: if a flash crash is everybody selling at once, can it be
+  modelled as a synchronisation transition, the way a crowd of metronomes on a shared board falls into step?
+  It ends somewhere different from where it set out, and this document is written in the order the work
+  actually happened rather than in the order that would make it look tidy.</p>
+  <p class="lede" style="margin-top:12px">Steps 1 to 14 build the model. Each one starts with the simplest
+  thing that could work, shows exactly where it breaks, and adds one term to fix it, so that by the end
+  every term in the equation the repository integrates has a reason to be there. Steps 15 to 21 take that
+  finished model to real market data, and most of what they report is failure: two predictions tested and
+  rejected, one observable that the model could not possibly have produced, one measurement that turns out
+  to be impossible in principle, and one discovery that the network the model runs on is nothing like the
+  network a market actually has. Steps 22 to 24 list every assumption the whole thing rests on, what should
+  be deleted, and which of the proposed repairs were tried and whether they helped. Step 25 traces the arc
+  from the first equation to the last result, including the detours.</p>
+  <p class="lede" style="margin-top:12px">Results are labelled throughout by what kind of result they are:
+  reproductions of published work, negative results, and the two things here that appear to be new. Numbers
+  quoted in the text come from the files in <code>research/data/</code> and
+  <code>research/empirical/data/</code>, and the scripts that produced them are named where they are used.</p>
+  <p class="meta">
     live version at <a href="../simulation/index.html">simulation/index.html</a> &middot;
     results at <a href="index.html">research/index.html</a></p>
 </header>
 
 <nav>
   <b>Contents</b>
-  <div class="grp">Build it up</div>
-  <a href="#c1">1. One oscillator</a>
-  <a href="#c2">2. Two, coupled</a>
-  <a href="#c3">3. A crowd: Kuramoto</a>
-  <a href="#c4">4. Why that is not a market</a>
-  <a href="#c5">5. Put it on a network</a>
-  <a href="#c6">6. Still too smooth</a>
-  <a href="#c7">7. Herding: the crash term</a>
-  <a href="#c8">8. From phases to prices</a>
-  <a href="#c9">9. Shocks and persistence</a>
-  <a href="#c10">10. Circuit breakers</a>
+  <a href="#s0">0. Notation</a>
+  <div class="grp">Build the model</div>
+  <a href="#s1">1. One oscillator</a>
+  <a href="#s2">2. Two, coupled</a>
+  <a href="#s3">3. A crowd: Kuramoto</a>
+  <a href="#s4">4. Why that is not a market</a>
+  <a href="#s5">5. Put it on a network</a>
+  <a href="#s6">6. The matrix A in full</a>
+  <a href="#s7">7. Where a real A comes from</a>
+  <a href="#s8">8. Still too smooth</a>
+  <a href="#s9">9. Herding: the crash term</a>
+  <a href="#s10">10. Turning &lambda;, watching R</a>
+  <a href="#s11">11. From phases to prices</a>
+  <a href="#s12">12. Shocks and persistence</a>
+  <a href="#s13">13. Why sine, not cosine</a>
+  <a href="#s14">14. Circuit breakers</a>
   <div class="grp">Confront reality</div>
-  <a href="#c11">11. Real data</a>
-  <a href="#c12">12. The observable gap</a>
-  <a href="#c12b">13. Does the prior work hold?</a>
-  <a href="#c12c">14. Can you measure lambda?</a>
-  <a href="#c12d">15. On a REAL network</a>
-  <a href="#c12e">16. Could you have called it?</a>
-  <div class="grp">New results</div>
-  <a href="#c12f">17. Two new findings</a>
+  <a href="#s15">15. Real data</a>
+  <a href="#s16">16. The observable gap</a>
+  <a href="#s17">17. Does the prior work hold?</a>
+  <a href="#s18">18. Can you measure &lambda;?</a>
+  <a href="#s19">19. On a real network</a>
+  <a href="#s20">20. Could you have called it?</a>
+  <div class="grp">What was found</div>
+  <a href="#s21">21. Two new results</a>
   <div class="grp">Audit</div>
-  <a href="#c13">18. Every assumption</a>
-  <a href="#c14">19. What to remove</a>
-  <a href="#c15">20. What to add, and what helped</a>
+  <a href="#s22">22. Every assumption</a>
+  <a href="#s23">23. What to remove</a>
+  <a href="#s24">24. What to add, and what helped</a>
+  <div class="grp">Close</div>
+  <a href="#s25">25. What this turned into</a>
 </nav>
 
 <main>
 
+<!-- ============================================================= 0 -->
+<section id="s0">
+  <h2>Step 0</h2>
+  <h3>Every symbol, before any of it is used</h3>
+  <p>Nothing below this line is introduced without being defined, but it is easier to read a derivation
+  when the whole alphabet is already on the table. Two columns matter more than they look: <b>type</b>
+  tells you whether you <em>set</em> the quantity or <em>measure</em> it, and that distinction is the
+  single most common source of confusion in this model. <b>You set &lambda;. You measure R.</b> They are
+  not two knobs.</p>
+  <div class="tw"><table>
+    <tr><th>symbol</th><th>name</th><th>type</th><th>range</th><th>first used</th><th>in the code</th></tr>
+    <tr><td>&theta;<sub>i</sub></td><td>phase of desk i, its place in a buy-sell cycle</td><td>state variable, evolves</td><td>[0, 2&pi;)</td><td>(1)</td><td><code>theta</code></td></tr>
+    <tr><td>&omega;<sub>i</sub></td><td>natural frequency, inverse trading horizon</td><td>parameter, fixed once per run</td><td>&plusmn;3, standard normal</td><td>(1)</td><td><code>omega</code></td></tr>
+    <tr><td>q<sub>i</sub></td><td>net order flow of desk i</td><td>derived from &theta;</td><td>[&minus;1, +1]</td><td>(2)</td><td><code>np.sin(theta)</code></td></tr>
+    <tr><td>N</td><td>number of desks</td><td>you set it</td><td>500 in most sweeps</td><td>(6)</td><td><code>n</code></td></tr>
+    <tr><td>K</td><td>coupling in the all-to-all model</td><td><b>control</b></td><td>0 to 8</td><td>(3)</td><td></td></tr>
+    <tr><td>A<sub>ij</sub></td><td><b>connectivity (adjacency) matrix</b>: 1 if desk i watches desk j</td><td>you supply it</td><td>{0, 1}, symmetric</td><td>(10)</td><td><code>ei</code>, <code>ej</code> edge list</td></tr>
+    <tr><td>k<sub>i</sub></td><td>degree: how many desks i watches</td><td>derived from A</td><td>1 to k<sub>max</sub></td><td>(10)</td><td><code>deg</code></td></tr>
+    <tr><td>&lang;k&rang;</td><td>mean degree</td><td>you set it when building A</td><td><b>12</b> everywhere here</td><td>(10)</td><td><code>mean_deg</code></td></tr>
+    <tr><td>&kappa;</td><td>degree heterogeneity &lang;k&sup2;&rang;/&lang;k&rang;&sup2;</td><td>measured from A</td><td>&ge; 1</td><td>(11)</td><td><code>kappa</code></td></tr>
+    <tr><td>C</td><td>average clustering: do my neighbours watch each other?</td><td>measured from A</td><td>[0, 1]</td><td>step 5</td><td><code>nx.average_clustering</code></td></tr>
+    <tr><td><b>&lambda;</b></td><td><b>herding coupling</b>, how hard a desk copies</td><td><b>control parameter, you set it</b></td><td>0 to 8</td><td>(10)</td><td><code>lam</code></td></tr>
+    <tr><td>r<sub>i</sub></td><td><b>local agreement</b> among desk i's neighbours</td><td>measured, and fed back in</td><td>[0, 1]</td><td>(12)</td><td>computed inline</td></tr>
+    <tr><td>&alpha;<sub>i</sub></td><td>herding gain: r<sub>i</sub><sup>p</sup> for a herding desk, 1 otherwise</td><td>derived</td><td>[0, 1]</td><td>(13)</td><td><code>herd_power</code> = p</td></tr>
+    <tr><td>f</td><td>fraction of desks that are consensus-sensitive</td><td>control</td><td>[0, 1], usually 1</td><td>step 9</td><td><code>adaptive</code> mask</td></tr>
+    <tr><td><b>R</b></td><td><b>synchronisation parameter</b>, global order parameter</td><td><b>output, you measure it</b></td><td>[0, 1]</td><td>(7)</td><td>returned by the sweep</td></tr>
+    <tr><td>&Psi;</td><td>mean phase: which way the herd is pointing</td><td>output</td><td>[0, 2&pi;)</td><td>(7)</td><td></td></tr>
+    <tr><td>Q</td><td>aggregate order imbalance, R sin &Psi;</td><td>output</td><td>[&minus;1, +1]</td><td>(15)</td><td><code>Q</code></td></tr>
+    <tr><td>x, P</td><td>log price and price, P = 100e<sup>x</sup></td><td>output</td><td></td><td>(16)</td><td><code>x</code></td></tr>
+    <tr><td>&beta;</td><td>price impact of imbalance</td><td>control, never calibrated</td><td>0.01</td><td>(16)</td><td><code>beta</code></td></tr>
+    <tr><td>&sigma;</td><td>idiosyncratic phase noise, independent per desk</td><td>control</td><td>0 to 0.8</td><td>(17)</td><td><code>sigma</code></td></tr>
+    <tr><td>&sigma;<sub>c</sub></td><td>common market mode, one shared increment for all desks</td><td>control</td><td>0 to 0.8</td><td>(17)</td><td><code>sigma_common</code></td></tr>
+    <tr><td>&epsilon;(t)</td><td>shock strength, a function of time</td><td>control</td><td>0 to ~2</td><td>(18)</td><td><code>shock_eps</code></td></tr>
+    <tr><td>s<sub>i</sub></td><td>shock mask: which desks are hit</td><td>control</td><td>{0, 1}</td><td>(18)</td><td><code>shock_mask</code></td></tr>
+    <tr><td>&theta;<sub>tgt</sub></td><td>shock target phase, &minus;&pi;/2 = maximal selling</td><td>fixed by convention (2)</td><td>&minus;&pi;/2</td><td>(18)</td><td><code>SELL</code></td></tr>
+    <tr><td>&lambda;<sub>f</sub>, &lambda;<sub>b</sub></td><td>forward (ignition) and backward (recovery) thresholds</td><td>measured</td><td></td><td>step 9</td><td><code>transition_points</code></td></tr>
+    <tr><td>&Delta;R</td><td>size of the jump in R</td><td>measured</td><td>[0, 1]</td><td>step 8</td><td></td></tr>
+    <tr><td>g(&omega;)</td><td>density of natural frequencies</td><td>control (its shape matters enormously)</td><td></td><td>(9)</td><td><code>gaussian_omegas</code></td></tr>
+    <tr><td>&gamma;</td><td>half-width of a Lorentzian g</td><td>control</td><td>1</td><td>step 9</td><td></td></tr>
+    <tr><td>&Delta;&omega;</td><td>spread of g, i.e. strategy diversity</td><td>control</td><td>1 by construction</td><td>(4)</td><td><code>spread</code></td></tr>
+    <tr><td>p</td><td>exponent on the herding gain</td><td>control</td><td>0.5 to 2 verified</td><td>(24)</td><td><code>herd_power</code></td></tr>
+    <tr><td>&rho;&#772;</td><td>mean pairwise return correlation, the observable</td><td>measured, on model or on real data</td><td>[&minus;1, 1]</td><td>(21)</td><td><code>mean_corr</code></td></tr>
+    <tr><td>dt</td><td>integration step</td><td>control</td><td>0.01 to 0.05</td><td>step 0</td><td><code>dt</code></td></tr>
+  </table></div>
+
+  <h4>Three symbols are overloaded</h4>
+  <p>Each of these is standard in its own literature, which is how the collisions arose:</p>
+  <ul>
+    <li><b>&kappa;</b> means degree heterogeneity &lang;k&sup2;&rang;/&lang;k&rang;&sup2; in equation (11)
+    and the <em>price anchoring rate</em> in equation (16). Unrelated quantities, same letter, both
+    standard in their own literature.</li>
+    <li><b>&phi;</b> is the phase <em>difference</em> in equation (4) and the <em>fraction of desks hit
+    by a shock</em> in step 12.</li>
+    <li><b>r</b> is local agreement r<sub>i</sub> in equation (12) and degree <em>assortativity</em> in
+    the network table of step 5. &lambda; is also overloaded: the coupling, and
+    &lambda;<sub>max</sub>(A) the largest adjacency eigenvalue.</li>
+  </ul>
+
+  <h4>What one unit of time means</h4>
+  <p>Nothing in the model is in seconds. The equation has a scaling invariance, shown properly in step 3:
+  multiply &omega; and &lambda; by the same factor <i>a</i> and run time <i>a</i> times faster, and you get
+  the identical trajectory. So only the <b>ratio &lambda;/&Delta;&omega;</b> is physical, and time is
+  measured in units of 1/&Delta;&omega;.</p>
+  <p>The repository standardises &Delta;&omega; = 1, which is why &lambda; can be quoted as a bare number
+  at all: <b>&lambda; = 4 means "the coupling is four times the spread of trading horizons"</b>, not four
+  of anything. Mapping a time unit onto minutes has never been calibrated (see assumption 32 and, more
+  seriously, assumption 41), so every duration in this document, including the safe halt length
+  &tau;* in step 14, is in model time.</p>
+</section>
+
+
 <!-- ============================================================= 1 -->
-<section id="c1">
+<section id="s1">
   <h2>Step 1</h2>
   <h3>One oscillator, and what a phase even is</h3>
   <p>Start with a single trading desk. We will not track its cash, its inventory or its positions. We
@@ -143,14 +234,15 @@
   <div class="eq"><span class="lbl">(2)</span>q = sin &theta;
     <small>&theta; = +90&deg; is peak buying (q = +1), &theta; = &minus;90&deg; is peak selling
     (q = &minus;1), and &theta; = 0&deg; or 180&deg; is flat. This is the only bridge from the abstract
-    angle to a market quantity, and everything later depends on it.</small></div>
+    angle to a market quantity, and everything later depends on it. Why <em>sin</em> and not cos, and what
+    that choice does and does not fix: <a href="#s13">step 13</a>.</small></div>
   <div class="note fail"><h5>Where this breaks</h5>
     <p>Nothing happens. One desk cycles forever at a constant rate. There is no interaction, so there is
     nothing to explain. We need at least two.</p></div>
 </section>
 
 <!-- ============================================================= 2 -->
-<section id="c2">
+<section id="s2">
   <h2>Step 2</h2>
   <h3>Two desks that watch each other, and the first threshold</h3>
   <p>Now let desk 1 see desk 2's order flow and be pulled toward it, and vice versa. The natural pull is
@@ -158,7 +250,9 @@
   <div class="eq"><span class="lbl">(3)</span>
     d&theta;<sub>1</sub>/dt = &omega;<sub>1</sub> + <span class="t2">K sin(&theta;<sub>2</sub> &minus; &theta;<sub>1</sub>)</span><br>
     d&theta;<sub>2</sub>/dt = &omega;<sub>2</sub> + <span class="t2">K sin(&theta;<sub>1</sub> &minus; &theta;<sub>2</sub>)</span>
-    <small><span class="t2">K</span> is the <b>coupling strength</b>: how hard each desk copies the other.</small></div>
+    <small><span class="t2">K</span> is the <b>coupling strength</b>: how hard each desk copies the other.
+    The sine is not a convenience. <a href="#s13">Step 13</a> shows that a <em>cosine</em> coupling cannot
+    synchronise anything at all, at any K.</small></div>
   <p>Subtract the two equations. Everything collapses onto the phase <em>difference</em>
   &phi; = &theta;<sub>2</sub> &minus; &theta;<sub>1</sub>:</p>
   <div class="eq"><span class="lbl">(4)</span>d&phi;/dt = &Delta;&omega; &minus; 2K sin &phi;,
@@ -175,7 +269,7 @@
 </section>
 
 <!-- ============================================================= 3 -->
-<section id="c3">
+<section id="s3">
   <h2>Step 3</h2>
   <h3>A crowd of desks: the Kuramoto model</h3>
   <p>Take N desks, each watching every other, with frequencies drawn from a distribution g(&omega;).
@@ -205,11 +299,11 @@
     <p>Equation (6) is unchanged if you multiply <em>both</em> &omega; and K by the same number and slow
     time down to match. So only the <b>ratio</b> K/&Delta;&omega; is physical. This is why comparing two
     frequency distributions is meaningless unless you standardise them first, and why the safe-halt result
-    in step 10 comes out proportional to 1/&Delta;&omega;.</p></div>
+    in step 14 comes out proportional to 1/&Delta;&omega;.</p></div>
 </section>
 
 <!-- ============================================================= 4 -->
-<section id="c4">
+<section id="s4">
   <h2>Step 4</h2>
   <h3>Why that is not a market yet</h3>
   <p>Equation (6) is elegant and wrong for our purpose, in four specific ways. The rest of the model is
@@ -220,15 +314,15 @@
     <li><b>The transition is smooth.</b> R rises continuously from zero at K<sub>c</sub>. Markets do not
     drift gently into crashes, they snap. And a smooth transition has no memory: reverse the coupling and
     you retrace the same curve, so a crash would heal the moment its cause was removed.
-    <span class="t2">Fixed in steps 6 and 7.</span></li>
-    <li><b>There is no price.</b> Phases are not money. <span class="t2">Fixed in step 8.</span></li>
+    <span class="t2">Fixed in steps 11 and 9.</span></li>
+    <li><b>There is no price.</b> Phases are not money. <span class="t2">Fixed in step 11.</span></li>
     <li><b>Nothing ever surprises it.</b> No news, no shocks, no randomness.
-    <span class="t2">Fixed in steps 8 and 9.</span></li>
+    <span class="t2">Fixed in steps 15 and 12.</span></li>
   </ol>
 </section>
 
 <!-- ============================================================= 5 -->
-<section id="c5">
+<section id="s5">
   <h2>Step 5</h2>
   <h3>Put the desks on a network</h3>
   <p>Replace "everyone" with an <b>observation network</b>. A<sub>ij</sub> = 1 if desk i watches desk j's
@@ -236,7 +330,11 @@
   <div class="eq"><span class="lbl">(10)</span>d&theta;<sub>i</sub>/dt = &omega;<sub>i</sub>
     + (&lambda;/&lang;k&rang;) &Sigma;<sub>j</sub> A<sub>ij</sub> sin(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>)
     <small>Dividing by the mean degree &lang;k&rang; rather than N keeps the &lambda; axis comparable
-    across networks with different densities. It is a pure rescaling, so it changes no physics.</small></div>
+    across networks with different densities. It is a pure rescaling, so it changes no physics, <em>but the
+    obvious alternative of dividing by k<sub>i</sub> instead is not</em>, and it destroys the crash.
+    <a href="#s6">Step 6</a> does A properly: storage, all three normalisations, and every graph used here.
+    <a href="#s7">Step 7</a> answers the question this equation raises and the rest of the page walks past:
+    <b>where would a real A come from?</b></small></div>
   <p>Now the structure of the network matters. The quantities that describe it:</p>
   <div class="tw"><table>
     <tr><th>quantity</th><th>definition</th><th>what it measures</th></tr>
@@ -263,9 +361,332 @@
     character. Heterogeneity alone does not produce a crash.</p></div>
 </section>
 
-<!-- ============================================================= 6 -->
-<section id="c6">
+<!-- ============================================================= 5A -->
+<section id="s6">
   <h2>Step 6</h2>
+  <h3>The connectivity matrix, in full: what A is, how it is stored, and the one choice inside it that changes the physics</h3>
+  <p>Step 5 introduced A<sub>ij</sub> in half a sentence and moved on. It deserves a chapter, because it
+  is the only object in the model that is neither a state variable nor a number you tune: it is a
+  <em>structure</em> you have to supply from somewhere, and step 19 shows that the headline results of
+  this whole project depend on which structure you supply.</p>
+
+  <h4>The definition, with all four conventions spelled out</h4>
+  <p>A is an N &times; N matrix of zeros and ones. <b>A<sub>ij</sub> = 1 means desk i can see desk j's
+  order flow.</b> Four conventions are baked in, each of which is an assumption you could drop:</p>
+  <div class="tw"><table>
+    <tr><th>convention</th><th>meaning</th><th>assumption it encodes</th></tr>
+    <tr><td><b>binary</b></td><td>entries are 0 or 1, never 0.3</td><td>#10: no trust weighting, no size weighting. Watching Citadel counts the same as watching a two-person shop</td></tr>
+    <tr><td><b>symmetric</b>, A<sub>ij</sub> = A<sub>ji</sub></td><td>watching is mutual</td><td>#9 <span class="lb">LB</span>: plainly false. Everyone watches the large players; the large players do not watch back</td></tr>
+    <tr><td><b>zero diagonal</b></td><td>a desk does not watch itself</td><td>harmless: the term would be sin(&theta;<sub>i</sub> &minus; &theta;<sub>i</sub>) = 0 anyway, but a self-loop would inflate k<sub>i</sub> and quietly dilute r<sub>i</sub>, so <code>make_network</code> strips them</td></tr>
+    <tr><td><b>static</b></td><td>A never changes during a run</td><td>#14: no rewiring in a crisis. Tested in step 24 as a co-evolving network, item A11, where rewiring toward desks that agree made things <em>worse</em> (R fell 0.926 to 0.712)</td></tr>
+  </table></div>
+  <p>A node is a desk, not a stock. N = 500 means five hundred
+  trading strategies, not five hundred tickers. The per-asset price mapping in step 11 quietly treats the
+  same node as both, which is assumption 29 in the audit of step 23, and one of the two things step 16 blames for the
+  &rho;&#772; &equiv; 0 disaster.</p>
+
+  <h4>How it is actually stored, and why r<sub>i</sub> costs nothing extra</h4>
+  <p>Nobody builds the N &times; N matrix. With &lang;k&rang; = 12 and N = 500 it would be 250,000 entries
+  of which 6,000 are non-zero. The code keeps a <b>directed edge list</b>: two integer arrays
+  <code>ei</code>, <code>ej</code> listing each edge in both directions, so degree is just
+  <code>np.bincount(ei)</code>.</p>
+  <p>Then the whole coupling, and the herding gain with it, comes from exactly two sums:</p>
+  <div class="eq"><span class="lbl">(10a)</span>
+    c<sub>i</sub> = &Sigma;<sub>j</sub> A<sub>ij</sub> cos&theta;<sub>j</sub> &nbsp;&nbsp;&nbsp;
+    s<sub>i</sub> = &Sigma;<sub>j</sub> A<sub>ij</sub> sin&theta;<sub>j</sub>
+    <small>Two <code>bincount</code> calls over the edge list. This is O(E), not O(N&sup2;).</small></div>
+  <div class="eq"><span class="lbl">(10b)</span>
+    &Sigma;<sub>j</sub> A<sub>ij</sub> sin(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>)
+    = s<sub>i</sub> cos&theta;<sub>i</sub> &minus; c<sub>i</sub> sin&theta;<sub>i</sub>
+    <br>r<sub>i</sub> = &radic;(c<sub>i</sub>&sup2; + s<sub>i</sub>&sup2;) / k<sub>i</sub>
+    <small>The coupling is the <em>imaginary</em> part of the neighbour sum rotated by &minus;&theta;<sub>i</sub>;
+    r<sub>i</sub> is its <em>modulus</em>. Both fall out of the same two numbers, which is why the herding
+    term in step 9 costs nothing computationally. It also shows why sin is the only workable choice, which
+    step 13 takes up properly.</small></div>
+
+  <h4>The normalisation, which is not cosmetic</h4>
+  <p>Equation (10) divides the coupling by &lang;k&rang;. Step 5 called that "a pure rescaling, so it
+  changes no physics", which is true of <em>that</em> choice and false of the obvious alternative. There
+  are three options in the code (<code>norm="mean" | "none" | "degree"</code>) and they are not
+  equivalent. Compare what field a desk of degree k<sub>i</sub> ends up feeling:</p>
+  <div class="eq"><span class="lbl">(10c)</span>h<sub>i</sub> = (&lambda;/norm<sub>i</sub>) &middot;
+    k<sub>i</sub> &middot; R<sub>link</sub>
+    <small>h<sub>i</sub> is the locking field of step 3, now per desk. Everything below is just reading
+    this line with three different denominators.</small></div>
+  <div class="tw"><table>
+    <tr><th>norm<sub>i</sub></th><th>h<sub>i</sub> becomes</th><th>consequence</th><th>verdict</th></tr>
+    <tr><td><b>&lang;k&rang;</b> (default)</td><td>&lambda; k<sub>i</sub> R / &lang;k&rang;, so
+        <b>&prop; k<sub>i</sub></b></td>
+        <td>hubs feel a much stronger field than the periphery. Since &lang;k&rang; is one global constant,
+        changing it only relabels the &lambda; axis</td>
+        <td>a genuine rescaling; keeps &lambda; comparable across densities</td></tr>
+    <tr><td><b>1</b> (G&oacute;mez-Garde&ntilde;es 2011)</td><td>&lambda; k<sub>i</sub> R, still
+        <b>&prop; k<sub>i</sub></b></td>
+        <td>identical physics, thresholds shifted by a factor of &lang;k&rang; = 12</td>
+        <td>fine, just a different &lambda; axis</td></tr>
+    <tr><td><b>k<sub>i</sub></b> (degree-normalised)</td><td>&lambda; R, <b>independent of
+        k<sub>i</sub></b></td>
+        <td>every desk now feels the same field regardless of how many desks it watches. <b>The hub
+        advantage is deleted.</b> Hubs no longer lock first and no longer seed the rest, so the mechanism
+        that makes the transition sharp is gone</td>
+        <td><span class="lb">breaks it</span> measured hysteresis gap <b>0.06 against 0.79</b></td></tr>
+  </table></div>
+  <div class="note fail"><h5>This is a live contradiction in the repository</h5>
+    <p>The <code>norm="degree"</code> path is still in <code>model.py</code>, still used by
+    <code>python/analysis/hysteresis_sweep.py</code>, and the README still claims explosive
+    synchronisation for it. It is item <b>R3</b> on the removal list in step 24. If you run a sweep and see a smooth
+    curve where this page promises a jump, <b>check this setting first</b>.</p></div>
+
+  <h4>Which graphs are used here, and what each one is for</h4>
+  <p>Every graph below is generated at &lang;k&rang; = 12, N = 400 to 600, reduced to its giant component
+  so no desk is isolated (assumption 17). The last two columns are what actually matters, because
+  &kappa; sets the threshold (equation 11) and C decides whether the transition is explosive at all
+  (equation 26).</p>
+  <div class="tw"><table>
+    <tr><th>kind</th><th>construction</th><th>degree law</th><th>&kappa;</th><th>C</th><th>why it is in the repo</th></tr>
+    <tr><td><b>er</b></td><td>Erd&#337;s-R&eacute;nyi G(N, p), p = &lang;k&rang;/(N&minus;1)</td><td>Poisson</td><td>1 + 1/&lang;k&rang; &asymp; 1.09</td><td><b>0.030</b></td><td>the default. Nearly homogeneous and nearly unclustered, so it isolates herding from structure</td></tr>
+    <tr><td><b>ba</b></td><td>preferential attachment, m = &lang;k&rang;/2</td><td>power law, &gamma; = 3</td><td>&asymp; 1.7</td><td>0.081</td><td>hubs. The heterogeneous comparison</td></tr>
+    <tr><td><b>sf</b></td><td>configuration model, cutoff &radic;(&lang;k&rang;N)</td><td>power law, &gamma; tunable</td><td>large</td><td>&asymp; 0</td><td>lets you dial the tail exponent, which route A turns out to need</td></tr>
+    <tr><td><b>ws</b></td><td>ring rewired with probability p</td><td>almost a delta</td><td>&asymp; 1.01</td><td>0.09 to 0.68</td><td><b>the clustering dial.</b> Holds &kappa; fixed while C moves, which is exactly what the C* result needs</td></tr>
+    <tr><td><b>ring</b></td><td>1-D lattice, no rewiring</td><td>exactly &delta;(k &minus; 12)</td><td>exactly 1</td><td>0.6</td><td>worst case control. Never reaches R = 0.5 in any condition, which is why item R8 in step 24 says retire it</td></tr>
+    <tr><td><b>rr</b></td><td>random regular</td><td>exactly &delta;(k &minus; 12)</td><td>exactly 1</td><td>&asymp; 12/N</td><td>the built-in control for route A: with all degrees equal, &omega; &prop; k is meaningless, so any frequency-degree correlation collapses to a random assignment</td></tr>
+    <tr><td><b>complete</b></td><td>all-to-all</td><td>&delta;(k &minus; N+1)</td><td>1</td><td>1</td><td>the mean-field reference. The closed forms of step 21 are <em>exact</em> here and only here</td></tr>
+  </table></div>
+
+  <h4>Why &lang;k&rang; = 12, and the number that explains the 10% gap</h4>
+  <p>&lang;k&rang; = 12 is sparse enough to be a network rather than a crowd, and dense enough that the
+  annealed mean field of equation (11), which assumes a desk sees a representative sample of the market,
+  is not absurd. But sparseness leaves a fingerprint, and it is worth knowing its size.</p>
+  <p>Take a desk whose neighbours are completely unaligned, phases uniform and independent. The sum
+  &Sigma;<sub>j</sub>e<sup>i&theta;<sub>j</sub></sup> is then a random walk of k<sub>i</sub> unit steps, so
+  its length is of order &radic;k<sub>i</sub>, not zero:</p>
+  <div class="eq"><span class="lbl">(10d)</span>r<sub>i</sub> &asymp; 0.886 / &radic;k<sub>i</sub>
+    &nbsp; &asymp; <b>0.26</b> at k<sub>i</sub> = 12
+    &nbsp;&nbsp;&nbsp; R &asymp; 0.886 / &radic;N &asymp; <b>0.040</b> at N = 500
+    <small>The mean resultant length of k random unit vectors is &radic;(&pi;k)/2, hence the 0.886. This is
+    <em>the</em> number to know before you read any sweep.</small></div>
+  <div class="note why"><h5>What that number explains</h5>
+    <p><b>1. R is never 0.</b> Every forward branch in this repository sits at R &asymp; 0.040 in the
+    incoherent phase, and that is exactly 0.886/&radic;500. It is the finite-size floor, not a weak signal.
+    If you change N, the floor moves, and a "response" of 0.04 is no response.</p>
+    <p><b>2. The herding gain never fully switches off.</b> Mean-field theory sets r<sub>i</sub> &rarr; 0
+    at incoherence, which would make the effective coupling &lambda;r<sub>i</sub> vanish and R = 0
+    absolutely stable at every &lambda;. On a sparse graph r<sub>i</sub> bottoms out near 0.26 instead, so
+    there is always a residual pull, and fluctuations can light the fire. That is why &lambda;<sub>f</sub>
+    is a measured, N-dependent and noise-dependent quantity rather than a clean theoretical one, while
+    &lambda;<sub>b</sub>, which is a genuine fold in the equations, matches the closed form to about 10%
+    (measured 1.116 at &lang;k&rang; = 12).</p></div>
+  <div class="note fail"><h5>Where this leaves us</h5>
+    <p>All of the above tells you how to <em>use</em> an A. It says nothing about where a <em>real</em> A
+    would come from, and every graph in the table is invented. That is assumption 15, it is load-bearing,
+    and step 7 is the honest answer to it.</p></div>
+</section>
+
+<!-- ============================================================= 5B -->
+<section id="s7">
+  <h2>Step 7</h2>
+  <h3>Where a real connectivity matrix would come from</h3>
+  <p>A<sub>ij</sub> is supposed to mean "desk i watches desk j's order flow", and no one publishes that
+  matrix. The quantity is private by construction rather than merely expensive, so every real A is an
+  <em>estimate</em>, and the choice of estimator has consequences. That is why step 19 builds two different
+  ones and reports both.</p>
+  <div class="note fail"><h5>The criticism, stated properly</h5>
+    <p>The objection is: <em>this is Kuramoto oscillators dropped onto an invented graph, and the graph is
+    supposed to be a connectivity matrix between real trading desks.</em> That is accurate. Every crash
+    result in this repository was measured on a synthetic Erd&#337;s-R&eacute;nyi graph at
+    &lang;k&rang; = 12, with Barab&aacute;si-Albert and configuration-model scale-free graphs as
+    comparisons. None of them was estimated from anything.</p>
+    <p>It is logged as <b>assumption 15</b>, it is marked <span class="lb">LB</span> load-bearing, and it is
+    not a cosmetic complaint. Step 19 tests it and the answer is bad: on a network estimated from real
+    returns the bistable window, which steps 16 and 14 depend on entirely, <b>collapses by a factor of
+    four and its width goes to zero</b>. So the criticism is not "your graph is unrealistic", it is
+    "your central result may be an artifact of your graph". That is the strongest single objection to the
+    whole project, and it comes from inside it.</p>
+    <p>Two separate repairs are needed and they should not be confused. <b>(i)</b> Use a network estimated
+    from data rather than generated: tiers 1 to 4 below. <b>(ii)</b> Make the nodes the right kind of
+    object. A returns network has <em>stocks</em> as nodes; the model's A<sub>ij</sub> is about
+    <em>desks</em>. Only tiers 2 and 4 fix that, and it is assumption 29. Tier 1 fixes (i) but not (ii),
+    which is worth knowing before presenting it as the answer.</p></div>
+
+  <p>Five families of data can stand in for it. They are ordered by how close they get to the thing the
+  model actually needs, which is also roughly the order of increasing cost and decreasing availability.</p>
+
+  <h4>Tier 1. Returns, thresholded. Free, and what this repository already does</h4>
+  <p>Take the price history of every constituent, compute log returns, and connect the pairs that move
+  together. <code>research/empirical/fetch_markets.py</code> pulls this from <b>Yahoo Finance</b> through
+  the <code>yfinance</code> package: 23 markets, about 2,900 constituent stocks, daily closes from 2000 to
+  2026, no key, no cost. <code>research/empirical/e5_real_network.py</code> then builds two networks from
+  it. The recipe, exactly:</p>
+  <div class="eq"><span class="lbl">(10e)</span>
+    X = standardised log returns, T &times; n &nbsp;&nbsp;&nbsp;
+    C = X<sup>T</sup>X / T
+    <br>L = X[1:&minus;1]<sup>T</sup>X[2:] / (T&minus;1) &nbsp;&nbsp;&nbsp;
+    LL = L &minus; L<sup>T</sup>
+    <small><b>corr</b> uses |C|: plain contemporaneous co-movement. <b>leadlag</b> uses |L &minus;
+    L<sup>T</sup>|, the <em>antisymmetric</em> part of the one-day-lagged cross-correlation, which keeps the
+    pair i and j when i leads j more strongly than j leads i.</small></div>
+  <p>Then a threshold. Both matrices are dense, so you keep only the strongest &lang;k&rang;n/2 entries,
+  with the cut chosen so the mean degree comes out at <b>12</b>, matching the synthetic benchmark. Degree is
+  then held fixed by construction and <em>only structure differs</em>, which is what makes the comparison in
+  step 19 a controlled one. Finally symmetrise and drop self-loops.</p>
+  <p>What comes out, measured (<code>research/empirical/data/e5_network_stats.csv</code>):</p>
+  <div class="tw"><table>
+    <tr><th>market</th><th>kind</th><th>n</th><th>&lang;k&rang;</th><th>&kappa;</th><th>k<sub>max</sub></th><th>clustering C</th><th>assortativity</th></tr>
+    <tr><td>S&amp;P 500</td><td>corr</td><td>185</td><td>20.9</td><td>1.85</td><td>88</td><td><b>0.694</b></td><td>+0.107</td></tr>
+    <tr><td>S&amp;P 500</td><td>leadlag</td><td>335</td><td>13.2</td><td>2.64</td><td>110</td><td>0.077</td><td><b>&minus;0.351</b></td></tr>
+    <tr><td>FTSE 100</td><td>corr</td><td>65</td><td>13.8</td><td>1.75</td><td>54</td><td><b>0.767</b></td><td>&minus;0.238</td></tr>
+    <tr><td>FTSE 100</td><td>leadlag</td><td>74</td><td>12.2</td><td>1.31</td><td>32</td><td>0.200</td><td>&minus;0.143</td></tr>
+    <tr><td>synthetic ER</td><td></td><td>400</td><td>12.0</td><td>1.09</td><td>23</td><td><b>0.030</b></td><td>&minus;0.009</td></tr>
+    <tr><td>synthetic BA</td><td></td><td>400</td><td>11.8</td><td>1.68</td><td>88</td><td>0.081</td><td>&minus;0.049</td></tr>
+  </table></div>
+  <p>The clustering column is the one to read against equation (26), where C* &asymp; 0.35 is the point at
+  which the bistable window closes. The correlation networks sit at 0.69 and 0.77, a factor of 20 or more above the synthetic graph
+  and twice the critical value. <b>That column is the reason for step 19.</b> The lead-lag network's
+  strong negative assortativity (&minus;0.35) is also worth noticing: it says the busy nodes connect to
+  quiet ones, which is what "everybody watches the few big names" looks like in a graph, and it is direct
+  evidence against the reciprocity assumption #9.</p>
+  <p>Other free or cheap sources of the same kind of data, if Yahoo's gaps or its survivorship bias
+  (assumption 38) bother you: <b>Stooq</b>, <b>Tiingo</b>, <b>Alpha Vantage</b>, <b>Nasdaq Data Link</b>,
+  <b>EODHD</b>, <b>Finnhub</b>, <b>Polygon.io</b>. The academic standard, survivorship-free and including
+  delisted names, is <b>CRSP</b> via <b>WRDS</b>, and <b>Compustat Global</b> for non-US indices, which is
+  what Lee et al. used in step 17. Both are institutional subscriptions.</p>
+  <p>Better estimators than a hard threshold, all standard and all worth trying, since the threshold is the
+  weakest link in the chain:</p>
+  <ul>
+    <li><b>Partial correlation</b> or the <b>precision matrix</b>: removes the market factor, so you stop
+    connecting two stocks merely because both follow the index.</li>
+    <li><b>Graphical lasso</b>: gives a sparse graph directly from an L1 penalty, so sparsity is estimated
+    rather than imposed by a cut you chose.</li>
+    <li><b>Minimum spanning tree</b> (Mantegna 1999) and the <b>planar maximally filtered graph</b>
+    (Tumminello et al. 2005): filters with no free threshold at all.</li>
+    <li><b>Granger causality networks</b> (Billio et al. 2012) and the <b>Diebold-Yilmaz spillover
+    index</b>: directed by construction, which fits "who watches whom" far better than a correlation.</li>
+    <li><b>Transfer entropy</b> or <b>tail-dependence</b> networks, if you care about the crash regime
+    specifically rather than the average one.</li>
+  </ul>
+  <div class="note fail"><h5>A circularity worth naming</h5>
+    <p>A return-correlation network is an <b>outcome</b>. The model's A is supposed to be an <b>input</b>
+    that <em>generates</em> co-movement. Estimating A from co-movement and then asking whether the model
+    reproduces co-movement is close to circular, and the high clustering of the corr network is partly an
+    artifact of thresholding a single-factor covariance matrix: if everything loads on the market, the
+    strongest pairs form a dense blob with many triangles.</p>
+    <p>The lead-lag network is the better of the two for precisely this reason: it uses the <em>time
+    asymmetry</em>, which a common factor does not produce. Note its clustering, 0.077, is a tenth of the
+    corr network's, and closer to the synthetic value. Any serious version of step 19 should sweep the
+    threshold and report both networks, which is exactly the caveat that step records.</p></div>
+
+  <h4>Tier 2. Holdings and positions. Free, and the closest proxy to a real <em>trader</em> network</h4>
+  <p>Tier 1 has a category error in it: it gives you a network of <b>assets</b>, and the model wants a
+  network of <b>desks</b>. Equating the two is assumption 29. Holdings data fixes that, because the nodes
+  are actual named institutions.</p>
+  <div class="tw"><table>
+    <tr><th>source</th><th>what it contains</th><th>frequency</th><th>cost</th></tr>
+    <tr><td><b>SEC Form 13F-HR</b> (EDGAR)</td><td>long US equity holdings of every institutional manager with over $100M in 13(f) securities, position by position, manager named</td><td>quarterly, 45-day lag</td><td><b>free, no key</b></td></tr>
+    <tr><td><b>SEC Form N-PORT</b></td><td>full portfolio holdings of registered funds, including bonds and derivatives</td><td>monthly data, filed quarterly, published with a lag</td><td>free</td></tr>
+    <tr><td><b>SEC Forms 3, 4, 5</b></td><td>insider transactions, dated to the day</td><td>event-driven, 2-day lag</td><td>free</td></tr>
+    <tr><td><b>SC 13D / 13G</b></td><td>stakes above 5%, and whether the intent is activist</td><td>event-driven</td><td>free</td></tr>
+    <tr><td><b>EU / UK short-selling registers</b> (ESMA, BaFin, AMF, FCA, CNMV)</td><td>net short positions above 0.5% of share capital, <b>naming the fund and the issuer</b></td><td>daily</td><td>free</td></tr>
+    <tr><td><b>WRDS Thomson Reuters s34</b></td><td>13F, cleaned and manager-identifier-stitched across time</td><td>quarterly</td><td>subscription</td></tr>
+  </table></div>
+  <p>The construction, which is the part worth getting right:</p>
+  <ol class="steps">
+    <li>Build the <b>bipartite</b> matrix H, managers &times; stocks, entry = portfolio weight. This is
+    already the honest structure that the bipartite trader-by-asset extension, item A13 in step 24, proposed for assumption 29.</li>
+    <li>Project it to a manager-manager graph. The naive projection, <b>cosine similarity of holdings</b>,
+    measures who owns the same things, which is exposure overlap rather than imitation.</li>
+    <li>The projection you actually want uses <b>changes</b>: correlate &Delta;H across quarters, so an
+    edge means "when i bought, j bought too". That is a behavioural link, which is what A<sub>ij</sub>
+    claims to be. Lagging it by one quarter makes it directed, and gives you a real lead-lag among
+    <em>traders</em>.</li>
+    <li>Threshold to &lang;k&rang; = 12 exactly as in tier 1, so the comparison against the synthetic
+    benchmark stays controlled, then report &kappa;, C and assortativity.</li>
+  </ol>
+  <div class="note win"><h5>The cheapest useful next step</h5>
+    <p>It is free, it is scriptable against EDGAR in an afternoon, and it is the only tier that gives a
+    network whose nodes are the same kind of object as the model's nodes. It would address assumption 15
+    and assumption 29 at the same time, which no result in this repository currently does.</p>
+    <p>The limitation is severe: 13F is <em>quarterly</em>. The 2010 flash crash lasted 36
+    minutes. That is seven orders of magnitude, and it is assumption 41 wearing a different hat. A 13F
+    network is a credible estimate of the market's <em>structure</em> and tells you nothing about the
+    <em>timing</em> of anything. Use it to get C and &kappa; right; do not use it to date a crash.</p></div>
+
+  <h4>Tier 3. Trade and order data. Paid, and the only tier at the model's own timescale</h4>
+  <p>Message-level feeds record every order, modification and execution with microsecond timestamps. The
+  participant is usually anonymous, but orders carry IDs, so sequences of orders can be clustered into
+  <em>strategies</em>, and lead-lag between strategy clusters can then be measured at the millisecond
+  scale. That is as close to the true A as anyone outside a regulator gets.</p>
+  <div class="tw"><table>
+    <tr><th>source</th><th>what you get</th><th>cost</th></tr>
+    <tr><td><b>HF Data Library</b></td><td>1-minute OHLCV, 1,391 US stocks and ETFs, from 2002. <b>Already wired into this repo</b> (<code>e6_flash_crash.py</code>, <code>e7_minute_event_study.py</code>, 2.3M bars)</td><td><b>free with a key, CC BY 4.0</b></td></tr>
+    <tr><td><b>Nasdaq TotalView-ITCH</b></td><td>every message, full depth. Sample days are published openly; full history is a licence</td><td>free samples, then paid</td></tr>
+    <tr><td><b>LOBSTER</b></td><td>the limit order book reconstructed from ITCH, ready to use</td><td>academic licence, cheap</td></tr>
+    <tr><td><b>Databento</b></td><td>ITCH and other venues, market-by-order, priced per gigabyte</td><td>the cheapest serious commercial option</td></tr>
+    <tr><td><b>NYSE Daily TAQ</b></td><td>every trade and quote, US consolidated tape</td><td>paid, commonly via WRDS</td></tr>
+    <tr><td><b>LSEG (Refinitiv) Tick History</b>, <b>Bloomberg B-PIPE</b>, <b>Algoseek</b>, <b>TickData</b>, <b>Kibot</b>, <b>FirstRate Data</b></td><td>global tick and minute history, varying depth</td><td>paid, institutional to modest</td></tr>
+    <tr><td><b>CME DataMine</b></td><td>futures, including the E-mini contract at the centre of 2010-05-06</td><td>paid, free samples</td></tr>
+  </table></div>
+  <p>For the 2010 flash crash specifically, the E-mini S&amp;P 500 futures book is the right instrument,
+  not the equity tape, because that is where the initiating sell programme landed. The CFTC and SEC joint
+  report on that day is the public account of it.</p>
+
+  <h4>Tier 4. The actual ground truth, which exists but is not yours</h4>
+  <p>These datasets contain, literally, who traded what and when, with the firm identified. They would
+  give the real A rather than a proxy. Access is restricted to regulators, and to researchers admitted
+  through formal programmes.</p>
+  <div class="tw"><table>
+    <tr><th>source</th><th>contains</th><th>who can see it</th></tr>
+    <tr><td><b>FINRA CAT</b> (Consolidated Audit Trail, US)</td><td>every order event in US equities and options, linked end to end, with the reporting firm identified</td><td>SEC and the SROs only</td></tr>
+    <tr><td><b>MiFID II RTS 22 transaction reports</b> (EU / UK)</td><td>every transaction, with the <b>LEI of the executing firm, the counterparty and the investment decision maker</b></td><td>national competent authorities, ESMA</td></tr>
+    <tr><td><b>EMIR / SFTR trade repositories</b></td><td>derivatives and securities financing, both counterparties identified</td><td>regulators, some aggregate publication</td></tr>
+    <tr><td><b>CFTC large trader reporting</b></td><td>futures positions trader by trader</td><td>CFTC; only aggregates are public, as Commitments of Traders</td></tr>
+    <tr><td><b>FINRA TRACE</b></td><td>corporate bond transactions; the academic version carries masked but <em>consistent</em> dealer identifiers, which is enough to build a dealer network</td><td>public (masked) and via WRDS</td></tr>
+    <tr><td><b>Central bank research data centres</b>: Bundesbank RDSC, ECB, Bank of England, Banque de France, the Fed, ESRB</td><td>supervisory microdata, including holdings and transactions</td><td>visiting-researcher and remote-access programmes, application required</td></tr>
+  </table></div>
+  <div class="note why"><h5>Precedent</h5>
+    <p>Investor-level registry data has been used to build genuine investor networks before:
+    <b>Ozsoylev, Walden, Yavuz and Bildik</b> (<i>RFS</i> 2014) used the Istanbul Stock Exchange's
+    complete investor-level records, and the Finnish central share register has supported a long line of
+    work in the same vein (Grinblatt and Keloharju). So the network the model needs is not unobservable in
+    principle. It is observable in one or two jurisdictions, by people with permission.</p></div>
+
+  <h4>Tier 5. Attention networks, if you take "watches" literally</h4>
+  <p>A<sub>ij</sub> says i <em>watches</em> j. Everything above infers watching from trading. These sources
+  measure attention directly:</p>
+  <ul>
+    <li><b>SEC EDGAR server log files</b>, 2003 to 2017, free: every request for every filing, with a
+    partially anonymised IP. Mapping IP blocks to institutions is noisy but has been done repeatedly to
+    measure which investors read which company's filings, and the series is a genuine
+    reader-to-issuer attention graph. It stops in 2017.</li>
+    <li><b>Bloomberg terminal readership and search counts</b>: the best attention proxy in existence,
+    used in published work on institutional attention, and not redistributable.</li>
+    <li><b>StockTwits</b> and <b>X</b> follower and co-mention graphs, <b>Reddit</b> submissions,
+    <b>Google Trends</b>, and news co-mention from <b>GDELT</b> (free) or <b>RavenPack</b> (paid).</li>
+  </ul>
+  <p>All of these measure attention to <em>assets</em>, not to other traders' order flow, so they fit the
+  bipartite trader-by-asset form of item A13 rather than the trader-to-trader A. They are also the only tier where
+  "i watches j but j does not watch i" is directly observable, which is the one honest test of
+  assumption 9 available for free.</p>
+
+  <h4>Choosing between them</h4>
+  <div class="tw"><table>
+    <tr><th>what you want</th><th>use</th><th>cost</th><th>the catch</th></tr>
+    <tr><td>a network today, reproducing step 19</td><td>tier 1, corr and leadlag</td><td>free</td><td>it is an asset network, and corr is partly circular</td></tr>
+    <tr><td>a network of <b>traders</b>, structurally honest</td><td>tier 2, 13F changes, lagged</td><td>free</td><td>quarterly: structure only, never timing</td></tr>
+    <tr><td>the model's own timescale</td><td>tier 3, ITCH or 1-minute bars</td><td>free to moderate</td><td>participants are anonymous; you must cluster orders into strategies</td></tr>
+    <tr><td>the true A</td><td>tier 4, CAT or RTS 22</td><td>permission, not money</td><td>you will not get it without an institutional route</td></tr>
+    <tr><td>"watches" in the literal sense</td><td>tier 5, EDGAR logs</td><td>free</td><td>attention to issuers, not to desks; ends 2017</td></tr>
+  </table></div>
+  <div class="note why"><h5>Whatever you build, report these six numbers</h5>
+    <p>n, &lang;k&rang;, &kappa;, <b>C</b>, assortativity, and reciprocity before symmetrisation. The
+    first two are bookkeeping. &kappa; is the only structural quantity in the mean-field threshold
+    (equation 11). <b>C decides whether the phenomenon this whole document is about exists at all</b>
+    (equation 26). Assortativity and reciprocity are the evidence for or against assumption 9. And sweep
+    the threshold: it is a free parameter masquerading as a measurement.</p></div>
+</section>
+
+<!-- ============================================================= 6 -->
+<section id="s8">
+  <h2>Step 8</h2>
   <h3>What actually makes a transition abrupt</h3>
   <p>A crash is a <b>first-order</b> transition: R jumps discontinuously, and the forward and backward
   paths differ, which is <b>hysteresis</b>. Three known mechanisms produce this. They are genuinely
@@ -292,12 +713,12 @@
   2009). Note g(0) = 0 for a bimodal law, so formula (11) does not even apply.</p>
 
   <h4>Route C: make the coupling adaptive</h4>
-  <p>This is the one that fits a market, and it is step 7.</p>
+  <p>This is the one that fits a market, and it is step 9.</p>
 </section>
 
 <!-- ============================================================= 7 -->
-<section id="c7">
-  <h2>Step 7</h2>
+<section id="s9">
+  <h2>Step 9</h2>
   <h3>The herding term, which is where the crash comes from</h3>
   <p>Route A needs desks' trading horizons to be proportional to their connectivity, which is an odd thing
   to assert about a market. Route C assumes something far more natural: <b>you copy harder when the people
@@ -336,6 +757,9 @@
   <p>Measured on the configuration the simulation ships with (ER, &lang;k&rang; = 12, f = 1,
   &sigma; = 0.3): <b>&lambda;<sub>b</sub> = 3.1, &lambda;<sub>f</sub> = 4.1</b>, hysteresis gap 0.80. You
   can reproduce this live with the <a href="../simulation/index.html">auto-ramp button</a>.</p>
+  <p><a href="#s10">Step 10</a> is the chapter this table deserves: what the relationship between &lambda;
+  and R actually is, why the market responds to &lambda;R rather than to &lambda;, the measured forward and
+  backward branches, and the nine reasons a sweep can look completely flat.</p>
   <div class="note win"><h5>And for Lorentzian frequencies it is exactly solvable</h5>
     <p>The classic Kuramoto result R = &radic;(1 &minus; K<sub>c</sub>/K) with K<sub>c</sub> = 2&gamma;
     enters the mean field as K&middot;R. Here the gain is &alpha;<sub>i</sub> = r<sub>i</sub>, so it
@@ -346,16 +770,200 @@
     <b>&lambda;<sub>b</sub> = 3&radic;3&thinsp;&gamma; &asymp; 5.196&gamma;</b>, with
     <b>R* = 1/&radic;3 &asymp; 0.577</b> at the fold. Verified numerically: at &lambda; = 5.2, just above
     the fold, the two roots are 0.5901 and 0.5645, converging on 0.5774 as they must. This replaces the
-    numerical saddle-node search that step 7's mean field used, which was about 10% off.</p></div>
+    numerical saddle-node search that step 9's mean field used, which was about 10% off.</p></div>
   <div class="note why"><h5>Hysteresis is the point</h5>
     <p>A crash persists not because the shock persists, but because the market has moved onto a different
     stable branch. Whether a shock heals or sticks is a property of <em>where &lambda; sits</em>, not of
     how big the shock was.</p></div>
 </section>
 
+<!-- ============================================================= 7A -->
+<section id="s10">
+  <h2>Step 10</h2>
+  <h3>Turning &lambda;, and watching R answer</h3>
+  <p>Step 9 quoted &lambda;<sub>b</sub> = 3.1 and &lambda;<sub>f</sub> = 4.1 as if the connection between
+  the coupling and the synchronisation parameter were obvious. It is not obvious at all, and the question
+  deserves a chapter of its own: <b>when I raise the herding coupling &lambda;, why does the
+  synchronisation parameter R go up?</b></p>
+  <p>The short version is that &lambda; sets the width of a capture window in frequency space, R measures
+  how much of the population that window has swallowed, and because the width of the window is itself
+  proportional to R, the two quantities chase each other. The rest of this chapter is that sentence, slowly.</p>
+
+  <h4>What the coupling physically does to one desk</h4>
+  <p>Switch the coupling off and the desks are hopeless: each one rotates at its own rate
+  &omega;<sub>i</sub>, they drift apart within a few cycles, and their arrows end up spread uniformly
+  around the circle so that the average arrow has essentially no length. That is R &asymp; 0, and it is the
+  natural state of the market. Diversity of trading horizons, on its own, guarantees incoherence.</p>
+  <p>Now switch the coupling on. Desk i is pulled toward the average direction of the desks it watches,
+  and from step 3 the strength of that pull is</p>
+  <div class="eq"><span class="lbl">(14a)</span>h<sub>i</sub> = (&lambda;/&lang;k&rang;) &middot;
+    k<sub>i</sub> &middot; R
+    <small>&lambda; is the coupling you set, k<sub>i</sub> is how many desks i watches, and R is how
+    aligned the market already is. All three multiply.</small></div>
+  <p>The pull competes against the desk's own stubbornness, which is how far its natural pace sits from the
+  pace of the herd, |&omega;<sub>i</sub> &minus; &Omega;|. Whichever is larger wins, and the outcome is
+  binary:</p>
+  <div class="eq"><span class="lbl">(14b)</span>
+    |&omega;<sub>i</sub> &minus; &Omega;| &le; h<sub>i</sub> &nbsp;&rArr;&nbsp; <b>captured</b>,
+    &nbsp; sin(&theta;<sub>i</sub> &minus; &Psi;) = (&omega;<sub>i</sub> &minus; &Omega;) / h<sub>i</sub>
+    <br>
+    |&omega;<sub>i</sub> &minus; &Omega;| &gt; h<sub>i</sub> &nbsp;&rArr;&nbsp; <b>drifting</b>,
+    &nbsp; contributes almost nothing to R
+    <small>A captured desk stops rotating relative to the herd and parks at a fixed angular offset from it.
+    A drifting desk keeps going round, so over any reasonable window its arrow points every which way and
+    averages out.</small></div>
+  <p>Read equation (14b) as a window. It says there is an interval of natural frequencies, centred on the
+  herd's pace &Omega; and of half-width h<sub>i</sub>, and every desk whose &omega;<sub>i</sub> falls inside
+  that interval gets locked into the herd. Desks outside it escape. <b>h<sub>i</sub> is the width of the
+  net, and &lambda; is what you use to widen it.</b></p>
+
+  <h4>Why widening the net raises R, twice over</h4>
+  <p>Raise &lambda; and h<sub>i</sub> grows in direct proportion. Two things then happen at once, and both
+  of them push R up.</p>
+  <p>The first is the obvious one. A wider window contains more of the frequency distribution
+  g(&omega;), so desks that were drifting a moment ago are now captured. Each newly captured desk stops
+  cancelling out and starts adding its arrow to the average, in roughly the same direction as everyone
+  else's. The count of aligned arrows goes up.</p>
+  <p>The second is easier to miss and matters just as much. Look at the offset a captured desk settles at:
+  sin(&theta;<sub>i</sub> &minus; &Psi;) = (&omega;<sub>i</sub> &minus; &Omega;)/h<sub>i</sub>. The
+  numerator is fixed, a property of the desk. The denominator is h<sub>i</sub>, which you just increased.
+  So every desk that was <em>already</em> captured now sits at a <em>smaller</em> angle from the herd's
+  direction. Double h<sub>i</sub> and a desk that used to lean 60&deg; away from the crowd leans about 26&deg;. Its arrow contributes
+  cos of that offset to the average, so the contribution rises.</p>
+  <p>More desks in the net, and each one held closer to the centre of it. Summing over both effects gives
+  the length of the average arrow, which is R by definition:</p>
+  <div class="eq"><span class="lbl">(14c)</span>R = &int;<sub>captured</sub>
+    cos(&theta;(&omega;) &minus; &Psi;) &middot; g(&omega;) d&omega;
+    <small>The integral runs only over the captured band, which is the part &lambda; controls, and the
+    cosine inside it is how tightly each captured desk is held, which &lambda; also controls. That is the
+    whole answer to the question. Everything below is the consequence of R appearing on both sides of
+    it.</small></div>
+
+  <h4>The part that makes this interesting: the net widens itself</h4>
+  <p>Equation (14a) contains R. Equation (14c) produces R. So the two cannot be solved one after the other,
+  only together, and that changes the character of the answer completely.</p>
+  <p>Follow what happens after a small increase in &lambda;. The window widens slightly, so a few extra
+  desks are captured, so R rises slightly. But h<sub>i</sub> is proportional to R, so the window widens
+  again on its own, without any further help from you, capturing more desks, raising R again. The question
+  is whether that cascade settles or runs away.</p>
+  <p>Below the critical coupling it settles immediately, and settles at nothing: each round of the cascade
+  is weaker than the one before, the sum converges to zero, and the only self-consistent answer is R = 0.
+  Above the critical coupling each round is stronger than the last until the supply of easily captured
+  desks runs out, and the cascade stops at some R &gt; 0. In plain Kuramoto this crossover happens
+  smoothly, at K<sub>c</sub> = 2/(&pi;g(0)) from equation (9), and R grows continuously from zero.
+  <b>This is the reason R responds to &lambda; at all, and the reason the response is a threshold rather
+  than a proportionality.</b></p>
+  <p>Notice also what the feedback implies about the calm state. At R &asymp; 0 the pull h<sub>i</sub> is
+  also &asymp; 0 no matter how large &lambda; is, because the two are multiplied. <b>A market with no
+  agreement in it is nearly immune to the coupling.</b> That is why turning &lambda; up in the incoherent
+  phase looks like it does nothing at all, and it is not a bug in the simulation. It is the mechanism.</p>
+
+  <h4>With the herding term, the feedback is stronger than linear</h4>
+  <p>Step 9 multiplied the coupling by the local agreement, &alpha;<sub>i</sub> = r<sub>i</sub>. In mean
+  field r<sub>i</sub> &rarr; R, so the capture width acquires a second factor of R:</p>
+  <div class="eq"><span class="lbl">(14d)</span>h<sub>i</sub> &prop; &lambda;R&sup2;
+    &nbsp;&nbsp;&rArr;&nbsp;&nbsp; <b>K<sub>eff</sub> = &lambda;R</b>
+    <small>A desk does not feel &lambda;. It feels &lambda; multiplied by how much agreement already
+    exists. In the incoherent state, where R &asymp; 0.04, raising &lambda; from 2 to 4 raises the
+    effective coupling from 0.08 to 0.16, which is nowhere near enough to capture anybody.</small></div>
+  <p>Now the cascade has a sharper character. Each round of capture raises R, which widens the window
+  <em>quadratically</em> rather than linearly, which captures proportionally more desks than before. Weak
+  agreement is self-suppressing and strong agreement is self-amplifying, so there is no stable middle. The
+  market either stays incoherent or goes all the way over, and the transition becomes a jump.</p>
+
+  <h4>Reading the relationship backwards, where it is single valued</h4>
+  <p>R(&lambda;) is awkward to write down because, as the jump implies, it can have more than one value.
+  &lambda;(R) has exactly one. Take the Lorentzian result R = &radic;(1 &minus; 2&gamma;/K), substitute
+  K<sub>eff</sub> = &lambda;R, and solve for the coupling:</p>
+  <div class="eq"><span class="lbl">(14e)</span>&lambda;R&sup3; &minus; &lambda;R + 2&gamma; = 0
+    &nbsp;&nbsp;&hArr;&nbsp;&nbsp; <b>&lambda;(R) = 2&gamma; / (R &minus; R&sup3;)</b>
+    <small>This asks the reverse question: how much coupling would be needed to sustain a given level of
+    agreement? Tabulating it is the quickest way to see the entire structure of the model.</small></div>
+  <div class="tw"><table>
+    <tr><th>R</th><th>0.10</th><th>0.20</th><th>0.30</th><th>0.40</th><th>0.50</th><th><b>0.577</b></th><th>0.60</th><th>0.70</th><th>0.80</th><th>0.90</th><th>0.95</th></tr>
+    <tr><td>&lambda; needed, &gamma; = 1</td><td>20.20</td><td>10.42</td><td>7.33</td><td>5.95</td><td>5.33</td><td><b>5.196</b></td><td>5.21</td><td>5.60</td><td>6.94</td><td>11.70</td><td>21.59</td></tr>
+  </table></div>
+  <p>The coupling needed falls, bottoms out at R = 1/&radic;3 = 0.577, and then rises again. Both ends make
+  sense once you have equation (14c) in mind. Sustaining a very small R is expensive because the capture
+  window is proportional to R and a nearly incoherent market gives the coupling almost nothing to work
+  with. Sustaining a very large R is also expensive, because the last desks left to capture are the
+  extreme ones, the fastest and slowest strategies in the market, and reaching them needs an enormous
+  window. Somewhere in between is the cheapest level of agreement the market can hold, and that is the
+  minimum.</p>
+  <p>A function that falls and then rises cannot be inverted uniquely, so at any &lambda; above that
+  minimum there are three levels of agreement consistent with the same coupling:</p>
+  <div class="tw"><table>
+    <tr><th>branch</th><th>where it is in the table</th><th>stability</th><th>what it means</th></tr>
+    <tr><td>lower</td><td>R at the finite-size floor</td><td><b>stable</b></td><td>the calm market</td></tr>
+    <tr><td>middle</td><td>the falling part, R below 0.577</td><td><b>unstable</b></td><td>the separatrix. Never observed, but it is the barrier a shock has to push the market over</td></tr>
+    <tr><td>upper</td><td>the rising part, R above 0.577</td><td><b>stable</b></td><td>the synchronised, crashed market</td></tr>
+  </table></div>
+  <div class="eq"><span class="lbl">(14f)</span>
+    d&lambda;/dR = 0 at R* = 1/&radic;3 &nbsp;&rArr;&nbsp;
+    <b>&lambda;<sub>b</sub> = 3&radic;3&thinsp;&gamma; &asymp; 5.196&gamma;</b>
+    <small>The minimum of &lambda;(R) is the fold. Below it the upper branch does not exist, so a crash has
+    nowhere to live and has to heal. This is the same &lambda;<sub>b</sub> as in step 9, arrived at from the
+    other direction.</small></div>
+
+  <h4>What the simulation shows</h4>
+  <p>Forward and backward sweeps on the shipped configuration: Erd&#337;s-R&eacute;nyi graph, N = 500,
+  &lang;k&rang; = 12, Gaussian frequencies, &sigma; = 0, f = 1, three seeds averaged, from
+  <code>research/data/s2_herding.npz</code>. Both rows are the same model at the same &lambda;, reached
+  once from below and once from above.</p>
+  <div class="tw"><table>
+    <tr><th>&lambda;</th><th>2.50</th><th>2.75</th><th>3.00</th><th>3.25</th><th>3.50</th><th>3.75</th><th>4.00</th><th>4.25</th><th>4.50</th></tr>
+    <tr><td>R, sweeping up</td><td>0.070</td><td>0.072</td><td>0.081</td><td>0.085</td><td>0.105</td><td>0.397</td><td>0.652</td><td><b>0.932</b></td><td>0.943</td></tr>
+    <tr><td>R, sweeping down</td><td>0.065</td><td>0.080</td><td><b>0.482</b></td><td><b>0.834</b></td><td><b>0.881</b></td><td><b>0.904</b></td><td>0.921</td><td>0.933</td><td>0.943</td></tr>
+  </table></div>
+  <p>At &lambda; = 3.25 the same model holds R = 0.085 and R = 0.834, depending only on where it came from.
+  This is why asking for "the value of R at &lambda; = 3.25" is not a well-posed question, and it is the
+  property the rest of the document is about.</p>
+  <p>The herding fraction f controls how much of this there is. Same source, same graph:</p>
+  <div class="tw"><table>
+    <tr><th>f, fraction of consensus-sensitive desks</th><th>&lambda;<sub>f</sub>, ignition</th><th>&lambda;<sub>b</sub>, recovery</th><th>window</th><th>character of the transition</th></tr>
+    <tr><td>0.00, plain Kuramoto on a network</td><td>1.958</td><td>1.958</td><td>0.000</td><td>smooth, continuous, no memory</td></tr>
+    <tr><td>0.50</td><td>2.542</td><td>2.500</td><td>0.042</td><td>barely discontinuous, no usable window</td></tr>
+    <tr><td><b>1.00</b></td><td><b>3.875</b></td><td><b>3.042</b></td><td><b>0.833</b></td><td>explosive and hysteretic</td></tr>
+  </table></div>
+  <p>Herding also <em>delays</em> the transition, from 1.96 to 3.88. That follows from equation (14d):
+  multiplying the coupling by an agreement that is less than one weakens it, so the market resists for
+  longer, and then gives way all at once. The resistance and the violence are the same mechanism seen from
+  two sides.</p>
+  <div class="note why"><h5>Two honest caveats about those thresholds</h5>
+    <p>&lambda;<sub>f</sub> and &lambda;<sub>b</sub> are defined in the code as the first grid point at
+    which R crosses 0.5 (<code>transition_points</code> in <code>model.py</code>). The level 0.5 is
+    arbitrary, which is assumption 37, and the grid here is 0.125 wide, so neither number is resolved
+    better than that.</p>
+    <p>The two are also not equally trustworthy. &lambda;<sub>b</sub> is a fold in the equations and it
+    matches the closed form of equation (14f) to about ten per cent. &lambda;<sub>f</sub> is wherever a
+    fluctuation happened to be large enough to carry the system over the middle branch, so it depends on N,
+    on &sigma;, on how fast the sweep moved and on the random seed. It should not be quoted as a constant
+    of the model.</p></div>
+  <div class="note fail"><h5>When a sweep looks completely flat</h5>
+    <p>Almost every case of "I raised &lambda; and R did not move" is one of the following. They are in the
+    order worth checking.</p>
+    <div class="tw"><table>
+      <tr><th>cause</th><th>how it looks, and what to do</th></tr>
+      <tr><td>you are below &lambda;<sub>f</sub></td><td>on the shipped configuration nothing visible happens until &lambda; &asymp; 3.9. A flat line from 0 to 3.5 is the correct output. Sweep to 5 or 6 before drawing any conclusion</td></tr>
+      <tr><td>you are reading the finite-size floor</td><td>R &asymp; 0.886/&radic;N &asymp; 0.040 at N = 500 with the coupling switched off entirely, equation (10d). A move from 0.040 to 0.085 is not a response</td></tr>
+      <tr><td>the sweep ramped too fast</td><td>each &lambda; has to equilibrate before R is measured; these runs use <code>t_relax = 30</code> then <code>t_measure = 30</code> at <code>dt = 0.05</code>. This is assumption 34, and it has already caused damage here: too short a relaxation produced <em>negative</em> hysteresis widths, &lambda;<sub>b</sub> above &lambda;<sub>f</sub>, which is impossible</td></tr>
+      <tr><td><code>norm="degree"</code></td><td>that code path divides by k<sub>i</sub>, removes the hub advantage and provably destroys the jump, gap 0.06 against 0.79. See step 6. Use <code>norm="mean"</code></td></tr>
+      <tr><td>f is too low</td><td>f = 0 has no herding term and is smooth by construction; f = 0.5 leaves a window 0.042 wide that any reasonable &lambda; grid steps straight over. You need f near 1</td></tr>
+      <tr><td>the graph is too clustered</td><td>above C* &asymp; 0.35 the window closes, equation (26). A Watts-Strogatz graph at low rewiring, a ring lattice or a real correlation network at C = 0.69 to 0.77 will not show a jump. The ring never reaches R = 0.5 under any condition at all</td></tr>
+      <tr><td>&sigma; is too large</td><td>noise erodes the transition monotonically. It does not remove it, but at &sigma; = 0.8 there is little left to see</td></tr>
+      <tr><td>the frequencies were rescaled</td><td>only &lambda;/&Delta;&omega; is physical, step 3. Double the spread of &omega; and every threshold doubles. Swap the Gaussian for a Lorentzian and expect &lambda;<sub>b</sub> near 5.2&gamma;, not 3.0</td></tr>
+      <tr><td>N is too small</td><td>at N = 125 the measured window is 0.000 and the jump is 0.183. It resolves from about N = 250 upward and reaches 0.486 at N = 4000. The jump grows with N, which is how the finite-size study established that it is a real discontinuity</td></tr>
+    </table></div></div>
+  <div class="note why"><h5>The reverse direction does not work</h5>
+    <p>Given a measured R, can you recover the &lambda; that produced it? No. The forward map is so steep
+    that R runs from 0.137 to 0.899 across a &lambda; window only 0.167 wide, and 97.2% of real market-days
+    land inside that blind region. Step 18 is entirely about this, and it is why the operational programme
+    of steps 12 and 14 has no empirical version.</p></div>
+</section>
+
 <!-- ============================================================= 8 -->
-<section id="c8">
-  <h2>Step 8</h2>
+<section id="s11">
+  <h2>Step 11</h2>
   <h3>From phases to prices, plus noise</h3>
   <p>Aggregate the order flow, and let the imbalance move the price:</p>
   <div class="eq"><span class="lbl">(15)</span>Q = (1/N) &Sigma;<sub>i</sub> sin &theta;<sub>i</sub>
@@ -373,19 +981,21 @@
     + <span class="t5">&sigma;<sub>c</sub> dW<sub>c</sub></span>
     <small><span class="t4">&sigma;</span>: <b>idiosyncratic news</b>, independent for each desk.
     <span class="t5">&sigma;<sub>c</sub></span>: a <b>common market mode</b>, the same increment for
-    everyone. The second one is not in the original model; step 12 explains why it had to be
+    everyone. The second one is not in the original model; step 16 explains why it had to be
     added.</small></div>
 </section>
 
 <!-- ============================================================= 9 -->
-<section id="c9">
-  <h2>Step 9</h2>
+<section id="s12">
+  <h2>Step 12</h2>
   <h3>Shocks, and why some crashes stick</h3>
   <p>A shock is a common sell signal pushing a chosen subset of desks toward &theta; = &minus;&pi;/2:</p>
   <div class="eq"><span class="lbl">(18)</span>&hellip; + &epsilon;(t) s<sub>i</sub>
     sin(&minus;&pi;/2 &minus; &theta;<sub>i</sub>)
     <small>&epsilon; is the shock strength and s<sub>i</sub> marks which desks are hit. The fraction hit is
-    &phi;.</small></div>
+    &phi;. This is the coupling term again with one phantom neighbour pinned at &minus;&pi;/2;
+    <a href="#s13">step 13</a> explains why the target is that angle and not a free parameter, why it is a
+    sine rather than a constant push, and the one artifact the form introduces.</small></div>
   <p>The same shock, applied at three different values of &lambda;, gives three different markets:</p>
   <div class="tw"><table>
     <tr><th>&lambda;</th><th>outcome</th><th>drawdown</th></tr>
@@ -398,9 +1008,160 @@
   of peripheral desks does almost nothing.</p>
 </section>
 
+<!-- ============================================================= 9A -->
+<section id="s13">
+  <h2>Step 13</h2>
+  <h3>Why every term is a sine, why the shock aims at &minus;&pi;/2, and which of these choices are free</h3>
+  <p>Three sines have now been introduced without justification: q = sin&theta; in equation (2),
+  sin(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>) in the coupling, and
+  sin(&minus;&pi;/2 &minus; &theta;<sub>i</sub>) in the shock. They are not the same kind of choice. One is
+  pure convention, one is forced by a theorem, and one follows from the first two. Knowing which is which
+  tells you what you are allowed to change.</p>
+
+  <h4>1. q = sin&theta; is a convention, and cos would do equally well</h4>
+  <p>Order flow has to be a bounded, 2&pi;-periodic function of the phase that averages to zero over a full
+  cycle, so a desk neither accumulates nor liquidates forever. sin and cos both satisfy all three. Choosing
+  sin fixes nothing but the dictionary:</p>
+  <div class="tw"><table>
+    <tr><th>&theta;</th><th>0</th><th>+&pi;/2</th><th>&pi;</th><th><b>&minus;&pi;/2</b></th></tr>
+    <tr><td>q = sin&theta;</td><td>0, flat</td><td><b>+1, peak buying</b></td><td>0, flat</td><td><b>&minus;1, peak selling</b></td></tr>
+  </table></div>
+  <p>Had you picked q = cos&theta;, peak selling would sit at &theta; = &pi; instead, the constant
+  <code>SELL</code> in <code>model.py</code> would be <code>np.pi</code>, and every phase-histogram axis
+  label in the repository would shift by 90&deg;. No result would change. <b>This is genuinely
+  arbitrary.</b></p>
+  <p>What is <em>not</em> arbitrary is that q contains only the <b>first harmonic</b>. One buy phase and one
+  sell phase per revolution, smoothly. A desk that bought twice per cycle would need a sin2&theta; term.
+  That is assumption 8, and it also quietly imposes assumption 3: every desk's maximum size is 1, so a
+  pension fund and a two-person shop contribute equally to Q, which is flatly false of real order flow and
+  marked load-bearing for that reason.</p>
+
+  <h4>2. The coupling must be a sine, and cosine coupling provably cannot synchronise anything</h4>
+  <p>Start from what the coupling is allowed to depend on. There is no absolute zero of phase, so rotating
+  every desk by the same angle must change nothing. The interaction can therefore only be a function of the
+  <em>difference</em>, H(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>), and it must be 2&pi;-periodic.
+  Every such function has a Fourier series:</p>
+  <div class="eq"><span class="lbl">(18a)</span>H(&Delta;) = &Sigma;<sub>n&ge;1</sub>
+    [ a<sub>n</sub> cos n&Delta; + b<sub>n</sub> sin n&Delta; ]
+    <small>Now ask what each piece does to the <em>difference</em> between two desks, which is the only
+    thing that matters for locking.</small></div>
+  <p>Take the two-desk system of step 2 with cosine coupling instead of sine, and subtract, exactly as in
+  equation (4):</p>
+  <div class="eq"><span class="lbl">(18b)</span>
+    d&phi;/dt = &Delta;&omega; + K[ cos(&minus;&phi;) &minus; cos(&phi;) ] = &Delta;&omega; + 0 =
+    <b>&Delta;&omega;</b>
+    <small>Because cosine is <b>even</b>, cos(&minus;&phi;) = cos(&phi;) and the two coupling terms cancel
+    <em>identically</em>. The phase difference obeys the same equation it would with no coupling at all.
+    <b>Two desks coupled by a cosine never lock, at any K, for any frequencies.</b></small></div>
+  <p>The result generalises: only the <b>odd part</b> of H can align phases. The even part
+  is not literally inert for N desks, it adds K&Sigma;<sub>j</sub>cos(&theta;<sub>j</sub> &minus;
+  &theta;<sub>i</sub>) to desk i's instantaneous rate, so desks that agree with their neighbours speed up,
+  but it cannot pull them together. Drop the even harmonics, keep the lowest odd one, and you have
+  sin(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>). Kuramoto's model is the first term of the only
+  series that could have worked.</p>
+  <p>The sine also has exactly the properties the story needs, which is a good check rather than a
+  coincidence:</p>
+  <ul>
+    <li><b>Zero at alignment.</b> A desk that already agrees with its neighbour feels no pull. Copying stops
+    when there is nothing left to copy.</li>
+    <li><b>Odd, so it is a genuine attraction.</b> If j is ahead, i speeds up; if j is behind, i slows down.
+    Swapping the roles flips the sign.</li>
+    <li><b>Maximal at &plusmn;90&deg;</b>, where the disagreement is largest but still resolvable.</li>
+    <li><b>Zero at antiphase</b> (&Delta; = &pi;), and unstable there: a pair exactly opposed feels nothing,
+    but the tiniest perturbation collapses it. Perfect disagreement is a knife edge.</li>
+  </ul>
+  <div class="note why"><h5>The second reason, which matters for the implementation</h5>
+    <p>sin(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>) =
+    Im[ e<sup>i&theta;<sub>j</sub></sup> e<sup>&minus;i&theta;<sub>i</sub></sup> ], so the sum over
+    neighbours <b>factorises</b> into something that depends only on j, summed once, times something that
+    depends only on i. That is precisely what lets the order parameter of equation (7) exist, what turns N
+    coupled equations into one desk talking to a mean field in equation (8), and what makes the closed forms
+    of step 21 possible at all. It is also why the code needs only two <code>bincount</code> sums per step,
+    equation (10a), and why r<sub>i</sub> comes out of the same two numbers for free. <b>Any coupling that
+    is not sinusoidal destroys the mean-field reduction and the O(E) implementation together.</b></p></div>
+
+  <h4>3. The shock: a phantom neighbour pinned at maximal selling</h4>
+  <p>Now equation (18) reads as one object rather than three symbols:</p>
+  <div class="eq"><span class="lbl">(18c)</span>&hellip; + &epsilon;(t) &middot; s<sub>i</sub> &middot;
+    sin(&theta;<sub>tgt</sub> &minus; &theta;<sub>i</sub>), &nbsp;&nbsp;&nbsp;
+    &theta;<sub>tgt</sub> = &minus;&pi;/2
+    <small>This is the coupling term again, with a single imaginary neighbour whose phase is fixed at
+    &theta;<sub>tgt</sub> and whose edge weight is &epsilon;. No new mathematics, and it inherits every
+    property listed above.</small></div>
+  <p><b>Why &minus;&pi;/2 and not something else.</b> The shock means "sell now", and "selling" is defined by
+  equation (2): q = sin&theta;, which reaches &minus;1 at &theta; = &minus;&pi;/2 and nowhere else. So the
+  target is not a free parameter, it is <em>forced</em> by the convention in part 1 of this chapter. It
+  appears in the code as a single constant, <code>SELL = -np.pi/2</code>. If you switched to q = cos&theta;,
+  the correct target would become &pi;. Nothing physical distinguishes the two.</p>
+  <p><b>Why a sine here too, rather than a constant push.</b> Three properties that a constant does not
+  have:</p>
+  <ul>
+    <li>It <b>vanishes when the desk arrives</b>. A sell signal cannot push a desk that is already selling
+    as hard as it can. A constant torque &minus;&epsilon; would spin desks straight past the target and
+    keep going round forever, so the market would never settle into a crash, it would tumble.</li>
+    <li>It takes the <b>short way round</b>. A desk at &theta; = 0 is turned down toward &minus;&pi;/2; a
+    desk at &theta; = &pi; is turned up toward it. The signal always chooses the nearer route, which is what
+    "everyone rushes to sell" should mean.</li>
+    <li>It <b>competes on equal terms with the herding term</b>, because it has the same functional form.
+    That is what makes the comparison meaningful: a shock of strength &epsilon; against a crowd of strength
+    &lambda;r<sub>i</sub>k<sub>i</sub>/&lang;k&rang;, one number against another, in the same units.</li>
+  </ul>
+  <div class="note fail"><h5>One artifact of this form</h5>
+    <p>sin(&theta;<sub>tgt</sub> &minus; &theta;<sub>i</sub>) vanishes at <em>two</em> places: at
+    &theta;<sub>i</sub> = &theta;<sub>tgt</sub> = &minus;&pi;/2, which is the point of the whole thing, and
+    also at &theta;<sub>i</sub> = &theta;<sub>tgt</sub> + &pi; = <b>+&pi;/2, peak buying</b>. A desk sitting
+    exactly at maximal buying feels <em>no shock at all</em>.</p>
+    <p>It is an unstable point, so it is measure-zero and any noise dislodges it, but the consequence is
+    real and visible: <b>the desks slowest to respond to a sell shock are the ones currently buying
+    hardest</b>, which is the opposite of what you would expect from a market. It is a property of the
+    sinusoidal form, not of traders. The same artifact exists in the coupling at antiphase, and it is one
+    concrete reason to care about the higher harmonics that assumption 8 discards.</p></div>
+  <p><b>Why a mask s<sub>i</sub> and a fraction, rather than hitting everyone.</b> Crashes start somewhere.
+  Making the target selectable is what allows the result in step 12 that <em>who</em> you hit matters as much
+  as how hard: because the local field scales with degree, hitting 10 to 15% of desks chosen as hubs
+  reliably flips the market, while the same number of peripheral desks does almost nothing. With a uniform
+  shock that question cannot even be asked. (The fraction hit is written &phi;, which collides with the
+  phase difference &phi; of equation (4). See step 0.)</p>
+  <p><b>Why &epsilon; is a function of time.</b> It lets the same machinery express a pulse, a step or a
+  ramp, and the ramp matters: S7 shows the transition depends on the <em>rate</em> at which the driver
+  changes, not only its final level, which is rate-dependent tipping.</p>
+
+  <h4>4. The remaining choices, each of which also looks arbitrary</h4>
+  <div class="tw"><table>
+    <tr><th>choice</th><th>why</th></tr>
+    <tr><td><b>r<sub>i</sub> divided by k<sub>i</sub></b>, equation (12)</td>
+        <td>so it is an <em>agreement</em> in [0, 1] rather than a magnitude. Without the division a hub
+        would have a large r<sub>i</sub> merely for being a hub, and the gain would double-count degree,
+        which already enters through the sum</td></tr>
+    <tr><td><b>noise on the phase, not on the price</b></td>
+        <td>news changes what desks <em>do</em>, and the price follows from what they do. Noise added to the
+        price instead is the alternative tested in step 16, and it has the opposite failure: it matches the
+        level of real co-movement but produces no crash rise. Assumption 23</td></tr>
+    <tr><td><b>the same random increment &xi; in both Heun stages</b></td>
+        <td>one time step has one Wiener increment. Drawing fresh noise in the corrector would average two
+        independent draws and silently halve the effective &sigma;<sup>2</sup>, so the model you ran would
+        not be the model you wrote</td></tr>
+    <tr><td><b>&lang;&omega;&rang; = 0 and g symmetric</b></td>
+        <td>convenient, because the locked cluster then does not rotate and &Psi; is frozen, so you can time-average
+        freely. <span class="lb">LB</span> and expensive: a frozen &Psi; is what made
+        &lang;cos&theta;&rang; constant and &rho;&#772; &equiv; 0 possible in step 16, it is why a constant
+        bearish drift had to be bolted on, item R4 on the removal list, and undoing it is item A2 on the
+        addition list. Assumption 19</td></tr>
+    <tr><td><b>&omega; from deterministic quantiles</b>, &Phi;<sup>&minus;1</sup>((i+&frac12;)/N), then
+        permuted</td>
+        <td>the mean is then exactly 0 and g's shape carries no sampling noise, so &lambda;<sub>f</sub> does
+        not jitter between seeds for reasons unrelated to the dynamics. The cost is that seed-to-seed
+        spread understates true finite-N variance, because the frequency set is nearly identical every
+        time</td></tr>
+    <tr><td><b>stochastic Heun</b>, predictor-corrector</td>
+        <td>strong order 1 with additive noise and second-order accurate when &sigma; = 0, at two drift
+        evaluations per step. Euler-Maruyama would need a far smaller dt to resolve a fold this sharp</td></tr>
+  </table></div>
+</section>
+
 <!-- ============================================================= 10 -->
-<section id="c10">
-  <h2>Step 10</h2>
+<section id="s14">
+  <h2>Step 14</h2>
   <h3>Circuit breakers as desynchronisation</h3>
   <p>If a crash is a synchronised state, a trading halt is an attempt to <b>desynchronise</b>. Cut the
   coupling and every desk free-runs at its own &omega;, so the cluster spreads out at a rate set by the
@@ -421,8 +1182,8 @@
 </section>
 
 <!-- ============================================================= 11 -->
-<section id="c11">
-  <h2>Step 11</h2>
+<section id="s15">
+  <h2>Step 15</h2>
   <h3>Now test it on real markets</h3>
   <p>23 markets, about 2,900 constituent stocks, daily data 2000 to 2026, 324 crash onsets. Two
   predictions were tested, and <b>both failed</b>.</p>
@@ -440,7 +1201,7 @@
     Across 32 large caps, co-movement rose <b>+0.137 in the 92 minutes BEFORE 14:32</b> and then fell
     slightly during the crash itself. On daily data E1 found the reverse: flat until the peak, rising
     only afterwards.</p>
-    <p><b>The null cuts this down, though.</b> Running the same 13:00&ndash;14:32 window on every day
+    <p><b>The null cuts this down, though.</b> Running the same 13:00 to 14:32 window on every day
     that week: the crash day has the largest afternoon rise (+0.141), but 2010-05-05 reaches +0.115 and
     the crash day's absolute level is not even the week's highest (2010-05-07, the aftermath, is). With
     <b>one crash and four control days</b>, and the whole week inside the European debt crisis, this
@@ -468,8 +1229,8 @@
 </section>
 
 <!-- ============================================================= 12 -->
-<section id="c12">
-  <h2>Step 12</h2>
+<section id="s16">
+  <h2>Step 16</h2>
   <h3>The observable gap: the model could not possibly have passed</h3>
   <p>In the price mapping, each asset's return was driven by its own desk's order flow plus
   <b>independent</b> noise. In a locked crash every q<sub>i</sub> is pinned near a constant, so each return
@@ -508,13 +1269,13 @@
 
 
 <!-- ============================================================= 13 -->
-<section id="c12b">
-  <h2>Step 13</h2>
+<section id="s17">
+  <h2>Step 17</h2>
   <h3>Does the closest prior work hold up?</h3>
   <p>Lee et al. (<i>PNAS</i> 2025) report the positive version of everything above: that a market's
   <b>pre-crisis proximity to explosive synchronization</b> predicts whether its collapse and recovery are
   rapid or prolonged. They validate on 39 country indices around the 2008 crisis. If that is right, the
-  negative results in step 11 need explaining.</p>
+  negative results in step 15 need explaining.</p>
   <p>Their estimator, implemented here exactly as published: Hilbert-transform each asset's returns to
   get instantaneous phases, build the Kuramoto order parameter across the market, take the
   autocorrelation of R(t) inside overlapping moving windows, and use the <b>kurtosis of those ACF
@@ -538,10 +1299,10 @@
 </section>
 
 <!-- ============================================================= 14 -->
-<section id="c12c">
-  <h2>Step 14</h2>
+<section id="s18">
+  <h2>Step 18</h2>
   <h3>Can you actually measure the coupling? No, and the reason is the model itself</h3>
-  <p>Everything operational in steps 9 and 10 is phrased as <em>where &lambda; sits relative to
+  <p>Everything operational in steps 16 and 14 is phrased as <em>where &lambda; sits relative to
   &lambda;<sub>b</sub></em>. None of it can be used unless &lambda; can be measured in a real market.
   Equation (21) seems to offer exactly that: measure co-movement, invert to get R, then invert the
   model's own equilibrium curve to get &lambda;.</p>
@@ -560,22 +1321,22 @@
     <p>&lambda;&#770; is a <em>monotone</em> transform of &rho;&#772;, and AUC is invariant under monotone
     transforms. So &lambda;&#770; must score identically to raw mean correlation on any ranking test. No
     reparametrisation of an indicator can ever beat that indicator.</p></div>
-  <p>This kills what had been the headline recommendation of step 17. It is kept here because a negative
+  <p>This kills what had been the headline recommendation of step 21. It is kept here because a negative
   identifiability result is a real constraint on the whole programme: any first-order synchronization
   model of markets inherits it.</p>
 </section>
 
 
 <!-- ============================================================= 15 -->
-<section id="c12d">
-  <h2>Step 15</h2>
+<section id="s19">
+  <h2>Step 19</h2>
   <h3>Run it on a real market network, and most of the story collapses</h3>
-  <p>Every result so far, including the bistable window that steps 9 and 10 depend on entirely, was
+  <p>Every result so far, including the bistable window that steps 16 and 14 depend on entirely, was
   measured on a <em>synthetic</em> Erdos-Renyi graph. Nothing in this project had ever used a network
   estimated from actual market data. That assumption is load-bearing, so it has to be tested.</p>
   <p>Two networks were built per market from daily returns and thresholded to the same mean degree
   (12) as the synthetic benchmark, so degree is held fixed and only <b>structure</b> differs:
-  <b>corr</b> thresholds the return-correlation matrix; <b>leadlag</b> keeps i&ndash;j when i's returns
+  <b>corr</b> thresholds the return-correlation matrix; <b>leadlag</b> keeps i and j when i's returns
   lead j's more strongly than the reverse.</p>
   <div class="tw"><table>
     <tr><th>network</th><th>&lang;k&rang;</th><th>&kappa;</th><th>clustering</th><th>assortativity</th></tr>
@@ -588,27 +1349,27 @@
   here. Now run the identical model on them.</p>
   <div class="tw"><table>
     <tr><th>network</th><th>&lambda;<sub>f</sub></th><th>&lambda;<sub>b</sub></th><th>window</th><th>hysteresis gap</th><th>jump</th></tr>
-    <tr><td><b>synthetic ER</b> (what steps 7 to 10 use)</td><td>4.10</td><td>3.30</td><td><b>0.800</b></td><td><b>0.793</b></td><td>0.768</td></tr>
+    <tr><td><b>synthetic ER</b> (what steps 12 to 14 use)</td><td>4.10</td><td>3.30</td><td><b>0.800</b></td><td><b>0.793</b></td><td>0.768</td></tr>
     <tr><td>synthetic BA</td><td>3.40</td><td>2.90</td><td>0.500</td><td>0.502</td><td>0.546</td></tr>
     <tr><td><b>real, corr</b></td><td>2.45</td><td>2.55</td><td><b>&minus;0.100</b></td><td><b>0.172</b></td><td>0.291</td></tr>
     <tr><td><b>real, leadlag</b></td><td>2.60</td><td>2.60</td><td><b>0.000</b></td><td><b>0.190</b></td><td>0.325</td></tr>
   </table></div>
   <div class="note fail"><h5>The bistable window essentially vanishes</h5>
-    <p>The hysteresis gap falls from 0.793 to 0.17&ndash;0.19, a factor of four, and the window width
-    goes to zero. <b>Step 9's crash-persistence story and step 10's circuit-breaker theory both depend
+    <p>The hysteresis gap falls from 0.793 to between 0.17 and 0.19, a factor of four, and the window width
+    goes to zero. <b>Step 12's crash-persistence story and step 14's circuit-breaker theory both depend
     entirely on that window existing.</b> On a network estimated from real market data there is no
     window for a shock to leave the market in, so the most novel results in this project are built on a
     structure the data does not show.</p>
     <p>The likely mechanism is the clustering gap. When neighbours share neighbours, local agreement
     r<sub>i</sub> saturates locally instead of propagating globally, which is exactly the positive
-    feedback step 7 depends on. It also means the annealed mean field of step 5, which assumes no
+    feedback step 9 depends on. It also means the annealed mean field of step 5, which assumes no
     clustering, does not apply to the real networks either.</p></div>
   <div class="note why"><h5>Novelty: the mechanism is known, the application is not</h5>
     <p>Clustering suppressing explosive synchronization is <b>already published</b>
     (<i>Topologically-induced suppression of explosive synchronization</i>, Chaos 33, 053103, 2023).
     So this is not a new physical effect. What is new is the empirical half: networks estimated from
     real market returns sit squarely in that suppression regime (C = 0.73 against 0.030 for the
-    synthetic graph used throughout), which removes the bistable window steps 9 and 10 depend on. The
+    synthetic graph used throughout), which removes the bistable window steps 16 and 14 depend on. The
     claim is "the market's own network is the wrong network for this model", not "clustering suppresses
     explosive synchronization".</p></div>
   <div class="note why"><h5>Caveats, stated plainly</h5>
@@ -619,12 +1380,12 @@
 
 
 <!-- ============================================================= 16 -->
-<section id="c12e">
-  <h2>Step 16</h2>
+<section id="s20">
+  <h2>Step 20</h2>
   <h3>Could you actually have called a crash? The confusion matrix</h3>
-  <p>Step 11 reported AUC. AUC ranks, and ranking hides the two things that decide whether a signal is
-  usable: the <b>base rate</b> and the <b>confound</b>. So: fix thresholds on <b>2002&ndash;2015</b>,
-  apply them unchanged to <b>2016&ndash;2026</b>, and count actual calls. Ten crashes across 2,697 test
+  <p>Step 15 reported AUC. AUC ranks, and ranking hides the two things that decide whether a signal is
+  usable: the <b>base rate</b> and the <b>confound</b>. So: fix thresholds on <b>2002 to 2015</b>,
+  apply them unchanged to <b>2016 to 2026</b>, and count actual calls. Ten crashes across 2,697 test
   trading days, a base rate of <b>0.37%</b>.</p>
   <p>Three detectors. The third is co-movement <em>after regressing out log-volatility</em>, which is
   the part of synchronization that is genuinely not volatility. That regression alone has
@@ -647,15 +1408,15 @@
     genuinely <em>not</em> volatility is the <b>worst</b> detector of the three: precision 0.0036,
     recall 0.20, 274 false alarms per catch. The synchronization-specific component carries no
     predictive information at all.</p>
-    <p>Step 11 showed the ranking signal was volatility. This shows that what remains after removing
+    <p>Step 15 showed the ranking signal was volatility. This shows that what remains after removing
     volatility is not merely weak but actively unhelpful, out of sample, at the model's own timescale.
     That closes the empirical question.</p></div>
 </section>
 
 
 <!-- ============================================================= 17 -->
-<section id="c12f">
-  <h2>Step 17</h2>
+<section id="s21">
+  <h2>Step 21</h2>
   <h3>Two things this work actually found</h3>
   <p>Everything up to here either reproduces known work or reports a negative result. These two are
   positive, quantitative, and were derived and tested here.</p>
@@ -673,7 +1434,7 @@
   <div class="tw"><table>
     <tr><th>p</th><th>R*(p)</th><th>&lambda;<sub>b</sub>(p)</th><th>which model</th></tr>
     <tr><td>&rarr; 0</td><td>0</td><td><b>2&gamma;</b></td><td>plain Kuramoto: no fold, continuous, the classic K<sub>c</sub> = 2&gamma;</td></tr>
-    <tr><td>1</td><td>1/&radic;3 = 0.5774</td><td><b>3&radic;3&thinsp;&gamma; = 5.196</b></td><td>the pairwise herding model of step 7</td></tr>
+    <tr><td>1</td><td>1/&radic;3 = 0.5774</td><td><b>3&radic;3&thinsp;&gamma; = 5.196</b></td><td>the pairwise herding model of step 9</td></tr>
     <tr><td>2</td><td>1/&radic;2 = 0.7071</td><td><b>8&gamma;</b></td><td>the exact 3-body hypergraph interaction</td></tr>
   </table></div>
   <p>All three limits check analytically. Against simulation (N = 1500, Lorentzian, &sigma; = 0):</p>
@@ -687,15 +1448,15 @@
     <p>Median ratio <b>1.105</b>, total spread across p just <b>0.055</b>. The predicted threshold moves
     by a factor of 2.1 across this range and the ratio stays flat to within &plusmn;2.5%. A formula with
     the wrong <em>shape</em> would show a ratio drifting with p. The constant ~10% offset is the
-    finite-connectivity correction independently measured as 1.116 in step 7: the closed form is exact
+    finite-connectivity correction independently measured as 1.116 in step 9: the closed form is exact
     for all-to-all coupling, the simulation is sparse at &lang;k&rang; = 12.</p>
     <p><b>Reported failure:</b> p = 3 gave no transition (jump 0.014) inside the scanned range, so the
     family is verified over p &isin; [0.5, 2] only.</p></div>
 
   <h4>A critical clustering, with a number</h4>
-  <p>Step 15 found the window nearly vanishes on real market networks, and the literature already knows
+  <p>Step 19 found the window nearly vanishes on real market networks, and the literature already knows
   clustering suppresses explosive synchronization <em>qualitatively</em>. Nobody has given a threshold.
-  Sweeping Watts-Strogatz rewiring at fixed mean degree holds &kappa; at 1.00&ndash;1.04 throughout, so
+  Sweeping Watts-Strogatz rewiring at fixed mean degree holds &kappa; at 1.00 to 1.04 throughout, so
   this isolates clustering from degree heterogeneity:</p>
   <div class="tw"><table>
     <tr><th>clustering C</th><th>0.014</th><th>0.092</th><th>0.354</th><th>0.504</th><th>0.586</th><th>0.682</th></tr>
@@ -704,7 +1465,7 @@
   </table></div>
   <div class="eq"><span class="lbl">(26)</span>C* &asymp; 0.35
     <small>Below it the window is open (gap ~0.31); above it, closed (gap &lt; 0.10).</small></div>
-  <div class="note win"><h5>This turns step 15 from an observation into an explanation</h5>
+  <div class="note win"><h5>This turns step 19 from an observation into an explanation</h5>
     <p>Synthetic ER, used for every crash result here: <b>C = 0.030</b>, an order of magnitude
     <em>below</em> C*. Real market correlation network: <b>C = 0.731</b>, <b>2.1&times; above</b> it.</p>
     <p><b>The model's bistable window is an artifact of using an unclustered graph</b>, and the crossing
@@ -712,8 +1473,8 @@
 </section>
 
 <!-- ============================================================= 18 -->
-<section id="c13">
-  <h2>Step 18 &middot; Audit</h2>
+<section id="s22">
+  <h2>Step 22 &middot; Audit</h2>
   <h3>Every assumption this rests on</h3>
   <p>Items marked <span class="lb">LB</span> are load-bearing: a result changes if they are wrong.</p>
   <div class="tw"><table>
@@ -741,7 +1502,7 @@
     <tr><td>21</td><td>&omega; &prop; k for route A <span class="lb">LB</span></td><td>and fragile: the tail must match, not just the rank</td></tr>
     <tr><td>22</td><td>Noise additive, Gaussian, white, identical &sigma;</td><td></td></tr>
     <tr><td>23</td><td>Noise enters the phase, not the price</td><td></td></tr>
-    <tr><td>24</td><td>No common noise originally</td><td>the defect of step 12</td></tr>
+    <tr><td>24</td><td>No common noise originally</td><td>the defect of step 16</td></tr>
     <tr><td>25</td><td>Noise state-independent</td><td>no volatility clustering</td></tr>
     <tr><td>26</td><td>Linear price impact <span class="lb">LB</span></td><td>real impact is concave, roughly square-root</td></tr>
     <tr><td>27</td><td>Constant liquidity <span class="lb">LB</span></td><td>crashes <em>are</em> liquidity events; this assumes the mechanism away</td></tr>
@@ -766,8 +1527,8 @@
 </section>
 
 <!-- ============================================================= 14 -->
-<section id="c14">
-  <h2>Audit</h2>
+<section id="s23">
+  <h2>Step 23 &middot; Audit</h2>
   <h3>What should be removed</h3>
   <p>Adding terms is easy and usually wrong. These should come out.</p>
   <div class="tw"><table>
@@ -786,8 +1547,8 @@
 </section>
 
 <!-- ============================================================= 15 -->
-<section id="c15">
-  <h2>Audit</h2>
+<section id="s24">
+  <h2>Step 24 &middot; Audit</h2>
   <h3>What to add, and whether it actually helps</h3>
   <p>Every item below is a <em>hypothesis</em>. The repository now tests them rather than asserting them
   (<code>research/s10_extensions.py</code>), scoring each against four stylised facts the current model is
@@ -809,8 +1570,8 @@
     <tr><td>A13</td><td>bipartite trader &times; asset</td><td>1</td><td><b>done, no effect.</b> Structurally the honest choice for assumption 29, but every stylised fact is slightly worse and co-movement is unchanged</td></tr>
     <tr><td>A14</td><td><b>estimate &lambda; from data</b></td><td>analysis</td><td><b>highest value.</b> Every result is stated relative to &lambda;<sub>b</sub>, yet &lambda; has never been measured in a real market</td></tr>
     <tr><td>A15</td><td>intraday data</td><td>analysis</td><td><b>done: 2.3M one-minute bars, 2002-2026.</b> Unmatched AUC 0.911, but volatility-matched <b>0.526</b>. E1's null was not a resolution artifact</td></tr>
-    <tr><td>A16</td><td>estimate the real network</td><td>analysis</td><td><b>done, and it is the most serious result here: see step 15.</b> The bistable window essentially vanishes on real market networks</td></tr>
-    <tr><td>A17</td><td>Ott-Antonsen reduction</td><td>analysis</td><td><b>done: &lambda;<sub>b</sub> = 3&radic;3&thinsp;&gamma; exactly</b>, see step 7. The residual 12% against simulation is the finite-connectivity correction, now explained</td></tr>
+    <tr><td>A16</td><td>estimate the real network</td><td>analysis</td><td><b>done, and it is the most serious result here: see step 19.</b> The bistable window essentially vanishes on real market networks</td></tr>
+    <tr><td>A17</td><td>Ott-Antonsen reduction</td><td>analysis</td><td><b>done: &lambda;<sub>b</sub> = 3&radic;3&thinsp;&gamma; exactly</b>, see step 9. The residual 12% against simulation is the finite-connectivity correction, now explained</td></tr>
     <tr><td>A18</td><td>finite-size scaling of &Delta;R</td><td>analysis</td><td>prove the jump is a real discontinuity</td></tr>
   </table></div>
   <div class="note why"><h5>If you do only one thing</h5>
@@ -818,6 +1579,100 @@
     &lambda;<sub>b</sub>", and &lambda; is never measured. Inverting &rho;&#772; &rarr; R &rarr; &lambda;
     using equation (21) would turn the entire framework from a story into something a regulator could
     actually run.</p></div>
+</section>
+
+
+
+<!-- ============================================================= 25 -->
+<section id="s25">
+  <h2>Step 25</h2>
+  <h3>What this turned into, and what was explored on the way</h3>
+  <p>The opening idea was narrow: represent a trading desk as a phase oscillator, let desks imitate the
+  desks they watch, and see whether the resulting market has a synchronisation transition sharp enough to
+  look like a crash. Steps 1 to 5 got as far as Kuramoto oscillators on a network, which has a transition
+  but a smooth one, and a smooth transition is useless here because it has no memory: remove the cause and
+  the crash heals instantly, which is not what markets do.</p>
+  <p>Step 8 laid out the three known ways to make such a transition abrupt, and step 9 chose the one that
+  reads like a market rather than a coincidence: a desk copies harder when the desks it watches already
+  agree with each other. That single multiplication, &alpha;<sub>i</sub> = r<sub>i</sub>, produced
+  everything the project was built on afterwards. The transition became a jump, a bistable window opened
+  between &lambda;<sub>b</sub> and &lambda;<sub>f</sub>, and inside that window the same shock either heals
+  or becomes permanent depending only on where the coupling sits. Steps 11 to 14 built on it: a price from
+  the order imbalance, a shock that can be aimed at hubs or at the periphery, and a theory of trading halts
+  as forced desynchronisation whose central quantity is the minimum safe halt length.</p>
+  <p>At that point the model was internally coherent and had produced a genuinely new-looking piece of
+  theory. Everything after step 15 is the attempt to check it against data, and that is where the story
+  changes direction.</p>
+
+  <h4>What was explored in the middle, and what each exploration returned</h4>
+  <p>Very little of the work was on the main line above. Most of it was sweeping one ingredient at a time to
+  find out which ones the transition actually depends on. The clustering coefficient is the clearest example
+  of why that was worth doing: it entered as a control variable, something to hold fixed while degree
+  heterogeneity was varied, and it left as the most consequential structural quantity in the project.</p>
+  <div class="tw"><table>
+    <tr><th>what was explored</th><th>why</th><th>what came back</th></tr>
+    <tr><td><b>Degree heterogeneity &kappa; = &lang;k&sup2;&rang;/&lang;k&rang;&sup2;</b></td>
+        <td>it is the only structural quantity in the annealed mean-field threshold, equation (11), so the theory predicts nothing else about structure matters</td>
+        <td>the threshold does move with &kappa; as predicted, and heterogeneity alone does not make the transition abrupt. Hubs lock first and seed the rest, which shifts the threshold without changing its character</td></tr>
+    <tr><td><b>Clustering coefficient C</b></td>
+        <td>started as a control: sweeping Watts-Strogatz rewiring holds &kappa; at 1.00 to 1.04, so clustering can be varied with heterogeneity fixed</td>
+        <td><b>the most important thing found here.</b> The bistable window closes above <b>C* &asymp; 0.35</b>, equation (26). Synthetic ER sits at 0.030, an order of magnitude below; real market correlation networks sit at 0.69 to 0.77, twice above. When neighbours share neighbours, local agreement saturates locally instead of propagating, which is exactly the feedback step 9 needs</td></tr>
+    <tr><td><b>Assortativity and path length</b></td>
+        <td>the mean field says they do not appear, which is falsifiable</td>
+        <td>no clear effect on the transition, consistent with the theory. The real lead-lag network's strong negative assortativity, &minus;0.35, is still informative: it is what "everyone watches the few large players" looks like, and it is evidence against the reciprocity assumption</td></tr>
+    <tr><td><b>Frequency-degree correlation c</b></td>
+        <td>the textbook route to explosive synchronisation, &omega;<sub>i</sub> &prop; k<sub>i</sub></td>
+        <td>far more fragile than the literature suggests. A Gaussian frequency law gives no jump at <em>any</em> correlation, and even c = 0.75 gives almost nothing. The jump needs |c| = 1 <em>and</em> a frequency distribution whose tail matches the degree distribution's tail. The correct statement is about tails, not ranks</td></tr>
+    <tr><td><b>The shape of g(&omega;)</b></td>
+        <td>uniform, Gaussian, Lorentzian and bimodal laws are known to behave differently</td>
+        <td>Lorentzian is the one that pays, because it makes the herding model exactly solvable and produced both new analytic results. Bimodal breaks the threshold formula outright, since g(0) = 0</td></tr>
+    <tr><td><b>Coupling normalisation</b></td>
+        <td>dividing by &lang;k&rang;, by 1, or by k<sub>i</sub> looks like bookkeeping</td>
+        <td>it is not. Dividing by k<sub>i</sub> deletes the hub advantage and destroys the jump, gap 0.06 against 0.79. The code path still exists and is item R3 on the removal list</td></tr>
+    <tr><td><b>Noise, idiosyncratic and common</b></td>
+        <td>a market without news is not a market</td>
+        <td>idiosyncratic noise erodes the transition monotonically without destroying it. The common market mode was not in the original model and had to be added, because without it the model's mean pairwise correlation is <b>exactly zero at every level of synchrony</b>, which is step 17</td></tr>
+    <tr><td><b>Inertia, contrarians, phase lag, explicit delay, multilayer coupling, co-evolving networks, bipartite structure, asymmetric herding</b></td>
+        <td>each is an obviously missing piece of market reality, and each was a hypothesis rather than an improvement</td>
+        <td>tested and scored rather than asserted, in step 24. Two of the most promising made things worse in the specific sense that matters: a multilayer network improves the stylised facts but destroys the bistable window, and a network that rewires toward agreement <em>fragments</em> into like-minded clusters and lowers global synchrony from 0.926 to 0.712</td></tr>
+    <tr><td><b>System size, N = 125 to 4000</b></td>
+        <td>a jump measured at N = 500 could be a finite-size illusion</td>
+        <td>it is not. The jump <em>grows</em> with size, 0.183 to 0.486, and so does the window. An artifact would shrink</td></tr>
+    <tr><td><b>Estimating &lambda; from market data</b></td>
+        <td>every operational claim in the project is phrased as "where &lambda; sits relative to &lambda;<sub>b</sub>", so this was the highest-value item on the list</td>
+        <td>impossible, and impossible for a reason that generalises: the transition is so steep that 97.2% of market-days fall inside a blind window, and any estimate is a monotone transform of the indicator it was built from. Step 18</td></tr>
+    <tr><td><b>Timescale, daily closes against one-minute bars</b></td>
+        <td>the strongest objection to every empirical null here: the model is intraday and the tests were on daily data</td>
+        <td>the objection was tested properly on 2.3 million one-minute bars across 31 intraday crash events. Unmatched the signal looks excellent, AUC 0.911, but pre-crash volatility is 4.94 times higher, and once volatility is matched the AUC falls to <b>0.526</b>. The daily null was not a resolution artifact</td></tr>
+    <tr><td><b>The network itself</b></td>
+        <td>every structural claim rested on a graph that was invented</td>
+        <td>the most serious result in the project. On networks estimated from real returns the hysteresis gap falls by a factor of four and the window width goes to zero, which removes the thing steps 12 and 14 were built on. Step 19, with the clustering row above as the explanation</td></tr>
+  </table></div>
+
+  <h4>Where it ended up</h4>
+  <p>Two things survive as positive contributions, both analytic and both in step 22. The first is a closed
+  form covering a whole family of models at once: generalising the herding gain to
+  &alpha;<sub>i</sub> = r<sub>i</sub><sup>p</sup> gives
+  &lambda;<sub>b</sub>(p) = &gamma;(p+2)((p+2)/p)<sup>p/2</sup>, which reduces to the classical Kuramoto
+  threshold 2&gamma; as p goes to zero, to 3&radic;3&thinsp;&gamma; for the pairwise herding model, and to
+  8&gamma; for the three-body hypergraph interaction that r<sub>i</sub><sup>2</sup> turns out to be. The
+  ratio between prediction and simulation stays flat at about 1.105 while the prediction itself moves by a
+  factor of 2.1, which is the evidence that the formula has the right shape rather than the right value at
+  one point. The second is the critical clustering C* &asymp; 0.35, which puts a number on an effect the
+  literature had only described qualitatively, and which happens to explain why the model fails on real
+  networks.</p>
+  <p>Everything else is either a reproduction or a negative result, and the negative results are the more
+  useful half. As a model of markets this one does not work: it cannot anticipate a crash out of sample,
+  plain volatility outperforms its own observable, the part of co-movement that is specifically
+  synchronisation carries no predictive information, its control parameter cannot be measured even in
+  principle, and the bistable window that its most novel results depend on is a property of an unclustered
+  synthetic graph rather than of a market. As a study of explosive synchronisation it works well, and the
+  honest summary of the whole project is that it is a clean piece of nonlinear dynamics that was calibrated
+  against the wrong network and asked to do a job the mathematics forbids.</p>
+  <p>What would change that verdict is not another term in the equation. It is a connectivity matrix
+  estimated from data in which the nodes are trading desks rather than stocks, which is step 7, and an
+  intraday dataset in which the nodes and the timescale finally match, which is the surviving half of
+  assumption 41.</p>
 </section>
 
 </main>
