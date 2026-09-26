@@ -130,6 +130,25 @@ class Params:
     # Sakaguchi phase lag: sin(theta_j - theta_i - alpha). A reaction delay or a systematic lead/lag
     # between desks. alpha = 0 is the original symmetric coupling.
     alpha_lag: float = 0.0
+    # (A8) Exponent on the herding gain: alpha_i = r_i**herd_power. A1 proved that herd_power = 2 makes
+    # the coupling EXACTLY the triadic (3-body hypergraph) sum
+    #   k_i^-2 sum_{l,m,j} cos(theta_l - theta_m) sin(theta_j - theta_i),
+    # i.e. a desk following a GROUP consensus rather than pairwise averages. 1 = the original model.
+    herd_power: float = 1.0
+    # (A7) Explicit propagation delay: the coupling sees theta_j(t - delay) instead of theta_j(t).
+    # 0 = instantaneous, as before. Requires a history buffer, so it is handled inside simulate().
+    delay: float = 0.0
+    # (A12) Multilayer: a SECOND observation network with its own coupling. Markets are not one graph;
+    # an information layer (who you watch) and a trading layer (who you trade against) differ. The two
+    # couplings add. net2 = None is the original single-layer model.
+    net2: "Network | None" = None
+    lam2: float = 0.0
+    # (A11) Co-evolving network: every `rewire_every` time units a fraction `rewire_rate` of edges are
+    # rewired, each toward a node that currently AGREES with the source (probability ~ max(0, cos
+    # difference)). "You end up watching whoever you already agree with", which is homophily and should
+    # amplify herding. rewire_rate = 0 keeps the network frozen, as before.
+    rewire_rate: float = 0.0
+    rewire_every: float = 5.0
     # Asymmetric herding: the coupling gain is multiplied by (1 - asym * sin theta_i), so a desk that is
     # already selling (sin theta_i < 0) copies harder than one that is buying. This breaks the
     # theta -> theta + pi symmetry that otherwise makes crashes and melt-ups mirror images, and is the
@@ -141,20 +160,28 @@ def _lam(p: Params, t: float) -> float:
     return p.lam(t) if callable(p.lam) else float(p.lam)
 
 
-def drift(net: Network, p: Params, theta: np.ndarray, t: float, scale: np.ndarray) -> np.ndarray:
+def drift(net: Network, p: Params, theta: np.ndarray, t: float, scale: np.ndarray,
+          seen: np.ndarray | None = None) -> np.ndarray:
+    """`seen` is what the neighbours LOOK like to node i. It equals theta for the instantaneous model
+    and the delayed history when p.delay > 0 (A7)."""
     cos_t, sin_t = np.cos(theta), np.sin(theta)
+    obs = theta if seen is None else seen
+    cos_o, sin_o = (cos_t, sin_t) if seen is None else (np.cos(seen), np.sin(seen))
     if p.active is None:
-        c = np.bincount(net.ei, weights=cos_t[net.ej], minlength=net.n)
-        s = np.bincount(net.ei, weights=sin_t[net.ej], minlength=net.n)
+        c = np.bincount(net.ei, weights=cos_o[net.ej], minlength=net.n)
+        s = np.bincount(net.ei, weights=sin_o[net.ej], minlength=net.n)
     else:
         vis = p.active[net.ej]
-        c = np.bincount(net.ei, weights=cos_t[net.ej] * vis, minlength=net.n)
-        s = np.bincount(net.ei, weights=sin_t[net.ej] * vis, minlength=net.n)
+        c = np.bincount(net.ei, weights=cos_o[net.ej] * vis, minlength=net.n)
+        s = np.bincount(net.ei, weights=sin_o[net.ej] * vis, minlength=net.n)
     coupling = s * cos_t - c * sin_t  # = sum_j A_ij sin(theta_j - theta_i)
     if p.alpha_lag != 0.0:
         # sin(x - a) = sin x cos a - cos x sin a, with sum_j cos(theta_j - theta_i) = c cos_t + s sin_t
         coupling = np.cos(p.alpha_lag) * coupling - np.sin(p.alpha_lag) * (c * cos_t + s * sin_t)
-    alpha = np.where(p.adaptive, np.sqrt(c * c + s * s) / net.deg, 1.0)
+    r_loc = np.sqrt(c * c + s * s) / net.deg
+    if p.herd_power != 1.0:
+        r_loc = r_loc ** p.herd_power
+    alpha = np.where(p.adaptive, r_loc, 1.0)
     if p.active is not None:
         alpha = alpha * p.active
     gain = _lam(p, t) * scale * alpha
@@ -163,12 +190,49 @@ def drift(net: Network, p: Params, theta: np.ndarray, t: float, scale: np.ndarra
     if p.asym != 0.0:
         gain = gain * (1.0 - p.asym * sin_t)   # sellers (sin theta < 0) copy harder than buyers
     out = p.omega + gain * coupling
+    if p.net2 is not None and p.lam2 != 0.0:
+        n2 = p.net2
+        c2 = np.bincount(n2.ei, weights=cos_o[n2.ej], minlength=net.n)
+        s2 = np.bincount(n2.ei, weights=sin_o[n2.ej], minlength=net.n)
+        coupling2 = s2 * cos_t - c2 * sin_t
+        alpha2 = np.where(p.adaptive, np.sqrt(c2 * c2 + s2 * s2) / np.maximum(n2.deg, 1.0), 1.0)
+        out = out + (p.lam2 / max(n2.mean_deg, 1e-12)) * alpha2 * coupling2
     if p.shock_eps is not None:
         eps = p.shock_eps(t)
         if eps != 0.0:
             mask = 1.0 if p.shock_mask is None else p.shock_mask
             out = out + eps * mask * np.sin(p.theta_target - theta)
     return out
+
+
+def rewire_toward_agreement(net: Network, theta: np.ndarray, rate: float,
+                            rng: np.random.Generator) -> Network:
+    """(A11) Rewire a fraction `rate` of undirected edges: drop edge (i, j) and reconnect i to a node
+    drawn with probability proportional to max(0, cos(theta_k - theta_i)), i.e. toward desks that
+    currently agree with i. Degrees are not preserved; the edge count is."""
+    m = net.ei.size // 2
+    und = np.stack([net.ei[:m], net.ej[:m]], axis=1).copy()
+    n_re = int(round(rate * m))
+    if n_re <= 0:
+        return net
+    pick = rng.choice(m, size=n_re, replace=False)
+    cos_t, sin_t = np.cos(theta), np.sin(theta)
+    for e in pick:
+        i = int(und[e, 0])
+        w = cos_t * cos_t[i] + sin_t * sin_t[i]      # cos(theta_k - theta_i)
+        w = np.maximum(w, 0.0)
+        w[i] = 0.0
+        tot = w.sum()
+        if tot <= 1e-12:
+            continue
+        und[e, 1] = int(rng.choice(net.n, p=w / tot))
+    keep = und[:, 0] != und[:, 1]
+    und = und[keep]
+    ei = np.concatenate([und[:, 0], und[:, 1]])
+    ej = np.concatenate([und[:, 1], und[:, 0]])
+    deg = np.bincount(ei, minlength=net.n).astype(float)
+    deg[deg == 0] = 1.0                               # keep the normalisation finite
+    return Network(net.n, ei, ej, deg, net.name + "+rewired")
 
 
 @dataclass
@@ -223,24 +287,37 @@ def simulate(
     record(0, t0)
     k = 1
     vel = np.zeros(net.n) if p.mass > 0 else None
+    # (A7) ring buffer of past phases so the coupling can see theta_j(t - delay)
+    n_delay = int(round(p.delay / dt)) if p.delay > 0 else 0
+    rewire_steps = int(round(p.rewire_every / dt)) if p.rewire_rate > 0 else 0
+    hist = np.tile(theta, (n_delay + 1, 1)) if n_delay > 0 else None
+    hptr = 0
     for step in range(1, n_steps + 1):
         t = t0 + (step - 1) * dt
         noise = sq * rng.standard_normal(net.n) if p.sigma > 0 else 0.0
         if p.sigma_common > 0:
             noise = noise + sq_c * rng.standard_normal()  # scalar: identical for every node
+        seen = hist[(hptr + 1) % (n_delay + 1)] if n_delay > 0 else None
         if p.mass > 0:
             # second-order: m dv/dt = F(theta) - v,  dtheta/dt = v   (Kuramoto with inertia)
-            g1 = (drift(net, p, theta, t, scale) - vel) / p.mass
+            g1 = (drift(net, p, theta, t, scale, seen) - vel) / p.mass
             th_p = theta + dt * vel
             v_p = vel + dt * g1 + noise
-            g2 = (drift(net, p, th_p, t + dt, scale) - v_p) / p.mass
+            g2 = (drift(net, p, th_p, t + dt, scale, seen) - v_p) / p.mass
             theta = theta + 0.5 * dt * (vel + v_p)
             vel = vel + 0.5 * dt * (g1 + g2) + noise
         else:
-            f1 = drift(net, p, theta, t, scale)
+            f1 = drift(net, p, theta, t, scale, seen)
             pred = theta + dt * f1 + noise
-            f2 = drift(net, p, pred, t + dt, scale)
+            f2 = drift(net, p, pred, t + dt, scale, seen)
             theta = theta + 0.5 * dt * (f1 + f2) + noise
+        if n_delay > 0:
+            hptr = (hptr + 1) % (n_delay + 1)
+            hist[hptr] = theta
+        if rewire_steps and step % rewire_steps == 0:
+            net = rewire_toward_agreement(net, theta, p.rewire_rate, rng)
+            scale = {"mean": np.full(net.n, 1.0 / net.mean_deg), "none": np.ones(net.n),
+                     "degree": 1.0 / net.deg}[p.norm]
         if step % every == 0:
             record(k, t0 + step * dt)
             k += 1

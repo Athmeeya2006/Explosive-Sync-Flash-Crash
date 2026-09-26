@@ -68,3 +68,12 @@ research/empirical/data/*.log
 scratch/
 tmp/
 *.tmp
+
+# ---------------------------------------------------------------- secrets
+# Never commit credentials. The HF Data Library key lives in ~/.config/hfdata/api_key.
+.env
+.env.*
+*.key
+**/api_key
+**/secrets.*
+*_token

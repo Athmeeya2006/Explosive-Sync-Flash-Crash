@@ -11,6 +11,19 @@ Status of the numbers quoted here:
 | S8 factorial (144 runs) | complete | `dR_jump` usable; **`d_lam` unreliable** (see §7.1) |
 | S8c corrected correlation sweep | **complete** | see §7.3 |
 | S9 observable mapping | **complete** | see §7.4 |
+| S10 extension testing | **complete** | see §7.5 |
+| S8b theory check | ran, **inconclusive** | see §7.6 |
+| E3 Lee et al. reproduction | **complete** | see §7.7 |
+| E4 intraday | **complete**, data-limited | see §7.8 |
+| A3 lambda estimation | **complete, negative** | see §7.9 |
+| A2 signal propagation | **does not finish** | see §7.10 |
+| E5 real market network | **complete, and decisive** | see §7.11 |
+| S11 exact thresholds + finite size | **complete** | see §7.12 |
+| E6 2010 flash crash, 1-minute | **complete** | see §7.13 |
+| E7 minute event study 2002-2026 | **complete, and decisive** | see §7.14 |
+| S12 structural extensions (A11-A13) | **complete** | see §7.15 |
+| E8 out-of-sample prediction | **complete, and final** | see §7.16 |
+| **S13 two new hypotheses** | **complete, both confirmed** | see §7.17 |
 
 ---
 
@@ -585,10 +598,13 @@ Does the bistable window survive each extension?
 | liq_common | 3.675 | 4.050 | **-0.375** | broken (anti-hysteresis) |
 | contrarian | - | - | **none** | **destroys the transition entirely** |
 
-**Contrarians (A9) must be rejected as a model improvement, but the result is itself a finding.** Just
-15% of desks leaning against observed flow suppresses explosive synchronisation completely (max
-hysteresis gap 0.108 against 0.767 for the baseline, and R never reaches 0.5). If that survives scrutiny
-it says market makers are structurally stabilising, which is policy-relevant and worth its own study.
+**Contrarians (A9) must be rejected as a model improvement.** Just 15% of desks leaning against
+observed flow suppresses explosive synchronisation completely (max hysteresis gap 0.108 against 0.767
+for the baseline, and R never reaches 0.5). **This is known physics, not a new finding**: the
+contrarian-oscillator literature reports that a fraction as small as 5% of contrarians significantly
+suppresses synchronisation (Nature Sci. Rep. 2, 658; Sci. Rep. 5, 18235; arXiv:1702.08620). The
+economic reading, that market makers are structurally stabilising, is the only part that is not already
+in the physics literature.
 
 **Keep:** A3 liquidity, A1 common mode, A5 inertia. **Reject:** A9 contrarians, A10 asymmetric herding.
 **Mixed:** A2 mean frequency (scores well but overshoots volatility clustering when combined with
@@ -607,3 +623,382 @@ The Pazo check fails for the same reason plus a third: Pazo's `pi/4` jump is an 
 these are sparse networks at `<k> = 6`. Testing it properly needs an all-to-all run and a fitted onset,
 not a 0.5 crossing. The structural correlations (n = 6 topologies) are far too small a sample to
 separate kappa from clustering or assortativity.
+
+
+### 7.7 E3 - Lee et al. (PNAS 2025) reproduced and tested out of sample
+
+Their estimator, implemented exactly: Hilbert transform each asset's returns, build the instantaneous
+Kuramoto order parameter across the market, take the ACF of `R(t)` in overlapping moving windows, and
+use the **kurtosis of those ACF values** as ES proximity. 315 events, 23 markets, cluster bootstrap.
+
+| sample | target | n | Spearman | 95% CI | holds |
+|---|---|---|---|---|---|
+| 2008 only (their setup) | collapse | 53 | -0.207 | [-0.435, +0.015] | **no** |
+| 2008 only | recovery | 53 | -0.017 | [-0.313, +0.268] | **no** |
+| out of sample | collapse | 262 | +0.080 | [-0.049, +0.184] | no |
+| **out of sample** | **recovery** | 262 | **+0.133** | [**+0.038**, +0.215] | **yes** |
+
+**The 2008 result does not reproduce at constituent level.** Out of sample across 262 independent
+events the *recovery* half survives, with the sign hysteresis predicts (closer to explosive means a more
+prolonged recovery); the *collapse* half does not. The surviving effect explains under 2% of variance.
+
+Not an exact replication: they used 39 country indices from Compustat Global, this uses
+constituent-level Yahoo data inside 23 markets, so the networks differ and survivorship bias applies.
+
+### 7.8 E4 - the timescale objection, tested as far as free data allows
+
+**Hard data limit.** Yahoo serves 1-minute bars for 7 days, 5-minute for 60 days, hourly for 730 days.
+The 2010, 2015 and 2018 events are unreachable without a paid feed. Hourly is roughly a 7x improvement
+over daily, not the full fix.
+
+On hourly bars (119 US names, 730 days), pre-crash co-movement is **elevated before crashes but not
+before ordinary peaks**: 0.206 against 0.123 sixty bars out, AUC **0.717** against E1's 0.542 on daily.
+
+**But there are only 6 events.** Observations inside one event are heavily autocorrelated, so the
+effective sample is about 6, not 72. Event-level sign test: 5 of 6. **Suggestive, not significant.**
+Its value is identifying a paid intraday feed, rather than more daily data, as what would settle E1/E2.
+
+### 7.9 A3 - lambda cannot be measured from co-movement, and the reason is structural
+
+This was the headline recommendation of §4 (A14). It fails, for two independent reasons.
+
+1. **The inversion is ill-posed.** `R_eq(lambda)` jumps from **R = 0.137 to R = 0.899 across a lambda
+   window only 0.167 wide**. That is not numerical, it is the definition of a first-order transition.
+   **97.2% of real market-days land inside that blind region**, leaving an inter-quartile range of 0.04.
+   *The property that makes explosive synchronization interesting is exactly the property that makes its
+   control parameter unidentifiable from its order parameter.*
+2. **Even a perfect inversion could not help.** `lambda_hat` is a monotone transform of `rho_bar`, and
+   AUC is invariant under monotone transforms, so it must score identically to the raw indicator. No
+   reparametrisation of an indicator can beat that indicator.
+
+An earlier version of the script reported AUC 0.949; that was an artifact of a thinning bug leaving only
+8 comparison points. **A14 is withdrawn.** The replacement top recommendation is A15, intraday data.
+
+### 7.10 A2 - does not finish
+
+A2 was relaunched and ran for **12 h 22 min without writing a single new log line** past the
+steady-state stage, at about 7% CPU per worker. It was killed. The propagation stage (160 source nodes
+per model/network across 14 combinations, each needing integration to steady state plus a perturbation
+response) is simply too large as configured.
+
+**Consequence: the A1+A2 theory paper does not currently exist.** A1 completed and its separability
+results stand, but A2's exponent table, on which the entire "generalised propagation theory" claim
+rests, has never been produced. Any statement that the theory is validated is unsupported. Getting it
+would need the source count cut by roughly an order of magnitude and the stage instrumented with
+progress logging.
+
+
+### 7.11 E5 (A16) - the model run on a REAL market network, and why this is the most serious result here
+
+Assumption 15 said no real market network is used anywhere, and marked it load-bearing. It is now
+tested. Two networks were estimated per market and thresholded to the same mean degree (12) as the
+synthetic benchmark, so degree is held fixed and only structure differs:
+
+* `corr` : threshold the pairwise return-correlation matrix.
+* `leadlag` : keep i-j when i's returns lead j's at +1 day more strongly than the reverse, then
+  symmetrise.
+
+**Structure (mean over US, UK, Japan, Germany):**
+
+| network | `<k>` | kappa | clustering | assortativity |
+|---|---|---|---|---|
+| real, corr | 17.3 | 1.80 | **0.731** | -0.065 |
+| real, leadlag | 12.7 | 1.98 | **0.138** | -0.247 |
+| synthetic BA | 11.8 | 1.68 | 0.081 | -0.049 |
+| synthetic ER | 12.0 | 1.09 | **0.030** | -0.009 |
+
+Real market networks are **an order of magnitude more clustered** than any synthetic graph used
+anywhere else in this repository, and more degree-heterogeneous than ER.
+
+**Dynamics, same herding model, same f = 1, same sigma = 0.3:**
+
+| network | lambda_f | lambda_b | window | max hysteresis gap | jump |
+|---|---|---|---|---|---|
+| **synthetic ER** (what S2-S5 use) | 4.10 | 3.30 | **0.800** | **0.793** | 0.768 |
+| synthetic BA | 3.40 | 2.90 | 0.500 | 0.502 | 0.546 |
+| **real, corr** | 2.45 | 2.55 | **-0.100** | **0.172** | 0.291 |
+| **real, leadlag** | 2.60 | 2.60 | **0.000** | **0.190** | 0.325 |
+
+**The bistable window essentially vanishes on networks estimated from real market data.** The
+hysteresis gap falls from 0.793 to 0.17-0.19, a factor of four, and the window width goes to zero.
+
+This matters more than any other result in the repository, because **S4 (crash persistence is set by
+the hysteresis branch) and S5 (minimum safe trading-halt duration) both depend entirely on that window
+existing.** Both were measured on synthetic ER. On a real market network there is no window for a shock
+to leave the market in, so:
+
+* S4's central claim, that whether a crash heals or sticks is a property of where lambda sits rather
+  than of the shock, has no bistable region to operate in.
+* S5's tau*(lambda), the most novel item in the repository, is a recovery-threshold calculation for a
+  threshold that does not appear.
+
+The most likely mechanism is the clustering gap. High clustering means neighbours share neighbours, so
+local agreement r_i saturates early and locally instead of propagating globally, which is exactly the
+positive feedback the herding route depends on.
+
+**Novelty correction.** That mechanism is **already published**: "Topologically-induced suppression of
+explosive synchronization", arXiv:2301.08000, *Chaos* 33, 053103 (2023), shows that converting a
+star-like topology into one containing cycles turns explosive synchronization into the ordinary
+continuous kind, and the broader literature states the rule directly ("any suppressing factor which
+hampers the merging of small synchronous clusters leads to abrupt formation of a single giant
+component", so clustering, which merges clusters smoothly, suppresses it). So E5 is **not** a new
+physical mechanism. What is new here is the **empirical** half: that networks estimated from real
+market returns sit squarely in the clustered, suppression regime (C = 0.73 against 0.030 for the
+synthetic ER graph used throughout), and that this removes the bistable window S4 and S5 depend on.
+The contribution is "the market's own network is the wrong network for this model", not "clustering
+suppresses ES". That also means assumption 33 (annealed mean field,
+which assumes no clustering) fails on the real networks, so the theory in section 1.10 does not apply
+to them either.
+
+**Caveats, stated plainly.** The real networks are smaller (n = 125 to 335 against 400) and the
+thresholding is a modelling choice, not an observable; a different construction could give a different
+graph. Neither caveat explains a fourfold collapse of the gap, but both should be checked before this
+is treated as settled. The honest next step is to rebuild the synthetic comparison at matched n and to
+sweep the correlation threshold.
+
+### 7.12 S11 (A17, A18) - exact thresholds, and whether the jump is real
+
+**A17.** For Lorentzian g with half-width gamma the herding model is exactly solvable. The classic
+Kuramoto result R = sqrt(1 - K_c/K), K_c = 2 gamma, enters the mean field as K R; in the herding model
+the gain is alpha_i = r_i so it enters as lambda R^2, i.e. K_eff = lambda R. Substituting gives a cubic
+
+    lambda R^3 - lambda R + 2 gamma = 0
+
+whose fold (double root) is at dR: 3 lambda R^2 - lambda = 0, so R* = 1/sqrt(3), and back-substituting
+
+    **lambda_b = 3 sqrt(3) gamma ~= 5.196 gamma,    R at the fold = 1/sqrt(3) ~= 0.5774.**
+
+A closed form, replacing the numerical saddle-node search in `theory.py`. Verified two ways: at
+lambda = 5.2, just above the fold, the two roots are 0.5901 and 0.5645, converging on 0.5774 as they
+must; and a direct simulation at N = 2000 gives lambda_b = 5.800 against the exact 5.196, a ratio of
+**1.116**. That 12% gap is not an error in the algebra, it is the finite-connectivity correction: the
+closed form is exact for all-to-all coupling, while the simulation runs on a sparse ER graph with
+<k> = 12. It is the same ~10% offset S2 reported for its numerical mean field, now explained rather
+than merely measured.
+
+**A18.** Finite-size sweep, 3 seeds per size, Lorentzian frequencies, sigma = 0:
+
+| N | 125 | 250 | 500 | 1000 | 2000 | 4000 |
+|---|---|---|---|---|---|---|
+| jump `dR` | 0.183 | 0.254 | 0.300 | 0.330 | 0.277 | **0.486** |
+| max hysteresis gap | 0.119 | 0.181 | 0.283 | 0.284 | 0.318 | **0.473** |
+| window `lam_f - lam_b` | 0.000 | 0.067 | 0.200 | 0.067 | 0.267 | **0.400** |
+
+**The jump grows with N rather than decaying** (0.183 -> 0.486 over a 32x range of system size), and so
+do the hysteresis gap and the window. A finite-size artifact would shrink toward zero. **So the
+first-order discontinuity is genuine**, and the values quoted elsewhere at N = 500 to 600 are if
+anything conservative.
+
+Caveats: only 3 seeds per size, the trend is not perfectly monotone (N = 2000 dips to 0.277), and the
+window is resolved only to the 0.2-wide lambda grid. The direction is unambiguous but the exponent is
+not estimated here.
+
+**Read this together with E5 (section 7.11).** A18 says the transition is real *on an ER graph*. E5 says
+it very nearly disappears on a network estimated from real market data. Those are not in conflict: the
+discontinuity is a genuine property of the model, and the model's network is not the market's.
+
+
+### 7.13 E6 - the 2010 flash crash at 1-minute resolution
+
+The test E1, E2 and E4 could not do. HF Data Library publishes 1-minute bars back to 2002 under
+CC BY 4.0, so 2010-05-06 is reachable. 32 large caps, 1,950 one-minute bars over 3-7 May 2010.
+
+| window | R | mean correlation |
+|---|---|---|
+| baseline, 3-5 May | 0.5142 | 0.3361 |
+| 13:00-14:32, before the crash | 0.6681 | **0.4734** |
+| 14:32-15:08, the crash itself | 0.6487 | 0.4322 |
+
+Co-movement rose **+0.1373 BEFORE 14:32** and then fell slightly during the crash itself. On daily data
+E1 found the opposite: flat until the peak, rising only afterwards.
+
+**But the null matters, and it cuts the claim down.** Running the same 13:00-14:32 window on every day
+in the sample:
+
+| day | 13:00-14:32 level | afternoon rise over the morning |
+|---|---|---|
+| 2010-05-03 | 0.2160 | +0.0133 |
+| 2010-05-04 | 0.3891 | +0.0468 |
+| 2010-05-05 | 0.4137 | **+0.1151** |
+| **2010-05-06 (crash)** | 0.4734 | **+0.1414** |
+| 2010-05-07 | **0.6230** | +0.0199 |
+
+The crash day has the largest afternoon rise of the five, but **2010-05-05 reaches +0.115**, and the
+crash day's absolute level is **not** the highest in the week (2010-05-07, the aftermath, is). With
+**one crash and four control days** this cannot separate a genuine precursor from ordinary intraday
+variation, and the whole week sits inside the European debt crisis, so every day is elevated.
+
+**Verdict: suggestive, not established.** It motivates E7 rather than settling anything.
+
+### 7.14 E7 - E1's event study at 1-minute resolution, 2002-2026. The timescale objection, settled.
+
+23 tickers, **2,319,682 one-minute bars, 2002-12-30 to 2026-09-24**, 31 intraday crash events (a 3%
+fall of the equal-weight index within 60 minutes), against E1's own matched null of local maxima not
+followed by a fall. One value per event, so events rather than minutes are the unit of analysis.
+
+**The unmatched result looks spectacular:**
+
+| lag (min) | -90 | -60 | -30 | 0 | +30 | +90 |
+|---|---|---|---|---|---|---|
+| crash onsets | 0.429 | 0.434 | 0.538 | 0.480 | 0.551 | 0.499 |
+| ordinary peaks | 0.241 | 0.223 | 0.204 | 0.227 | 0.237 | 0.238 |
+
+Pre-event co-movement: **0.458 before crashes against 0.228 before ordinary peaks, AUC 0.911
+[0.843, 0.969]**, versus E1's 0.542 on daily data. Taken at face value this would say E1's null was a
+resolution artifact and the signal lives intraday.
+
+**It is not. The volatility-matched control removes it entirely.**
+
+Crashes happen in high-volatility regimes and co-movement rises with volatility, so an unmatched
+comparison can score well purely as a volatility proxy. E1 handled this on daily data with a
+volatility-matched null; applying the same control here, pairing each crash with the nearest-volatility
+ordinary peak without replacement:
+
+| | value |
+|---|---|
+| pre-event volatility, crashes vs peaks | 0.00151 vs 0.00031, **4.94x higher** |
+| AUC, unmatched | 0.897 |
+| **AUC, volatility-matched** | **0.526, CI [0.340, 0.712]** |
+| beats chance | **no** |
+| median co-movement, crashes vs matched peaks | 0.459 vs 0.409 |
+
+**Once volatility is held fixed, co-movement carries no skill at minute resolution either.**
+
+**This settles the single biggest threat to the empirical chapters.** Assumption 41 said the daily grid
+might be three orders of magnitude too coarse and that E1's and E2's nulls could be measuring nothing
+but that mismatch. Tested at the model's own timescale, across 24 years, the same confound structure
+appears and the same conclusion holds. **E1's daily null was not a resolution artifact, and E1's
+conclusion survives the test it was most vulnerable to.**
+
+It also retires recommendation A15: intraday data was the top open item, it has now been obtained and
+used, and it did not change the answer.
+
+Caveats: 21 crashes survive the pre-window data requirement, the matched CI is correspondingly wide
+[0.340, 0.712], and the cross-section is 23 large caps rather than a full index. A larger ticker set
+would tighten the interval but the point estimate of 0.526 is not close to meaningful skill.
+
+
+### 7.15 S12 - the last three structural extensions (A11, A12, A13)
+
+| variant | kurtosis | vol clustering | crash co-movement | score | bistable window |
+|---|---|---|---|---|---|
+| **base** | 0.167 | 0.076 | 0.026 | 0.936 | **0.975** (gap 0.789) |
+| A11 co-evolving network | 0.162 | 0.055 | 0.021 | 0.923 | 0.825 (gap 0.764) |
+| A12 multilayer | 0.045 | **0.127** | 0.035 | **0.793** | **none** (gap 0.465) |
+| A13 bipartite mapping | slightly worse on every fact | | | | unchanged (price-side only) |
+
+* **A11 (co-evolving network)** barely moves the stylised facts and mildly narrows the window. Its one
+  interesting effect is counter-intuitive: rewiring toward desks that already agree with you *reduces*
+  global synchrony (R 0.926 -> 0.712 at a 20% rewire rate), because homophily fragments the network into
+  like-minded clusters. Local order, global disorder. An echo-chamber effect, not an amplifier.
+* **A12 (multilayer)** scores best on the stylised facts but **destroys the bistable window**
+  (`lambda_b` undefined, gap 0.465 against 0.789). Same verdict as contrarians in S10: it improves the
+  fit by removing the phenomenon.
+* **A13 (bipartite trader x asset)** makes every stylised fact slightly worse and leaves co-movement
+  unchanged. It is still the structurally honest choice (assumption 29), but it buys nothing measurable.
+
+**None of the three is worth adopting.** Combined with S10, that is five of eleven tested extensions
+rejected on evidence.
+
+### 7.16 E8 - could you actually have called a crash? The confusion matrix.
+
+E7 reported AUC, which is a ranking measure and hides the two things that decide usability: the base
+rate, and the confound. E8 fixes thresholds on **2002-2015** and applies them unchanged to
+**2016-2026**: 10 crashes across 2,697 test trading days, a base rate of **0.37%**.
+
+Three detectors, the third being co-movement after regressing out log-volatility (the part of
+synchronization that is *not* volatility; the regression has R^2 = 0.414):
+
+| detector | budget | TP | FP | TN | FN | precision | recall | false alarms per catch |
+|---|---|---|---|---|---|---|---|---|
+| mean_corr | 1% | 5 | 388 | 2299 | 5 | 0.0127 | 0.50 | **77.6** |
+| mean_corr | 5% | 6 | 856 | 1835 | 4 | 0.0070 | 0.60 | 142.7 |
+| volatility | 1% | 4 | 261 | 2432 | 6 | **0.0151** | 0.40 | **65.2** |
+| **corr \| vol** | 1% | 2 | 549 | 2140 | 8 | **0.0036** | 0.20 | **274.5** |
+| corr \| vol | 5% | 1 | 1173 | 1516 | 9 | 0.0009 | 0.10 | 1173.0 |
+
+**Three conclusions, and they close the empirical question.**
+
+1. **Nothing is usable.** The best detector catches half the crashes at **77 false alarms per catch**,
+   precision 1.3% against a 0.37% base rate. Operationally worthless at any threshold tested.
+2. **Volatility alone is the best of the three.** It beats the model's own observable.
+3. **Stripping the confound makes it worse, not better.** `corr | vol`, the part of co-movement that is
+   genuinely not volatility, is the *worst* detector: precision 0.0036, recall 0.20, 274 false alarms
+   per catch. So the synchronization-specific component carries no predictive information at all.
+
+E7 showed the ranking signal was volatility. E8 shows that what remains after removing volatility is
+not merely weak but actively unhelpful, out of sample, at the model's own timescale.
+
+
+### 7.17 S13 - two NEW results, derived here and tested here
+
+Everything else in this document either reproduces known work or reports a negative result. These two
+are positive, quantitative and, as far as the searches reached, unpublished.
+
+#### H1. A closed-form family of recovery thresholds that unifies three models
+
+Generalise the herding gain to `alpha_i = r_i^p`. In mean field `r_i -> R`, so the coupling term is
+`lambda R^(p+1)` and the effective Kuramoto coupling is `K_eff = lambda R^p`. Substituting into the
+exact Lorentzian result `R = sqrt(1 - 2 gamma / K)`:
+
+    lambda R^(p+2) - lambda R^p + 2 gamma = 0
+
+The fold is where the derivative vanishes, `(p+2) R^(p+1) = p R^(p-1)`, giving a closed form for
+**every** p:
+
+    R*(p)       = sqrt( p / (p+2) )
+    lambda_b(p) = gamma (p+2) ( (p+2)/p )^(p/2)
+
+**One expression spans three separately-studied models:**
+
+| p | R*(p) | lambda_b(p) | which model |
+|---|---|---|---|
+| -> 0 | 0 | **2 gamma** | plain Kuramoto: no fold, continuous transition, the classic `K_c = 2 gamma` |
+| 1 | 1/sqrt(3) = 0.5774 | **3 sqrt(3) gamma = 5.196** | the pairwise herding model (Zhang et al. 2015 form) |
+| 2 | 1/sqrt(2) = 0.7071 | **8 gamma** | the exact 3-body hypergraph interaction A1 proved `r_i^2` to be |
+
+All three limits check analytically. Tested against simulation (N = 1500, Lorentzian, sigma = 0):
+
+| p | predicted | simulated | ratio |
+|---|---|---|---|
+| 0.5 | 3.738 | 4.231 | 1.132 |
+| 1.0 | 5.196 | 5.598 | 1.077 |
+| 1.5 | 6.608 | 7.208 | 1.091 |
+| 2.0 | 8.000 | 8.946 | 1.118 |
+
+**Median ratio 1.105, total spread across p just 0.055.** That is the decisive pattern: the predicted
+threshold moves by a factor of 2.1 across this range and the ratio stays flat to within +-2.5%. A
+formula with the wrong *shape* would show a ratio that drifts with p. The constant ~10% offset is the
+finite-connectivity correction already identified in S11 (which measured 1.116 independently at p = 1,
+N = 2000): the closed form is exact for all-to-all coupling, the simulation is sparse at `<k> = 12`.
+
+**Failure to report:** p = 3 returned no transition (jump 0.0137) inside the scanned coupling range, so
+the family is verified over p in [0.5, 2] only. Whether it holds at large p is untested.
+
+#### H2. A critical clustering, with a number
+
+E5 found the window nearly vanishes on real market networks, and the literature already knows
+clustering suppresses explosive synchronization *qualitatively* (Chaos 33, 053103, 2023). Nobody has
+given a threshold. Sweeping Watts-Strogatz rewiring at fixed mean degree (which holds `kappa` at
+1.00-1.04 throughout, so this isolates clustering from degree heterogeneity):
+
+| clustering C | 0.014 | 0.092 | **0.354** | 0.504 | 0.586 | 0.642 | 0.682 |
+|---|---|---|---|---|---|---|---|
+| hysteresis gap | 0.327 | 0.312 | **0.099** | 0.089 | 0.116 | 0.065 | 0.075 |
+| jump dR | 0.371 | 0.387 | 0.163 | 0.118 | 0.135 | 0.067 | 0.082 |
+| window exists | yes | yes | marginal | marginal | **no** | **no** | **no** |
+
+    **C* ~= 0.35**: below it the window is open (gap ~ 0.31), above it closed (gap < 0.10).
+
+And the number is what makes it useful:
+
+| network | clustering | relative to C* |
+|---|---|---|
+| synthetic ER used throughout this repository | **0.030** | far below: window open |
+| real market network, lead-lag | 0.138 | below, but only by 2.5x |
+| **real market network, correlation** | **0.731** | **2.1x above: window closed** |
+
+This turns E5 from an observation into an explanation. The synthetic graph every crash result was
+measured on sits an order of magnitude below the critical clustering; the real correlation network sits
+twice above it. **The model's bistable window is an artifact of using an unclustered graph**, and the
+crossing point is now quantified rather than asserted.

@@ -225,7 +225,7 @@ def plots(g, hy, T, mc_target) -> None:
              ("mc_crash", mc_target, "mean correlation in a crash")]
     variants = list(dict.fromkeys(g.variant))
     palette = [GREY, BLUE, ORANGE, GREEN, PURPLE, RED, SKY, "#c0a8ff"]
-    cols = {v: palette[i %% len(palette)] for i, v in enumerate(variants)}
+    cols = {v: palette[i % len(palette)] for i, v in enumerate(variants)}
     for ax, (col, target, lbl) in zip(axes, facts):
         for i, pv in enumerate(PRICE_VARIANTS):
             sub = g[g.price == pv]

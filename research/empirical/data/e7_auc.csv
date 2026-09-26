@@ -1,0 +1,2 @@
+n_crash,n_peak,auc,ci_lo,ci_hi,median_crash,median_peak,beats_chance
+28,48,0.9107142857142857,0.8430059523809523,0.96875,0.45745749771595,0.2280634567141533,True

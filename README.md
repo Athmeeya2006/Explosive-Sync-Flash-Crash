@@ -14,6 +14,44 @@ High-performance numerical framework for simulating synchronization transitions 
 The `research/` directory supersedes the original `python/` and `cpp/` layers for every scientific
 claim. See the corrections below.
 
+### Headline findings
+
+| | result |
+|---|---|
+| **NEW: closed-form threshold family** | With gain `alpha_i = r_i^p` the fold solves exactly: `R*(p) = sqrt(p/(p+2))`, `lambda_b(p) = gamma(p+2)((p+2)/p)^(p/2)`. One expression spans plain Kuramoto (p->0, `2*gamma`), pairwise herding (p=1, `3*sqrt(3)*gamma`) and the 3-body hypergraph case (p=2, `8*gamma`). Simulated/predicted ratio flat at 1.105 +- 0.055 (S13) |
+| **NEW: critical clustering** | `C* ~= 0.35`: above it the bistable window closes. Synthetic ER sits at 0.030, the real market correlation network at 0.731, i.e. 2.1x above. This explains why the model's central phenomenon is absent on real networks (S13) |
+| **Exact threshold** | For Lorentzian frequencies the herding model solves in closed form: `lambda_b = 3*sqrt(3)*gamma`, fold at `R* = 1/sqrt(3)` (S11) |
+| **The jump is real** | It grows with system size, 0.183 at N=125 to 0.486 at N=4000, so it is not a finite-size artifact (S11) |
+| **What causes it** | Not a frequency-degree rank correlation: the *tail* of g(omega) must match the tail of P(k) (S8c) |
+| **On real networks it nearly vanishes** | Market networks are 10x more clustered than the synthetic ER graph every result uses, and the bistable window collapses from 0.793 to 0.17 (E5) |
+| **No usable early warning** | Across 23 markets daily, 730 days hourly and 2.3M minute bars: volatility-matched AUC 0.526, and out of sample the best detector needs 77 false alarms per crash caught (E1, E7, E8) |
+| **lambda cannot be measured** | R_eq(lambda) is a step function, so 97% of market-days carry no information about it (A3) |
+
+### Data sources
+
+| data | source | access |
+|---|---|---|
+| daily closes, 23 markets, ~2,900 constituents, 2000-2026 | Yahoo via `research/empirical/fetch_markets.py` | free, no key |
+| hourly bars, 730 days | Yahoo via `research/empirical/e4_intraday.py` | free, no key |
+| **1-minute bars, 1,391 US tickers, 2002-present** | [HF Data Library](https://hfdatalibrary.com), CC BY 4.0 | **free key required** |
+
+The minute data is what makes `e6` (the 2010 flash crash) and `e7` (the full minute-resolution event
+study) possible; Yahoo reaches back only 730 days at hourly and 7 days at 1-minute.
+
+```
+# one-time setup for the minute data
+mkdir -p ~/.config/hfdata && echo "YOUR_KEY" > ~/.config/hfdata/api_key && chmod 600 ~/.config/hfdata/api_key
+# or: export HFDATA_API_KEY=YOUR_KEY
+```
+
+Get a free key at <https://hfdatalibrary.com/pages/account> and complete the profile (institution,
+country, role), or the API returns 403. **The key is never stored in this repository**: `.gitignore`
+blocks `.env`, `*.key` and `**/api_key`.
+
+Note: the `/v1/bars/{TICKER}` endpoint ignores date parameters and always serves the full-history
+Parquet (~50 MB per ticker, 2.25M rows). The fetchers stream it to a temp file, slice the window they
+need with pyarrow, and delete the download.
+
 ## Key Technical Achievements
 
 - **30x Simulation Speedup**: Rewrote the core ODE integration loop from Python (`scipy.integrate.solve_ivp`, adaptive RK45) into a hand-tuned C++ RK4 engine operating on sparse adjacency lists. For $N=400$ oscillators on an ER network ($p=0.05$, $K=2.0$, $T=50$), wall-clock time dropped from 4.50s to 0.15s per ensemble, enabling parameter sweeps that previously took hours to complete in minutes.
