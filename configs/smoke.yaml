@@ -1,0 +1,15 @@
+id: smoke
+experiment: fold_grid
+root_seed: 1
+graph: {kind: rr}
+k: [24]
+p: [1.0]
+n: [300]
+n_seeds: 2
+dt: 0.02
+t_relax: 60
+frac: 0.55
+rel_tol: 0.01
+workers: 2
+continuation: true
+probe: [1.2]

@@ -1,0 +1,19 @@
+# Corrected intraday study (replaces E7 and E8). Every value here is fixed by docs/PREREGISTRATION_B.md.
+id: paperB_intraday
+experiment: intraday_study
+root_seed: 20261013
+split: "2016-01-01"
+win: 30
+stride: 5
+min_stocks: 12
+drop: 0.03
+calm: 0.01
+horizon: 60
+exclude: 30
+lead: 60
+caliper: 0.25
+budgets: [0.005, 0.01, 0.02, 0.05, 0.10]
+n_boot: 4000
+n_boot_sessions: 2000
+robust_leads: [30, 120]
+robust_drops: [0.02, 0.04]

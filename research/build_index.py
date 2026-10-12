@@ -27,7 +27,8 @@ REPO = ROOT.parent
 
 VERDICT = {"new": ("new result", "v-new"), "repro": ("reproduction", "v-repro"), "neg": ("negative result", "v-neg"),
            "corr": ("partly confirmed", "v-open"), "tool": ("mechanism", "v-tool"), "data": ("real data", "v-data"),
-           "theory": ("analytic", "v-theory"), "withdrawn": ("claim withdrawn", "v-neg")}
+           "theory": ("analytic", "v-theory"), "withdrawn": ("claim withdrawn", "v-neg"),
+           "unverified": ("unverified, under audit", "v-open")}
 
 
 # ------------------------------------------------------------------------------------------------ helpers
@@ -614,7 +615,7 @@ SECTIONS = [
      "figures": [fig("figures/s13_new_hypotheses.png",
                      "Left: the closed-form lambda_b(p) curve with simulated thresholds overlaid, and the herding and triadic cases marked. Middle: the simulated/predicted ratio against p, flat if the shape is right. Right: hysteresis gap and jump against clustering, with the synthetic ER and real market values marked.",
                      "Kept for the record. The left panel is a correct plot of a known result (Zou &amp; Wang 2020); the middle panel's flatness is one grid step wide; the right panel's high-clustering points sit outside the scanned coupling range. S14 redoes all three without a grid.")]},
-    {"id": "s14", "verdict": "new", "title": "A Rician closure for the local order parameter: the finite-connectivity law for the fold",
+    {"id": "s14", "verdict": "unverified", "title": "A Rician closure for the local order parameter: the finite-connectivity law for the fold",
      "script": "s14_finite_connectivity.py",
      "question": "S11 and S13 both measured a fold about 10% above the all-to-all prediction (ratios 1.116 and 1.105 at &lang;k&rang; = 12) and had no explanation. That offset is the only thing in S13 the literature does not already contain. What is it?",
      "setup": "Theory: keep the local order parameter r_i as a random variable instead of replacing it by R. Measurement: lambda_b by bisection on the survival of the upper branch, with NO coupling grid, on random regular graphs (every degree exactly k, so the theory applies with no degree heterogeneity), Erdos-Renyi graphs at the same mean degree, and Watts-Strogatz graphs at fixed &lang;k&rang; = 12. N = 2000, p in {0.5, 1, 1.5, 2}, &lang;k&rang; from 6 to 96, 5 seeds.",
@@ -688,13 +689,678 @@ REFS = [
 ]
 
 
+# ------------------------------------------------------------------------------------------------ audit (P0)
+def _tbl(head: list[str], rows: list[list[str]]) -> str:
+    h = "".join(f"<th>{c}</th>" for c in head)
+    b = "".join("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>" for r in rows)
+    return f'<div class="tbl"><table class="fit"><thead><tr>{h}</tr></thead><tbody>{b}</tbody></table></div>'
+
+
+# The external audit's own table (its Section 1.4c), keyed by (k, p, N, seed, t_relax). These are the reference
+# values being reproduced, i.e. inputs to the comparison, not results of this repository.
+AUDIT_REFERENCE = {(12, 1.0, 1200, 301, 120.0): 1.0513, (12, 1.0, 1200, 301, 480.0): 1.0533,
+                   (12, 1.0, 1200, 302, 120.0): 1.0614, (12, 1.0, 4800, 301, 120.0): 1.1000,
+                   (12, 1.0, 4800, 302, 120.0): 1.0634, (12, 1.0, 19200, 301, 120.0): 1.0838,
+                   (24, 1.0, 1200, 301, 120.0): 1.0447, (48, 1.0, 1200, 301, 120.0): 1.0233,
+                   (12, 2.0, 1200, 301, 120.0): 1.1534, (6, 2.0, 1200, 301, 120.0): 1.1851}
+
+
+def p0_numbers() -> dict | None:
+    """Everything the audit section quotes, computed from result files. Nothing here is typed by hand."""
+    path = ROOT / "data" / "p0_spot_checks.json"
+    if not path.exists():
+        return None
+    d = json.loads(path.read_text())
+    c = pd.DataFrame(d["c"])
+    c["frac"] = (c.ratio - 1.0) / (c.closure - 1.0)
+    th = pd.read_csv(ROOT / "data" / "s14_theory.csv").set_index(["p", "k"])
+    c["R_closure"] = [th.R_star_closure.get((r.p, r.k), float("nan")) for r in c.itertuples()]
+    c["lam_inf"] = [th.lam_b_inf.get((r.p, r.k), float("nan")) for r in c.itertuples()]
+    c["audit"] = [AUDIT_REFERENCE.get((r.k, r.p, r.n, r.seed, r.t_relax), float("nan")) for r in c.itertuples()]
+    c["dev"] = 100 * (c.ratio / c.audit - 1.0).abs()
+    worst = c.loc[c.dev.idxmax()]
+    base = c[(c.k == 12) & (c.p == 1.0) & (c.t_relax == 120.0)]
+    k48 = c[(c.k == 48) & (c.p == 1.0)].iloc[0]
+    s11 = pd.read_csv(ROOT / "data" / "s11_finite_size.csv")
+    e5 = pd.read_csv(ROOT / "empirical" / "data" / "e5_hysteresis.csv")
+    e8 = pd.read_csv(ROOT / "empirical" / "data" / "e8_confusion.csv")
+    e1 = pd.read_csv(ROOT / "empirical" / "data" / "e1_pooled_auc.csv")
+    a3 = pd.read_csv(ROOT / "data" / "a3_auc.csv").iloc[0]
+    s13 = pd.read_csv(ROOT / "data" / "s13_lambda_b_family.csv")
+    v = e1[(e1.indicator == "var_index") & (e1.score == "level") & (e1.null == "peak")].iloc[0]
+    peak = e1[e1.null == "peak"]
+    mc = e8[e8.detector == "mean_corr"]
+    return {
+        "a": d["a"], "b": d["b"], "c": c,
+        "n_close": int((c.dev <= 0.1).sum()), "n_rows": len(c), "worst": worst,
+        "k12_lo": base.ratio.min(), "k12_hi": base.ratio.max(), "k12_mean": base.ratio.mean(),
+        "k12_n": len(base), "k12_closure": base.closure.iloc[0], "k12_eq4": base.eq4.iloc[0],
+        "frac_lo": c.frac.min(), "frac_hi": c.frac.max(),
+        "k48_lam": k48.ratio * k48.lam_inf, "k48_eq4": k48.eq4 * k48.lam_inf,
+        "k48_err": 100 * (k48.ratio / k48.eq4 - 1.0),
+        "s11_ratio_lo": s11[s11.n >= 1000].lam_b.min() / k48.lam_inf,
+        "s11_ratio_hi": s11[s11.n >= 1000].lam_b.max() / k48.lam_inf,
+        "k12_R_lo": base.R_at.min(), "k12_R_hi": base.R_at.max(), "k12_Rc": base.R_closure.iloc[0],
+        "long": c[c.t_relax > 120.0].iloc[0], "short": base[(base.n == 1200) & (base.seed == 301)].iloc[0],
+        "s11_zero_125": int((s11[s11.n == 125].d_lam == 0).sum()), "s11_n_125": int((s11.n == 125).sum()),
+        "s11_seeds": int(s11.seed.nunique()),
+        "s11_step": float(pd.Series(sorted(set(s11.lam_b))).diff().min()),
+        "s13_p1": s13[s13.p == 1.0].ratio.mean(), "s13_seeds": int(s13.seed.nunique()),
+        "e5_neg": int((e5.d_lam < 0).sum()), "e5_rows": len(e5), "e5_seeds": int(e5.seed.nunique()),
+        "e8_tp": ", ".join(str(int(x)) for x in mc.TP), "e8_alarms": int(mc.alarms.iloc[0]),
+        "e8_days": int(mc.TP.iloc[0] + mc.FP.iloc[0] + mc.TN.iloc[0] + mc.FN.iloc[0]),
+        "e8_crashes": int(mc.crashes.iloc[0]), "e8_budget": 100 * float(mc.budget.iloc[0]),
+        "e1_var": (v.auc, v.ci_lo, v.ci_hi), "e1_peak_incl": int((peak.ci_lo <= 0.5).sum()), "e1_peak_n": len(peak),
+        "a3": (a3.auc, a3.ci_lo, a3.ci_hi),
+    }
+
+
+def s14_audit_finding() -> str:
+    n = p0_numbers()
+    if n is None:
+        return "<b class='bad'>Audit pending:</b> run <code>p0_spot_checks.py</code>."
+    return (f"<b class='bad'>Audit status, read this first.</b> The findings below describe the closure, which is an "
+            f"approximation. They are not yet confirmed as statements about the network model. An independent re-run "
+            f"of this script's own bisection (section P0) on random regular graphs at &lang;k&rang; = 12, p = 1 gives "
+            f"a fold ratio between {n['k12_lo']:.3f} and {n['k12_hi']:.3f} over {n['k12_n']} runs, against "
+            f"{n['k12_closure']:.3f} from the closure and {n['k12_eq4']:.3f} from equation (4). Simulation sits "
+            f"<b>below</b> the closure in every run. At &lang;k&rang; = 48, p = 1 the re-run gives "
+            f"&lambda;<sub>b</sub> = {n['k48_lam']:.4f} against {n['k48_eq4']:.4f} from equation (4), a difference of "
+            f"{n['k48_err']:.2f}%, not the 0.05% quoted below. The measured values quoted in the findings below "
+            f"(the 0.05% agreement, the 0.6 to 3.7% range, the clustering table, and the five-seed error bars in the "
+            f"figure caption) come from a run whose output files were never committed, so they cannot be checked and "
+            f"are <b>withdrawn until re-measured</b>. The word 'exactly' applies to the closure only.")
+
+
+def audit_card() -> str:
+    n = p0_numbers()
+    if n is None:
+        return '<section id="p0"><h2>Audit</h2><div class="missing">run p0_spot_checks.py</div></section>'
+    ta = _tbl(["p", "k = 200", "k = 800", "k = 3200", "predicted (p+2)/2"],
+              [[p, *[f"{x:.4f}" for x in v], f"{(float(p) + 2) / 2:.2f}"] for p, v in n["a"].items()])
+    tb = _tbl(["N", "measured fold / exact all-to-all fold"], [[r["n"], f"{r['ratio']:.4f}"] for r in n["b"]])
+    tc = _tbl(["&lang;k&rang;", "p", "N", "seed", "relaxation time", "measured ratio", "audit's value", "closure ratio",
+               "equation (4) ratio", "share of predicted correction", "R just above fold", "R at fold, closure"],
+              [[r.k, f"{r.p:g}", r.n, r.seed, f"{r.t_relax:g}", f"<b>{r.ratio:.4f}</b>", f"{r.audit:.4f}", f"{r.closure:.4f}",
+                f"{r.eq4:.4f}", f"{100 * r.frac:.0f}%", f"{r.R_at:.3f}", f"{r.R_closure:.3f}"]
+               for r in n["c"].itertuples()])
+    ledger = _tbl(["headline claim", "evidence actually in the repository", "status"], [
+        ["Finite-connectivity law, coefficient (p+2)/2 is exact",
+         f"The closure only. Its expansion is confirmed (table A). The simulation half of S14 was never committed, and "
+         f"the re-run (table C) recovers only {100 * n['frac_lo']:.0f}% to {100 * n['frac_hi']:.0f}% of the predicted "
+         f"correction.", "<b class='bad'>Unverified.</b> Exact for the closure, not for the model"],
+        ["Critical connectivity k<sub>c</sub>(p)", "The closure only. No direct measurement of bistability at low "
+         "connectivity exists.", "<b class='bad'>Unverified</b>"],
+        ["Clustering is lost connectivity, k<sub>eff</sub>", "The closure plus a run that was not committed.",
+         "<b class='bad'>Unverified</b>"],
+        ["&lambda;<sub>b</sub> = 3&radic;3 &gamma; at p = 1", "Standard result of Zou and Wang (2020); the harness "
+         "reproduces it (table B).", "Reproduction, correctly credited"],
+        ["Predicted 12.5% against measured 11.6% at &lang;k&rang; = 12",
+         f"One run at N = 2000 read off a coupling grid and never saved. The saved S11 table gives ratios "
+         f"{n['s11_ratio_lo']:.2f} to {n['s11_ratio_hi']:.2f} for N of 1000 and above; S13 gives a mean of {n['s13_p1']:.3f} over "
+         f"{n['s13_seeds']} seeds; table C gives {n['k12_lo']:.3f} to {n['k12_hi']:.3f}.",
+         "<b class='bad'>Not supported</b> by committed data"],
+        ["The jump is real and grows with N",
+         f"{n['s11_seeds']} seeds per size on a grid of step {n['s11_step']:.1f}. The statistic is the largest step "
+         f"between neighbouring grid points of one curve. At N = 125, {n['s11_zero_125']} of {n['s11_n_125']} seeds "
+         f"have zero window width.", "<b class='bad'>Not evidence</b> of a discontinuity. Needs fold and escape-time "
+         "measurements"],
+        ["Tail of g(&omega;) must match tail of P(k)", "S8c, 2 seeds. Overlaps Xu et al. (2015) and arXiv:2206.04207.",
+         "Reproduction plus sharpening, not a headline"],
+        ["Window collapses on real networks, 72% finite size",
+         f"{n['e5_seeds']} seeds on a grid; {n['e5_neg']} of {n['e5_rows']} rows have a negative window width, which is "
+         f"impossible for a true window. Correlation-thresholded graphs are clustered by construction.",
+         "Weak. Robustness appendix at most"],
+        ["No usable early warning; false alarms per catch",
+         f"Direction plausible: against ordinary peaks {n['e1_peak_incl']} of {n['e1_peak_n']} indicator scores have a "
+         f"95% interval that includes 0.5, and index variance alone scores {n['e1_var'][0]:.3f} "
+         f"[{n['e1_var'][1]:.3f}, {n['e1_var'][2]:.3f}]. The E8 counts are unreliable: {n['e8_crashes']} test crashes, "
+         f"a regression fitted on the test period, true positives of {n['e8_tp']} as the alarm threshold is "
+         f"loosened (should never decrease), and {n['e8_alarms']} alarms over {n['e8_days']} days at a nominal "
+         f"{n['e8_budget']:.0f}% budget.", "Direction kept, numbers <b class='bad'>withdrawn</b> until E7 and E8 are fixed"],
+        ["&lambda; cannot be measured", f"The argument is sound, but the script's own table gives AUC "
+         f"{n['a3'][0]:.3f} [{n['a3'][1]:.3f}, {n['a3'][2]:.3f}], above chance, measured against a different "
+         f"baseline than E1.", "Argument kept. Needs the same baseline as E1"],
+    ])
+    return f"""
+<section id="p0" class="summary">
+<div class="sec-head"><span class="tag">P0</span><h2>Audit: which headline claims are actually backed by the files in this repository</h2><span class="verdict v-open">audit in progress</span></div>
+<p>This section was added after an external audit of the repository at commit <code>fc98f02</code>. It does two
+things. First, it re-runs the audit's three spot checks with this repository's own, unmodified functions
+(<code>p0_spot_checks.py</code>, output in <code>data/p0_spot_checks.json</code>). Second, it lists every headline
+claim next to the evidence that is really committed. Every number in this section is read from a result file when
+the page is built. No manuscripts are being written at this stage: nothing below is settled enough for that.</p>
+
+<h3>How to read the three tables</h3>
+<p>The quantity under test is the <b>fold</b> &lambda;<sub>b</sub>: the smallest coupling at which the synchronised
+state can still exist. All tables report it as a <b>ratio</b> to the exact all-to-all value
+&gamma;(p+2)((p+2)/p)<sup>p/2</sup> of Zou and Wang (2020), so a ratio of 1.000 means "no finite-connectivity
+effect" and a ratio of 1.125 means "the fold sits 12.5% higher than all-to-all". The Rician closure of S14 predicts
+the ratio 1 + (p+2)/(2&lang;k&rang;) at leading order.</p>
+
+<h3>Table A. Is the formula the correct expansion of the closure? Yes</h3>
+<p>Each cell is &lang;k&rang; &times; (closure ratio &minus; 1). If equation (4) is the right expansion, the cells
+must approach (p+2)/2 as &lang;k&rang; grows. They do, to four digits. This confirms the algebra. It says nothing
+about whether the closure describes the network.</p>
+{ta}
+
+<h3>Table B. Is the measuring tool itself biased? No</h3>
+<p>The same bisection procedure (start fully synchronised, ask whether the synchronised state survives, halve the
+coupling interval), run on the exact all-to-all model with the same frequencies and the same survival threshold.
+It returns the known answer to within the bisection tolerance of 0.2% at every size. So when the tool disagrees
+with the closure on a sparse graph, the cause is the graph, not the frequency sampling and not the tool.</p>
+{tb}
+
+<h3>Table C. Does the closure match simulation on sparse graphs? Not within these runs</h3>
+<p>Random regular graphs: every node has exactly &lang;k&rang; neighbours, so there is no degree heterogeneity to
+blame. Column by column: <b>measured ratio</b> is the simulated fold from this re-run; <b>audit's value</b> is what the external
+audit reported for the same run; <b>closure ratio</b> and
+<b>equation (4) ratio</b> are the two predictions; <b>share of predicted correction</b> is
+(measured &minus; 1) / (closure &minus; 1), which would be 100% if the closure were right;
+<b>R just above fold</b> is the synchrony of the surviving state at the last coupling where it survived;
+<b>R at fold, closure</b> is what the closure says that synchrony should be.</p>
+{tc}
+<ul class="findings">
+<li><b>{n['n_close']} of {n['n_rows']} values agree with the audit's table to within 0.1%.</b> The largest
+difference is {n['worst'].dev:.2f}% (the run at &lang;k&rang; = {int(n['worst'].k)}, p = {n['worst'].p:g}, relaxation time
+{n['worst'].t_relax:g}: {n['worst'].ratio:.4f} here against {n['worst'].audit:.4f} in the audit). That is larger than
+the bisection tolerance of 0.2% and is most likely the chaotic sensitivity of a long run to the numerical library
+version, but it is far smaller than the gap to the closure, so no conclusion changes.</li>
+<li><b>Simulation is below the closure in every row.</b> The measured correction is {100 * n['frac_lo']:.0f}% to
+{100 * n['frac_hi']:.0f}% of the predicted one.</li>
+<li><b>It is not slow relaxation.</b> Raising the relaxation time from {n['short'].t_relax:g} to {n['long'].t_relax:g} on
+the same graph at &lang;k&rang; = 12 moves the ratio from {n['short'].ratio:.4f} to {n['long'].ratio:.4f}, still far
+from the closure's {n['k12_closure']:.4f}.</li>
+<li><b>The spread between seeds is large and does not obviously shrink with N</b>: at &lang;k&rang; = 12, p = 1 the
+{n['k12_n']} runs span {n['k12_lo']:.3f} to {n['k12_hi']:.3f} with mean {n['k12_mean']:.3f}. These are spot checks,
+not an ensemble, so no confidence interval is quoted. The fold of a sparse deterministic network appears to depend
+on the particular graph and the particular placement of frequencies on it.</li>
+<li><b>New observation from this re-run, not in the audit.</b> At &lang;k&rang; = 12 the surviving state just above
+the measured fold has R between {n['k12_R_lo']:.2f} and {n['k12_R_hi']:.2f}, well below the closure's fold amplitude of
+{n['k12_Rc']:.2f} and close to the survival threshold of 0.55 R*. With the longer relaxation time it is
+{n['long'].R_at:.2f}. So part of what is being measured near the fold
+may be a slowly decaying or only partly synchronised state. The fold estimator's sensitivity to the survival
+threshold and to the relaxation time has to be mapped before any coefficient is quoted.</li>
+<li><b>Most likely physical cause of the gap</b> (a hypothesis, not a result): the closure treats the neighbours of
+node i as independent of node i. On a sparse graph each neighbour is itself pulled by node i, a back-reaction that a
+cavity (message-passing) calculation would include and the closure does not.</li>
+</ul>
+
+<h3>Claim ledger: every headline against its evidence</h3>
+{ledger}
+
+<h3>What has been done, and what happens next</h3>
+<ol>
+<li><b>Done (phase 0).</b> Spot checks reproduced; repository inventory, model specification and this claims audit
+written to <code>docs/</code>. No existing simulation code was changed.</li>
+<li><b>Next (phase 1).</b> Move the simulator into a tested package with a regression test that it reproduces
+<code>model.py</code> exactly, so that no historical number can change silently.</li>
+<li><b>Phase 2.</b> Fix the known defects: three different Lorentzian samplers, hidden run-order dependencies,
+the E7 overnight-gap contamination, the E8 look-ahead and scoring bugs, the E3 missing band-pass step, hand-typed
+numbers on this page.</li>
+<li><b>Phase 3.</b> A systematic prior-art search before any novelty claim.</li>
+<li><b>Phase 4.</b> The decisive measurement: random regular graphs, &lang;k&rang; from 6 to 96, four values of p,
+N up to 30,000, 5 seeds first and then 30, with the fold extrapolated to infinite size and a cavity theory
+compared against it. This needs cluster or GPU time.</li>
+<li><b>On hold by decision of the author.</b> Manuscripts. They wait until phase 4 says what is true.</li>
+</ol>
+</section>"""
+
+
+
+def write_claims_audit() -> Path | None:
+    """docs/CLAIMS_AUDIT.md, generated from the same numbers as section P0 so the two cannot disagree."""
+    n = p0_numbers()
+    if n is None:
+        return None
+    c = n["c"]
+    L = ["# Claims audit", "",
+         "Generated by `research/build_index.py` from `research/data/p0_spot_checks.json` and the committed result",
+         "CSVs. Do not edit by hand. Spot checks were run by `research/p0_spot_checks.py` with the unmodified",
+         "functions of `research/s14_finite_connectivity.py` and `research/model.py` at commit `fc98f02`.", "",
+         "## Spot check A: closure asymptote", "",
+         "`k * (rician_fold / lam_b_inf - 1)`, which must approach `(p+2)/2`.", "",
+         "| p | k = 200 | k = 800 | k = 3200 | (p+2)/2 |", "|---|---|---|---|---|"]
+    L += [f"| {p} | {v[0]:.4f} | {v[1]:.4f} | {v[2]:.4f} | {(float(p) + 2) / 2:.2f} |" for p, v in n["a"].items()]
+    L += ["", "Reproduces the audit. Equation (4) is the correct expansion of the closure.", "",
+          "## Spot check B: bisection harness in the all-to-all limit", "",
+          "| N | lam_b / lam_b_inf |", "|---|---|"]
+    L += [f"| {r['n']} | {r['ratio']:.4f} |" for r in n["b"]]
+    L += ["", "Reproduces the audit. The harness is unbiased when there is no network.", "",
+          "## Spot check C: random regular graphs", "",
+          "One run per row (no ensemble, so no confidence interval). `share` is `(measured - 1)/(closure - 1)`.", "",
+          "| k | p | N | seed | t_relax | measured | audit | closure | eq. (4) | share | R above fold | R fold, closure |",
+          "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    L += [f"| {r.k} | {r.p:g} | {r.n} | {r.seed} | {r.t_relax:g} | {r.ratio:.4f} | {r.audit:.4f} | {r.closure:.4f} | {r.eq4:.4f} | "
+          f"{100 * r.frac:.0f}% | {r.R_at:.3f} | {r.R_closure:.3f} |" for r in c.itertuples()]
+    L += ["", f"{n['n_close']} of {n['n_rows']} rows agree with the audit's table within 0.1%. The largest difference is "
+          f"{n['worst'].dev:.2f}% (k = {int(n['worst'].k)}, p = {n['worst'].p:g}, t_relax = {n['worst'].t_relax:g}), above the "
+          "bisection tolerance (`rel_tol = 2e-3`) but far below the gap to the closure.",
+          f"Simulation is below the closure in every row; the measured correction is {100 * n['frac_lo']:.0f}% to "
+          f"{100 * n['frac_hi']:.0f}% of the closure's.",
+          f"At k = 12, p = 1 the {n['k12_n']} runs at t_relax = 120 span {n['k12_lo']:.4f} to {n['k12_hi']:.4f} "
+          f"(mean {n['k12_mean']:.4f}).", "",
+          "Observation not in the audit: at k = 12 the surviving state just above the measured fold has R between "
+          f"{n['k12_R_lo']:.2f} and {n['k12_R_hi']:.2f} against the closure's {n['k12_Rc']:.2f}, close to the survival "
+          f"threshold `0.55 R*`; at t_relax = {n['long'].t_relax:g} it is {n['long'].R_at:.2f}. The estimator's "
+          "sensitivity to threshold and relaxation time must be mapped before a coefficient is quoted.", "",
+          "## Claim ledger", "", "| claim | evidence in repository | status |", "|---|---|---|",
+          f"| Finite-connectivity law, coefficient `(p+2)/2` exact | closure only; S14 simulation outputs not committed; "
+          f"spot check C | Unverified. Exact for the closure, not the model |",
+          "| Critical connectivity `k_c(p)` | closure only | Unverified |",
+          "| Clustering as `k_eff` | closure plus an uncommitted run | Unverified |",
+          "| `lam_b = 3 sqrt(3) gamma` at p = 1 | Zou and Wang (2020); spot check B | Reproduction, credited |",
+          f"| 12.5% predicted vs 11.6% measured at k = 12 | one unsaved grid-read run; saved S11 ratios "
+          f"{n['s11_ratio_lo']:.2f} to {n['s11_ratio_hi']:.2f} (N >= 1000); S13 mean {n['s13_p1']:.3f} "
+          f"({n['s13_seeds']} seeds) | Not supported |",
+          f"| The jump is real and grows with N | `s11_finite_size.csv`: {n['s11_seeds']} seeds, grid step "
+          f"{n['s11_step']:.1f}, statistic `max(diff(fwd))`; {n['s11_zero_125']} of {n['s11_n_125']} seeds at N = 125 "
+          f"have `d_lam = 0` | Not evidence of a discontinuity |",
+          "| Tail of g(omega) must match tail of P(k) | `s8c_correlation.csv`, 2 seeds; overlaps Xu et al. (2015) | "
+          "Reproduction plus sharpening |",
+          f"| Window collapses on real networks | `e5_hysteresis.csv`: {n['e5_seeds']} seeds, grid, {n['e5_neg']} of "
+          f"{n['e5_rows']} rows with negative `d_lam` | Weak |",
+          f"| No usable early warning; false alarms per catch | E1 vs peak null: {n['e1_peak_incl']} of {n['e1_peak_n']} "
+          f"CIs include 0.5; `var_index` level {n['e1_var'][0]:.3f} [{n['e1_var'][1]:.3f}, {n['e1_var'][2]:.3f}]. E8: "
+          f"{n['e8_crashes']} test crashes, TP {n['e8_tp']} as threshold loosens, {n['e8_alarms']} alarms on "
+          f"{n['e8_days']} days at a nominal {n['e8_budget']:.0f}% budget | Direction kept, E8 numbers withdrawn |",
+          f"| lambda unidentifiable | argument sound; `a3_auc.csv` AUC {n['a3'][0]:.3f} [{n['a3'][1]:.3f}, "
+          f"{n['a3'][2]:.3f}] against a different null than E1 | Needs E1's nulls |", "",
+          "## Statements on research/index.html that have no committed data behind them", "",
+          f"1. S14 finding \"0.05% at k = 48\": re-run gives lam_b = {n['k48_lam']:.4f} against eq. (4) "
+          f"{n['k48_eq4']:.4f}, a difference of {n['k48_err']:.2f}%.",
+          "2. S14 finding \"0.6 to 3.7% at k = 12\" and the measured-against-predicted and clustering tables: source "
+          "files `s14_measured*.csv`, `s14_clustering*.csv` are not tracked.",
+          "3. S14 figure caption says error bars are over 5 seeds; the script defines 3 (`SEEDS = (301, 302, 303)`), "
+          "and the figure file is not tracked.", ""]
+    out = REPO / "docs" / "CLAIMS_AUDIT.md"
+    out.parent.mkdir(exist_ok=True)
+    out.write_text("\n".join(L))
+    return out
+
+
+
+# ------------------------------------------------------------------------------------------------ P1 / B1 (results/)
+def _ci(m, lo, hi, d=4):
+    return f"{m:.{d}f} [{lo:.{d}f}, {hi:.{d}f}]" if pd.notna(lo) else f"{m:.{d}f}"
+
+
+def validation_blocks() -> str:
+    """A0 (all-to-all validation) and the paired convergence checks, if those runs exist."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    out = ""
+    a0 = report.fold_cells("paperA_A0")
+    if a0 is not None and len(a0):
+        out += ("<h3>Table P1.5. Does the estimator return the exact answer when there is no network?</h3>"
+                "<p>The same bisection on the all-to-all model, where the fold is known exactly. A ratio of 1 means no "
+                "bias. This is the control for every number above. Run: <code>" + report.run_name("paperA_A0") + "</code>.</p>"
+                + _tbl(["p", "N", "seeds", "fold ratio [95% CI]", "standard deviation across seeds"],
+                       [[f"{r.p:g}", r.N, r.n_seeds, _ci(r.ratio, r.ci_lo, r.ci_hi), "n/a" if pd.isna(r.sd) else f"{r.sd:.4f}"]
+                        for r in a0.sort_values(["p", "N"]).itertuples()]))
+    got = report._rows("paperA_convergence")
+    if got is not None:
+        df, _ = got
+        piv = df.pivot_table(index="index", columns="variant", values="ratio")
+        if "baseline" in piv:
+            rows = []
+            for v in piv.columns:
+                d = 100 * (piv[v] - piv["baseline"]) / piv["baseline"]
+                d = d.dropna()
+                se = d.std(ddof=1) / len(d) ** 0.5 if len(d) > 1 else float("nan")
+                rows.append([v, len(piv[v].dropna()), f"{piv[v].mean():.4f}",
+                             "reference" if v == "baseline" else f"{d.mean():+.2f}% &plusmn; {se:.2f}%",
+                             "" if v == "baseline" else ("within tolerance" if abs(d.mean()) <= 0.2 else "<b class='bad'>systematic</b>")])
+            c = df.iloc[0]
+            out += ("<h3>Table P1.6. How much does the fold depend on the estimator's settings?</h3>"
+                    f"<p>Random regular graphs, k = {int(c.k)}, p = {c.p:g}, N = {int(c.n)}. Every variant is run on the "
+                    "<b>same</b> graphs and frequencies as the baseline, so the differences are paired and much more "
+                    "precise than the fold itself. The bisection tolerance is 0.2%; a shift larger than that is a "
+                    "systematic error of the method and is flagged. Variants: integration step halved; relaxation time "
+                    "halved and doubled; the survival threshold moved from 0.55 to 0.40 and 0.70 of the all-to-all fold "
+                    "amplitude; the frequency clip raised from 60 to 600; frequencies drawn at random instead of taken "
+                    "as quantiles. Run: <code>" + report.run_name("paperA_convergence") + "</code>.</p>"
+                    + _tbl(["variant", "seeds", "mean fold ratio", "paired shift from baseline &plusmn; SE", "verdict"], rows))
+    return out
+
+
+
+def physics_card() -> str:
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    th = report.theory_table()
+    cells = [c for c in (report.fold_cells("paperA_A1_pilot"), report.fold_cells("paperA_A7")) if c is not None]
+    if th.empty or not cells:
+        return '<section id="p1"><h2>P1 New measurements</h2><div class="missing">results not available yet</div></section>'
+    df = pd.concat(cells, ignore_index=True)
+    tt = _tbl(["p", "Rician closure, (p+2)/2", "theory, directed graph", "reaction term", "theory, undirected graph",
+               "frozen share of neighbour variance", "rotating share"],
+              [[f"{r.p:g}", f"{r.rician:.3f}", f"<b>{r.directed:.3f}</b>", f"{r.reaction:.3f}", f"<b>{r.undirected:.3f}</b>",
+                f"{100 * r.var_frozen / r.var_instantaneous:.0f}%", f"{100 * r.var_rotating / r.var_instantaneous:.0f}%"]
+               for r in th.itertuples()])
+
+    def cell_rows(d):
+        out = []
+        for r in d.sort_values(["graph", "p", "k", "N"]).itertuples():
+            se = (r.coef_hi - r.coef_lo) / 3.92 if pd.notna(r.coef_lo) and r.coef_hi > r.coef_lo else float("nan")
+            z_t = (r.coef - r.theory_coef) / se if pd.notna(se) and r.theory_coef is not None and pd.notna(r.theory_coef) else float("nan")
+            z_r = (r.coef - r.rician_coef) / se if pd.notna(se) else float("nan")
+            out.append(["undirected" if r.graph == "rr" else "directed", f"{r.p:g}", r.k, r.N, r.n_seeds,
+                        _ci(r.ratio, r.ci_lo, r.ci_hi), f"{r.closure_ratio:.4f}", _ci(r.coef, r.coef_lo, r.coef_hi, 2),
+                        "n/a" if pd.isna(r.theory_coef) else f"{r.theory_coef:.2f}", f"{r.rician_coef:.2f}",
+                        "n/a" if pd.isna(z_t) else f"{z_t:+.1f}", "n/a" if pd.isna(z_r) else f"{z_r:+.1f}"])
+        return out
+    head = ["graph", "p", "k", "N", "seeds", "fold ratio [95% CI]", "closure ratio", "coefficient k(ratio&minus;1) [95% CI]",
+            "theory coefficient", "Rician coefficient", "distance from theory (standard errors)",
+            "distance from Rician (standard errors)"]
+    big = df[df.N == df.groupby(["graph", "p", "k"]).N.transform("max")]
+    t_big = _tbl(head, cell_rows(big))
+    t_all = _tbl(head, cell_rows(df))
+    ex = report.extrapolate("paperA_A1_pilot")
+    t_ex = ""
+    if ex is not None and len(ex):
+        t_ex = "<h3>Table P1.4. Extrapolation to infinite size</h3><p>For each (p, k) the fold ratio of every seed at every size is fitted by a straight line in N<sup>&minus;1/2</sup>; the intercept is the infinite-size estimate. <b>The exponent 1/2 is an assumption</b>: three sizes cannot determine it. The slope column shows how strongly the fold still depends on size; a slope many standard errors from zero means the largest-size value in table P1.2 is not yet converged.</p>" + _tbl(
+            ["p", "k", "points", "ratio at N &rarr; &infin; &plusmn; SE", "slope &plusmn; SE", "coefficient at N &rarr; &infin; &plusmn; SE", "closure ratio"],
+            [[f"{r.p:g}", r.k, r.n_points, f"{r.ratio_inf:.4f} &plusmn; {r.se:.4f}", f"{r.slope:+.2f} &plusmn; {r.slope_se:.2f}",
+              f"{r.coef_inf:.2f} &plusmn; {r.coef_se:.2f}", f"{r.closure_ratio:.4f}"] for r in ex.itertuples()])
+    # size and relaxation dependence, against the Phase 0 spot check
+    n0 = p0_numbers()
+    size_note = ""
+    if n0 is not None:
+        c0 = n0["c"]
+        old = c0[(c0.k == 48) & (c0.p == 1.0)].iloc[0]
+        new_ = df[(df.graph == "rr") & (df.p == 1.0) & (df.k == 48)].sort_values("N")
+        if len(new_):
+            b = new_.iloc[-1]
+            size_note = (f"<li><b>The Phase 0 gap was mostly a size and relaxation-time effect.</b> At k = 48, p = 1 the "
+                         f"Phase 0 spot check (N = {int(old.n)}, relaxation time {old.t_relax:g}, one seed) gave a ratio of "
+                         f"{old.ratio:.4f}. The pilot (N = {int(b.N)}, relaxation time 480, {int(b.n_seeds)} seeds) gives "
+                         f"{_ci(b.ratio, b.ci_lo, b.ci_hi)}, against {b.closure_ratio:.4f} from the closure. The statement in "
+                         f"section P0 that simulation sits below the closure in every run is true of those short, small "
+                         f"runs and must not be read as a statement about the infinite-size fold.</li>")
+    sd = df[df.graph == "rr"].groupby("N").sd.mean()
+    sd_note = "; ".join(f"N = {int(n)}: {v:.4f}" for n, v in sd.items() if pd.notna(v))
+    def tally(g, col):
+        d = big[(big.graph == g) & big[col].notna() & big.coef_lo.notna()]
+        return int(((d.coef_lo <= d[col]) & (d[col] <= d.coef_hi)).sum()), len(d)
+    ut, un = tally("rr", "theory_coef"); ur, _ = tally("rr", "rician_coef")
+    dt_, dn = tally("dir", "theory_coef"); dr, _ = tally("dir", "rician_coef")
+    fig_html = render_fig(fig("figures/p1_fold_coefficient.png",
+        "One panel per exponent p. Horizontal axis: number of neighbours k (log scale). Vertical axis: the coefficient k &times; (fold ratio &minus; 1), which is flat in k if the correction really goes as 1/k. Blue circles: undirected random regular graphs. Orange squares: directed graphs with k in-neighbours. Bars: 95% confidence interval over seeds at the largest size run. Dotted grey line: the Rician closure's (p+2)/2. Dashed blue and orange lines: the leading-order theory for undirected and directed graphs.",
+        "The directed points are the discriminating test: the Rician closure predicts the same value for both graph types, the new theory predicts a much smaller value on directed graphs. Points drifting with k signal second-order terms, which the leading-order lines do not include."))
+    return f"""
+<section id="p1" class="summary">
+<div class="sec-head"><span class="tag">P1</span><h2>New measurements and a leading-order theory of the fold at finite connectivity</h2><span class="verdict v-open">pilot, not final</span></div>
+<p>This section reports what was measured after the audit, with a new compiled simulator that reproduces the
+old one to machine precision (56 regression and analytic tests). All numbers are read from
+<code>results/</code> at build time. Runs: <code>{report.run_name('paperA_A1_pilot')}</code>,
+<code>{report.run_name('paperA_A7')}</code>, <code>{report.run_name('paperA_theory')}</code>. Derivation of the
+theory: <code>docs/THEORY.md</code>.</p>
+
+<h3>The idea in plain words</h3>
+<p>Each oscillator feels the average of its k neighbours. That average is the global synchrony R plus a
+scatter of size 1/&radic;k. The Rician closure of S14 treats that scatter as <b>frozen</b> and as
+<b>independent of the oscillator itself</b>. Neither is right:</p>
+<ul class="findings">
+<li><b>Part of the scatter rotates.</b> Neighbours that are not locked keep rotating, so their contribution is an
+oscillating push, and an oscillator cannot follow a push that changes faster than its own relaxation rate. Only
+the frozen share, plus the slow part of the rotating share, acts. This lowers the correction.</li>
+<li><b>The oscillator influences its own neighbours.</b> On an undirected graph each neighbour is pulled slightly
+toward the oscillator, and the k slightly-pulled neighbours add up to an echo of the oscillator's own phase.
+The echo weakens the pull toward consensus. This raises the correction. It is absent on a <b>directed</b> graph,
+where neighbours do not listen back.</li>
+</ul>
+<p>So the theory makes two predictions for the coefficient a(p) in
+fold = all-to-all fold &times; (1 + a(p)/k): one for directed graphs (first effect only) and one for undirected
+graphs (both effects). The Rician closure predicts the same value, (p+2)/2, for both.</p>
+
+<h3>Table P1.1. Predicted coefficients</h3>
+<p><b>Rician closure</b>: all scatter frozen, no echo. <b>Directed</b>: rotating scatter filtered, no echo.
+<b>Reaction term</b>: the echo. <b>Undirected</b>: directed plus reaction. The last two columns split the
+variance of a neighbour's contribution at the all-to-all fold into the part that is frozen and the part that
+rotates.</p>
+{tt}
+
+<h3>Table P1.2. Measured coefficient at the largest size run</h3>
+<p>Column by column: <b>fold ratio</b> is the simulated fold divided by the exact all-to-all fold, mean over
+seeds with a 95% confidence interval; <b>closure ratio</b> is the full Rician closure at that k;
+<b>coefficient</b> is k &times; (ratio &minus; 1); the two <b>distance</b> columns say how many standard errors the
+measured coefficient lies from each prediction (within about &plusmn;2 is compatible). The fold is found by
+bisection from a fully synchronised start with relaxation time 480, tolerance 0.2%.</p>
+{t_big}
+{fig_html}
+<ul class="findings">
+<li><b>Undirected graphs:</b> the 95% interval contains the new theory's value in {ut} of {un} cells and the
+Rician value in {ur} of {un}. <b>Directed graphs:</b> the new theory in {dt_} of {dn} cells, the Rician value in
+{dr} of {dn}. Read the table, not this count, for the size of each discrepancy: both predictions are
+leading-order in 1/k and are expected to fail at small k.</li>
+{size_note}
+<li><b>The fold varies from sample to sample.</b> Mean standard deviation of the fold ratio across seeds on
+undirected graphs: {sd_note}. Any single-seed fold is uncertain by about this much.</li>
+<li><b>What is not established.</b> Whether the coefficients converge to the predicted values needs larger k and
+N than this pilot. Nothing here tests the closure's critical connectivity or the clustering claim. The theory
+neglects loops, degree heterogeneity and second-order terms.</li>
+</ul>
+
+<h3>Table P1.3. Every size</h3>
+{t_all}
+{t_ex}
+{validation_blocks()}
+</section>"""
+
+
+def daily_block() -> str:
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc.runner import latest_run
+    d = latest_run("paperB_daily")
+    if d is None:
+        return ""
+    sm = json.loads((d / "summary.json").read_text())
+    df = pd.DataFrame(sm["rows"])
+    old = pd.read_csv(ROOT / "empirical" / "data" / "e1_pooled_auc.csv").replace({"absorption": "lead_eig_share"})
+    m = df.merge(old, on=["indicator", "score", "null"], suffixes=("", "_old"))
+    nice = {"var_index": "index variance", "ac1_index": "index lag-1 autocorrelation", "mean_corr": "mean pairwise correlation",
+            "lead_eig_share": "leading eigenvalue share", "absorption_ratio": "absorption ratio (Kritzman)",
+            "cssd": "cross-sectional dispersion", "flicker": "breadth flicker"}
+    pk = df[df.null == "peak"]
+    t = _tbl(["indicator", "score", "AUC [95% CI]", "one-sided p", "p after correction", "events / nulls"],
+             [[nice[r.indicator], "level at the peak" if r.score == "level" else "trend over the prior year",
+               _ci(r.auc, r.ci_lo, r.ci_hi, 3), f"{r.p_one_sided:.3f}", f"{r.p_bh:.3f}", f"{r.n_events} / {r.n_null}"]
+              for r in pk.itertuples()])
+    best = df.sort_values("p_bh").iloc[0]
+    return f"""
+<h3>Table B1.4. Daily data, 23 markets, corrected</h3>
+<p>The same question on daily closes: {sm['n_events']} crash onsets in {sm['n_markets']} markets across
+{sm['n_quarters']} calendar quarters. Corrections relative to E1: correlations from pairwise-complete data (no
+zero-filling), the old "absorption" renamed and the real Kritzman absorption ratio added, the bootstrap resamples
+calendar quarters on both the event side and the comparison side, and p-values are corrected across all
+{sm['n_tests']} tests. The table shows the fairest comparison: against local highs that were <i>not</i> followed
+by a crash. Run: <code>results/paperB_daily/{d.name}</code>, script
+<code>research/empirical/e1c_ews_corrected.py</code>.</p>
+{t}
+<ul class="findings">
+<li><b>{sm['n_bh_reject']} of {sm['n_tests']} tests survive the multiplicity correction.</b> The smallest corrected
+p-value over all indicators, scores and comparisons is {best.p_bh:.3f} ({nice[best.indicator]}, {best.score},
+against {best.null}).</li>
+<li><b>The zero-filling defect did not matter in practice.</b> The largest change in any AUC shared with the
+original E1 table is {(m.auc - m.auc_old).abs().max():.4f}. The audit was right that the estimator was biased in
+principle; these markets have too little missing data inside a 60-day window for it to show.</li>
+<li>The Kritzman absorption ratio, which the original analysis did not actually compute, does no better than the
+other co-movement measures.</li>
+</ul>"""
+
+
+
+def empirical_card() -> str:
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    s = report.intraday_summary()
+    if s is None:
+        return '<section id="b1"><h2>B1 Corrected empirical study</h2><div class="missing">results not available yet</div></section>'
+    a = s["primary"]
+    nice = {"volatility": "volatility", "mean_corr": "mean pairwise correlation", "lead_eig_share": "leading eigenvalue share",
+            "corr_given_vol": "correlation with volatility removed"}
+    t1 = _tbl(["indicator", "comparison", "AUC [95% CI]", "one-sided p", "p after multiplicity correction", "events / nulls"],
+              [[nice[r["indicator"]], "all ordinary peaks" if r["null"] == "unmatched" else "volatility-matched peaks",
+                _ci(r["auc"], r["ci_lo"], r["ci_hi"], 3), f"{r['p_one_sided']:.3f}", f"{r['p_bh']:.3f}",
+                f"{r['n_pos']} / {r['n_neg']}"] for r in a["t1"]])
+    t2 = _tbl(["indicator", "nominal alarm budget", "realised alarm rate", "crashes caught", "recall, exact 95% CI",
+               "false-alarm episodes", "false alarms per crash caught"],
+              [[nice[r["indicator"]], f"{100 * r['budget']:g}%", f"{100 * r['realised_rate']:.2f}%",
+                f"{r['caught']} of {r['n_crash']}", f"[{r['recall_cp'][0]:.2f}, {r['recall_cp'][1]:.2f}]", r["false_episodes"],
+                "none caught" if r["false_per_catch"] is None else f"{r['false_per_catch']:.0f}"] for r in a["t2"]])
+    h1 = next(r for r in a["t1"] if r["indicator"] == "corr_given_vol" and r["null"] == "vol_matched")
+    months = pd.Series([d[:7] for d in a["test_dates"]]).value_counts()
+    rb = _tbl(["variant", "crash onsets (train / test)", "matched pairs", "correlation with volatility removed, matched AUC [95% CI]", "p after correction",
+               "mean correlation, matched AUC [95% CI]", "smallest detectable matched AUC"],
+              [[x["tag"], f"{x['n_onsets']} ({x['n_train']} / {x['n_test']})", x["n_matched_pairs"]] + sum(
+                  [[_ci(r["auc"], r["ci_lo"], r["ci_hi"], 3), f"{r['p_bh']:.3f}"][:(2 if nm == "corr_given_vol" else 1)]
+                   for nm in ("corr_given_vol", "mean_corr")
+                   for r in x["t1"] if r["indicator"] == nm and r["null"] == "vol_matched"], [])
+               + ["n/a" if x["mde_auc_matched"] is None else f"{x['mde_auc_matched']:.3f}"]
+               for x in [a] + s["robustness"]])
+    v1 = next(r for r in a["t2"] if r["indicator"] == "volatility" and r["budget"] == 0.01)
+    m1 = next(r for r in a["t2"] if r["indicator"] == "mean_corr" and r["budget"] == 0.01)
+    return f"""
+<section id="b1" class="summary">
+<div class="sec-head"><span class="tag">B1</span><h2>Corrected test of synchronization-based crash warnings on minute data, design fixed in advance</h2><span class="verdict v-data">real data</span></div>
+<p>This replaces E7 and E8. The design was written (<code>docs/PREREGISTRATION_B.md</code>) before this analysis was run, but it is
+not under version control, so that ordering rests on the author's word and on file times. It is also not a
+blind pre-registration: the earlier, flawed versions had been seen. Run: <code>results/paperB_intraday/{s['_run']}</code>.
+Data: {s['n_tickers']} US large-cap stocks, {s['n_bars']:,} one-minute bars, {s['n_sessions']:,} trading sessions,
+{s['span'][0]} to {s['span'][1]}. Thresholds and the volatility regression are fitted on data before 2016 and
+applied unchanged afterwards.</p>
+<h3>What was wrong before, and what changed</h3>
+<ul class="findings">
+<li><b>Overnight gaps.</b> Returns and 30-minute windows used to run across the overnight gap, so the open looked
+like a burst of co-movement. Now the first return of every session is dropped, the index restarts at each open,
+and no window crosses an open. Of the {s['old_e7_onsets']} onsets the old E7 detected, {s['old_e7_onsets_before_10am']}
+were before 10:00.</li>
+<li><b>Look-ahead.</b> The regression that removes volatility from co-movement used to be fitted on the whole
+sample, test period included. It is now fitted on the training period only.</li>
+<li><b>Alarm scoring.</b> The old rule kept only the first alarm of each 390-minute stretch, so an alarm that had
+been on for more than an hour before a crash could never count. Now the alarm is a state per minute; a crash is
+caught if the state is on at any time in the 60 minutes before it; a false alarm is an episode with no crash
+within 60 minutes after it.</li>
+</ul>
+<h3>Table B1.1. Can the indicator tell a crash onset from an ordinary peak?</h3>
+<p>A crash onset is a local high followed by a fall of at least {100 * a['drop']:.0f}% within 60 minutes of the same
+session, at least {a['exclude']} minutes after the open: {a['n_onsets']} in total ({a['n_train']} before 2016,
+{a['n_test']} after). AUC is the probability that a random crash scores higher than a random ordinary peak
+(0.5 means no skill). "Volatility-matched" pairs each crash with an ordinary peak of nearly the same
+volatility ({a['n_matched_pairs']} pairs), so that an indicator cannot score merely by tracking volatility. Before
+a crash, volatility is {a['vol_ratio_crash_over_peak']:.1f} times its level before an ordinary peak.</p>
+{t1}
+<h3>Table B1.2. Out of sample: alarms actually raised after 2016</h3>
+<p><b>Nominal budget</b> is the share of training minutes above the threshold; <b>realised rate</b> is the share
+of test minutes the alarm was actually on, which differs because the test period is not the training period.</p>
+{t2}
+<ul class="findings">
+<li><b>Primary hypothesis (synchrony beyond volatility): not detected.</b> Correlation with volatility removed,
+against volatility-matched peaks: AUC {_ci(h1['auc'], h1['ci_lo'], h1['ci_hi'], 3)}, corrected p = {h1['p_bh']:.3f}.
+With {a['n_matched_pairs']} pairs the smallest AUC this test could reliably detect is {a['mde_auc_matched']:.2f}, so
+this is "not detected at this power", not "absent".</li>
+<li><b>Secondary hypothesis (co-movement beats volatility as an alarm): rejected.</b> At the 1% budget volatility
+catches {v1['caught']} of {v1['n_crash']} test crashes with {v1['false_per_catch']:.0f} false alarms per catch;
+mean correlation catches {m1['caught']} of {m1['n_crash']} with {m1['false_per_catch']:.0f}.</li>
+<li><b>The test crashes are not independent.</b> By month: {", ".join(f"{k}: {v}" for k, v in months.items())}.
+Most of them belong to one episode, so the effective sample is smaller than the count suggests.</li>
+<li><b>Not claimed:</b> any causal role of synchronization, or that these alarm rates would hold on other
+stocks. The cross-section is today's surviving large caps.</li>
+</ul>
+<h3>Table B1.3. Robustness (reported whatever the outcome)</h3>
+<p>Variants: lead time of 30 or 120 minutes instead of 60; no exclusion of the first 30 minutes; a fall of 2% or
+4% instead of 3%. The 2% variant has about three times as many events and therefore more power.</p>
+{rb}
+{daily_block()}
+</section>"""
+
+
+
+def write_readme_and_evidence() -> None:
+    """README block between the GENERATED markers and docs/CLAIM_EVIDENCE.md, both from results/."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    L: list[str] = []
+    th = report.theory_table()
+    if not th.empty:
+        L += ["### Predicted 1/k coefficient of the fold", "",
+              "`fold = all-to-all fold x (1 + a/k)`. Rician closure: all neighbour scatter frozen, no back-reaction. "
+              "Directed: rotating scatter filtered, no back-reaction. Undirected: directed plus the reaction term. "
+              "Derivation in `docs/THEORY.md`.", "",
+              report.md_table(th[["p", "rician", "directed", "reaction", "undirected"]].rename(columns={
+                  "rician": "Rician closure", "directed": "theory, directed", "reaction": "reaction term",
+                  "undirected": "theory, undirected"}), {"p": "g", "Rician closure": ".3f", "theory, directed": ".3f",
+                                                           "reaction term": ".3f", "theory, undirected": ".3f"}), ""]
+    cells = [c for c in (report.fold_cells("paperA_A1_pilot"), report.fold_cells("paperA_A7")) if c is not None]
+    if cells:
+        df = pd.concat(cells, ignore_index=True)
+        big = df[df.N == df.groupby(["graph", "p", "k"]).N.transform("max")].sort_values(["graph", "p", "k"])
+        t = pd.DataFrame({"graph": big.graph.map({"rr": "undirected", "dir": "directed"}), "p": big.p, "k": big.k,
+                          "N": big.N, "seeds": big.n_seeds,
+                          "fold ratio [95% CI]": [_ci(a, b, c) for a, b, c in zip(big.ratio, big.ci_lo, big.ci_hi)],
+                          "closure ratio": big.closure_ratio,
+                          "coefficient [95% CI]": [_ci(a, b, c, 2) for a, b, c in zip(big.coef, big.coef_lo, big.coef_hi)],
+                          "theory": big.theory_coef.astype(float), "Rician": big.rician_coef})
+        L += ["### Measured fold at the largest size run (pilot)", "",
+              "Bisection from a synchronised start, relaxation time 480, tolerance 0.2%, Lorentzian quantile "
+              "frequencies. Coefficient is `k (ratio - 1)`. Both predictions are leading-order and are expected to "
+              "fail at small k.", "",
+              report.md_table(t, {"p": "g", "closure ratio": ".4f", "theory": ".2f", "Rician": ".2f"}), ""]
+    b = report.intraday_summary()
+    if b:
+        a = b["primary"]
+        rows = [r for r in a["t2"] if r["budget"] in (0.01, 0.05)]
+        t = pd.DataFrame({"indicator": [r["indicator"] for r in rows], "budget": [f"{100 * r['budget']:g}%" for r in rows],
+                          "realised rate": [f"{100 * r['realised_rate']:.2f}%" for r in rows],
+                          "caught": [f"{r['caught']} of {r['n_crash']}" for r in rows],
+                          "false episodes": [r["false_episodes"] for r in rows],
+                          "false per catch": ["none caught" if r["false_per_catch"] is None else f"{r['false_per_catch']:.0f}" for r in rows]})
+        h1 = next(r for r in a["t1"] if r["indicator"] == "corr_given_vol" and r["null"] == "vol_matched")
+        L += ["### Crash warnings on minute data (corrected; design written before the run, not timestamped)", "",
+              f"{b['n_tickers']} stocks, {b['n_sessions']} sessions, {a['n_onsets']} intraday crash onsets "
+              f"({a['n_test']} in the test period after 2016). Primary hypothesis, synchrony beyond volatility "
+              f"(`corr_given_vol` against volatility-matched peaks): AUC {_ci(h1['auc'], h1['ci_lo'], h1['ci_hi'], 3)}, "
+              f"corrected p = {h1['p_bh']:.3f}; smallest detectable AUC at this sample size "
+              f"{a['mde_auc_matched']:.2f}. Not detected, and underpowered.", "", report.md_table(t), ""]
+    readme = REPO / "README.md"
+    txt = readme.read_text()
+    a_, b_ = "<!-- BEGIN GENERATED -->", "<!-- END GENERATED -->"
+    if a_ in txt and b_ in txt:
+        readme.write_text(txt[:txt.index(a_) + len(a_)] + "\n" + "\n".join(L) + txt[txt.index(b_):])
+    ev = ["# Claim to evidence map", "", "Generated by `research/build_index.py`. One row per claim made on "
+          "`research/index.html` sections P0, P1 and B1 or in `README.md`. The run directory name ends in the git "
+          "hash the code was at.", "", "| claim | where shown | code | config | run |", "|---|---|---|---|---|",
+          f"| Equation (4) is the correct expansion of the Rician closure | index P0 table A | `research/p0_spot_checks.py` | in script | `research/data/p0_spot_checks.json` |",
+          f"| The bisection harness is unbiased in the all-to-all limit | index P0 table B; `tests/test_analytic.py` | `research/p0_spot_checks.py`, `esfc.continuation` | in script | `research/data/p0_spot_checks.json` |",
+          f"| Short, small runs sit below the closure | index P0 table C | `research/p0_spot_checks.py` | in script | `research/data/p0_spot_checks.json` |",
+          f"| Predicted coefficients for directed and undirected graphs | index P1.1; README | `esfc.cavity` | `configs/paperA_theory.yaml` | `{report.run_name('paperA_theory')}` |",
+          f"| Freezing all scatter recovers (p+2)/2 exactly | `tests/test_cavity.py` | `esfc.cavity` | n/a | test suite |",
+          f"| Measured fold against k on undirected graphs | index P1.2 to P1.4; README; figure p1_fold_coefficient | `esfc.experiments.fold_grid` | `configs/paperA_A1_pilot.yaml` | `{report.run_name('paperA_A1_pilot')}` |",
+          f"| Measured fold on directed graphs | index P1.2; figure p1_fold_coefficient | `esfc.experiments.fold_grid` | `configs/paperA_A7_directed.yaml` | `{report.run_name('paperA_A7')}` |",
+          f"| Compiled kernel equals `research/model.py` | `tests/test_regression_model.py`, `tests/test_invariants.py` | `esfc.fast`, `esfc.integrate` | n/a | test suite |",
+          f"| Corrected intraday crash-warning results | index B1; README | `esfc.experiments_b.intraday_study` | `configs/paperB_intraday.yaml` | `{report.run_name('paperB_intraday')}` |",
+          f"| Design fixed before the corrected run | `docs/PREREGISTRATION_B.md` | n/a | n/a | not version controlled; no independent timestamp |", ""]
+    (REPO / "docs" / "CLAIM_EVIDENCE.md").write_text("\n".join(ev))
+
+
+
 def summary_card() -> str:
     return """
 <section class="summary">
 <h2>Bottom line</h2>
+<p class="note"><b class="bad">Under audit.</b> This summary was written before the audit in section
+<a href="#p0">P0</a>. Items 1, 3 (the "12%" sentence) and 4 in the left column, and the false-alarm counts in the
+right column, are <b>not currently supported</b> by committed data. They are left in place so the record stays
+readable, and each is marked. Read section P0 for the measured values.</p>
 <div class="grid2">
 <div><h3>What holds up</h3><ol>
-<li><b>The finite-connectivity law for the fold (S14, new).</b> Treating the local order parameter as
+<li><b class="bad">[Unverified, see P0]</b> <b>The finite-connectivity law for the fold (S14).</b> Treating the local order parameter as
 a <b>Rician</b> variable rather than replacing it by R gives
 <b>&lambda;<sub>b</sub>(p, &lang;k&rang;) = &gamma;(p+2)((p+2)/p)<sup>p/2</sup> [1 + (p+2)/2&lang;k&rang;]</b>.
 The bracket is new, has no free parameter, and its coefficient (p+2)/2 is exact both symbolically and
@@ -715,7 +1381,7 @@ now derived in S14 instead of measured.</li>
 form: the cubic &lambda;R&sup3; &minus; &lambda;R + 2&gamma; = 0 folds at R* = 1/&radic;3, giving
 <b>&lambda;<sub>b</sub> = 3&radic;3&thinsp;&gamma;</b>. The residual 12% against simulation is the
 finite-connectivity correction, which explains the ~10% offset S2 could only measure.</li>
-<li><b>The first-order jump is genuine (S11).</b> It grows with system size, 0.183 at N = 125 to 0.486
+<li><b class="bad">[Not supported as stated, see P0]</b> <b>The first-order jump is genuine (S11).</b> It grows with system size, 0.183 at N = 125 to 0.486
 at N = 4000, rather than decaying. Not a finite-size artifact.</li>
 <li><b>What actually causes explosiveness (S8c).</b> Not a frequency-degree rank correlation: with a
 Gaussian frequency law there is no jump at any correlation. The <b>tail of g(&omega;) must match the
@@ -737,7 +1403,7 @@ baseline &lang;k&rang;/n rather than against a single n = 400 graph, the real ex
 <b>3.8x</b>, not 24x. S14 explains why the two effects are the same effect: in a small random graph
 neighbourhoods overlap by necessity, so k<sub>eff</sub> falls for the same reason clustering lowers
 it.</li>
-<li><b>No early warning, at any timescale, and it is not usable (E1, E7, E8).</b> On daily data no
+<li><b class="bad">[Direction kept, E8 counts withdrawn, see P0]</b> <b>No early warning, at any timescale, and it is not usable (E1, E7, E8).</b> On daily data no
 indicator beats ordinary peaks. At 1-minute resolution over 2.3M bars the raw AUC is 0.911, but
 <b>volatility-matched it is 0.526</b> [0.340, 0.712]. Out of sample co-movement needs <b>77.6 false
 alarms per crash caught</b>; <b>plain volatility is the better detector</b> (65.2 at the same 1% budget)
@@ -770,6 +1436,9 @@ def build() -> Path:
             s["extra"] = a2_table
         if s["id"] == "a1":
             s["extra"] = a1_block()
+        if s["id"] == "s14" and not s.get("_audited"):
+            s["findings"] = [s14_audit_finding()] + list(s["findings"])
+            s["_audited"] = True
     markets, e1t, e2t = e_tables()
     for s in SECTIONS:
         if s["id"] == "e1":
@@ -841,13 +1510,17 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
 <header><h1>Explosive synchronization &amp; market crashes</h1>
 <p>Simulations, analytic results and real-data tests. Every figure explains what is shown and why it matters; verdict tags state plainly whether a result holds.</p>
 <div class="starthere">
+<a class="sh" href="#p0"><b>Audit status (read first)</b><span>Which headline claims are backed by committed files, with an independent re-run of the key measurement.</span></a>
 <a class="sh" href="reference.html"><b>Build the model from one oscillator</b><span>The whole model in the order you would discover it: each step shows where the previous one breaks and adds exactly one term. Every assumption listed.</span></a>
 <a class="sh" href="../simulation/index.html"><b>Interactive simulation</b><span>Watch a crash spread node by node through the network. Click any desk to see its own numbers in the locking inequality.</span></a>
 <a class="sh" href="RESEARCH_IDEAS.md"><b>Research ideas</b><span>What is still open, keyed paper by paper to the prior art, with what would have to be computed for each.</span></a>
 </div></header>
-<nav><div class="in"><a href="#summary"><span>★</span>Bottom line</a><a href="#glossary"><span>§</span>Symbols</a>{nav}<a href="#refs"><span>¶</span>References</a></div></nav>
+<nav><div class="in"><a href="#summary"><span>★</span>Bottom line</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>§</span>Symbols</a>{nav}<a href="#refs"><span>¶</span>References</a></div></nav>
 <main>
 <div id="summary">{summary_card()}</div>
+{audit_card()}
+{physics_card()}
+{empirical_card()}
 <section id="glossary"><h2>Symbols and terms</h2><div class="tbl"><table><tbody>{gloss}</tbody></table></div></section>
 {''.join(render_section(s) for s in SECTIONS)}
 <section id="refs"><h2>Key references (local PDFs)</h2><ul>{refs}</ul><p>Full library: <code>references/README.md</code>.</p></section>
@@ -858,6 +1531,8 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
     report = validate(page)
     out = ROOT / "index.html"
     out.write_text(page)
+    write_claims_audit()
+    write_readme_and_evidence()
     print(f"wrote {out}: {n_math} equations rendered to SVG, {report["images"]} local images/links "
           f"({len(report['missing_images'])} not generated yet: {report['missing_images']}), HTML structure OK")
     return out

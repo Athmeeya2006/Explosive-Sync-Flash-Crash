@@ -100,7 +100,9 @@
   to be impossible in principle, and one discovery that the network the model runs on is nothing like the
   network a market actually has. Steps 22 to 24 list every assumption the whole thing rests on, what should
   be deleted, and which of the proposed repairs were tried and whether they helped. Step 25 traces the arc
-  from the first equation to the last result, including the detours.</p>
+  from the first equation to the last result, including the detours. <b>Step 26 was added after an outside
+  audit and should be read before trusting steps 21 and 25</b>: the main "new" result is proved for an
+  approximation and is not yet confirmed by simulation.</p>
   <p class="lede" style="margin-top:12px">Results are labelled throughout by what kind of result they are:
   reproductions of published work, negative results, and the two things here that appear to be new. Numbers
   quoted in the text come from the files in <code>research/data/</code> and
@@ -143,6 +145,8 @@
   <a href="#s24">24. What to add, and what helped</a>
   <div class="grp">Close</div>
   <a href="#s25">25. What this turned into</a>
+  <div class="grp">After the audit</div>
+  <a href="#s26">26. Audit: what is unverified</a>
 </nav>
 
 <main>
@@ -1418,6 +1422,9 @@
 <section id="s21">
   <h2>Step 21</h2>
   <h3>Two things this work actually found, one of which turned out to be already known</h3>
+  <div class="note fail"><h5>Under audit</h5><p>Parts of this step are superseded. See
+  <a href="#s26">step 26</a> for which claims are currently unverified, and section P0 of
+  <a href="index.html#p0">research/index.html</a> for the measured values.</p></div>
   <p>Everything up to here either reproduces known work or reports a negative result. This step
   originally claimed two positive results. A literature check has since retracted the first and
   replaced the second with something derived rather than measured. Both corrections are recorded here
@@ -1633,6 +1640,9 @@
 <section id="s25">
   <h2>Step 25</h2>
   <h3>What this turned into, and what was explored on the way</h3>
+  <div class="note fail"><h5>Under audit</h5><p>Parts of this step are superseded. See
+  <a href="#s26">step 26</a> for which claims are currently unverified, and section P0 of
+  <a href="index.html#p0">research/index.html</a> for the measured values.</p></div>
   <p>The opening idea was narrow: represent a trading desk as a phase oscillator, let desks imitate the
   desks they watch, and see whether the resulting market has a synchronisation transition sharp enough to
   look like a crash. Steps 1 to 5 got as far as Kuramoto oscillators on a network, which has a transition
@@ -1719,6 +1729,157 @@
   estimated from data in which the nodes are trading desks rather than stocks, which is step 7, and an
   intraday dataset in which the nodes and the timescale finally match, which is the surviving half of
   assumption 41.</p>
+</section>
+
+
+<!-- ============================================================= 26 -->
+<section id="s26">
+  <h2>Step 26 &middot; Audit</h2>
+  <h3>What an outside audit found, and why nothing here is settled yet</h3>
+  <p>After step 25 was written, the whole repository was audited claim by claim at commit
+  <code>fc98f02</code>. This step records what the audit found and what was re-measured in response. It
+  quotes no numbers of its own. Every measured value lives in section P0 of
+  <a href="index.html#p0">research/index.html</a>, where it is read from a result file each time that page
+  is built, so the two pages cannot drift apart.</p>
+
+  <div class="note fail"><h5>The short version</h5>
+  <p>The central "new" result of this project, the finite-connectivity law for the fold in step 21, is
+  <b>proved for an approximation and not yet confirmed for the model</b>. When the fold is measured
+  directly on sparse random regular graphs it sits <em>below</em> the predicted value in every run. The
+  statements in steps 21 and 25 that describe that law as exact, or as agreeing with simulation, should
+  be read as claims under test. No paper is being written until the measurement in the plan below is
+  done.</p></div>
+
+  <h4>1. What exactly is being claimed</h4>
+  <p>The object is the <b>fold</b> &lambda;<sub>b</sub>: the smallest herding strength at which the
+  synchronised (crashed) state can still exist. Below it the only stable state is incoherence. For
+  all-to-all coupling and Lorentzian frequencies the fold is known in closed form, and that result
+  belongs to Zou and Wang (2020), as step 21 already says.</p>
+  <p>The claimed addition is what happens when each desk watches only k others instead of everyone:</p>
+  <div class="eq">&lambda;<sub>b</sub>(p, k) &nbsp;=&nbsp; &lambda;<sub>b</sub><sup>&infin;</sup>(p) &middot; [ 1 + (p+2) / (2k) + ... ]
+    <small>&lambda;<sub>b</sub><sup>&infin;</sup>(p) is the all-to-all fold; p is the herding exponent in
+    &alpha;<sub>i</sub> = r<sub>i</sub><sup>p</sup>; k is the number of neighbours. The bracket says a
+    sparser network needs stronger herding to hold a crash together.</small></div>
+
+  <h4>2. Where that formula comes from, and the assumption hidden inside it</h4>
+  <p>Desk i does not feel the global synchrony R. It feels its own <b>local</b> order parameter
+  r<sub>i</sub>, the length of the average of its k neighbours' unit vectors. The derivation (script
+  <code>s14_finite_connectivity.py</code>) makes three moves:</p>
+  <ol class="steps">
+    <li><b>Central limit step.</b> Treat the sum of the k neighbour vectors as a two-dimensional Gaussian
+    whose mean is k&middot;R along the global phase and whose spread comes from the neighbours that are not
+    perfectly aligned. The length of such a vector follows the <b>Rice distribution</b>, the same law
+    that describes a radio signal made of one direct path plus many scattered ones.</li>
+    <li><b>Projection step.</b> Desk i locks to the direction of <em>its own</em> neighbour sum, not to
+    the global direction, so its contribution to R is reduced by the cosine of the angle between the two.
+    Keeping this factor is what stops the theory from predicting synchrony out of nothing.</li>
+    <li><b>Independence step.</b> Assume the k neighbour phases are independent of each other and,
+    crucially, <b>independent of desk i itself</b>.</li>
+  </ol>
+  <p>Moves 1 and 2 are controlled. Move 3 is the weak one. On a sparse graph each of my neighbours is
+  also being pulled by me. If I lock, I drag them toward my phase, which makes their sum more aligned
+  with me than an independent draw would be. Physicists call this the <b>back-reaction</b> or
+  <b>Onsager reaction term</b>, and the standard tool that keeps it is the <b>cavity method</b>: compute
+  what neighbour j would do <em>if node i were removed</em>, and only then add i back. The closure in
+  this repository has no such term.</p>
+
+  <div class="note why"><h5>Why "exact" was the wrong word</h5>
+  <p>The coefficient (p+2)/2 is the exact first-order expansion <em>of the closure</em>, and the audit
+  confirmed that to four digits. But the closure is an approximation to the network model. An exact
+  expansion of an approximation is not an exact result about the thing approximated.</p></div>
+
+  <h4>3. How the fold is measured, and why the measurement can be trusted this far</h4>
+  <p>The measurement uses no grid of couplings. For a trial &lambda; the simulation starts with every
+  desk at the same phase (R = 1, deep inside the crashed state), runs for a fixed relaxation time, and
+  asks one question: is the synchronised state still there? If yes, &lambda; is above the fold; if no,
+  below. Halving the interval repeatedly (bisection) pins the fold to a relative tolerance set in the
+  script.</p>
+  <p>Three checks were re-run with the repository's own unmodified functions
+  (<code>research/p0_spot_checks.py</code>):</p>
+  <div class="tw"><table>
+    <tr><th>check</th><th>question it answers</th><th>outcome</th></tr>
+    <tr><td><b>A. Closure asymptote</b></td><td>Is the formula the right expansion of the closure?</td>
+        <td>Yes. The algebra is correct</td></tr>
+    <tr><td><b>B. All-to-all harness</b></td><td>Does the bisection tool return the known exact answer
+        when there is no network at all?</td>
+        <td>Yes, at every system size tried. So the tool is not the source of any offset</td></tr>
+    <tr><td><b>C. Sparse graphs</b></td><td>Does the closure match the simulated fold on random regular
+        graphs?</td>
+        <td><b class="lb">No.</b> Simulation is below the closure in every run, and the measured
+        correction is only a fraction of the predicted one</td></tr>
+  </table></div>
+  <p>Check B matters most for interpretation. Because the tool is exact when the network is removed, the
+  gap in check C has to be a property of sparse networks. Lengthening the relaxation time barely moves
+  it, so it is not the system being slow near the transition either.</p>
+
+  <h4>4. Two things the re-run showed that need care</h4>
+  <ul>
+    <li><b>The fold is a random variable.</b> Different graphs and different placements of the
+    frequencies on the same kind of graph give visibly different folds, and the scatter does not
+    obviously shrink as the system grows. For a deterministic system on a fixed sparse graph this is
+    plausible: a handful of fast desks sitting next to each other can break the synchronised state
+    early. A single run therefore proves nothing; the fold needs a distribution, a mean with a
+    confidence interval, and an extrapolation to infinite size.</li>
+    <li><b>The surviving state near the fold is weaker than the theory says it should be.</b> Just above
+    the measured fold, the synchrony that survives is well below the closure's predicted fold amplitude
+    and close to the survival threshold built into the measuring tool. That means the answer may depend
+    on where that threshold is put and on how long the run lasts. This sensitivity has to be mapped
+    before any coefficient is quoted.</li>
+  </ul>
+
+  <h4>5. Other claims on this page that the audit downgraded</h4>
+  <div class="tw"><table>
+    <tr><th>where</th><th>claim</th><th>problem</th></tr>
+    <tr><td>Steps 21, 25</td><td>The jump grows with system size, so it is a genuine discontinuity</td>
+        <td>The statistic used is the largest step between two neighbouring points of a coupling grid.
+        It measures the grid as much as the physics, with three seeds per size. Evidence of a
+        first-order transition has to come from the fold itself and from escape times</td></tr>
+    <tr><td>Step 25</td><td>The p-family formula is a new result, with a flat simulation ratio</td>
+        <td>Already withdrawn in research/index.html (it is Zou and Wang 2020), but step 25 still
+        presents it as new. Read step 25's "two things survive" paragraph as superseded</td></tr>
+    <tr><td>Steps 21, 25</td><td>Critical clustering C* closes the window</td>
+        <td>Measured on a fixed coupling grid that no longer contained the transition at high
+        clustering. The replacement prediction through an effective connectivity is untested, because
+        the run that would test it was never committed</td></tr>
+    <tr><td>Step 19</td><td>The window collapses on real networks</td>
+        <td>Two seeds on a grid, with some negative window widths. Networks built by thresholding
+        correlations are clustered by construction and are not who-watches-whom networks</td></tr>
+    <tr><td>Step 20</td><td>False alarms per crash caught</td>
+        <td>The direction (no usable warning) is plausible. The counts are not reliable: the
+        volatility regression was fitted on the test period, the alarm scoring can miss persistent
+        alarms, and there are very few test crashes</td></tr>
+    <tr><td>Step 18</td><td>&lambda; cannot be measured</td>
+        <td>The argument stands. The accompanying statistic was compared against a different baseline
+        from step 15 and needs to be redone against the same one</td></tr>
+    <tr><td>Steps 11 to 14</td><td>Crash, halt and early-warning scenarios</td>
+        <td>These use Gaussian frequencies, while the closed-form theory holds only for Lorentzian
+        frequencies. So the market-facing scenarios have no exact theory behind them</td></tr>
+  </table></div>
+
+  <h4>6. A limitation of the model that should be stated plainly</h4>
+  <p>Synchrony in this model has no direction. A fully synchronised market is one where everyone moves
+  together, and whether that is a crash or a melt-up is decided only by the sell shock or the small
+  news bias that is added by hand. The model explains why a move can become collective and persistent.
+  It does not, by itself, explain why the move is down.</p>
+
+  <h4>7. The plan from here</h4>
+  <ol class="steps">
+    <li><b>Freeze the record.</b> Inventory, model specification and claims audit are written in
+    <code>docs/</code>. Done.</li>
+    <li><b>Make the simulator testable.</b> Move it into a package with a regression test proving it
+    reproduces <code>research/model.py</code> to machine precision, so no old number changes silently.</li>
+    <li><b>Fix the known defects</b> in the simulation scripts and the empirical pipeline, and replace
+    every hand-typed number on the results page with one read from a file.</li>
+    <li><b>Search the literature systematically</b> for any existing finite-degree result for
+    local-order-parameter coupling, before claiming novelty.</li>
+    <li><b>Run the decisive measurement.</b> Random regular graphs across a range of k and p, several
+    system sizes, many seeds, fold extrapolated to infinite size, compared against both the Rician
+    closure and a cavity calculation. There are three possible outcomes, and each is a legitimate
+    result: the cavity theory closes the gap; neither theory matches and the measured coefficient
+    stands on its own; or the result already exists and this becomes a validation study.</li>
+    <li><b>Manuscripts wait.</b> By the author's decision none is written until step 5 says what is
+    true.</li>
+  </ol>
 </section>
 
 </main>

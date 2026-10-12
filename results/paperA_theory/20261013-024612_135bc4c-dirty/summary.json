@@ -1,0 +1,79 @@
+{
+ "rows": [
+  {
+   "p": 0.5,
+   "rician": 1.25,
+   "directed": 0.3305404176398734,
+   "reaction": 0.9582791343033241,
+   "undirected": 1.2888195519431975,
+   "frozen_only": -0.03510207905820984,
+   "var_instantaneous": 0.4,
+   "var_frozen": 0.19438366735068643,
+   "var_rotating": 0.20561633264953988,
+   "var_rotating_filtered": 0.05850279947169334,
+   "reaction_locked": -0.2895067640547343,
+   "reaction_drifting": 0.003803125958483199,
+   "frozen_all_check": 1.2500000000000004
+  },
+  {
+   "p": 1.0,
+   "rician": 1.5,
+   "directed": 0.5370701574395962,
+   "reaction": 1.1168884172572415,
+   "undirected": 1.6539585746968377,
+   "frozen_only": 0.1920266274692473,
+   "var_instantaneous": 0.33333333333333337,
+   "var_frozen": 0.18800295860769417,
+   "var_rotating": 0.1453303747258374,
+   "var_rotating_filtered": 0.038338169996705425,
+   "reaction_locked": -0.32563067628220066,
+   "reaction_drifting": 0.003212762103078889,
+   "frozen_all_check": 1.5000000000000009
+  },
+  {
+   "p": 1.5,
+   "rician": 1.75,
+   "directed": 0.7150724989297212,
+   "reaction": 1.29339069299372,
+   "undirected": 2.0084631919234415,
+   "frozen_only": 0.35921047558507496,
+   "var_instantaneous": 0.28571428571428575,
+   "var_frozen": 0.17218044698653678,
+   "var_rotating": 0.11353383875049161,
+   "var_rotating_filtered": 0.029049961089358867,
+   "reaction_locked": -0.3401323374100947,
+   "reaction_drifting": 0.0014431514789453382,
+   "frozen_all_check": 1.7500000000000002
+  },
+  {
+   "p": 2.0,
+   "rician": 2.0,
+   "directed": 0.8812075040113242,
+   "reaction": 1.484428690326543,
+   "undirected": 2.365636194337867,
+   "frozen_only": 0.5044906084734845,
+   "var_instantaneous": 0.24999999999999994,
+   "var_frozen": 0.15653066302959273,
+   "var_rotating": 0.09346933698990656,
+   "var_rotating_filtered": 0.023544805971115,
+   "reaction_locked": -0.34755022080914544,
+   "reaction_drifting": -0.002332976896775853,
+   "frozen_all_check": 2.0000000000000004
+  },
+  {
+   "p": 3.0,
+   "rician": 2.5,
+   "directed": 1.1975557693513188,
+   "reaction": 1.8756025495929807,
+   "undirected": 3.0731583189442997,
+   "frozen_only": 0.767670465981137,
+   "var_instantaneous": 0.19999999999999996,
+   "var_frozen": 0.1307068186392455,
+   "var_rotating": 0.0692931813757718,
+   "var_rotating_filtered": 0.017195412134807273,
+   "reaction_locked": -0.3546415913691324,
+   "reaction_drifting": -0.008567280564756745,
+   "frozen_all_check": 2.4999999999999987
+  }
+ ]
+}

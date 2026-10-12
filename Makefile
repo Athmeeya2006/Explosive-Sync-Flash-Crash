@@ -1,36 +1,34 @@
-.PHONY: data figures test lint cpp/build/esfc all clean
+# Pipeline with explicit file dependencies. Results live in results/<ID>/<stamp>_<hash>/.
+PY ?= research/.venv/bin/python
+ESFC ?= research/.venv/bin/esfc
+R := research/data
 
-all: data figures
-
-cpp/build/esfc:
-	cmake -S cpp -B cpp/build
-	cmake --build cpp/build
-
-data: cpp/build/esfc
-	python python/analysis/run_kuramoto.py --model er --n 200 --p 0.05 --k 2.0 --tmax 50 --dt 0.05 --out data/kuramoto_order.csv
-	python python/analysis/early_warning.py --input data/kuramoto_order.csv --window 50 --out data/early_warning.csv
-	python python/analysis/finite_size_scaling.py --n-list 50,100,200,400,800 --k-list 0.0,0.5,1.0,1.5,2.0 --n-replicas 5 --out data/finite_size.csv
-	python python/analysis/flash_crash_sim.py --model er --n 200 --p 0.05 --k-high 2.5 --k-low 0.3 --t-drop 20 --out data/flash_crash.csv
-	python python/analysis/hysteresis_sweep.py --out data/hysteresis.csv
-	python python/analysis/lyapunov_analysis.py --out data/lyapunov.csv
-
-figures: data
-	python python/plots/plot_order_param.py --input data/kuramoto_order.csv --out figures/order_param.png
-	python python/plots/plot_early_warning.py --input data/early_warning.csv --out figures/early_warning.png
-	python python/plots/plot_finite_size.py --input data/finite_size.csv --out figures/finite_size.png
-	python python/plots/plot_phase_diagram.py --input data/finite_size.csv --out figures/phase_diagram.png
-	python python/plots/plot_flash_crash.py --input data/flash_crash.csv --out figures/flash_crash.png
-	python python/plots/plot_degree_distribution.py --out figures/degree_distribution.png
-	python python/plots/plot_percolation.py --out figures/percolation.png
+.PHONY: test test-fast lint audit pilot a0 legacy-test s-chain
 
 test:
-	python -m pytest python/tests -v --cov=python --cov-report=term-missing
+	$(PY) -m pytest -q
+
+test-fast:
+	$(PY) -m pytest -q -m "not slow"
 
 lint:
-	ruff check python/
-	mypy python/ --ignore-missing-imports
+	$(PY) -m ruff check src tests
+	$(PY) -m mypy src/esfc
 
-clean:
-	rm -rf data/*.csv data/*.npy
-	rm -rf figures/*.png
-	rm -rf cpp/build
+audit:            ## regenerate research/index.html, docs/CLAIMS_AUDIT.md and the README tables
+	$(ESFC) audit
+
+a0:
+	$(ESFC) run configs/paperA_A0_meanfield.yaml
+pilot:
+	$(ESFC) run configs/paperA_A1_pilot.yaml
+
+# The S chain: S3, S4, S5, S7 and S9 read the window that S2 measures. *.npz is not tracked, so on a
+# fresh clone S2 must run first. This rule encodes what used to be a hidden run-order dependency.
+$(R)/s2_herding.npz: research/s2_herding_explosive.py research/model.py
+	$(PY) research/s2_herding_explosive.py
+s-chain: $(R)/s2_herding.npz
+	for s in s3_crash_anatomy s4_crash_phase_diagram s5_circuit_breakers s7_rate_tipping s9_observable_mapping; do $(PY) research/$$s.py || exit 1; done
+
+legacy-test:
+	cd legacy && $(MAKE) test

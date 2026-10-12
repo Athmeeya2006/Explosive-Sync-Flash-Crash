@@ -6,14 +6,27 @@ build-backend = "setuptools.build_meta"
 name = "explosive-sync"
 version = "0.1.0"
 description = "Explosive Synchronization and Flash Crash in Networked Oscillators"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
-    "numpy>=1.24.0",
-    "scipy>=1.10.0",
-    "matplotlib>=3.7.0",
+    "numpy>=2.0",
+    "scipy>=1.13",
+    "matplotlib>=3.8",
+    "networkx>=3.3",
+    "pandas>=2.2",
+    "numba>=0.61",
+    "pyarrow>=16",
+    "pyyaml>=6",
+    "sympy>=1.12",
 ]
 
+[project.scripts]
+esfc = "esfc.cli:main"
+
 [project.optional-dependencies]
+empirical = [
+    "yfinance>=0.2.40",
+    "lxml>=5",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -29,8 +42,18 @@ select = ["E", "F", "W"]
 ignore = ["E501", "E402"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 ignore_missing_imports = true
 
 [tool.setuptools.packages.find]
-where = ["python"]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: takes more than a few seconds"]
+
+# esfc.integrate and esfc.models are verbatim moves of research/model.py, held to it by regression tests.
+# Their untyped Optional-array idioms are left alone on purpose: editing them risks changing behaviour.
+[[tool.mypy.overrides]]
+module = ["esfc.integrate", "esfc.models"]
+ignore_errors = true

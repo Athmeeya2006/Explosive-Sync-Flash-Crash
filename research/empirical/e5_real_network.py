@@ -1,6 +1,6 @@
 """E5 (A16) - Estimate the REAL market network and run the model on it.
 
-Assumption 15 in MODEL_REFERENCE.md is load-bearing and, until now, unaddressed: every structural claim
+Assumption 15 in research/reference.html (step 22) is load-bearing and, until now, unaddressed: every structural claim
 in this repository rests on synthetic ER or Barabasi-Albert graphs. No real market network is used
 anywhere. This estimates one from data and asks two questions:
 

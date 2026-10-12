@@ -52,16 +52,22 @@ def lam_of_u(u: float, spread: float = 1.0) -> float:
     return u / H(u, spread) ** 2
 
 
-def lam_b(spread: float = 1.0) -> tuple[float, float]:
-    """Saddle-node (recovery threshold). Returns (lam_b, u at the fold)."""
+def lam_b_gaussian_meanfield(spread: float = 1.0) -> tuple[float, float]:
+    """Saddle-node (recovery threshold) of the GAUSSIAN annealed mean field. Returns (lam_b, u at the fold).
+
+    This is the Gaussian reference only. S11 measured it about 10% off sparse-graph simulation, and for
+    Lorentzian frequencies the exact all-to-all result is esfc.closure.lam_b_inf."""
     res = minimize_scalar(lambda lu: lam_of_u(np.exp(lu), spread), bounds=(np.log(1e-2), np.log(50.0)), method="bounded")
     u_star = float(np.exp(res.x))
     return float(res.fun), u_star
 
 
+lam_b = lam_b_gaussian_meanfield  # old name, kept so S5 still runs
+
+
 def branches(lam: float, spread: float = 1.0) -> tuple[float, float, float, float] | None:
     """(R_s, u_s, R_u, u_u) for coupling lam, or None if lam < lam_b."""
-    lb, u_fold = lam_b(spread)
+    lb, u_fold = lam_b_gaussian_meanfield(spread)
     if lam < lb:
         return None
     if np.isclose(lam, lb):
@@ -100,7 +106,7 @@ def tau_star(lam: float, sigma: float = 0.0, spread: float = 1.0, t_max: float =
 
 
 if __name__ == "__main__":
-    lb, uf = lam_b()
+    lb, uf = lam_b_gaussian_meanfield()
     print(f"mean-field lam_b = {lb:.3f} (u_fold = {uf:.3f}, R at fold = {H(uf):.3f})")
     for lam in np.linspace(lb, lb + 2.0, 9):
         br = branches(lam)

@@ -1,0 +1,16 @@
+# A1 pilot: fold against connectivity on random regular graphs, 5 seeds.
+# t_relax is 480 (four times the S14 value): the Phase 0 follow-up showed states at lam just below the
+# fold still decaying at t = 120.
+id: paperA_A1_pilot
+experiment: fold_grid
+root_seed: 20261013
+graph: {kind: rr}
+k: [6, 8, 12, 16, 24, 32, 48]
+p: [1.0, 2.0]
+n: [1000, 3000, 10000]
+n_seeds: 5
+dt: 0.02
+t_relax: 480
+frac: 0.55
+rel_tol: 0.002
+workers: 14

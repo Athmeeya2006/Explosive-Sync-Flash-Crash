@@ -60,9 +60,12 @@ research/empirical/data/*.log
 *.log
 
 # Generated top-level demo outputs from the original python/ CLI layer
-/data/*.csv
-/data/*.npy
-/figures/*.png
+/legacy/data/*.csv
+/legacy/data/*.npy
+/legacy/figures/*.png
+
+# Run directories: keep config, seeds, env, summary and the consolidated table; drop the append log
+results/**/rows.jsonl
 
 # Scratch
 scratch/
@@ -77,3 +80,6 @@ tmp/
 **/api_key
 **/secrets.*
 *_token
+
+# Minute-bar cache converted from pickle (licensed data, large): never commit
+research/empirical/data/*.parquet

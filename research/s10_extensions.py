@@ -1,6 +1,6 @@
 """S10 - Do the proposed extensions actually make the model better?
 
-Every extension in MODEL_REFERENCE.md section 4 is a hypothesis, not an improvement. This script
+Every extension in research/reference.html (step 24; the file MODEL_REFERENCE.md never existed) is a hypothesis, not an improvement. This script
 implements them and scores each against real markets, so they can be kept or thrown away on evidence.
 
 Phase-side variants (need simulation):

@@ -56,7 +56,9 @@ def indicators(R: np.ndarray, xa: np.ndarray, t: np.ndarray, t_cut: float) -> di
     times = []
     for k in range(max(w, h + 1), R.size, 4):
         seg = R[k - w:k]
-        # detrend R with the window mean (rolling-mean residuals)
+        # NOTE: no detrending is applied here (an earlier comment claimed there was). var and AC1 are
+        # of the raw window, so a trend in R inside the window inflates both. Dakos et al. (2012)
+        # recommend Gaussian-kernel detrending first; esfc.ews.detrend does that for new analyses.
         series["var(R)"].append(seg.var())
         series["AC1(R)"].append(ac1(seg))
         series["skew(R)"].append(float(skew(seg)))

@@ -1,0 +1,4 @@
+# Leading 1/k coefficients: Rician closure, directed (dynamic), undirected (dynamic + reaction).
+id: paperA_theory
+experiment: theory_coefficients
+p: [0.5, 1.0, 1.5, 2.0, 3.0]

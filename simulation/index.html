@@ -253,6 +253,35 @@
   <h2>How this works</h2>
 
   <div class="ex-block">
+    <h4>0. What this page is, and what it is not</h4>
+    <p>This page is a <b>demonstration</b>. It runs the same equations as the research code
+    (<code>research/model.py</code>) in your browser so you can watch a crash spread desk by desk. It is
+    an outreach tool, <b>not evidence</b>: no scientific claim of this project rests on anything you see
+    here. Evidence lives in <a href="../research/index.html" style="color:var(--cold)">research/index.html</a>.</p>
+    <p>Four cautions before you draw conclusions from what you watch:</p>
+    <ul>
+      <li><b>The project is under audit.</b> The main theoretical claim (how the recovery threshold
+      &lambda;<sub>b</sub> shifts when each desk watches only a few others) is proved for an approximation
+      and is not yet confirmed by direct simulation. The status of every headline claim, with measured
+      values, is in section P0 of
+      <a href="../research/index.html#p0" style="color:var(--cold)">the results page</a>, and the reasoning
+      is in step 26 of <a href="../research/reference.html#s26" style="color:var(--cold)">the model
+      reference</a>.</li>
+      <li><b>The frequencies here are Gaussian.</b> The exact closed-form thresholds in the research
+      pages hold only for Lorentzian frequencies, so the bistable window quoted further down this page was
+      measured from simulation for this configuration, not predicted by a formula.</li>
+      <li><b>Synchrony has no direction.</b> A synchronised market is one where everyone moves together.
+      Whether that is a crash or a melt-up is decided only by the sell shock you trigger or by the small
+      bias added by hand. The model shows why a move can become collective and persistent. It does not
+      explain, on its own, why the move is down.</li>
+      <li><b>The network is synthetic.</b> It is a random graph (Erdos-Renyi or Barabasi-Albert, chosen with the
+      network selector), not a measured who-watches-whom network
+      of real trading desks. Real market networks are far more clustered, and the bistable window
+      behaves differently on them.</li>
+    </ul>
+  </div>
+
+  <div class="ex-block">
     <h4>1. Every node is a trading desk, and its whole state is one angle</h4>
     <p>A desk <b>i</b> has a phase <b>&theta;<sub>i</sub></b>, its position in a buy/sell cycle. Its net
     order flow is the projection <b>q<sub>i</sub> = sin &theta;<sub>i</sub></b>. So &theta; = +90&deg; is
