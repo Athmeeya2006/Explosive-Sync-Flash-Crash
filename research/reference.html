@@ -1417,9 +1417,39 @@
 <!-- ============================================================= 17 -->
 <section id="s21">
   <h2>Step 21</h2>
-  <h3>Two things this work actually found</h3>
-  <p>Everything up to here either reproduces known work or reports a negative result. These two are
-  positive, quantitative, and were derived and tested here.</p>
+  <h3>Two things this work actually found, one of which turned out to be already known</h3>
+  <p>Everything up to here either reproduces known work or reports a negative result. This step
+  originally claimed two positive results. A literature check has since retracted the first and
+  replaced the second with something derived rather than measured. Both corrections are recorded here
+  rather than quietly edited out.</p>
+
+  <div class="note fail">
+  <p><b>Correction, added after a prior-art check.</b> The closed-form family below is <b>not new</b>.
+  It is <b>Zou &amp; Wang, Phys. Rev. E 102, 012219 (2020)</b>, "Dynamics of the generalized Kuramoto
+  model with nonlinear coupling: bifurcation and stability", who study a mean-field force
+  <b>K r<sup>&alpha;</sup></b>, i.e. exactly this model with <b>&alpha; = p + 1</b>. Their published
+  stability result reads, verbatim: the locked states "are stable only for
+  <b>r&sup2; &ge; (&alpha;&minus;1)/(&alpha;+1)</b> if &alpha; &gt; 1. For &alpha; = 2,
+  <b>r = 1/&radic;3 &asymp; 0.577</b> is predicted at the coupling threshold <b>K = K<sub>b</sub></b>."
+  With &alpha; = p+1, (&alpha;&minus;1)/(&alpha;+1) = p/(p+2), which <em>is</em> R*(p)&sup2;. Same
+  formula, same symbol for the threshold, five years earlier, and derived for an arbitrary g(&omega;)
+  rather than only the Lorentzian, with the full Ott-Antonsen stability spectra.</p>
+  <p>The p = 2 corner is separately exact in <b>Skardal &amp; Arenas, Commun. Phys. 3 (2020)</b>, whose
+  saddle-node curve K<sub>1</sub><sup>desync</sup> = 2&radic;(2K<sub>2+3</sub>) &minus; K<sub>2+3</sub>
+  gives K<sub>2+3</sub> = 8 at K<sub>1</sub> = 0 with r = 1/&radic;2. That PDF was already sitting in
+  this repository's own <code>references/03_higher_order/</code> folder. The statement that
+  r<sub>i</sub>&sup2; coupling <em>is</em> a three-body interaction, which step 21 presented as a
+  discovery, is made in one line by <b>Xu et al., Phys. Rev. Research 3, 043004 (2021)</b>. The nearest
+  active work is the Hens group's own: <b>Dutta et al., Phys. Rev. Research 7, L022049 (2025)</b> and
+  <b>arXiv:2507.18421 (2025)</b> run power-law adaptation of the order parameter with both an adaptation
+  exponent and a partial-adaptation fraction f, on hypergraphs.</p>
+  <p><b>What is actually new is the correction term</b>, which is step 26. Every result above is
+  all-to-all; this repository measured a fold about 10% higher on a sparse graph and could not explain
+  it. Treating r<sub>i</sub> as a <b>Rician</b> random variable rather than replacing it by R gives
+  <b>&lambda;<sub>b</sub>(p, &lang;k&rang;) = &gamma;(p+2)((p+2)/p)<sup>p/2</sup>
+  [1 + (p+2)/2&lang;k&rang;]</b>, with the coefficient exact, and it predicts the measured fold to
+  0.05% at &lang;k&rang; = 48.</p>
+  </div>
 
   <h4>A closed-form threshold family that unifies three separate models</h4>
   <p>Generalise the herding gain to <b>&alpha;<sub>i</sub> = r<sub>i</sub><sup>p</sup></b>. In mean
@@ -1454,6 +1484,22 @@
     family is verified over p &isin; [0.5, 2] only.</p></div>
 
   <h4>A critical clustering, with a number</h4>
+  <div class="note fail"><p><b>Correction.</b> The C* &asymp; 0.35 below is confounded by the coupling range.
+  The sweep used one fixed grid, &lambda; &isin; [2, 11] in 31 steps, at <em>every</em> clustering level,
+  but &lambda;<sub>f</sub> rises with clustering: 5.9 to 6.5 at C = 0.014, 6.8 to 7.7 at C = 0.354, then
+  8.0 / 11.0 / undefined at C = 0.503, and <b>undefined for all three seeds</b> at C = 0.586, 0.641 and
+  0.682. Above C &asymp; 0.5 the transition had left the scanned box, so the small hysteresis gap
+  reported there means only that both branches stayed incoherent, not that the window had closed. The
+  only clustering level above C* with a measured transition is C = 0.354 itself.</p>
+  <p>The prior art cited here also turns out to be a different mechanism. <b>Miranda, Frasca &amp;
+  Estrada, Chaos 33, 053103 (2023)</b> use a <em>degree-biased Laplacian</em> on stars, trees and Cayley
+  graphs, and their result is about <b>cycle length</b>: long cycles suppress the transition strongly
+  while triangles behave erratically. It is not a clustering sweep of an adaptive model at fixed
+  &kappa;. So this result was conceded too generously and the one above not nearly enough.</p>
+  <p>Step 26 replaces the measured threshold with a derived one: clustering acts entirely through an
+  <b>effective connectivity</b> k<sub>eff</sub> = k / (1 + (k&minus;1)&rho;), where &rho; is the mean
+  pairwise phase correlation inside a neighbourhood, and the window closes when k<sub>eff</sub> drops
+  below a critical connectivity k<sub>c</sub>(p) that the same closure predicts.</p></div>
   <p>Step 19 found the window nearly vanishes on real market networks, and the literature already knows
   clustering suppresses explosive synchronization <em>qualitatively</em>. Nobody has given a threshold.
   Sweeping Watts-Strogatz rewiring at fixed mean degree holds &kappa; at 1.00 to 1.04 throughout, so

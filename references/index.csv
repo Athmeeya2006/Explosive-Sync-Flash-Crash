@@ -5,14 +5,14 @@ ott_antonsen2008,01_kuramoto_foundations,0806.0004,,present,Low dimensional beha
 dorfler_bullo2014,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Synchronization in complex networks of phase oscillators: A survey
 pazo2005,01_kuramoto_foundations,nlin/0509020,,present,Thermodynamic limit of the first-order phase transition in the Kuramoto model
 arenas2008,01_kuramoto_foundations,0805.2976,,present,Synchronization in complex networks
-ichinomiya2004,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Frequency synchronization in a random oscillator network
-restrepo2005_onset,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Onset of synchronization in large networks of coupled oscillators
-martens2009_bimodal,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Exact results for the Kuramoto model with a bimodal frequency distribution
+ichinomiya2004,01_kuramoto_foundations,cond-mat/0406580,,present,Frequency synchronization in a random oscillator network
+restrepo2005_onset,01_kuramoto_foundations,cond-mat/0411202,,present,Onset of synchronization in large networks of coupled oscillators
+martens2009_bimodal,01_kuramoto_foundations,0809.2129,,present,Exact results for the Kuramoto model with a bimodal frequency distribution
 sakaguchi1988_noisy,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Cooperative Phenomena in Coupled Oscillator Systems under External Fields
 bertini2010_noisy_kuramoto,01_kuramoto_foundations,,,error: HTTP Error 406: Not Acceptable,Dynamical aspects of mean field plane rotators and the Kuramoto model
-pikovsky2016_common_noise,09_common_noise,,,error: HTTP Error 406: Not Acceptable,Interplay of coupling and common noise at the transition to synchrony in oscillator populations
-peter2019_microscopic_crosscorr,09_common_noise,,,error: HTTP Error 406: Not Acceptable,Microscopic Cross-Correlations in the Finite-Size Kuramoto Model of Coupled Oscillators
-nagai2010_common_noise_sync,09_common_noise,,,error: HTTP Error 406: Not Acceptable,Noise-Induced Synchronization of a Large Population of Globally Coupled Nonidentical Oscillators
+pikovsky2016_common_noise,09_common_noise,1607.06383,,present,Interplay of coupling and common noise at the transition to synchrony in oscillator populations
+peter2019_microscopic_crosscorr,09_common_noise,1901.02779,,present,Microscopic Cross-Correlations in the Finite-Size Kuramoto Model of Coupled Oscillators
+nagai2010_common_noise_sync,09_common_noise,1005.2833,,present,Noise-Induced Synchronization of a Large Population of Globally Coupled Nonidentical Oscillators
 gomezgardenes2011,02_explosive_sync,1102.4823,,present,Explosive synchronization transitions in scale-free networks
 leyva2012,02_explosive_sync,1203.6508,,present,Explosive first-order transition to synchrony in networked chaotic oscillators
 peron2012,02_explosive_sync,1204.4768,,present,Determination of the critical coupling of explosive synchronization transitions in scale-free networks by mean-field approximations
@@ -58,3 +58,12 @@ synchronization_market_asymmetry2006,06_finance,physics/0604137,,present,Synchro
 mitra2018_nodal_robustness,07_novelty_checks,1801.02409,,present,Identifying nodal properties that are crucial for the dynamical robustness of multi-stable networks
 resilience_targeted_attacks2019,07_novelty_checks,1911.08465,,present,Resilience of networks of multi-stable chaotic systems to targetted attacks
 subsystem_resetting_kuramoto2026,07_novelty_checks,2604.04769,,present,Analytical approach to subsystem resetting in generalized Kuramoto models
+xu2021_nonlinear_coupling,10_prior_art_adaptive,2105.03894,,present,Collective dynamics of heterogeneously and nonlinearly coupled phase oscillators
+generic_criterion_es2022,10_prior_art_adaptive,2206.04207,,present,Generic criterion for explosive synchronization in heterogeneous phase oscillator populations
+dutta2025_double_explosive_hypergraphs,10_prior_art_adaptive,2412.18897,,present,A double explosive Kuramoto transition in hypergraphs
+adaptation_hypergraphs2025,10_prior_art_adaptive,2507.18421,,present,Generalized Adaptation-Induced Non-universal Synchronization Transitions in Random Hypergraphs
+selfconsistent_hoi2026,10_prior_art_adaptive,2605.24701,,present,Self-consistent analysis of the Kuramoto model with higher-order interactions
+miranda2023_topological_suppression,10_prior_art_adaptive,2301.08000,,present,Topologically-induced suppression of explosive synchronization
+zou_wang2020_nonlinear_coupling_bifurcation,10_prior_art_adaptive,,,present,Dynamics of the generalized Kuramoto model with nonlinear coupling: Bifurcation and stability
+ews_market_crashes_epjds2024,06_finance,,,present,Early warning signals for stock market crashes: empirical and analytical insights utilizing nonlinear methods
+pang_lin2025_market_states,06_finance,,,present,Market state transitions and crash early warning in the Chinese stock market

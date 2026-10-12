@@ -27,7 +27,7 @@ REPO = ROOT.parent
 
 VERDICT = {"new": ("new result", "v-new"), "repro": ("reproduction", "v-repro"), "neg": ("negative result", "v-neg"),
            "corr": ("partly confirmed", "v-open"), "tool": ("mechanism", "v-tool"), "data": ("real data", "v-data"),
-           "theory": ("analytic", "v-theory")}
+           "theory": ("analytic", "v-theory"), "withdrawn": ("claim withdrawn", "v-neg")}
 
 
 # ------------------------------------------------------------------------------------------------ helpers
@@ -599,20 +599,70 @@ SECTIONS = [
      "figures": [fig("empirical/figures/e8_prediction.png",
                      "Left: precision against recall for each detector, with the base rate marked. Middle: false alarms per crash caught, on a log axis. Right: true positives, false positives and false negatives at a 5% alarm budget.",
                      "The measure that matters operationally. A good AUC with a 0.37% base rate still means dozens of false alarms for every crash caught, and here the model-specific signal is the weakest of the three.")]},
-    {"id": "s13", "verdict": "new", "title": "Two new results: a closed-form threshold family, and a critical clustering",
+    {"id": "s13", "verdict": "withdrawn", "title": "Two claimed new results, and what survived a literature check",
      "script": "s13_new_hypotheses.py",
      "question": "Everything else here reproduces known work or reports a negative result. Is there anything positive and new?",
      "setup": "H1: generalise the herding gain to alpha_i = r_i^p, solve the fold exactly, and test against simulation at N = 1500 for p in {0.5, 1, 1.5, 2, 3}. H2: sweep Watts-Strogatz rewiring at fixed mean degree, which holds kappa at 1.00-1.04 and so isolates clustering from degree heterogeneity.",
      "math": r"With $\alpha_i=r_i^p$ the mean field gives $K_{\rm eff}=\lambda R^p$, and substituting into the exact Lorentzian result $R=\sqrt{1-2\gamma/K}$ yields $$\lambda R^{p+2}-\lambda R^{p}+2\gamma=0.$$ The fold, where $(p+2)R^{p+1}=pR^{p-1}$, gives a closed form for every $p$: $$\boxed{R^*(p)=\sqrt{\frac{p}{p+2}},\qquad \lambda_b(p)=\gamma\,(p+2)\left(\frac{p+2}{p}\right)^{p/2}.}$$ One expression spans three separately studied models: $p\to0$ gives $\lambda_b\to2\gamma$ (plain Kuramoto, continuous), $p=1$ gives $3\sqrt3\,\gamma$ (pairwise herding), and $p=2$ gives $8\gamma$ (the exact 3-body hypergraph interaction A1 identified).",
-     "findings": ["<b>H1 confirmed.</b> Predicted against simulated lambda_b: 3.738/4.231 (p=0.5), 5.196/5.598 (p=1), 6.608/7.208 (p=1.5), 8.000/8.946 (p=2). <b>Median ratio 1.105 with a total spread across p of only 0.055.</b>",
-                  "That flat ratio is the result. The predicted threshold moves by a factor of 2.1 across this range while the ratio stays within &plusmn;2.5%; a formula with the wrong <i>shape</i> would drift with p. The constant ~10% offset is the finite-connectivity correction measured independently as 1.116 in S11: the closed form is exact for all-to-all coupling, the simulation is sparse at &lang;k&rang; = 12.",
-                  "<b>Reported failure:</b> p = 3 gave no transition (jump 0.014) inside the scanned coupling range, so the family is verified over p in [0.5, 2] only.",
-                  "<b>H2 confirmed, with a number: C* &asymp; 0.35.</b> Hysteresis gap by clustering: 0.327 (C=0.014), 0.312 (C=0.092), 0.099 (C=0.354), 0.089 (C=0.504), 0.075 (C=0.682). Below C* the window is open, above it closed.",
-                  "<b>This turns E5 from an observation into an explanation.</b> The synthetic ER graph every crash result in this repository uses has C = 0.030, an order of magnitude <i>below</i> C*. The real market correlation network has C = 0.731, <b>2.1x above</b> it. The model's bistable window is an artifact of using an unclustered graph.",
-                  "Clustering suppressing explosive synchronization is itself known (Chaos 33, 053103, 2023). What is new is the threshold value and the placement of real market networks relative to it."],
+     "findings": ["<b class='bad'>H1 is not new, and the claim is withdrawn.</b> The family is <b>Zou &amp; Wang, Phys. Rev. E 102, 012219 (2020)</b>, who study exactly a mean-field force $K r^{\\alpha}$, i.e. $\\alpha = p+1$. Their stability result reads, verbatim, that the locked states are stable \"only for $r^2 \\ge (\\alpha-1)/(\\alpha+1)$ if $\\alpha > 1$. For $\\alpha = 2$, $r = 1/\\sqrt3 \\approx 0.577$ is predicted at the coupling threshold $K = K_b$.\" With $\\alpha = p+1$, $(\\alpha-1)/(\\alpha+1) = p/(p+2)$, which <i>is</i> $R^*(p)^2$ &mdash; same formula, same symbol for the threshold, five years earlier.",
+                  "The $p=2$ corner is separately exact in <b>Skardal &amp; Arenas, Commun. Phys. 3 (2020)</b>: their saddle-node curve $K_1^{\\rm desync} = 2\\sqrt{2K_{2+3}} - K_{2+3}$ gives $K_{2+3} = 8$ at $K_1 = 0$ with $r = 1/\\sqrt2$. That PDF was already in this repository's own reference folder. The observation that $r_i^2$ coupling <i>is</i> a 3-body interaction is stated in one line by <b>Xu et al., Phys. Rev. Research 3, 043004 (2021)</b>.",
+                  "The nearest active work is the Hens group's own: <b>Dutta et al., Phys. Rev. Research 7, L022049 (2025)</b> and <b>arXiv:2507.18421 (2025)</b> run power-law adaptation of the order parameter with both an adaptation exponent and a partial-adaptation fraction $f$, on hypergraphs, via Ott-Antonsen. That is this model, with this $f$, analysed more generally.",
+                  "<b>The measurement could not have supported the claim either.</b> H1's coupling grid was <code>linspace(0.45&middot;pred, 1.8&middot;pred, 34)</code>, whose step is <b>4.09% of the prediction at every p</b>. The 12 runs therefore produced only three distinct ratio values (1.0636, 1.1045, 1.1455), and the reported flatness of 0.055 is <b>1.3 grid steps wide</b>. A drift of a few percent with p &mdash; which is exactly what S14 shows is really there &mdash; was invisible by construction. The quoted \"1.105 &plusmn; 0.055\" is also mislabelled: the standard deviation over the 12 points is 0.035, and 0.055 is the <i>range of the four per-p means</i>.",
+                  "Separately, $\\lambda_b$ was read off as the grid point where the backward branch crosses $R = 0.5$, while the theory's own fold amplitude $R^*(p)$ moves from 0.447 at $p=0.5$ to 0.707 at $p=2$. At $p=0.5$ the fold sits <i>below</i> the detection level. The estimator's bias therefore varies with p across precisely the range where p-independence was being asserted.",
+                  "<b class='bad'>H2's C* &asymp; 0.35 was confounded by the coupling range.</b> The sweep used a fixed grid <code>linspace(2, 11, 31)</code> at every clustering level, but $\\lambda_f$ rises with clustering: 5.9-6.5 at C=0.014, 6.8-7.7 at C=0.354, then 8.0/11.0/undefined at C=0.503, and <b>undefined for all three seeds</b> at C = 0.586, 0.641 and 0.682. Above C &asymp; 0.5 the transition had left the scanned box, so the small gap there means only that both branches stayed incoherent. The single clustering level above C* with a measured transition is C = 0.354 itself.",
+                  "<b>What survives, and is now derived rather than measured.</b> The qualitative claim that clustering closes the window holds, and S14 replaces the measured threshold with a predicted one by showing that clustering acts entirely through an <i>effective connectivity</i>. The prior art the original write-up cited for this (Chaos 33, 053103, 2023) turns out to be a different mechanism: it uses a degree-biased Laplacian on trees and Cayley graphs, and its result is about <i>cycle length</i>, with long cycles suppressing the transition strongly and triangles behaving erratically. So H2 was conceded too generously and H1 not nearly enough."],
      "figures": [fig("figures/s13_new_hypotheses.png",
                      "Left: the closed-form lambda_b(p) curve with simulated thresholds overlaid, and the herding and triadic cases marked. Middle: the simulated/predicted ratio against p, flat if the shape is right. Right: hysteresis gap and jump against clustering, with the synthetic ER and real market values marked.",
-                     "The two positive contributions of this work: a single closed form covering the continuous, pairwise-herding and 3-body transitions, and a quantitative clustering threshold that explains why the model's central phenomenon does not appear on real market networks.")]},
+                     "Kept for the record. The left panel is a correct plot of a known result (Zou &amp; Wang 2020); the middle panel's flatness is one grid step wide; the right panel's high-clustering points sit outside the scanned coupling range. S14 redoes all three without a grid.")]},
+    {"id": "s14", "verdict": "new", "title": "A Rician closure for the local order parameter: the finite-connectivity law for the fold",
+     "script": "s14_finite_connectivity.py",
+     "question": "S11 and S13 both measured a fold about 10% above the all-to-all prediction (ratios 1.116 and 1.105 at &lang;k&rang; = 12) and had no explanation. That offset is the only thing in S13 the literature does not already contain. What is it?",
+     "setup": "Theory: keep the local order parameter r_i as a random variable instead of replacing it by R. Measurement: lambda_b by bisection on the survival of the upper branch, with NO coupling grid, on random regular graphs (every degree exactly k, so the theory applies with no degree heterogeneity), Erdos-Renyi graphs at the same mean degree, and Watts-Strogatz graphs at fixed &lang;k&rang; = 12. N = 2000, p in {0.5, 1, 1.5, 2}, &lang;k&rang; from 6 to 96, 5 seeds.",
+     "math": r"""The annealed mean field replaces $r_i$ by $R$. But the exact locking field is
+$$h_i=\frac{\lambda}{\langle k\rangle}\,k_i\,r_i^{\,p+1},\qquad r_i=\Big|\sum_j A_{ij}e^{i\theta_j}\Big|/k_i,$$
+and $r_i$ is the <b>modulus of a sum of $k_i$ unit vectors</b>. By the central limit theorem that sum is complex Gaussian with mean $k_iR$ and total variance $k_i(1-R^2)$, so $r_i$ is a <b>Rician</b> variable with scale $s^2=(1-R^2)/2k_i$ per component: a coherent part $R$ plus a scattered part, exactly as in Rician fading.
+The second ingredient is what makes the closure correct. Node $i$ does not lock to the global mean phase $\Psi$; it locks to the direction $\phi_i$ of its <i>own</i> neighbour sum, which is itself random. Its contribution therefore carries a projection factor $\cos(\phi_i-\Psi)=X/r$, and the self-consistency becomes
+$$R=\Big\langle\, c\!\big(\tfrac{\lambda k}{\langle k\rangle}r^{p+1}\big)\cdot\frac{X}{r}\Big\rangle,\qquad c(h)=\frac{\sqrt{h^2+\gamma^2}-\gamma}{h},$$
+with $X\sim N(R,s^2)$, $Y\sim N(0,s^2)$, $r=\sqrt{X^2+Y^2}$. Keeping the projection factor is essential: without it $R=0$ stops being a solution, because a sparse graph has $r_i\approx0.886/\sqrt k$ even when incoherent, and the closure would predict ignition out of nothing. With it, $X/r$ is odd in $X$ at $R=0$ and the incoherent state is preserved exactly.
+Expanding to $O(s^2)$ and shifting the fold gives the result:
+$$\boxed{\ \lambda_b(p,\langle k\rangle)=\underbrace{\gamma(p+2)\Big(\tfrac{p+2}{p}\Big)^{p/2}}_{\text{Zou \& Wang 2020}}\Big[1+\frac{p+2}{2\langle k\rangle}+O(\langle k\rangle^{-2})\Big]\ }$$
+The factor $(p+2)$ appears twice. Linearising the same closure about $R=0$ gives a <i>second</i> threshold that does not exist all-to-all,
+$$A(\lambda)=\tfrac12\big\langle \tfrac{d}{dr}c(\lambda r^{p+1})+c(\lambda r^{p+1})/r\big\rangle=1,\qquad r=s|\zeta|,\ |\zeta|\ \text{Rayleigh},$$
+with $A(\infty)=0.8862\sqrt{k}$ &mdash; the same $\sqrt\pi/2$ that sets the incoherent $r_i$ floor. Finally, if the neighbours of $i$ are themselves linked their phases correlate, so the variance becomes $k(1-R^2)\,(1+(k-1)\rho)$ and everything above holds with an <b>effective connectivity</b>
+$$k_{\rm eff}=\frac{k}{1+(k-1)\rho}.$$
+Sparsity, clustering and small system size are then the same effect in different units.""",
+     "findings": [
+        "<b>The coefficient is exactly $(p+2)/2$.</b> Numerically $\\langle k\\rangle(\\lambda_b/\\lambda_b^\\infty-1)$ converges to 1.24935, 1.49982, 1.75005, 2.00021 at $p$ = 0.5, 1, 1.5, 2 against $(p+2)/2$ = 1.25, 1.50, 1.75, 2.00. Symbolically the $O(s^2)$ shift evaluates to $(p+2)/2$ exactly at $p$ = 1/4, 1/2, 1, 3/2, 2 and 3.",
+        "<b>The closure's central assumption is testable on its own, and it holds.</b> Simulating a locked state and comparing the observed spread of the neighbour sums against the predicted Rician scale $(1-R^2)/2k$ gives a ratio of 1.215 at &lang;k&rang; = 6, 1.091 at 12, <b>0.998 at 24</b> and 0.919 at 48, and the predicted mean of $r_i$ matches the observed one to three decimals from &lang;k&rang; = 12 upward. A Kolmogorov-Smirnov test against the full Rice law passes at &lang;k&rang; = 48 (p = 0.30) and fails at small &lang;k&rang;, which is the central limit theorem converging exactly as it should for a sum of k unit vectors.",
+        "<b>It predicts the measured fold with no fitted parameter.</b> At &lang;k&rang; = 48 on random regular graphs, equation (4) gives 5.3585 against a measured 5.3558 for $p=1$ (<b>0.05%</b>) and 8.3333 against 8.3291 for $p=2$ (<b>0.05%</b>). At &lang;k&rang; = 12 it gives 9.333 against 9.278 for $p=2$ (0.6%) and 5.846 against 5.632 for $p=1$ (3.7%), where the $O(\\langle k\\rangle^{-2})$ term is no longer negligible.",
+        "<b>It explains why S13's ratio looked flat, and says it is not.</b> The offset should <i>grow</i> with p as $(p+2)/2$, from 10.4% at $p=0.5$ to 16.7% at $p=2$ when &lang;k&rang; = 12. The measured ratio does grow, 1.084 to 1.160 across that range. S13 could not see it because its grid quantised the ratio in steps of 4.09%.",
+        "<b>A second threshold exists only at finite connectivity.</b> All-to-all, the incoherent state is linearly stable for every coupling, which is why $\\lambda_f$ has always been reported as a fluctuation-driven, N-dependent quantity rather than a constant of the model. At finite &lang;k&rang; the residual $r_i$ floor gives it a genuine linear instability at a finite $\\lambda_c$, and $A(\\infty)=0.8862\\sqrt k$ means this happens at all only for $k>1.27$. Predicted $\\lambda_c$ at &lang;k&rang; = 12: 6.97 ($p=1$) and 19.76 ($p=2$), against simulated $\\lambda_f$ of 5.74-5.95 and 13.4-14.1. The linear threshold is an upper bound and the sweep ignites below it, which is the expected direction.",
+        "<b>Bistability needs a minimum number of neighbours.</b> The window $[\\lambda_b,\\lambda_c]$ narrows as connectivity falls and closes at a critical $k_c(p)$: relative width 1.93 at &lang;k&rang; = 96 falling to 0.0027 at &lang;k&rang; = 6 for $p=1$. $k_c$ <i>decreases</i> with p, so higher-order coupling makes bistability more robust to sparsity, not less.",
+        "<b>Clustering is lost connectivity, and this is what replaces S13's C*.</b> $k_{\\rm eff}$ is read straight off the observed spread of the neighbour sums, with no free parameter and without estimating $\\rho$ separately. The critical clustering is then not a measured threshold but the point where $k_{\\rm eff}(C)$ crosses $k_c(p)$.",
+        "<b>The same formula explains E5's finite-size confound.</b> For an Erdos-Renyi graph the neighbourhood overlap is $\\langle k\\rangle/n$, so a small random graph already has correlated neighbourhoods and a reduced $k_{\\rm eff}$. E5's rerun with n-matched controls confirms it: 72% of the reported collapse of the bistable window was finite size, not clustering."],
+     "extra": '<h3>Is r<sub>i</sub> actually Rician? A direct test of the closure, independent of any threshold</h3>'
+              + csv_table(ROOT / "data" / "s14_rician_validation.csv",
+                  cols=["k", "n", "R", "r_mean_obs", "r_mean_rice", "var_obs", "var_pred",
+                        "var_ratio", "ks_p"],
+                  rename={"k": "&lang;k&rang;", "r_mean_obs": "&lang;r_i&rang; observed",
+                          "r_mean_rice": "&lang;r_i&rang; Rice", "var_obs": "variance observed",
+                          "var_pred": "variance predicted", "var_ratio": "ratio", "ks_p": "KS p"},
+                  fmt="{:.4f}")
+              + '<h3>Theory table</h3>' + csv_table(ROOT / "data" / "s14_theory.csv",
+                  cols=["p", "k", "lam_b_inf", "lam_b_closure", "lam_b_asymptotic", "lam_c_forward",
+                        "rel_window", "ratio_closure", "ratio_asymptotic", "k_crit"],
+                  rename={"k": "&lang;k&rang;", "lam_b_inf": "lam_b (all-to-all)",
+                          "lam_b_closure": "lam_b (closure)", "lam_b_asymptotic": "lam_b eq.(4)",
+                          "lam_c_forward": "lam_c", "rel_window": "rel. window",
+                          "ratio_closure": "ratio, closure", "ratio_asymptotic": "ratio, eq.(4)",
+                          "k_crit": "k_c(p)"}, fmt="{:.4f}")
+              + '<h3>Measured against predicted, random regular and Erdos-Renyi</h3>'
+              + csv_table(ROOT / "data" / "s14_measured_summary.csv", fmt="{:.4f}")
+              + '<h3>Clustering: the measured effective connectivity</h3>'
+              + csv_table(ROOT / "data" / "s14_clustering_summary.csv", fmt="{:.4f}"),
+     "figures": [fig("figures/s14_finite_connectivity.png",
+                     "Panel 1: the ratio lambda_b/lambda_b(all-to-all) against mean degree. Solid lines are equation (4), dashed lines the full closure, dots the simulation with error bars over 5 seeds; the four colours are the four herding exponents. Panel 2: the same data multiplied by &lang;k&rang; so the prediction is a flat line at (p+2)/2, marked dotted. Panel 3: the effective connectivity measured from the neighbour sums against clustering, with the critical connectivity k_c and the synthetic and real-market clustering values marked. Panel 4: the predicted and measured fold against clustering.",
+                     "Panel 2 is the test: the quantity plotted is flat only if the correction really goes as 1/&lang;k&rang; with coefficient (p+2)/2, and a wrong exponent would make it drift. Panels 3 and 4 convert S13's measured clustering threshold into a predicted one by routing clustering through a single effective-connectivity number.")]},
 ]
 
 REFS = [
@@ -626,6 +676,15 @@ REFS = [
     ("Leyva et al., Local predictors of explosive synchronization with ordinal methods (2025)", "../references/05_early_warning/ordinal_predictors2025__2501.05202.pdf"),
     ("Scheffer et al., Early-warning signals for critical transitions, Nature (2009)", "../references/05_early_warning/scheffer2009__nature_08227.pdf"),
     ("Chen, Petukhov & Wang, The dark side of circuit breakers", "../references/06_finance/chen_petukhov_wang2018_dark_side_circuit_breakers.pdf"),
+    ("Zou & Wang, Generalized Kuramoto model with nonlinear coupling: bifurcation and stability, PRE 102, 012219 (2020) — the r^p family, five years earlier", "../references/10_prior_art_adaptive/zou_wang2020_nonlinear_coupling_bifurcation.pdf"),
+    ("Skardal & Arenas, Higher-order interactions promote abrupt synchronization switching, Commun. Phys. 3 (2020) — the p = 2 corner", "../references/03_higher_order/skardal_arenas2020__1909.08057.pdf"),
+    ("Xu et al., Collective dynamics of heterogeneously and nonlinearly coupled phase oscillators, PRR 3, 043004 (2021)", "../references/10_prior_art_adaptive/xu2021_nonlinear_coupling__2105.03894.pdf"),
+    ("Dutta et al., A double explosive Kuramoto transition in hypergraphs, PRR 7, L022049 (2025)", "../references/10_prior_art_adaptive/dutta2025_double_explosive_hypergraphs__2412.18897.pdf"),
+    ("Dutta, Pal & Hens, Generalized adaptation-induced non-universal synchronization transitions in random hypergraphs (2025)", "../references/10_prior_art_adaptive/adaptation_hypergraphs2025__2507.18421.pdf"),
+    ("Kumpeerakij & Restrepo, Self-consistent analysis of the Kuramoto model with higher-order interactions (2026)", "../references/10_prior_art_adaptive/selfconsistent_hoi2026__2605.24701.pdf"),
+    ("Miranda, Frasca & Estrada, Topologically-induced suppression of explosive synchronization, Chaos 33, 053103 (2023)", "../references/10_prior_art_adaptive/miranda2023_topological_suppression__2301.08000.pdf"),
+    ("Early warning signals for stock market crashes, EPJ Data Science (2024) — recurrence networks, validated in sample", "../references/06_finance/ews_market_crashes_epjds2024.pdf"),
+    ("Pang & Lin, Market state transitions and crash early warning in the Chinese stock market, Front. Phys. (2025)", "../references/06_finance/pang_lin2025_market_states.pdf"),
 ]
 
 
@@ -635,14 +694,23 @@ def summary_card() -> str:
 <h2>Bottom line</h2>
 <div class="grid2">
 <div><h3>What holds up</h3><ol>
-<li><b>A closed-form threshold family (S13, new).</b> With gain alpha_i = r_i^p the fold solves exactly:
-<b>R*(p) = sqrt(p/(p+2))</b> and <b>lambda_b(p) = gamma(p+2)((p+2)/p)^(p/2)</b>. One expression spans
-plain Kuramoto (p&rarr;0, 2&gamma;), pairwise herding (p=1, 3&radic;3&gamma;) and the 3-body hypergraph
-case (p=2, 8&gamma;). Simulated/predicted ratio is flat at 1.105 &plusmn; 0.055 across a 2.1x range of
-thresholds.</li>
-<li><b>A critical clustering (S13, new).</b> <b>C* &asymp; 0.35</b>: above it the bistable window closes.
-Synthetic ER (C = 0.030) sits far below, the real market correlation network (C = 0.731) sits 2.1x
-above. This explains E5 rather than merely reporting it.</li>
+<li><b>The finite-connectivity law for the fold (S14, new).</b> Treating the local order parameter as
+a <b>Rician</b> variable rather than replacing it by R gives
+<b>&lambda;<sub>b</sub>(p, &lang;k&rang;) = &gamma;(p+2)((p+2)/p)<sup>p/2</sup> [1 + (p+2)/2&lang;k&rang;]</b>.
+The bracket is new, has no free parameter, and its coefficient (p+2)/2 is exact both symbolically and
+numerically. It predicts the measured fold to <b>0.05%</b> at &lang;k&rang; = 48 and to 0.6-3.7% at
+&lang;k&rang; = 12, and it accounts for the ~10% offset S11 and S13 could only report. The same closure
+gives a <b>second threshold that exists only at finite connectivity</b>, hence a <b>critical
+connectivity k<sub>c</sub>(p)</b> below which bistability is impossible at any coupling, and it absorbs
+clustering into a single <b>effective connectivity</b> k<sub>eff</sub> = k/(1+(k&minus;1)&rho;).</li>
+<li><b class="bad">S13's two "new" results did not survive, and the correction is recorded (S13, S14).</b>
+The threshold family is <b>Zou &amp; Wang, PRE 102, 012219 (2020)</b> with &alpha; = p+1: their stability
+bound r&sup2; &ge; (&alpha;&minus;1)/(&alpha;+1) <i>is</i> R*(p)&sup2;. The p = 2 corner is Skardal &amp;
+Arenas, Commun. Phys. 3 (2020), whose PDF was already in this repository. S13's own measurement could
+not have supported the claim either: its coupling grid quantised the reported ratio in steps of 4.09%,
+so the "flatness" of 0.055 was 1.3 grid steps wide. C* &asymp; 0.35 was confounded by the same fixed
+grid no longer containing the transition above C &asymp; 0.5. What survives is the qualitative claim,
+now derived in S14 instead of measured.</li>
 <li><b>Exact thresholds (S11).</b> For Lorentzian frequencies the herding model is solvable in closed
 form: the cubic &lambda;R&sup3; &minus; &lambda;R + 2&gamma; = 0 folds at R* = 1/&radic;3, giving
 <b>&lambda;<sub>b</sub> = 3&radic;3&thinsp;&gamma;</b>. The residual 12% against simulation is the
@@ -659,15 +727,21 @@ propagation theory does not cover them.</li>
 that produces fat tails or volatility clustering at all; inertia widens the bistable window 3.6x.</li>
 </ol></div>
 <div><h3>What did not hold up</h3><ul>
-<li><b>The model's own network is wrong (E5).</b> Real market networks are an order of magnitude more
-clustered than the synthetic ER graph every crash result uses, and <b>the bistable window essentially
-vanishes on them</b> (gap 0.793 &rarr; 0.17). S4 and S5, the two most novel items, both depend on that
-window existing. <b>This is the most serious result here.</b></li>
+<li><b>The model's own network is wrong, but by less than was claimed (E5, corrected).</b> The bistable
+window does collapse on networks estimated from real returns, and S4 and S5 both depend on that window,
+so the direction of the result stands. But the magnitude was overstated: an <b>n-matched</b> control,
+which E5 originally listed as an untested caveat, shows that a <i>random</i> graph at the real networks'
+own size already drops the gap from 0.793 to 0.396. <b>72% of the reported collapse was finite size,
+not clustering</b>; the structural effect is a further 40% on top. Reading C against a size-matched
+baseline &lang;k&rang;/n rather than against a single n = 400 graph, the real excess clustering is
+<b>3.8x</b>, not 24x. S14 explains why the two effects are the same effect: in a small random graph
+neighbourhoods overlap by necessity, so k<sub>eff</sub> falls for the same reason clustering lowers
+it.</li>
 <li><b>No early warning, at any timescale, and it is not usable (E1, E7, E8).</b> On daily data no
 indicator beats ordinary peaks. At 1-minute resolution over 2.3M bars the raw AUC is 0.911, but
-<b>volatility-matched it is 0.526</b> [0.340, 0.712]. Out of sample the best detector needs <b>77 false
-alarms per crash caught</b>, and co-movement with volatility removed is the <b>worst</b> of three
-detectors. The timescale objection is answered and E1 survives it.</li>
+<b>volatility-matched it is 0.526</b> [0.340, 0.712]. Out of sample co-movement needs <b>77.6 false
+alarms per crash caught</b>; <b>plain volatility is the better detector</b> (65.2 at the same 1% budget)
+and co-movement with volatility removed is the <b>worst</b> of the three (274.5). The timescale objection is answered and E1 survives it.</li>
 <li><b>&lambda; cannot be measured (A3).</b> R<sub>eq</sub>(&lambda;) is a step function, so 97.2% of
 market-days carry no information about &lambda;, and a monotone transform cannot beat its own indicator.
 The headline recommendation is withdrawn.</li>
@@ -754,6 +828,7 @@ table.fit th, table.fit td {{ white-space:normal }}
 .tbl th {{ white-space:normal; vertical-align:bottom }}
 table.fit td:first-child {{ min-width:150px }}
 th {{ color:var(--muted); font-weight:600 }} td.pos {{ color:var(--new); font-weight:700 }} td.negv {{ color:var(--neg); font-weight:700 }}
+b.bad, .bad {{ color:var(--neg) }}
 .note {{ background:var(--soft); padding:10px 14px; border-radius:8px }}
 .starthere {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-top:16px }}
 .sh {{ display:block; padding:13px 15px; border:1px solid var(--line); border-radius:9px;
@@ -768,7 +843,7 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
 <div class="starthere">
 <a class="sh" href="reference.html"><b>Build the model from one oscillator</b><span>The whole model in the order you would discover it: each step shows where the previous one breaks and adds exactly one term. Every assumption listed.</span></a>
 <a class="sh" href="../simulation/index.html"><b>Interactive simulation</b><span>Watch a crash spread node by node through the network. Click any desk to see its own numbers in the locking inequality.</span></a>
-<a class="sh" href="MODEL_REFERENCE.md"><b>Reference text</b><span>Equations, all 41 assumptions, what should be removed, what should be added and whether it measurably helped.</span></a>
+<a class="sh" href="RESEARCH_IDEAS.md"><b>Research ideas</b><span>What is still open, keyed paper by paper to the prior art, with what would have to be computed for each.</span></a>
 </div></header>
 <nav><div class="in"><a href="#summary"><span>★</span>Bottom line</a><a href="#glossary"><span>§</span>Symbols</a>{nav}<a href="#refs"><span>¶</span>References</a></div></nav>
 <main>

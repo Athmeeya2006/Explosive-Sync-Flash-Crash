@@ -9,7 +9,7 @@ High-performance numerical framework for simulating synchronization transitions 
 | **Interactive simulation** of a crash spreading through the network, with every control explained | [`simulation/index.html`](simulation/index.html) |
 | **The model built up from one oscillator**, each term motivated, every assumption listed | [`research/reference.html`](research/reference.html) |
 | **All results**: reproductions, negative results, real-data tests | [`research/index.html`](research/index.html) |
-| **Reference text**: equations, 41 assumptions, what to remove, what to add | [`research/MODEL_REFERENCE.md`](research/MODEL_REFERENCE.md) |
+| **What is still open**, keyed paper by paper to the prior art, with the compute each idea needs | [`research/RESEARCH_IDEAS.md`](research/RESEARCH_IDEAS.md) |
 
 The `research/` directory supersedes the original `python/` and `cpp/` layers for every scientific
 claim. See the corrections below.
@@ -18,13 +18,14 @@ claim. See the corrections below.
 
 | | result |
 |---|---|
-| **NEW: closed-form threshold family** | With gain `alpha_i = r_i^p` the fold solves exactly: `R*(p) = sqrt(p/(p+2))`, `lambda_b(p) = gamma(p+2)((p+2)/p)^(p/2)`. One expression spans plain Kuramoto (p->0, `2*gamma`), pairwise herding (p=1, `3*sqrt(3)*gamma`) and the 3-body hypergraph case (p=2, `8*gamma`). Simulated/predicted ratio flat at 1.105 +- 0.055 (S13) |
-| **NEW: critical clustering** | `C* ~= 0.35`: above it the bistable window closes. Synthetic ER sits at 0.030, the real market correlation network at 0.731, i.e. 2.1x above. This explains why the model's central phenomenon is absent on real networks (S13) |
-| **Exact threshold** | For Lorentzian frequencies the herding model solves in closed form: `lambda_b = 3*sqrt(3)*gamma`, fold at `R* = 1/sqrt(3)` (S11) |
-| **The jump is real** | It grows with system size, 0.183 at N=125 to 0.486 at N=4000, so it is not a finite-size artifact (S11) |
+| **NEW: finite-connectivity law for the fold** | `lambda_b(p, <k>) = gamma(p+2)((p+2)/p)^(p/2) * [1 + (p+2)/(2<k>)]`. The bracket is new and has no free parameter: it comes from treating the local order parameter `r_i` as a Rician variable (the modulus of a sum of `k_i` unit vectors) instead of replacing it by `R`. The coefficient `(p+2)/2` is exact. The same closure predicts a **critical connectivity** `k_c(p)` below which bistability does not exist at all (S14) |
+| *Prior art, previously misattributed here* | The all-to-all family `R*(p) = sqrt(p/(p+2))`, `lambda_b(p) = gamma(p+2)((p+2)/p)^(p/2)` is **not new**. It is Zou & Wang, Phys. Rev. E 102, 012219 (2020) with `alpha = p+1`; their stability condition `r^2 >= (alpha-1)/(alpha+1)` is identical. The `p=2` corner is Skardal & Arenas, Commun. Phys. 3 (2020). S13's novelty claim is withdrawn (S14) |
+| **NEW: clustering is lost connectivity** | Clustering correlates the phases inside a neighbourhood, which inflates the Rician scale and is equivalent to an **effective degree** `k_eff = <k>/(1 + (<k>-1) rho)`. The bistable window closes when `k_eff` falls below `k_c(p)`, so the critical clustering `C*` is predicted rather than measured. S13's measured `C* ~= 0.35` rested on a fixed coupling grid that no longer contained the transition above `C ~ 0.5`; S14 re-measures it without a grid (S14, S13) |
+| **Exact threshold** (known result, correctly reproduced) | For Lorentzian frequencies the herding model solves in closed form: `lambda_b = 3*sqrt(3)*gamma`, fold at `R* = 1/sqrt(3)`. This is the `p=1` member of the Zou & Wang (2020) family; S11 derived it independently but it is not new. The 12% residual against simulation is what S14 now predicts from first principles (S11, S14) |
+| **The jump is real** | It grows with system size, 0.183 at N=125 to 0.486 at N=4000, so it is not a finite-size artifact. Caveat: 3 seeds per size and the trend is not monotone (the N=2000 mean dips to 0.277), so read it as a trend, not a curve (S11) |
 | **What causes it** | Not a frequency-degree rank correlation: the *tail* of g(omega) must match the tail of P(k) (S8c) |
-| **On real networks it nearly vanishes** | Market networks are 10x more clustered than the synthetic ER graph every result uses, and the bistable window collapses from 0.793 to 0.17 (E5) |
-| **No usable early warning** | Across 23 markets daily, 730 days hourly and 2.3M minute bars: volatility-matched AUC 0.526, and out of sample the best detector needs 77 false alarms per crash caught (E1, E7, E8) |
+| **On real networks the window collapses, but mostly for a boring reason** | The bistable window does collapse on networks estimated from real returns (gap 0.793 to 0.24), so the direction holds. But an **n-matched control**, which E5 previously listed as an untested caveat, shows a *random* graph at the real networks' own size already drops it to 0.396: **72% of the collapse is finite size, not clustering**, and the structural effect is a further 40% on top. Against a size-matched baseline `C_rand = <k>/(n-1)` the real excess clustering is **3.8x**, not 24x. S14 explains why the two are the same effect (E5, S14) |
+| **No usable early warning** | Across 23 markets daily, 730 days hourly and 2.3M minute bars: volatility-matched AUC 0.526, and out of sample co-movement needs **77.6** false alarms per crash caught. **Plain volatility is the better detector** (65.2 false alarms per catch at the same 1% alarm budget), and co-movement with volatility regressed out is the worst of the three (274.5) (E1, E7, E8) |
 | **lambda cannot be measured** | R_eq(lambda) is a step function, so 97% of market-days carry no information about it (A3) |
 
 ### Data sources
@@ -54,9 +55,9 @@ need with pyarrow, and delete the download.
 
 ## Key Technical Achievements
 
-- **30x Simulation Speedup**: Rewrote the core ODE integration loop from Python (`scipy.integrate.solve_ivp`, adaptive RK45) into a hand-tuned C++ RK4 engine operating on sparse adjacency lists. For $N=400$ oscillators on an ER network ($p=0.05$, $K=2.0$, $T=50$), wall-clock time dropped from 4.50s to 0.15s per ensemble, enabling parameter sweeps that previously took hours to complete in minutes.
+- **C++ and Python engines, measured honestly**: the core ODE loop exists in both a hand-tuned C++17 RK4 engine over sparse adjacency lists and a vectorised NumPy/SciPy path. For $N=400$ on an ER network ($p=0.05$, $K=2.0$, $T=50$, $dt=0.05$) the measured wall-clock times are **2.15s (C++) against 2.98s (Python)**, of which 1.52s of the Python figure is interpreter and library import. Per right-hand-side evaluation C++ is about **1.6x faster** (0.54ms against 0.87ms), but SciPy's adaptive RK45 needs only 1,568 evaluations against the fixed-step RK4's 4,000, so on pure compute the Python path is currently the faster of the two. An earlier version of this README claimed a 30x speedup (0.15s against 4.50s); that number is not reproducible and has been withdrawn.
 - **16x System-Size Scaling**: Extended simulation capacity from $N=50$ to $N=800$ oscillators per ensemble, running 5 independent replica seeds at each parameter point. This 16x increase in system size made finite-size scaling analysis tractable and allowed direct comparison against analytical mean-field predictions.
-- **Quantitative Recovery of Critical Coupling**: Finite-size scaling across 5 system sizes and 21 coupling values per sweep successfully recovered the theoretical mean-field critical coupling $K_c = \sqrt{8/\pi} \approx 1.5957$ for the Kuramoto model on all-to-all topologies. Empirical steady-state order parameters converged to within 2% of this analytical bound.
+- **Finite-size scaling pipeline**: sweeps across 5 system sizes and up to 21 coupling values per sweep, 5 replica seeds per point. Note the correction: this layer normalises the coupling by $k_i$, and on a sparse ER graph at $\langle k\rangle \approx 10$ the measured onset sits near $K \approx 2$, not at the all-to-all mean-field value $K_c = \sqrt{8/\pi} \approx 1.5957$ (measured steady-state order: 0.126 at $K=1.0$, 0.209 at $K=1.596$, 0.852 at $K=2.5$). An earlier version of this README claimed convergence to within 2% of $K_c$; that claim is withdrawn.
 - **95% Test Coverage with 27 Unit Tests**: Built a test suite of 27 tests across 3 modules covering network generation, ODE integration correctness, order parameter bounds, CSV round-trip fidelity, and end-to-end script execution. Achieved 95% line coverage as measured by `pytest-cov`.
 - **Automated CI/CD across 3 Python Versions**: Deployed GitHub Actions pipelines running the full test suite, static type checking (mypy), and linting (ruff) against Python 3.10, 3.11, and 3.12. A separate job builds the C++ CLI from source and runs a deterministic smoke test validating output row count.
 - **Lyapunov Stability Analysis Pipeline**: Implemented the variational Benettin algorithm to compute the largest Lyapunov exponent (LLE) across coupling sweeps, providing a quantitative dynamical-systems diagnostic for the onset of chaos and synchronization transitions that goes beyond order-parameter heuristics.
@@ -117,7 +118,6 @@ explosive-sync-flash-crash/
 │   │   ├── flash_crash.cpp/hpp   # Coupling-drop dynamics
 │   │   ├── order_param.cpp/hpp   # R(t) computation
 │   │   └── main.cpp              # CLI argument parser (210 lines)
-│   └── include/
 ├── python/                       # 1,350+ lines of analysis + plotting
 │   ├── analysis/
 │   │   ├── generate_networks.py
@@ -127,8 +127,7 @@ explosive-sync-flash-crash/
 │   │   ├── early_warning.py
 │   │   ├── flash_crash_sim.py
 │   │   ├── hysteresis_sweep.py
-│   │   ├── lyapunov_analysis.py
-│   │   └── percolation_analysis.py
+│   │   └── lyapunov_analysis.py
 │   ├── plots/                    # 7 publication-quality plot scripts
 │   │   ├── plot_order_param.py
 │   │   ├── plot_finite_size.py
@@ -224,14 +223,18 @@ python python/plots/plot_flash_crash.py --input data/flash_crash.csv --out figur
 
 Runtime depends on $N$, integration step size, and network density. Typical timings for a standard scenario ($N=400$, ER network $p=0.05$, $K=2.0$, $T=50$, $dt=0.05$, i.e. 1,000 integration steps):
 
-| Implementation | Integrator | Runtime | Notes |
-| --- | --- | --- | --- |
-| C++ (O2, adjacency list) | RK4, fixed-step | ~0.15s | 30x faster than Python |
-| Python (SciPy, csr_matrix) | RK45, adaptive | ~4.50s | Baseline implementation |
+| Implementation | Integrator | RHS evaluations | Wall clock | Compute only |
+| --- | --- | --- | --- | --- |
+| C++ (O2, adjacency list) | RK4, fixed-step | 4,000 | 2.15s | 2.15s |
+| Python (SciPy, csr_matrix) | RK45, adaptive | 1,568 | 2.98s | 1.46s (1.52s is imports) |
+
+Per right-hand-side evaluation the C++ engine is about 1.6x faster (0.54ms against 0.87ms). The
+adaptive integrator needs 2.6x fewer evaluations, so the two roughly cancel: C++ wins by ~1.4x on
+wall clock and loses on pure compute. Re-measure on your own hardware before quoting either number.
 
 The C++ backend stores the network as a vector of adjacency lists (`vector<vector<int>>`), avoiding the overhead of dense $N \times N$ matrix storage. The Python layer uses SciPy's `csr_matrix` for the same reason. Both approaches reduce memory from $O(N^2)$ to $O(N + E)$, where $E$ is the edge count.
 
-For a full parameter sweep (5 system sizes, 21 coupling points, 5 replicas = 525 runs), the C++ backend completes in roughly 80 seconds compared to an estimated 40 minutes on the Python path.
+A full parameter sweep at the script defaults is 5 system sizes x 21 coupling points x 5 replicas = 525 runs. The committed `data/finite_size.csv` is **not** that sweep: it is a 9-row smoke output (3 sizes, 3 couplings) written by an older version of the script, and its `n,k,order` header no longer matches the `n,k,order_mean,order_std` the script now emits, so the two plot scripts that consume it fail. Regenerate it with `make data` before plotting.
 
 To benchmark locally, time the analysis and plotting steps separately:
 
@@ -324,7 +327,7 @@ All scripts accept `--seed` to reproduce networks and initial conditions. The fi
 
 ## Data and figures
 
-`data/` and `figures/` directories are used to store generated outputs. We provide a `make data` target to regenerate all standard analysis data files, and `make figures` to produce all 7 diagnostic plots. Please avoid committing generated CSVs or figures to the repository.
+`data/` and `figures/` hold generated outputs. `make data` regenerates the standard analysis data files and `make figures` produces the diagnostic plots. Generated CSVs and figures should not be committed; the ones currently tracked are legacy and several are stale (see the finite-size note above, and note that the tracked `data/flash_crash.csv` peaks at R = 0.30, i.e. shows no crash, while a fresh run of the documented command gives R = 0.851 before the drop and 0.068 after).
 
 ## Citations
 

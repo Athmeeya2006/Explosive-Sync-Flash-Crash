@@ -94,6 +94,30 @@ PAPERS: list[tuple[str, str, str]] = [
     ("mitra2018_nodal_robustness", "07_novelty_checks", "Identifying nodal properties that are crucial for the dynamical robustness of multi-stable networks"),
     ("resilience_targeted_attacks2019", "07_novelty_checks", "Resilience of networks of multi-stable chaotic systems to targetted attacks"),
     ("subsystem_resetting_kuramoto2026", "07_novelty_checks", "Analytical approach to subsystem resetting in generalized Kuramoto models"),
+    # --- 10: prior art for the r_i^p threshold family (S13's novelty claim, withdrawn in S14) and
+    #         for the finite-structure corrections S14 computes. zou_wang2020 is the decisive one:
+    #         its alpha = p+1 and its stability bound r^2 >= (alpha-1)/(alpha+1) IS R*(p)^2 = p/(p+2).
+    ("xu2021_nonlinear_coupling", "10_prior_art_adaptive", "Collective dynamics of heterogeneously and nonlinearly coupled phase oscillators"),
+    ("generic_criterion_es2022", "10_prior_art_adaptive", "Generic criterion for explosive synchronization in heterogeneous phase oscillator populations"),
+    ("dutta2025_double_explosive_hypergraphs", "10_prior_art_adaptive", "A double explosive Kuramoto transition in hypergraphs"),
+    ("adaptation_hypergraphs2025", "10_prior_art_adaptive", "Generalized Adaptation-Induced Non-universal Synchronization Transitions in Random Hypergraphs"),
+    ("selfconsistent_hoi2026", "10_prior_art_adaptive", "Self-consistent analysis of the Kuramoto model with higher-order interactions"),
+    ("miranda2023_topological_suppression", "10_prior_art_adaptive", "Topologically-induced suppression of explosive synchronization"),
+]
+
+# Open-access sources that are NOT on arXiv, fetched by direct URL. Each is verified to be a PDF
+# before it is written, exactly as the arXiv path is.
+DIRECT: list[tuple[str, str, str, str]] = [
+    # (key, folder, title, url)
+    ("zou_wang2020_nonlinear_coupling_bifurcation", "10_prior_art_adaptive",
+     "Dynamics of the generalized Kuramoto model with nonlinear coupling: Bifurcation and stability",
+     "https://harvest.aps.org/v2/journals/articles/10.1103/PhysRevE.102.012219/fulltext"),
+    ("ews_market_crashes_epjds2024", "06_finance",
+     "Early warning signals for stock market crashes: empirical and analytical insights utilizing nonlinear methods",
+     "https://epjdatascience.springeropen.com/counter/pdf/10.1140/epjds/s13688-024-00457-2.pdf"),
+    ("pang_lin2025_market_states", "06_finance",
+     "Market state transitions and crash early warning in the Chinese stock market",
+     "https://www.frontiersin.org/journals/physics/articles/10.3389/fphy.2025.1647667/pdf"),
 ]
 
 
@@ -138,6 +162,12 @@ ID_HINTS: dict[str, str] = {
     "johnson2013_ultrafast": "1309.3869",
     "bouchaud2010_endogenous": "1009.2928",
     "pazo2005": "cond-mat/0412456",
+    "xu2021_nonlinear_coupling": "2105.03894",
+    "generic_criterion_es2022": "2206.04207",
+    "dutta2025_double_explosive_hypergraphs": "2412.18897",
+    "adaptation_hypergraphs2025": "2507.18421",
+    "selfconsistent_hoi2026": "2605.24701",
+    "miranda2023_topological_suppression": "2301.08000",
     "dorfler_bullo2014": "1402.2593",
     "acebron2005": "cond-mat/0506113",
     "synchronization_market_asymmetry2006": "physics/0604137",
@@ -231,6 +261,32 @@ def main() -> None:
             print(f"[error] {key}: {exc}")
             rows.append({"key": key, "folder": folder, "title": found_title, "status": f"error: {exc}",
                          "arxiv_id": base_id, "first_author": author})
+
+    for key, folder, title, url in DIRECT:
+        out_dir = HERE / folder
+        out_dir.mkdir(parents=True, exist_ok=True)
+        existing = list(out_dir.glob(f"{key}__*.pdf")) + list(out_dir.glob(f"{key}.pdf"))
+        if existing:
+            print(f"[skip] {key}")
+            rows.append({"key": key, "folder": folder, "title": title, "status": "present",
+                         "arxiv_id": "", "first_author": ""})
+            continue
+        pdf_path = out_dir / f"{key}.pdf"
+        try:
+            req = urllib.request.Request(url, headers=UA)
+            with urllib.request.urlopen(req, timeout=180) as resp:
+                data = resp.read()
+            if not data.startswith(b"%PDF"):
+                raise ValueError("response is not a PDF")
+            pdf_path.write_bytes(data)
+            time.sleep(2.0)
+            print(f"[ok] {key} -> {pdf_path.name}  (direct)")
+            rows.append({"key": key, "folder": folder, "title": title, "status": "downloaded",
+                         "arxiv_id": "", "first_author": ""})
+        except Exception as exc:
+            print(f"[error] {key}: {exc}")
+            rows.append({"key": key, "folder": folder, "title": title, "status": f"error: {exc}",
+                         "arxiv_id": "", "first_author": ""})
 
     with open(HERE / "index.csv", "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=["key", "folder", "arxiv_id", "first_author", "status", "title"])

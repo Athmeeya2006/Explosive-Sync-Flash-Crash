@@ -1,4 +1,47 @@
-"""S13 - Two NEW hypotheses, derived here and tested here.
+"""S13 - Two hypotheses that were claimed as new here. BOTH CLAIMS HAVE SINCE BEEN CORRECTED.
+
+================================================================================================
+READ THIS FIRST. See research/s14_finite_connectivity.py, which supersedes both results below.
+
+H1 IS NOT NEW. The family lam_b(p) = gamma (p+2) ((p+2)/p)^(p/2), R*(p) = sqrt(p/(p+2)) is
+   Zou & Wang, Phys. Rev. E 102, 012219 (2020), who study a mean-field force K r^alpha, i.e. exactly
+   this model with alpha = p + 1. Their published stability condition is r^2 >= (alpha-1)/(alpha+1),
+   which IS R*(p)^2 = p/(p+2), and they already name the threshold K_b. The p = 2 corner is separately
+   exact in Skardal & Arenas, Commun. Phys. 3 (2020) (K1_desync = 2 sqrt(2 K_23) - K_23 gives 8 at
+   K1 = 0, with r = 1/sqrt(2)); that PDF was already in references/03_higher_order/. The equivalence
+   between r_i^2 coupling and a 3-body interaction is stated in Xu et al., PRR 3, 043004 (2021).
+
+H1's MEASUREMENT COULD NOT HAVE SUPPORTED THE CLAIM EITHER. The grid below is
+   linspace(0.45*pred, 1.8*pred, 34), whose step is 4.09% OF THE PREDICTION AT EVERY p. The 12 runs
+   therefore produce only three distinct ratio values and the reported "flatness" of 0.055 is 1.3 grid
+   steps wide, so it could not have resolved the (p+2)/2 trend that S14 shows is really there. The
+   quoted "1.105 +- 0.055" is also mislabelled: the sd over the 12 points is 0.035, and 0.055 is the
+   range of the four per-p means. Separately, transition_points() reads lam_b off where R crosses 0.5,
+   while the theory's own fold amplitude R*(p) moves from 0.447 (p=0.5) to 0.707 (p=2), so at p = 0.5
+   the fold sits BELOW the detection level and the estimator's bias varies with p across exactly the
+   range where p-independence was asserted. S14 bisects for the fold instead, with no grid.
+
+H2's C* IS CONFOUNDED BY THE COUPLING RANGE. h2_job below uses a FIXED grid linspace(2, 11, 31) at
+   every clustering level, but lam_f rises with clustering: 5.9-6.5 at C=0.014, 6.8-7.7 at C=0.354,
+   then 8.0/11.0/NaN at C=0.503, and NaN for ALL THREE SEEDS at C = 0.586, 0.641, 0.682. Above
+   C ~ 0.5 the transition has left the scanned box, so the small max_gap reported there means only
+   that both branches stayed incoherent. The only clustering level above C* with a measured transition
+   is C = 0.354 itself. The prior art cited below for this (Chaos 33, 053103, 2023) is also a
+   different mechanism: a degree-biased Laplacian on trees and Cayley graphs, with the result being
+   about CYCLE LENGTH, long cycles suppressing strongly and triangles behaving erratically.
+
+WHAT SURVIVES. The qualitative statement that clustering closes the window. S14 derives it instead of
+   measuring it, by showing clustering acts entirely through an effective connectivity
+   k_eff = k / (1 + (k-1) rho), and the critical clustering is where k_eff crosses a critical
+   connectivity k_c(p) that the same closure predicts.
+
+This script is kept unchanged, and running it reproduces the flawed numbers, so the record is
+auditable. Do not cite it for novelty.
+================================================================================================
+
+Original header follows.
+
+S13 - Two NEW hypotheses, derived here and tested here.
 
 Everything else in this repository either reproduces known work or reports a negative result. These two
 are positive, quantitative and new, and this script exists to try to break them.

@@ -46,6 +46,7 @@ FIG.mkdir(exist_ok=True)
 
 TARGET_DEG = 12.0          # match the synthetic benchmark so kappa is the only thing that differs
 MARKETS = ("us_sp500", "uk_ftse100", "jp_largecap", "de_dax")
+MIN_NAMES = 40             # usable constituents required; Germany (30 names) cannot support a graph
 F_HERD, SIGMA, DT = 1.0, 0.3, 0.05
 LAMS = np.linspace(1.5, 6.5, 26)
 SEEDS = (71, 72)
@@ -76,7 +77,14 @@ def stats(net: Network, kind: str, market: str) -> dict:
     return {"market": market, "kind": kind, "n": net.n, "edges": int(net.ei.size // 2),
             "mean_deg": float(k.mean()), "kappa": float((k ** 2).mean() / k.mean() ** 2),
             "k_max": int(k.max()), "cv_k": float(k.std() / k.mean()),
-            "clustering": float(nx.average_clustering(g)), "assortativity": assort}
+            "clustering": float(nx.average_clustering(g)),
+            # For an Erdos-Renyi graph C -> <k>/(n-1), so a small network is clustered for free.
+            # The quantity that matters is the EXCESS over that size-matched baseline; comparing a
+            # real n=65 graph against a synthetic n=400 one inflates the apparent effect.
+            "clustering_random": float(k.mean() / (net.n - 1)),
+            "clustering_excess": float(nx.average_clustering(g) - k.mean() / (net.n - 1)),
+            "clustering_ratio": float(nx.average_clustering(g) / max(k.mean() / (net.n - 1), 1e-12)),
+            "assortativity": assort}
 
 
 def build_networks(px: pd.DataFrame) -> dict[str, np.ndarray]:
@@ -120,7 +128,11 @@ def main() -> None:
         px = pd.read_pickle(f)
         px = px.drop(columns=[c for c in ("__INDEX__",) if c in px.columns], errors="ignore")
         px = px.dropna(axis=1, thresh=int(0.9 * len(px)))
-        if px.shape[1] < 60:
+        if px.shape[1] < MIN_NAMES:
+            # An earlier version had this cut at 60 and said nothing, which silently dropped Japan
+            # (56 usable names) and Germany (30) while the write-up still claimed four markets.
+            print(f"[skip] {market}: only {px.shape[1]} names survive the 90% coverage filter "
+                  f"(need {MIN_NAMES})", flush=True)
             continue
         nets = build_networks(px)
         for kind in ("corr", "leadlag"):
@@ -140,6 +152,25 @@ def main() -> None:
                                   "d_lam": lf - lb if np.isfinite(lf) and np.isfinite(lb) else np.nan,
                                   "max_gap": float(np.max(res["bwd"] - res["fwd"])),
                                   "dR_jump": float(np.max(np.diff(res["fwd"])))})
+
+    # n-MATCHED synthetic controls: one ER graph per real network, at that network's own n and <k>.
+    # E5 previously compared real networks (n = 65 to 335) against a single n = 400 ER graph and
+    # listed "the real networks are smaller" as an untested caveat. This tests it.
+    real_shapes = [(r["market"], r["kind"], r["n"], r["mean_deg"]) for r in rows]
+    for market, kind, n_real, k_real in real_shapes:
+        net = make_network("er", int(n_real), float(k_real), seed=71)
+        rows.append(stats(net, f"ER matched to {kind}", f"{market}-nmatched"))
+        for seed in SEEDS:
+            rng = np.random.default_rng(seed)
+            p = Params(omega=gaussian_omegas(net.n, rng), adaptive=rng.random(net.n) < F_HERD,
+                       sigma=SIGMA, norm="mean")
+            res = hysteresis(net, p, LAMS, dt=DT, seed=seed, t_relax=20.0, t_measure=20.0)
+            lf, lb = transition_points(res)
+            hyst_rows.append({"market": f"{market}-nmatched", "kind": f"ER matched to {kind}",
+                              "seed": seed, "lam_f": lf, "lam_b": lb,
+                              "d_lam": lf - lb if np.isfinite(lf) and np.isfinite(lb) else np.nan,
+                              "max_gap": float(np.max(res["bwd"] - res["fwd"])),
+                              "dR_jump": float(np.max(np.diff(res["fwd"])))})
 
     # synthetic benchmarks on the same footing
     for kind, topo in (("synthetic ER", "er"), ("synthetic BA", "ba")):
@@ -163,8 +194,12 @@ def main() -> None:
     hy.to_csv(DATA / "e5_hysteresis.csv", index=False)
 
     print("\n===== structure: real vs synthetic (mean degree matched at 12) =====")
-    print(st.groupby("kind")[["n", "mean_deg", "kappa", "cv_k", "clustering", "assortativity"]]
+    print(st.groupby("kind")[["n", "mean_deg", "kappa", "cv_k", "clustering", "clustering_random",
+                              "clustering_excess", "clustering_ratio", "assortativity"]]
           .mean().to_string(float_format=lambda v: f"{v:8.3f}"), flush=True)
+    print("\n  clustering_random = <k>/(n-1) is what an Erdos-Renyi graph of the SAME size gives for"
+          "\n  free. clustering_ratio is the excess over it, and that is the number to read against"
+          "\n  S14's k_eff, not the raw C against a single n = 400 benchmark.", flush=True)
     print("\n===== does the bistable window survive on a real network? =====")
     print(hy.groupby("kind")[["lam_f", "lam_b", "d_lam", "max_gap", "dR_jump"]].mean()
           .to_string(float_format=lambda v: f"{v:8.3f}"), flush=True)
