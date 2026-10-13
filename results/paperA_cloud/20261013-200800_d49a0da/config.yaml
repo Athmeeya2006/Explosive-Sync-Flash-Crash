@@ -1,0 +1,19 @@
+id: paperA_cloud
+note: run on a cloud machine outside `esfc run`; this file records the settings stated in docs/CLOUD_RUN_2026-10-13.md
+code_commit: d49a0da
+frequencies: Lorentzian quantiles, clipped at 60, permuted with seed + 7000
+dt: 0.02
+sigma: 0
+fold:
+  script: experiments/fold.py
+  estimator: esfc.continuation.measure_fold
+  t_relax: 240
+  files: [fold_k24.jsonl, fold_k12_k48_n16000.jsonl]
+branch:
+  script: experiments/branch_sim.py
+  lam_over_lam_b_inf: 1.25
+  t_burn: 150
+  t_measure: 250
+  start: fully synchronised
+  reference: all-to-all kernel, same frequencies and N (kind = mf)
+  files: [branch_runs.jsonl, branch_summary.csv]

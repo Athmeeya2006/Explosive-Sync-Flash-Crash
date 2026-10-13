@@ -148,6 +148,7 @@
   <div class="grp">After the audit</div>
   <a href="#s26">26. Audit: what is unverified</a>
   <a href="#s27">27. Rotating neighbours and the echo</a>
+  <a href="#s28">28. Testing the idea away from the fold</a>
 </nav>
 
 <main>
@@ -484,7 +485,7 @@
   <div class="note fail"><h5>Where this leaves us</h5>
     <p>All of the above tells you how to <em>use</em> an A. It says nothing about where a <em>real</em> A
     would come from, and every graph in the table is invented. That is assumption 15, it is load-bearing,
-    and step 7 is the honest answer to it.</p></div>
+    and step 7 is the answer to it.</p></div>
 </section>
 
 <!-- ============================================================= 5B -->
@@ -596,7 +597,7 @@
   <p>The construction, which is the part worth getting right:</p>
   <ol class="steps">
     <li>Build the <b>bipartite</b> matrix H, managers &times; stocks, entry = portfolio weight. This is
-    already the honest structure that the bipartite trader-by-asset extension, item A13 in step 24, proposed for assumption 29.</li>
+    already the structure that the bipartite trader-by-asset extension, item A13 in step 24, proposed for assumption 29.</li>
     <li>Project it to a manager-manager graph. The naive projection, <b>cosine similarity of holdings</b>,
     measures who owns the same things, which is exposure overlap rather than imitation.</li>
     <li>The projection you actually want uses <b>changes</b>: correlate &Delta;H across quarters, so an
@@ -669,14 +670,14 @@
   </ul>
   <p>All of these measure attention to <em>assets</em>, not to other traders' order flow, so they fit the
   bipartite trader-by-asset form of item A13 rather than the trader-to-trader A. They are also the only tier where
-  "i watches j but j does not watch i" is directly observable, which is the one honest test of
+  "i watches j but j does not watch i" is directly observable, which is the one direct test of
   assumption 9 available for free.</p>
 
   <h4>Choosing between them</h4>
   <div class="tw"><table>
     <tr><th>what you want</th><th>use</th><th>cost</th><th>the catch</th></tr>
     <tr><td>a network today, reproducing step 19</td><td>tier 1, corr and leadlag</td><td>free</td><td>it is an asset network, and corr is partly circular</td></tr>
-    <tr><td>a network of <b>traders</b>, structurally honest</td><td>tier 2, 13F changes, lagged</td><td>free</td><td>quarterly: structure only, never timing</td></tr>
+    <tr><td>a network of <b>traders</b>, structurally faithful</td><td>tier 2, 13F changes, lagged</td><td>free</td><td>quarterly: structure only, never timing</td></tr>
     <tr><td>the model's own timescale</td><td>tier 3, ITCH or 1-minute bars</td><td>free to moderate</td><td>participants are anonymous; you must cluster orders into strategies</td></tr>
     <tr><td>the true A</td><td>tier 4, CAT or RTS 22</td><td>permission, not money</td><td>you will not get it without an institutional route</td></tr>
     <tr><td>"watches" in the literal sense</td><td>tier 5, EDGAR logs</td><td>free</td><td>attention to issuers, not to desks; ends 2017</td></tr>
@@ -934,7 +935,7 @@
   multiplying the coupling by an agreement that is less than one weakens it, so the market resists for
   longer, and then gives way all at once. The resistance and the violence are the same mechanism seen from
   two sides.</p>
-  <div class="note why"><h5>Two honest caveats about those thresholds</h5>
+  <div class="note why"><h5>Two caveats about those thresholds</h5>
     <p>&lambda;<sub>f</sub> and &lambda;<sub>b</sub> are defined in the code as the first grid point at
     which R crosses 0.5 (<code>transition_points</code> in <code>model.py</code>). The level 0.5 is
     arbitrary, which is assumption 37, and the grid here is 0.125 wide, so neither number is resolved
@@ -1180,7 +1181,7 @@
     &tau;* = f(&lambda;/&lambda;<sub>b</sub>) / &Delta;&omega;
     <small>The halt must be <b>longer</b> the more herded the market is, and <b>shorter</b> the more
     diverse its trading horizons are. Too short and it re-crashes on resumption.</small></div>
-  <div class="note fail"><h5>Honest accuracy</h5>
+  <div class="note fail"><h5>Accuracy</h5>
     <p>This theory reproduces the trend but sits <b>16 to 44% below</b> the simulated boundary, and halts
     largely stop working near &lambda;<sub>f</sub>, where noise re-triggers the crash regardless. This is
     the most novel part of the repository and also the least precise.</p></div>
@@ -1258,7 +1259,7 @@
     finally becomes visible in the observable that E2 actually measures.</small></div>
   <p>Simulating this confirms the mechanism and the formula (measured crash co-movement rises 0.0001 to
   0.0955 as &sigma;<sub>c</sub> goes 0 to 0.8, tracked by &lang;u&rang;&sup2; within about a factor of two).
-  Then comes the decisive number:</p>
+  Then comes the number that matters:</p>
   <div class="note win"><h5>E2 had no power</h5>
     <p>Recomputing E2's own gap statistic <b>on the repaired model</b> gives 0.0002 to 0.0028 at every
     &sigma;<sub>c</sub>. E2's detection bound was 0.013. <b>Even with the mapping fixed, the model predicts
@@ -1615,13 +1616,13 @@
     <tr><td>A4</td><td>square-root impact</td><td><b>0</b></td><td>replaces the linear law with the empirically established one</td></tr>
     <tr><td>A5</td><td>inertia</td><td>1 param</td><td>hysteresis <em>without</em> needing &omega; &prop; k; inventory limits</td></tr>
     <tr><td>A6</td><td>phase lag (Sakaguchi)</td><td>1 param</td><td>reaction delay, lead-lag structure</td></tr>
-    <tr><td>A7</td><td>explicit time delay</td><td>1 param</td><td>more honest than a lag for millisecond markets</td></tr>
+    <tr><td>A7</td><td>explicit time delay</td><td>1 param</td><td>more faithful than a lag for millisecond markets</td></tr>
     <tr><td>A8</td><td>triadic herding, made explicit</td><td>0</td><td>the r<sub>i</sub>&sup2; coupling already <em>is</em> a 3-body interaction</td></tr>
     <tr><td>A9</td><td>contrarians</td><td>1 param</td><td>the most obviously missing economic actor</td></tr>
     <tr><td>A10</td><td>asymmetric herding</td><td>1 param</td><td>crashes faster than melt-ups; the leverage effect</td></tr>
     <tr><td>A11</td><td>co-evolving network</td><td>2</td><td><b>done, reject.</b> Rewiring toward desks that agree <em>reduces</em> global synchrony (R 0.926 to 0.712): homophily fragments the network into like-minded clusters. An echo chamber, not an amplifier</td></tr>
     <tr><td>A12</td><td>multilayer</td><td>2</td><td><b>done, reject.</b> Best stylised-fact score but <b>destroys the bistable window</b> (gap 0.789 to 0.465, &lambda;<sub>b</sub> undefined). Improves the fit by removing the phenomenon</td></tr>
-    <tr><td>A13</td><td>bipartite trader &times; asset</td><td>1</td><td><b>done, no effect.</b> Structurally the honest choice for assumption 29, but every stylised fact is slightly worse and co-movement is unchanged</td></tr>
+    <tr><td>A13</td><td>bipartite trader &times; asset</td><td>1</td><td><b>done, no effect.</b> Structurally the correct choice for assumption 29, but every stylised fact is slightly worse and co-movement is unchanged</td></tr>
     <tr><td>A14</td><td><b>estimate &lambda; from data</b></td><td>analysis</td><td><b>highest value.</b> Every result is stated relative to &lambda;<sub>b</sub>, yet &lambda; has never been measured in a real market</td></tr>
     <tr><td>A15</td><td>intraday data</td><td>analysis</td><td><b>done: 2.3M one-minute bars, 2002-2026.</b> Unmatched AUC 0.911, but volatility-matched <b>0.526</b>. E1's null was not a resolution artifact</td></tr>
     <tr><td>A16</td><td>estimate the real network</td><td>analysis</td><td><b>done, and it is the most serious result here: see step 19.</b> The bistable window essentially vanishes on real market networks</td></tr>
@@ -1724,7 +1725,7 @@
   synchronisation carries no predictive information, its control parameter cannot be measured even in
   principle, and the bistable window that its most novel results depend on is a property of an unclustered
   synthetic graph rather than of a market. As a study of explosive synchronisation it works well, and the
-  honest summary of the whole project is that it is a clean piece of nonlinear dynamics that was calibrated
+  fair summary of the whole project is that it is a clean piece of nonlinear dynamics that was calibrated
   against the wrong network and asked to do a job the mathematics forbids.</p>
   <p>What would change that verdict is not another term in the equation. It is a connectivity matrix
   estimated from data in which the nodes are trading desks rather than stocks, which is step 7, and an
@@ -1873,7 +1874,7 @@
     every hand-typed number on the results page with one read from a file.</li>
     <li><b>Search the literature systematically</b> for any existing finite-degree result for
     local-order-parameter coupling, before claiming novelty.</li>
-    <li><b>Run the decisive measurement.</b> Random regular graphs across a range of k and p, several
+    <li><b>Run the deciding measurement.</b> Random regular graphs across a range of k and p, several
     system sizes, many seeds, fold extrapolated to infinite size, compared against both the Rician
     closure and a cavity calculation. There are three possible outcomes, and each is a legitimate
     result: the cavity theory closes the gap; neither theory matches and the measured coefficient
@@ -1995,6 +1996,144 @@
   in real markets is mostly one-way or mostly mutual is not something this project has measured, and
   the corrected data tests in section B1 of the results page still find no usable warning signal from
   synchrony.</p>
+</section>
+
+<!-- ============================================================= 28 -->
+<section id="s28">
+  <h2>Step 28 &middot; After the audit</h2>
+  <h3>Testing the idea where it is easy to test: the synchronised branch, not the fold</h3>
+  <p>Step 27 ended with a theory that makes two different predictions, one for one-way graphs and one for
+  two-way graphs, and a pilot that could only half decide between them. This step records the measurement
+  that settled the one-way case, how two independent sets of runs were checked against each other, and
+  what is still open. As in steps 26 and 27, no measured value is quoted here. The numbers, with their
+  confidence intervals, are in section P2 of <a href="index.html#p2">research/index.html</a>, and a
+  one-screen summary is the first card on that page.</p>
+
+  <h4>1. Why the fold is a bad place to look</h4>
+  <p>Everything so far compared theories at the fold, the coupling at which a locked crash falls apart.
+  Three things make that comparison blunt.</p>
+  <div class="tw"><table>
+    <tr><th>problem at the fold</th><th>why it hurts</th></tr>
+    <tr><td><b>The fold differs from network to network</b></td>
+        <td>two networks built the same way give folds that differ by a few percent, and this scatter
+        shrinks slowly with system size. The quantity of interest is the fold's shift times k, so the
+        scatter is multiplied by k as well</td></tr>
+    <tr><td><b>Finding a fold needs a decision</b></td>
+        <td>each trial asks "did the locked state survive?", which depends on how long you wait and on
+        the level you call survival</td></tr>
+    <tr><td><b>The expansion misbehaves there</b></td>
+        <td>desks on the verge of unlocking respond without limit to a small push. The series in 1/k
+        therefore has a next term of relative size 1/&radic;k, far larger than the usual 1/k, so the
+        leading coefficient is approached slowly</td></tr>
+  </table></div>
+
+  <h4>2. The same theory makes a prediction above the fold</h4>
+  <p>The calculation of step 27 never used the fact that the market sits at the fold. It expands the
+  self-consistency of the locked state to second order in the 1/&radic;k scatter of the neighbour
+  average, and that expansion holds at every coupling at which a locked state exists. Away from the
+  fold it gives something simpler than a shifted threshold: a shifted <em>level</em> of synchrony.</p>
+  <div class="eq">k &times; (R &minus; R<sub>0</sub>) &nbsp;&rarr;&nbsp; c(&lambda;) &nbsp;=&nbsp;
+    &lang;a<sub>2</sub>&rang; / (1 &minus; z<sub>0</sub>&prime;(h) &lambda; (p+1) R<sub>0</sub><sup>p</sup>)
+    <small>R is the synchrony when each desk watches k others. R<sub>0</sub> is the synchrony at the same
+    coupling when every desk watches every other desk. h = &lambda; R<sub>0</sub><sup>p+1</sup> is the
+    locking field, z<sub>0</sub>(h) = (&radic;(1 + h&sup2;) &minus; 1)/h is the all-to-all response, and
+    &lang;a<sub>2</sub>&rang; is the second-order term. The denominator is the usual feedback factor: a
+    small loss of synchrony weakens the field, which loses a little more synchrony, and so on. It goes to
+    zero at the fold, which is exactly why the fold is so sensitive.</small></div>
+  <p>The three treatments of step 27 differ only in what goes into &lang;a<sub>2</sub>&rang;:</p>
+  <div class="tw"><table>
+    <tr><th>treatment</th><th>neighbour scatter that enters &lang;a<sub>2</sub>&rang;</th><th>applies to</th></tr>
+    <tr><td><b>Rician closure</b></td><td>all of it, treated as frozen</td><td>claimed for both graph types</td></tr>
+    <tr><td><b>Dynamic theory</b></td><td>the frozen part, plus the rotating part weighted by the filter
+        &mu;&sup2;/(&mu;&sup2; + W&sup2;) of step 27</td><td>one-way graphs</td></tr>
+    <tr><td><b>Dynamic theory with echo</b></td><td>the same, plus the reaction term</td><td>two-way graphs</td></tr>
+  </table></div>
+  <p>c is negative in all three: watching only k desks lowers the synchrony of a locked market. The
+  treatments disagree about <em>how much</em>, by a factor large enough to measure.</p>
+
+  <h4>3. How it is measured</h4>
+  <ol class="steps">
+    <li>Fix the coupling at a set multiple of the all-to-all fold, comfortably above it.</li>
+    <li>Start every desk at the same phase, let the system settle, then average R over a long window.</li>
+    <li>Do the same with the all-to-all model on <b>exactly the same frequencies and the same number of
+    desks</b>. Call the result R<sub>0</sub>.</li>
+    <li>Report k &times; (R &minus; R<sub>0</sub>) and repeat over independently built networks.</li>
+  </ol>
+  <div class="note why"><h5>Why the reference is measured and not computed</h5>
+  <p>R<sub>0</sub> is known in closed form for an ideal Lorentzian. The simulation uses a finite sample
+  of frequencies with the extreme tails clipped, which moves R<sub>0</sub> slightly. That offset is
+  tiny, but it is multiplied by k. Measuring R<sub>0</sub> on the same frequencies removes it from the
+  difference. The price is that the reference is a single run shared by every seed, so its own error
+  does not average down and is not in the error bars.</p></div>
+  <p>Compared with the fold this is a much better-behaved measurement: no bisection, no survival
+  decision, a time average over a stationary state, and a run-to-run spread that is small compared with
+  the gap between the theories.</p>
+
+  <h4>4. A new requirement: neighbourhoods must not overlap</h4>
+  <p>The theory assumes the desks you watch are independent of each other. In a random graph with N
+  desks, the k desks you watch each watch k more, and the chance that these second-level sets share
+  members is governed by k&sup2;/N. When that ratio is not small, your neighbours are fed by overlapping
+  audiences, their errors are correlated, and the measured shift moves away from the prediction. The
+  runs showed this directly: a point at large k and modest N disagreed, and agreed once N was raised.
+  The practical rule is to keep k&sup2;/N well below 1, which makes large k expensive, since N has to
+  grow as k&sup2;.</p>
+
+  <h4>5. Checking two sets of runs against each other</h4>
+  <p>The branch measurement came from a second set of simulations run on a different machine. Before
+  using them, four things were checked, and each check is repeated automatically every time the results
+  page is built.</p>
+  <ul>
+    <li><b>The summary table equals the raw runs.</b> Every cell is recomputed from the per-run file.</li>
+    <li><b>No run is counted twice.</b></li>
+    <li><b>The second machine reproduces the first.</b> Both sets measured the fold on the same graph
+    types and connectivities with different seeds, sizes and waiting times. Their answers agree within
+    the combined uncertainty.</li>
+    <li><b>Predictions come from stored results.</b> The fold predictions do. The branch predictions do
+    not yet: they were printed by the second machine and copied, and the page says so.</li>
+  </ul>
+
+  <h4>6. What the measurement says</h4>
+  <ul>
+    <li><b>One-way graphs: the dynamic theory is confirmed and the closure is excluded.</b> The measured
+    shift sits on the dynamic prediction at every connectivity tried, with no adjustable number, and
+    far from the closure's. It does not drift with k, which is what a correct leading-order coefficient
+    should do.</li>
+    <li><b>Two-way graphs: the echo has the right sign and roughly the right size, but this is not a
+    confirmation.</b> The shift is larger than on one-way graphs, as the echo requires, and it comes
+    close to the prediction at intermediate k. It is far from it at small k, and it moves away again
+    at the largest k, where neighbourhoods overlap. Each of those points rests on two runs.</li>
+    <li><b>At the fold itself</b> both sets of runs exclude the closure on one-way graphs, but the
+    measured shift is consistently smaller than the leading-order prediction. The leading term is not
+    the whole answer at the connectivities reached.</li>
+  </ul>
+
+  <div class="note fail"><h5>What is not established</h5>
+  <p>The branch was measured at one coupling, so the curve c(&lambda;) has one point on it. The second
+  exponent was run with two seeds. The two-way result needs a scan in system size before the overlap
+  effect can be separated from a real disagreement. The finite-k version of the echo calculation, which
+  exists for the fold, has not been carried to the branch. And the earlier closure's other predictions,
+  a minimum connectivity for bistability and the reading of clustering as lost connectivity, were
+  derived from the treatment this step shows to be wrong, so they have to be re-derived before they are
+  tested.</p></div>
+
+  <h4>7. Where this goes next</h4>
+  <ol class="steps">
+    <li>Trace the whole curve c(&lambda;) on one-way graphs for several exponents with more seeds. This is
+    the central figure.</li>
+    <li>Scan system size at large k on both graph types to measure the overlap effect instead of
+    avoiding it.</li>
+    <li>Compute the echo at finite k on the branch, where it can be compared with cheap simulations.</li>
+    <li>Predict where the branch ends at finite k by solving the self-consistency without expanding
+    about the all-to-all fold, and compare with the measured folds.</li>
+    <li>Return to minimum connectivity and clustering with the corrected theory.</li>
+  </ol>
+
+  <h4>8. What it means for the market reading</h4>
+  <p>The statement of step 27 stands and is now better supported on its one-way half: in the model, a
+  locked crash is held more firmly when attention is one-way than the old formula allowed, because much
+  of the disagreement a desk sees among the desks it watches is fast rotation that it cannot follow.
+  Nothing here changes the empirical side. The corrected tests on market data in section B1 still find
+  no usable warning from synchrony.</p>
 </section>
 
 </main>

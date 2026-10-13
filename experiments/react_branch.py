@@ -1,7 +1,6 @@
-import numpy as np
 from esfc import cavity
 from esfc.closure import lam_b_inf
-import branch_theory as bt
+import branch_theory as bt  # same directory
 
 def react_branch(lam, p):
     c = bt.constants(lam, p)

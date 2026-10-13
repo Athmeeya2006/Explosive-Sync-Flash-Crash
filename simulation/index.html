@@ -293,7 +293,7 @@
     peak buying, &theta; = &minus;90&deg; is peak selling, and &theta; = 0&deg; or 180&deg; means flat.
     The market-wide imbalance that moves the price is the average,
     <b>Q = &lang;sin &theta;<sub>i</sub>&rang;</b>.</p>
-    <p>This is why colour is the honest readout: a red node is <i>selling right now</i>, a cyan node is
+    <p>This is why colour is the reliable readout: a red node is <i>selling right now</i>, a cyan node is
     buying. A calm market looks dark because most desks sit near q = 0 and cancel each other out.</p>
   </div>
 
@@ -628,9 +628,28 @@
     mutual. It is <b>not</b> a quantitative test of the theory: the theory is worked out for a different
     frequency distribution (Lorentzian), no noise, and many neighbours, while this page uses Gaussian
     frequencies, noise, 500 desks and k = 12. The quantitative comparison, with its uncertainties, is in
-    section P1 of <a href="../research/index.html#p1" style="color:var(--cold)">the results page</a>, and
+    sections P1 and P2 of <a href="../research/index.html#p2" style="color:var(--cold)">the results page</a>, and
     the derivation is in <code>docs/THEORY.md</code>. Whether real markets have one-way or two-way
     attention is an empirical question this project has not measured.</p>
+
+    <p><b>Where the quantitative test stands.</b> Since this block was written the theory has been tested
+    in a second way, described in step 28 of
+    <a href="../research/reference.html#s28" style="color:var(--cold)">the reference page</a>. Instead of
+    hunting for the &lambda; at which the crash falls apart, the test holds &lambda; fixed above the
+    threshold and measures how far the locked market's R sits below the value it would have if every
+    desk watched every other desk. You can see the same thing here: lock the market at &lambda; near 5
+    on the two-way network, read R, then switch to the one-way network at the same &lambda;. In the
+    large runs R is higher on the one-way network, because the echo is gone. On this page, with 500
+    desks and noise, expect the same direction but a noisier reading.</p>
+    <ul>
+      <li><b>One-way links:</b> the measured drop in R matches the rotating-neighbour theory with no
+      adjustable number, and rules out the old formula.</li>
+      <li><b>Two-way links:</b> the extra drop from the echo has the predicted sign and roughly the
+      predicted size, but the runs are too few to call it confirmed.</li>
+    </ul>
+    <p>Those statements are about large networks (20,000 desks or more), Lorentzian frequencies and no
+    noise. The numbers and their uncertainties are in section P2 of the results page. This page remains
+    a demonstration and is not evidence for them.</p>
   </div>
 </section>
 

@@ -15,7 +15,7 @@ TP / FP / TN / FN out of sample, for three detectors:
     mean_corr        raw co-movement, the model's observable
     volatility       the confound on its own, as a baseline to beat
     corr | vol       co-movement AFTER regressing out volatility, i.e. the part of synchronization
-                     that is NOT just volatility. This is the honest test of the model's claim.
+                     that is NOT just volatility. This is the direct test of the model's claim.
 
 Protocol. Time-split, never shuffled: thresholds are chosen on 2002-2015 at a fixed alarm budget, then
 applied unchanged to 2016-2026. A crash is counted as caught if an alarm fires in the 60 minutes before

@@ -1,0 +1,8 @@
+{
+ "source": "docs/CLOUD_RUN_2026-10-13.md, section 3. Printed by experiments/branch_theory.py and experiments/react_branch.py on the cloud machine. Not regenerated locally.",
+ "lam_over_lam_b_inf": 1.25,
+ "rows": [
+  {"p": 1.0, "R0": 0.777, "closure": -0.425, "dynamic": -0.266, "dynamic_plus_reaction": -0.670},
+  {"p": 2.0, "R0": null, "closure": -0.340, "dynamic": -0.210, "dynamic_plus_reaction": null}
+ ]
+}

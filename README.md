@@ -10,19 +10,23 @@ Research code for one question in nonlinear dynamics and one in empirical financ
 2. **Finance.** If a market crash is modelled as such a synchronization transition, does synchrony
    measured from prices warn of crashes? This is tested on real data with a design fixed before the corrected run.
 
-**Status: under audit, results are a pilot. No manuscript exists.** An external audit at commit
-`fc98f02` found that several headline claims of the earlier README were not backed by committed data.
-Those claims are withdrawn or marked ([docs/CORRECTIONS.md](docs/CORRECTIONS.md),
-[docs/CLAIMS_AUDIT.md](docs/CLAIMS_AUDIT.md)). Nothing below should be cited as established.
+**Status: one result established, the rest a pilot. No manuscript exists.** An external audit at
+commit `fc98f02` found that several headline claims of the earlier README were not backed by committed
+data. Those claims are withdrawn or marked ([docs/CORRECTIONS.md](docs/CORRECTIONS.md),
+[docs/CLAIMS_AUDIT.md](docs/CLAIMS_AUDIT.md)). Since then one prediction has been confirmed: on directed
+graphs the shift of the synchronised branch matches the dynamic theory and excludes the earlier Rician
+closure. The undirected case is open. See the status card at the top of
+[research/index.html](research/index.html).
 
 ## Start here
 
 | what | where |
 |---|---|
-| All results, with every table explained | [research/index.html](research/index.html) (sections P0, P1, B1 first) |
-| The model built up from one oscillator, and what the audit changed | [research/reference.html](research/reference.html) (step 26) |
+| All results, with every table explained | [research/index.html](research/index.html) (status card, then sections P0, P1, P2, B1) |
+| The model built up from one oscillator, and what the audit changed | [research/reference.html](research/reference.html) (steps 26 to 28) |
 | Interactive demonstration (not evidence) | [simulation/index.html](simulation/index.html) |
 | Derivation of the finite-connectivity theory | [docs/THEORY.md](docs/THEORY.md) |
+| Cloud runs and how they were checked | [docs/CLOUD_RUN_2026-10-13.md](docs/CLOUD_RUN_2026-10-13.md), results page section P2 |
 | Which claim rests on which file | [docs/CLAIM_EVIDENCE.md](docs/CLAIM_EVIDENCE.md) |
 | Prior work and how this differs | [docs/PRIOR_ART.md](docs/PRIOR_ART.md) |
 | What is done and what is open | [docs/PROGRESS.md](docs/PROGRESS.md) |
@@ -64,6 +68,26 @@ Bisection from a synchronised start, relaxation time 480, tolerance 0.2%, Lorent
 | undirected | 2 | 32 | 10000 | 5 | 1.0527 [1.0423, 1.0632] | 1.0630 | 1.69 [1.35, 2.02] | 2.29 | 2.00 |
 | undirected | 2 | 48 | 10000 | 5 | 1.0400 [1.0318, 1.0482] | 1.0419 | 1.92 [1.53, 2.31] | 2.30 | 2.00 |
 
+### Shift of the synchronised branch (cloud runs)
+
+`c = k (R - R0)` at 1.25 times the all-to-all fold, `R0` from the all-to-all model on the same frequencies. Theory is the dynamic theory on directed graphs and dynamic plus reaction on undirected graphs; the theory columns were printed by the cloud run and have not been regenerated locally. Directed graphs, p = 1, k = 12 to 48 pooled: -0.270 +/- 0.009. With two seeds the 95% interval is very wide; those cells are not confirmations. Full discussion: `research/index.html` section P2.
+
+| graph | p | k | N | seeds | c [95% CI] | overlap k^2/N | theory | Rician |
+|---|---|---|---|---|---|---|---|---|
+| directed | 1 | 12 | 20000 | 4 | -0.279 [-0.335, -0.223] | 0.01 | -0.266 | -0.425 |
+| directed | 1 | 24 | 20000 | 4 | -0.267 [-0.328, -0.207] | 0.03 | -0.266 | -0.425 |
+| directed | 1 | 48 | 20000 | 4 | -0.266 [-0.306, -0.226] | 0.12 | -0.266 | -0.425 |
+| directed | 1 | 96 | 20000 | 1 | -0.126 | 0.46 | -0.266 | -0.425 |
+| directed | 1 | 96 | 80000 | 2 | -0.246 [-0.917, 0.426] | 0.12 | -0.266 | -0.425 |
+| directed | 2 | 12 | 20000 | 2 | -0.221 [-0.338, -0.105] | 0.01 | -0.210 | -0.340 |
+| directed | 2 | 24 | 20000 | 2 | -0.190 [-0.724, 0.344] | 0.03 | -0.210 | -0.340 |
+| undirected | 1 | 12 | 20000 | 2 | -0.998 [-1.138, -0.857] | 0.01 | -0.670 | -0.425 |
+| undirected | 1 | 24 | 20000 | 2 | -0.787 [-1.143, -0.430] | 0.03 | -0.670 | -0.425 |
+| undirected | 1 | 24 | 80000 | 1 | -0.777 | 0.01 | -0.670 | -0.425 |
+| undirected | 1 | 48 | 20000 | 2 | -0.678 [-1.061, -0.295] | 0.12 | -0.670 | -0.425 |
+| undirected | 1 | 96 | 20000 | 2 | -0.659 [-1.309, -0.008] | 0.46 | -0.670 | -0.425 |
+| undirected | 1 | 192 | 20000 | 2 | -0.782 [-1.321, -0.243] | 1.84 | -0.670 | -0.425 |
+
 ### Crash warnings on minute data (corrected; design written before the run, not timestamped)
 
 23 stocks, 5972 sessions, 35 intraday crash onsets (12 in the test period after 2016). Primary hypothesis, synchrony beyond volatility (`corr_given_vol` against volatility-matched peaks): AUC 0.587 [0.432, 0.746], corrected p = 0.143; smallest detectable AUC at this sample size 0.70. Not detected, and underpowered.
@@ -88,7 +112,7 @@ Bisection from a synchronised start, relaxation time 480, tolerance 0.2%, Lorent
 | `p = 2` corner as a three-body interaction | Reproduction of Skardal and Arenas (2020), Xu et al. (2021) |
 | Explosive synchronization needs matching tails of g(omega) and P(k) | Reproduction and sharpening of Xu et al., Sci. Rep. 5, 12039 (2015) |
 | Rician closure for the local order parameter, coefficient `(p+2)/2` | Ours, but an **approximation**: exact for the closure, not for the model |
-| Leading 1/k theory separating frozen from rotating neighbour fluctuations, plus the reaction term; different predictions for directed and undirected graphs | Ours, **pilot evidence only**; no equivalent found in a web search of the literature, which is not a full-text search ([docs/PRIOR_ART.md](docs/PRIOR_ART.md)) |
+| Leading 1/k theory separating frozen from rotating neighbour fluctuations, plus the reaction term; different predictions for directed and undirected graphs | Ours. **Confirmed on directed graphs** by the branch-shift test at p = 1; **not confirmed on undirected graphs**; no equivalent found in a web search of the literature, which is not a full-text search ([docs/PRIOR_ART.md](docs/PRIOR_ART.md)) |
 | Critical connectivity below which bistability vanishes; clustering as lost connectivity | **Unverified** closure predictions, not yet measured |
 | Crash-warning tests | Corrected, with the design written before the run but not timestamped ([docs/PREREGISTRATION_B.md](docs/PREREGISTRATION_B.md)); a negative, underpowered result so far |
 

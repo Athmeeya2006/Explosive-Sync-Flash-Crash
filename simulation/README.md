@@ -69,7 +69,8 @@ Parameters: `lam`, `sigma`, `sigmac`, `net` (`er12`|`ba6`), `warmup` (time units
 
 `rr12` and `dir12` differ only in whether watching is mutual. `measure_echo.py` measures the recovery
 threshold on 24 independently generated networks of each kind at the page's settings and writes
-`echo_measurement.js`, which the page reads; no number in block 10 is typed by hand. Realised degree,
+`echo_measurement.js`, which the page reads; no number in block 10 is typed by hand. Block 10 ends with
+the state of the quantitative test (results page section P2, reference page step 28). Realised degree,
 heterogeneity and clustering of each network are printed by `build_network.py` and shown in the page
 header and footer.
 

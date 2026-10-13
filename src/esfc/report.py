@@ -101,6 +101,96 @@ def extrapolate(exp_id: str) -> pd.DataFrame | None:
     return pd.DataFrame(out)
 
 
+CLOUD = "paperA_cloud"
+
+
+def _cloud_dir() -> Path | None:
+    runs = sorted(p for p in (RESULTS / CLOUD).glob("*") if (p / "branch_runs.jsonl").exists())
+    return runs[-1] if runs else None
+
+
+def cloud_run_name() -> str:
+    d = _cloud_dir()
+    return "not run" if d is None else str(d.relative_to(REPO))
+
+
+def cloud_fold_cells() -> pd.DataFrame | None:
+    """Fold coefficient k (ratio - 1) per (graph, p, k, N) from the cloud fold files, Student-t 95% CI."""
+    d = _cloud_dir()
+    if d is None:
+        return None
+    df = pd.concat([pd.read_json(f, lines=True) for f in sorted(d.glob("fold_*.jsonl"))], ignore_index=True)
+    out = []
+    for (kind, p, k, n), g in df.groupby(["kind", "p", "k", "n"]):
+        m, lo, hi, cnt = mean_ci(g.a_meas)
+        out.append({"graph": kind, "p": p, "k": k, "N": n, "n_seeds": cnt, "t_relax": float(g.t_relax.iloc[0]),
+                    "coef": m, "coef_lo": lo, "coef_hi": hi, "se": g.a_meas.std(ddof=1) / np.sqrt(cnt) if cnt > 1 else np.nan})
+    return pd.DataFrame(out)
+
+
+def branch_runs() -> pd.DataFrame | None:
+    """One row per network run of the branch test, with c = k (R - R0). R0 is the all-to-all run with the
+    same frequencies at the same N (the N = 20000 reference is used where no reference was run at that N)."""
+    d = _cloud_dir()
+    if d is None:
+        return None
+    df = pd.read_json(d / "branch_runs.jsonl", lines=True)
+    ref = df[df.kind == "mf"].set_index(["p", "n"]).R
+    x = df[df.kind != "mf"].copy()
+    x["R0"] = [ref.get((p, n), ref.get((p, 20000), np.nan)) for p, n in zip(x.p, x.n)]
+    x["c"] = x.k * (x.R - x.R0)
+    return x
+
+
+def branch_theory() -> dict | None:
+    d = _cloud_dir()
+    f = None if d is None else d / "branch_theory_reported.json"
+    return json.loads(f.read_text()) if f is not None and f.exists() else None
+
+
+def branch_cells() -> pd.DataFrame | None:
+    """One row per (graph, p, k, N) of the branch test: mean c with Student-t 95% CI, overlap k^2/N, predictions."""
+    x = branch_runs()
+    if x is None:
+        return None
+    th = {r["p"]: r for r in (branch_theory() or {"rows": []})["rows"]}
+    out = []
+    for (kind, p, k, n), g in x.groupby(["kind", "p", "k", "n"]):
+        m, lo, hi, cnt = mean_ci(g.c)
+        t = th.get(float(p), {})
+        out.append({"graph": kind, "p": p, "k": k, "N": n, "n_seeds": cnt, "c": m, "c_lo": lo, "c_hi": hi,
+                    "se": g.c.std(ddof=1) / np.sqrt(cnt) if cnt > 1 else np.nan, "overlap": k * k / n,
+                    "theory": t.get("dynamic") if kind == "dir" else t.get("dynamic_plus_reaction"),
+                    "closure": t.get("closure")})
+    return pd.DataFrame(out)
+
+
+def branch_pooled(graph: str, p: float, k_max: int, min_seeds: int = 3) -> tuple[float, float, int, int] | None:
+    """Inverse-variance weighted mean of c over cells with at least `min_seeds` seeds and k <= k_max.
+    Returns (mean, standard error, cells, runs)."""
+    b = branch_cells()
+    if b is None:
+        return None
+    g = b[(b.graph == graph) & np.isclose(b.p, p) & (b.k <= k_max) & (b.n_seeds >= min_seeds)]
+    if g.empty:
+        return None
+    w = 1 / g.se ** 2
+    return float((w * g.c).sum() / w.sum()), float(w.sum() ** -0.5), len(g), int(g.n_seeds.sum())
+
+
+def branch_summary_check() -> float | None:
+    """Largest absolute difference between the stored branch_summary.csv and the means recomputed from the
+    run file. A value at rounding level (5e-5) means the stored table is a faithful summary."""
+    d, b = _cloud_dir(), branch_cells()
+    if d is None or b is None or not (d / "branch_summary.csv").exists():
+        return None
+    s = pd.read_csv(d / "branch_summary.csv")
+    m = b.merge(s, left_on=["p", "graph", "k", "N"], right_on=["p", "kind", "k", "n"], how="outer")
+    if m[["c", "mean"]].isna().any().any():
+        return float("inf")
+    return float((m.c - m["mean"]).abs().max())
+
+
 def md_table(df: pd.DataFrame, fmt: dict[str, str] | None = None) -> str:
     fmt = fmt or {}
     head = "| " + " | ".join(df.columns) + " |\n|" + "---|" * len(df.columns)
@@ -149,4 +239,5 @@ def run_name(exp_id: str) -> str:
 
 
 __all__ = ["RESULTS", "load_summary", "theory_table", "fold_cells", "extrapolate", "md_table", "html_table", "intraday_summary",
-           "run_name"]
+           "run_name", "cloud_run_name", "cloud_fold_cells", "branch_runs", "branch_cells", "branch_pooled",
+           "branch_theory", "branch_summary_check"]

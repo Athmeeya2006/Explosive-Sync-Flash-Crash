@@ -473,7 +473,7 @@ SECTIONS = [
      "findings": ["<b>Real markets are unambiguous: co-movement rises from calm to crash in 23 markets out of 23</b>, median +0.127 (0.229 &rarr; 0.389), from +0.029 (Brazil) to +0.265 (Japan). The unmodified model produces <b>0.000</b>.",
                   "That zero is an identity, not a parameter choice: with independent per-asset noise the correlation is zero at every level of synchrony.",
                   "With the common mode on, crash co-movement rises 0.0001 &rarr; 0.0955 as &sigma;<sub>c</sub> goes 0 &rarr; 0.8, and the closed form &lang;u&rang;&sup2; tracks it within about a factor of two.",
-                  "<b>The decisive number: E2's own gap statistic computed on the repaired model is 0.0002 to 0.0028 at every &sigma;<sub>c</sub>, against E2's detection bound of 0.013.</b> Even with the mapping fixed the predicted effect is roughly four times smaller than the smallest one E2 could have seen.",
+                  "<b>The key number: E2's own gap statistic computed on the repaired model is 0.0002 to 0.0028 at every &sigma;<sub>c</sub>, against E2's detection bound of 0.013.</b> Even with the mapping fixed the predicted effect is roughly four times smaller than the smallest one E2 could have seen.",
                   "So E2's null does <b>not</b> falsify the model's hysteresis. It is a negative result about the test, not the model.",
                   "But one channel is not enough: &sigma;<sub>c</sub> cannot produce a calm-period baseline (0.0006 against a real 0.229), while a common shock in the prices matches the level and produces no crash rise (+0.008 against +0.127). A calibrated model needs both."],
      "figures": [fig("figures/s9_observable_mapping.png",
@@ -514,7 +514,7 @@ SECTIONS = [
                   "<b>Suggestive, not significant.</b> The value of this result is that it identifies a paid intraday feed, rather than more daily data, as the way to settle E1 and E2."],
      "figures": [fig("empirical/figures/e4_intraday.png",
                      "Left: median mean correlation around crash onsets (red) and ordinary peaks (grey), in hourly bars. Right: the equal-weight hourly index with detected events marked.",
-                     "Addresses the strongest objection to the empirical chapters, and shows honestly how far free data can take it.")]},
+                     "Addresses the strongest objection to the empirical chapters, and shows how far free data can take it.")]},
     {"id": "a3", "verdict": "neg", "title": "Can the herding coupling be measured in a real market?",
      "script": "a3_lambda_estimation.py",
      "question": "Every operational claim here is phrased as where lambda sits relative to lambda_b, yet lambda has never been measured. Can it be recovered from observable co-movement?",
@@ -562,7 +562,7 @@ SECTIONS = [
                   "<b>Suggestive, not established.</b> It motivates E7 rather than settling anything."],
      "figures": [fig("empirical/figures/e6_flash_crash.png",
                      "6 May 2010 at one-minute resolution: the equal-weight index, the instantaneous order parameter R, and mean pairwise correlation. The shaded band is 14:32 to 15:08.",
-                     "The first look at this project's actual timescale, and an honest demonstration that a single event cannot answer the question however well resolved it is.")]},
+                     "The first look at this project's actual timescale, and a demonstration that a single event cannot answer the question however well resolved it is.")]},
     {"id": "e7", "verdict": "neg", "title": "Real data: the timescale objection, settled at 1-minute resolution",
      "script": "empirical/e7_minute_event_study.py",
      "question": "E1 and E2 tested daily closes while the model describes intraday synchronization. Was the null result just a resolution artifact?",
@@ -582,7 +582,7 @@ SECTIONS = [
      "setup": "Same protocol as S10: lambda cycles across the bistable window, scored on four stylised facts plus whether the window survives.",
      "findings": ["<b>A11 co-evolving network: reject.</b> Its one notable effect is counter-intuitive. Rewiring toward desks that already agree <i>reduces</i> global synchrony (R 0.926 to 0.712 at a 20% rewire rate), because homophily fragments the network into like-minded clusters. Local order, global disorder: an echo chamber, not an amplifier.",
                   "<b>A12 multilayer: reject.</b> Best stylised-fact score of the three, but it <b>destroys the bistable window</b> (gap 0.465 against 0.789, lambda_b undefined). Same verdict as contrarians in S10: it improves the fit by removing the phenomenon.",
-                  "<b>A13 bipartite trader-asset: no effect.</b> Structurally it is the honest fix for assumption 29, but every stylised fact is slightly worse and crash co-movement is unchanged.",
+                  "<b>A13 bipartite trader-asset: no effect.</b> Structurally it is the correct fix for assumption 29, but every stylised fact is slightly worse and crash co-movement is unchanged.",
                   "None of the three is worth adopting. With S10 that is <b>five of eleven tested extensions rejected on evidence</b>."],
      "figures": [fig("figures/s12_structural.png",
                      "Crash co-movement and excess kurtosis for each variant under both the per-node and bipartite price mappings, against the real-market values; and the bistable window width and hysteresis gap for each.",
@@ -677,14 +677,14 @@ REFS = [
     ("Leyva et al., Local predictors of explosive synchronization with ordinal methods (2025)", "../references/05_early_warning/ordinal_predictors2025__2501.05202.pdf"),
     ("Scheffer et al., Early-warning signals for critical transitions, Nature (2009)", "../references/05_early_warning/scheffer2009__nature_08227.pdf"),
     ("Chen, Petukhov & Wang, The dark side of circuit breakers", "../references/06_finance/chen_petukhov_wang2018_dark_side_circuit_breakers.pdf"),
-    ("Zou & Wang, Generalized Kuramoto model with nonlinear coupling: bifurcation and stability, PRE 102, 012219 (2020) — the r^p family, five years earlier", "../references/10_prior_art_adaptive/zou_wang2020_nonlinear_coupling_bifurcation.pdf"),
-    ("Skardal & Arenas, Higher-order interactions promote abrupt synchronization switching, Commun. Phys. 3 (2020) — the p = 2 corner", "../references/03_higher_order/skardal_arenas2020__1909.08057.pdf"),
+    ("Zou & Wang, Generalized Kuramoto model with nonlinear coupling: bifurcation and stability, PRE 102, 012219 (2020) (the r^p family, five years earlier)", "../references/10_prior_art_adaptive/zou_wang2020_nonlinear_coupling_bifurcation.pdf"),
+    ("Skardal & Arenas, Higher-order interactions promote abrupt synchronization switching, Commun. Phys. 3 (2020) (the p = 2 corner)", "../references/03_higher_order/skardal_arenas2020__1909.08057.pdf"),
     ("Xu et al., Collective dynamics of heterogeneously and nonlinearly coupled phase oscillators, PRR 3, 043004 (2021)", "../references/10_prior_art_adaptive/xu2021_nonlinear_coupling__2105.03894.pdf"),
     ("Dutta et al., A double explosive Kuramoto transition in hypergraphs, PRR 7, L022049 (2025)", "../references/10_prior_art_adaptive/dutta2025_double_explosive_hypergraphs__2412.18897.pdf"),
     ("Dutta, Pal & Hens, Generalized adaptation-induced non-universal synchronization transitions in random hypergraphs (2025)", "../references/10_prior_art_adaptive/adaptation_hypergraphs2025__2507.18421.pdf"),
     ("Kumpeerakij & Restrepo, Self-consistent analysis of the Kuramoto model with higher-order interactions (2026)", "../references/10_prior_art_adaptive/selfconsistent_hoi2026__2605.24701.pdf"),
     ("Miranda, Frasca & Estrada, Topologically-induced suppression of explosive synchronization, Chaos 33, 053103 (2023)", "../references/10_prior_art_adaptive/miranda2023_topological_suppression__2301.08000.pdf"),
-    ("Early warning signals for stock market crashes, EPJ Data Science (2024) — recurrence networks, validated in sample", "../references/06_finance/ews_market_crashes_epjds2024.pdf"),
+    ("Early warning signals for stock market crashes, EPJ Data Science (2024) (recurrence networks, validated in sample)", "../references/06_finance/ews_market_crashes_epjds2024.pdf"),
     ("Pang & Lin, Market state transitions and crash early warning in the Chinese stock market, Front. Phys. (2025)", "../references/06_finance/pang_lin2025_market_states.pdf"),
 ]
 
@@ -899,7 +899,7 @@ written to <code>docs/</code>. No existing simulation code was changed.</li>
 the E7 overnight-gap contamination, the E8 look-ahead and scoring bugs, the E3 missing band-pass step, hand-typed
 numbers on this page.</li>
 <li><b>Phase 3.</b> A systematic prior-art search before any novelty claim.</li>
-<li><b>Phase 4.</b> The decisive measurement: random regular graphs, &lang;k&rang; from 6 to 96, four values of p,
+<li><b>Phase 4.</b> The deciding measurement: random regular graphs, &lang;k&rang; from 6 to 96, four values of p,
 N up to 30,000, 5 seeds first and then 30, with the fold extrapolated to infinite size and a cavity theory
 compared against it. This needs cluster or GPU time.</li>
 <li><b>On hold by decision of the author.</b> Manuscripts. They wait until phase 4 says what is true.</li>
@@ -1128,8 +1128,8 @@ def physics_card() -> str:
         done_n = sorted(int(x) for x in got[0].n.unique())
         missing = [nm for nm, eid in (("the estimator convergence checks", "paperA_convergence"),
                                       ("the all-to-all validation", "paperA_A0")) if report._rows(eid) is None]
-        pilot_note = (f'<p class="note"><b class="bad">Incomplete pilot.</b> The undirected pilot was interrupted when '
-                      f'the session that launched it ended: {len(got[0])} of {planned} planned runs finished, all at N = '
+        pilot_note = (f'<p class="note"><b class="bad">Incomplete pilot.</b> The undirected pilot was interrupted before '
+                      f'completion: {len(got[0])} of {planned} planned runs finished, all at N = '
                       f'{", ".join(str(x) for x in done_n)}. The smaller sizes were never run, so there is no finite-size '
                       f'extrapolation. The directed-graph experiment was run separately and is complete.'
                       + (f' Not yet run: {" and ".join(missing)}.' if missing else "") + '</p>')
@@ -1197,6 +1197,286 @@ neglects loops, degree heterogeneity and second-order terms.</li>
 {t_all}
 {t_ex}
 {validation_blocks()}
+</section>"""
+
+
+def _cloud_tables():
+    """Shared by the status card and section P2: fold cross-check rows and branch rows, all from results/."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    cf, bc = report.cloud_fold_cells(), report.branch_cells()
+    if cf is None or bc is None:
+        return None
+    rk = report.load_summary("paperA_theory_k")
+
+    def th_fold(graph, p_, k):
+        t = report._theory(float(p_))
+        if t is None:
+            return float("nan")
+        if graph == "dir":
+            return t["directed"]
+        hit = [r["reaction_at_k"] for r in (rk["rows"] if rk else []) if abs(r["p"] - float(p_)) < 1e-9 and r["k"] == int(k)]
+        return t["directed"] + hit[0] if hit else t["undirected"]
+
+    cf = cf.assign(source="cloud")
+    loc = [c for c in (report.fold_cells("paperA_A1_pilot"), report.fold_cells("paperA_A7")) if c is not None]
+    if loc:
+        lf = pd.concat(loc, ignore_index=True)
+        from scipy import stats as _st
+        lf = lf.assign(source="local", t_relax=480.0)
+        lf["se"] = [(hi - lo) / (2 * _st.t.ppf(0.975, n - 1)) if n > 1 else float("nan")
+                    for lo, hi, n in zip(lf.coef_lo, lf.coef_hi, lf.n_seeds)]
+        allf = pd.concat([cf, lf[["graph", "p", "k", "N", "n_seeds", "t_relax", "coef", "coef_lo", "coef_hi", "se", "source"]]],
+                         ignore_index=True)
+    else:
+        allf = cf
+    allf["theory"] = [th_fold(g, p_, k) for g, p_, k in zip(allf.graph, allf.p, allf.k)]
+    allf["rician"] = (allf.p + 2) / 2
+    # cloud against local at the same graph, p, k: the cloud cell with the largest N
+    pairs = []
+    for r in allf[allf.source == "local"].itertuples():
+        c = allf[(allf.source == "cloud") & (allf.graph == r.graph) & (allf.p == r.p) & (allf.k == r.k)]
+        if len(c):
+            c = c.sort_values("N").iloc[-1]
+            se = (r.se ** 2 + c.se ** 2) ** 0.5
+            pairs.append({"graph": r.graph, "p": r.p, "k": r.k, "N_local": r.N, "N_cloud": c.N, "local": r.coef,
+                          "cloud": c.coef, "diff": r.coef - c.coef, "se": se, "z": (r.coef - c.coef) / se})
+    return {"fold": allf, "pairs": pd.DataFrame(pairs), "branch": bc, "report": report}
+
+
+def _gname(g: str) -> str:
+    return "undirected (two-way)" if g == "rr" else "directed (one-way)"
+
+
+def status_card() -> str:
+    """Where the project stands today, in one screen. Every number is read from results/."""
+    T = _cloud_tables()
+    if T is None:
+        return ""
+    report, bc = T["report"], T["branch"]
+    pool = report.branch_pooled("dir", 1.0, 48)
+    d1 = bc[(bc.graph == "dir") & (bc.p == 1.0)].iloc[0]
+    und = bc[(bc.graph == "rr") & (bc.p == 1.0) & (bc.N == 20000)].sort_values("k")
+    und_seq = ", ".join(f"{r.c:.2f} at k = {int(r.k)}" for r in und.itertuples())
+    fold = T["fold"]
+    dfold = fold[(fold.graph == "dir") & (fold.p == 1.0)]
+    n_below = int((dfold.coef < dfold.theory).sum())
+    z_c = (pool[0] - d1.closure) / pool[1]
+    z_t = (pool[0] - d1.theory) / pool[1]
+    return f"""
+<section id="status" class="summary">
+<div class="sec-head"><span class="tag">NOW</span><h2>Where the project stands</h2><span class="verdict v-new">one new result</span></div>
+<p>This card is the current state. The older summary below it is kept as a record and is marked where it no
+longer holds. Details, tables and every caveat are in section <a href="#p2">P2</a>.</p>
+<div class="grid2">
+<div><h3>Established</h3><ul class="findings">
+<li><b>On directed graphs the Rician closure is wrong and the dynamic theory is right.</b> The shift of the
+synchronised branch, c = k (R &minus; R<sub>0</sub>), pooled over {pool[2]} connectivities and {pool[3]} runs at
+p = 1, is <b>{pool[0]:.3f} &plusmn; {pool[1]:.3f}</b>. The dynamic theory predicts {d1.theory:.3f} with no free
+parameter ({abs(z_t):.1f} standard errors away). The closure predicts {d1.closure:.3f} ({abs(z_c):.0f} standard errors
+away).</li>
+<li><b>Two independent sets of fold runs agree.</b> The cloud runs and the local runs used different seeds,
+sizes and relaxation times. Their fold coefficients differ by at most
+{T['pairs'].z.abs().max():.1f} combined standard errors across {len(T['pairs'])} comparable cells.</li>
+<li><b>The stored summary is faithful to the raw runs.</b> Recomputing every cell of the branch table from the
+run file reproduces the stored table to {report.branch_summary_check():.0e}.</li>
+</ul></div>
+<div><h3>Not established</h3><ul class="findings">
+<li><b>The reaction (echo) term on undirected graphs.</b> The branch shift at N = 20000 reads {und_seq}. It
+approaches the predicted {und.iloc[0].theory:.2f} near k = 48 to 96 and then moves away again, and every one of
+those cells has only {int(und.n_seeds.min())} seeds.</li>
+<li><b>The fold coefficient on directed graphs.</b> The closure is excluded, but {n_below} of {len(dfold)}
+measured cells at p = 1 lie below the dynamic theory's {dfold.theory.iloc[0]:.2f}. The leading-order number is
+too high at the connectivities reached.</li>
+<li><b>Everything that depended on the closure</b>: the critical connectivity k<sub>c</sub>(p) and the
+effective connectivity for clustered graphs.</li>
+<li><b>Any usable crash warning from synchrony</b> (section <a href="#b1">B1</a>): unchanged, still not
+detected.</li>
+</ul></div></div>
+</section>"""
+
+
+def cloud_card() -> str:
+    T = _cloud_tables()
+    if T is None:
+        return '<section id="p2"><h2>P2 Cloud runs</h2><div class="missing">results not available yet</div></section>'
+    report, fold, pairs, bc = T["report"], T["fold"], T["pairs"], T["branch"]
+
+    def fz(v, ref, se):
+        return "n/a" if pd.isna(se) or pd.isna(ref) else f"{(v - ref) / se:+.1f}"
+
+    t_fold = _tbl(["graph", "p", "k", "N", "source", "seeds", "relaxation time", "coefficient k(ratio&minus;1) [95% CI]",
+                   "standard error", "theory", "Rician closure", "distance from theory (SE)", "distance from Rician (SE)"],
+                  [[_gname(r.graph), f"{r.p:g}", int(r.k), int(r.N), r.source, int(r.n_seeds), f"{r.t_relax:g}",
+                    _ci(r.coef, r.coef_lo, r.coef_hi, 2), f"{r.se:.2f}", f"{r.theory:.2f}", f"{r.rician:.2f}",
+                    fz(r.coef, r.theory, r.se), fz(r.coef, r.rician, r.se)]
+                   for r in fold.sort_values(["graph", "p", "k", "N", "source"]).itertuples()])
+    t_pairs = _tbl(["graph", "p", "k", "local N", "cloud N", "local coefficient", "cloud coefficient",
+                    "difference &plusmn; combined SE", "difference in standard errors"],
+                   [[_gname(r.graph), f"{r.p:g}", int(r.k), int(r.N_local), int(r.N_cloud), f"{r.local:.2f}", f"{r.cloud:.2f}",
+                     f"{r['diff']:+.2f} &plusmn; {r.se:.2f}", f"{r.z:+.1f}"] for _, r in pairs.sort_values(["graph", "p", "k"]).iterrows()])
+    t_branch = _tbl(["graph", "p", "k", "N", "seeds", "c = k(R&minus;R<sub>0</sub>) [95% CI]", "standard error",
+                     "overlap k&sup2;/N", "theory for this graph", "Rician closure", "distance from theory (SE)",
+                     "distance from Rician (SE)"],
+                    [[_gname(r.graph), f"{r.p:g}", int(r.k), int(r.N), int(r.n_seeds), _ci(r.c, r.c_lo, r.c_hi, 3),
+                      "n/a" if pd.isna(r.se) else f"{r.se:.3f}", f"{r.overlap:.2f}",
+                      "n/a" if pd.isna(r.theory) else f"{r.theory:.3f}", f"{r.closure:.3f}",
+                      fz(r.c, r.theory, r.se), fz(r.c, r.closure, r.se)]
+                     for r in bc.sort_values(["graph", "p", "k", "N"]).itertuples()])
+    pool = report.branch_pooled("dir", 1.0, 48)
+    d1 = bc[(bc.graph == "dir") & (bc.p == 1.0)].iloc[0]
+    two = bc[bc.n_seeds == 2]
+    wide = two.assign(w=two.c_hi - two.c_lo)
+    und = bc[(bc.graph == "rr") & (bc.p == 1.0) & (bc.N == 20000)].sort_values("k")
+    k192 = und[und.k == und.k.max()].iloc[0]
+    k96u = und[und.k == 96].iloc[0]
+    d96 = bc[(bc.graph == "dir") & (bc.k == 96)].sort_values("N")
+    runs = report.branch_runs()
+    ref = runs.groupby(["p", "n"]).R0.first()
+    ref_note = "; ".join(f"p = {p_:g}, N = {int(n)}: {v:.5f}" for (p_, n), v in ref.items())
+    r20, r80 = ref.get((1.0, 20000)), ref.get((1.0, 80000))
+    dfold = fold[(fold.graph == "dir") & (fold.p == 1.0)]
+    ufold = fold[(fold.graph == "rr") & (fold.p == 1.0)]
+    u_closer = int(((ufold.coef - ufold.rician).abs() < (ufold.coef - ufold.theory).abs()).sum())
+    return f"""
+<section id="p2" class="summary">
+<div class="sec-head"><span class="tag">P2</span><h2>Independent cloud runs: cross-check of the fold, and a direct test on the synchronised branch</h2><span class="verdict v-new">new result on directed graphs</span></div>
+<p>A second set of simulations was run on a cloud machine with the same compiled kernel
+(<code>esfc.fast</code>) at commit <code>d49a0da</code>, using different seeds, different system sizes and a
+shorter relaxation time than the local runs of section P1. This section does three things: it checks the cloud
+files against each other and against the local runs, it reports a new measurement that tests the theory away
+from the fold, and it states what is and is not established. All numbers are read at build time from
+<code>{report.cloud_run_name()}</code>. Scripts: <code>experiments/fold.py</code>,
+<code>experiments/branch_sim.py</code>, <code>experiments/branch_theory.py</code>,
+<code>experiments/react_branch.py</code>. The original run note is
+<code>docs/CLOUD_RUN_2026-10-13.md</code>.</p>
+
+<h3>Table P2.1. Do the files agree with each other?</h3>
+{_tbl(["check", "result"], [
+    ["Stored branch table (<code>branch_summary.csv</code>) against means recomputed from the run file",
+     f"all {len(bc)} cells reproduced; largest difference {report.branch_summary_check():.0e} (rounding of the stored file)"],
+    ["Duplicate runs in the branch file", f"{int(runs.duplicated(['p', 'kind', 'k', 'n', 'seed']).sum())}"],
+    ["Fold theory values quoted in the run note against <code>" + report.run_name('paperA_theory') + "</code>",
+     "match (table P1.1 is the source used here)"],
+    ["Cloud fold coefficients against local fold coefficients (table P2.3)",
+     f"{len(pairs)} comparable cells, largest difference {pairs.z.abs().max():.1f} combined standard errors"],
+    ["Crash-warning figures quoted in the run note against <code>results/paperB_intraday</code> and <code>results/paperB_daily</code>",
+     "match (compared by hand on 2026-10-14; section B1 reads the same files at build time)"],
+    ["Branch theory values (table P2.4, columns theory and Rician closure)",
+     "<b class='bad'>not regenerated locally</b>. Taken from the run note and stored in <code>branch_theory_reported.json</code>. "
+     "Regenerate with <code>experiments/branch_theory.py</code> and <code>experiments/react_branch.py</code> (numerical integrals, no simulation)"],
+])}
+
+<h3>Table P2.2. Fold coefficient, every cloud and local cell</h3>
+<p>Same quantity as table P1.2: the fold is written as all-to-all fold &times; (1 + a/k) and the table gives
+a = k &times; (ratio &minus; 1). <b>Source</b> says which set of runs the row comes from. <b>Relaxation time</b> is
+how long each bisection step waits before deciding whether the synchronised state survived.
+<b>Theory</b> is the dynamic coefficient on directed graphs and the dynamic coefficient plus the reaction term
+evaluated at that k on undirected graphs. The two <b>distance</b> columns give (measured &minus; predicted) in
+units of the standard error; a value beyond about &plusmn;2 is a disagreement. The 95% interval is a Student-t
+interval over seeds.</p>
+{t_fold}
+
+<h3>Table P2.3. Cloud against local at the same graph, exponent and connectivity</h3>
+<p>For each local cell, the cloud cell with the same graph type, p and k at its largest N. The two sets share
+no seeds, so the difference should be zero within the combined standard error if nothing depends on the
+machine, the seeding scheme, the size or the relaxation time.</p>
+{t_pairs}
+
+<h3>Why the test was moved off the fold</h3>
+<p>The fold is a poor place for a precision test. Its value differs from one network to the next by an amount
+that does not shrink quickly with N, the coefficient multiplies that scatter by k, and the expansion in 1/k is
+not analytic there (the next term is of relative order k<sup>&minus;1/2</sup>). The same second-order expansion
+holds at every point of the stable synchronised branch, where none of this applies. Above the fold the
+self-consistency R = z<sub>0</sub>(&lambda; R<sup>p+1</sup>) + &lang;a<sub>2</sub>&rang;/k gives a finite shift of
+the stationary synchrony:</p>
+<div class="math">k (R &minus; R<sub>0</sub>) &rarr; c(&lambda;) = &lang;a<sub>2</sub>&rang; / (1 &minus; z<sub>0</sub>&prime;(h) &lambda; (p+1) R<sub>0</sub><sup>p</sup>),
+&nbsp; h = &lambda; R<sub>0</sub><sup>p+1</sup></div>
+<p>R<sub>0</sub> is the synchrony of the all-to-all model at the same coupling, and &lang;a<sub>2</sub>&rang; is the
+second-order term of <code>docs/THEORY.md</code> section 3. The three treatments differ only in which neighbour
+scatter enters &lang;a<sub>2</sub>&rang;: all of it (Rician closure), the frozen part plus the filtered rotating part
+(dynamic theory, directed graphs), or that plus the reaction term (undirected graphs). c is negative because
+finite connectivity lowers the synchrony of the branch.</p>
+<p><b>Protocol.</b> Coupling &lambda; = 1.25 &times; the all-to-all fold. Start fully synchronised, relax for 150
+time units, average R over the next 250. R<sub>0</sub> is measured with the all-to-all kernel on the same
+frequencies at the same N, so the frequency clip and the finite frequency sample cancel in the difference.
+Measured references: {ref_note}.</p>
+
+<h3>Table P2.4. Shift of the synchronised branch</h3>
+<p><b>c</b> is the mean over seeds with a Student-t 95% interval. With two seeds that interval is very wide,
+which is the correct statement of what two runs can show; the <b>standard error</b> column is given as well
+because it is what the run note quoted. <b>Overlap k&sup2;/N</b> is the expected number of nodes shared by the
+neighbourhoods of a node's neighbours; when it is not small, neighbour fields are correlated and the theory's
+independence assumption fails. <b>Theory for this graph</b> is the dynamic theory on directed graphs and the
+dynamic theory plus reaction on undirected graphs.</p>
+{t_branch}
+
+<h3>What the branch test shows</h3>
+<ul class="findings">
+<li><b>Directed graphs, p = 1: confirmed.</b> The {pool[2]} cells with {int(d1.n_seeds)} seeds each
+(k = 12, 24, 48) pool to c = <b>{pool[0]:.3f} &plusmn; {pool[1]:.3f}</b>. The dynamic theory's
+{d1.theory:.3f} is {abs((pool[0] - d1.theory) / pool[1]):.1f} standard errors away; the closure's
+{d1.closure:.3f} is {abs((pool[0] - d1.closure) / pool[1]):.0f} standard errors away. There is no fitted
+parameter, and the measured value does not drift with k.</li>
+<li><b>Directed graphs, p = 2: compatible, weakly tested.</b> Two seeds per cell. The point estimates sit on
+the dynamic theory, but the 95% intervals are too wide to count as a second confirmation.</li>
+<li><b>Undirected graphs: suggestive, not confirmed.</b> At N = 20000 the shift is
+{", ".join(f"{r.c:.2f} (k = {int(r.k)})" for r in und.itertuples())} against a prediction of {k96u.theory:.2f}.
+It reaches the prediction only at k = 48 and 96 and departs again at k = {int(k192.k)}. All of these cells have
+two seeds.</li>
+<li><b>The k = 96 undirected point may agree by accident.</b> Its overlap is {k96u.overlap:.2f}. The directed
+run at the same k and N gave {d96.iloc[0].c:.2f}, and moved to {d96.iloc[-1].c:.2f} when N was raised to
+{int(d96.iloc[-1].N)} (overlap {d96.iloc[-1].overlap:.2f}). So at N = 20000 a k = 96 point carries a finite-size
+error of that order, and the undirected point has not been repeated at larger N.</li>
+<li><b>One coupling only.</b> Every run is at 1.25 times the all-to-all fold. This is one point of the branch,
+not the curve c(&lambda;).</li>
+<li><b>The reference is shared.</b> R<sub>0</sub> is one all-to-all run per (p, N). Its error is common to every
+seed, is multiplied by k, and is not in the intervals. The two p = 1 references differ by
+{abs(r20 - r80):.1e}, which is {96 * abs(r20 - r80):.3f} in c at k = 96 and {192 * abs(r20 - r80):.3f} at
+k = 192: small, but not zero.</li>
+</ul>
+
+<h3>What the fold data add</h3>
+<ul class="findings">
+<li><b>Directed fold:</b> the closure's value is excluded in every cell, by both sets of runs. The measured
+coefficient is below the dynamic theory's leading-order {dfold.theory.iloc[0]:.2f} in
+{int((dfold.coef < dfold.theory).sum())} of {len(dfold)} cells at p = 1, so the leading-order number
+overestimates the fold shift at these connectivities.</li>
+<li><b>Undirected fold:</b> the Rician value is closer to the measurement than the new theory in {u_closer} of
+{len(ufold)} cells at p = 1. This is the cancellation described in section P1 (too much scatter, no echo), and
+it is the reason the closure looked right for so long.</li>
+</ul>
+
+<h3>Problems with the cloud run as a record</h3>
+<ul class="findings">
+<li>The runs were launched by hand, outside <code>esfc run</code>, so the directory has no <code>env.txt</code> or
+<code>seeds.json</code>. The settings in its <code>config.yaml</code> were written afterwards from the run note.</li>
+<li>The last four lines of <code>branch_runs.jsonl</code> lack the timing and time-spread fields, so they came
+from an earlier version of the script.</li>
+<li>{len(two)} of {len(bc)} branch cells have two seeds and {int((bc.n_seeds == 1).sum())} have one. The widest
+two-seed interval spans {wide.w.max():.2f} in c.</li>
+<li>The run note states that no local config had results. That was out of date: the directed fold experiment
+is complete locally and the undirected pilot is partial (section P1).</li>
+</ul>
+
+<h3>Next steps, in order</h3>
+<ol>
+<li><b>Lock the directed result.</b> Five couplings (1.1, 1.25, 1.5, 2, 3 times the all-to-all fold), p = 0.5,
+1, 2, 3, k = 12, 24, 48, N = 20000, at least 8 seeds, run through <code>esfc run</code> with a config. This is the
+main figure of the physics paper: three theory curves c(&lambda;) and one set of points.</li>
+<li><b>Decide the undirected case with a size scan.</b> k = 48, 96, 192 at N = 20000, 80000, 320000 on both
+graph types. If the k = 192 point moves to the prediction as the overlap falls, the reaction term is right.</li>
+<li><b>Carry the finite-k reaction calculation to the branch.</b> At k = 12 and 24 the undirected shift is far
+from the asymptote. <code>esfc.cavity.reaction_coefficient_at_k</code> already keeps the node's own response
+nonlinear at the fold; the same calculation at a branch point gives a prediction where simulation is cheap.</li>
+<li><b>Predict the fold instead of expanding around it.</b> Solve the second-order self-consistency at finite k
+for the coupling at which the branch ends, and compare with table P2.2.</li>
+<li><b>Only then</b> revisit the critical connectivity and clustering, both of which were derived from the
+closure.</li>
+<li><b>Store the branch theory as a result.</b> Have the two theory scripts write a <code>summary.json</code> so
+table P2.4 no longer depends on values copied from a note.</li>
+</ol>
 </section>"""
 
 
@@ -1361,6 +1641,20 @@ def write_readme_and_evidence() -> None:
               "frequencies. Coefficient is `k (ratio - 1)`. Both predictions are leading-order and are expected to "
               "fail at small k.", "",
               report.md_table(t, {"p": "g", "closure ratio": ".4f", "theory": ".2f", "Rician": ".2f"}), ""]
+    bc = report.branch_cells()
+    if bc is not None:
+        pool = report.branch_pooled("dir", 1.0, 48)
+        t = pd.DataFrame({"graph": bc.graph.map({"rr": "undirected", "dir": "directed"}), "p": bc.p, "k": bc.k, "N": bc.N,
+                          "seeds": bc.n_seeds, "c [95% CI]": [_ci(a, b, c, 3) for a, b, c in zip(bc.c, bc.c_lo, bc.c_hi)],
+                          "overlap k^2/N": bc.overlap, "theory": bc.theory.astype(float), "Rician": bc.closure.astype(float)})
+        L += ["### Shift of the synchronised branch (cloud runs)", "",
+              "`c = k (R - R0)` at 1.25 times the all-to-all fold, `R0` from the all-to-all model on the same "
+              "frequencies. Theory is the dynamic theory on directed graphs and dynamic plus reaction on undirected "
+              "graphs; the theory columns were printed by the cloud run and have not been regenerated locally. "
+              f"Directed graphs, p = 1, k = 12 to 48 pooled: {pool[0]:.3f} +/- {pool[1]:.3f}. With two seeds the "
+              "95% interval is very wide; those cells are not confirmations. Full discussion: `research/index.html` "
+              "section P2.", "",
+              report.md_table(t, {"p": "g", "overlap k^2/N": ".2f", "theory": ".3f", "Rician": ".3f"}), ""]
     b = report.intraday_summary()
     if b:
         a = b["primary"]
@@ -1383,7 +1677,7 @@ def write_readme_and_evidence() -> None:
     if a_ in txt and b_ in txt:
         readme.write_text(txt[:txt.index(a_) + len(a_)] + "\n" + "\n".join(L) + txt[txt.index(b_):])
     ev = ["# Claim to evidence map", "", "Generated by `research/build_index.py`. One row per claim made on "
-          "`research/index.html` sections P0, P1 and B1 or in `README.md`. The run directory name ends in the git "
+          "`research/index.html` sections P0, P1, P2 and B1 or in `README.md`. The run directory name ends in the git "
           "hash the code was at.", "", "| claim | where shown | code | config | run |", "|---|---|---|---|---|",
           f"| Equation (4) is the correct expansion of the Rician closure | index P0 table A | `research/p0_spot_checks.py` | in script | `research/data/p0_spot_checks.json` |",
           f"| The bisection harness is unbiased in the all-to-all limit | index P0 table B; `tests/test_analytic.py` | `research/p0_spot_checks.py`, `esfc.continuation` | in script | `research/data/p0_spot_checks.json` |",
@@ -1392,6 +1686,10 @@ def write_readme_and_evidence() -> None:
           f"| Freezing all scatter recovers (p+2)/2 exactly | `tests/test_cavity.py` | `esfc.cavity` | n/a | test suite |",
           f"| Measured fold against k on undirected graphs | index P1.2 to P1.4; README; figure p1_fold_coefficient | `esfc.experiments.fold_grid` | `configs/paperA_A1_pilot.yaml` | `{report.run_name('paperA_A1_pilot')}` |",
           f"| Measured fold on directed graphs | index P1.2; figure p1_fold_coefficient | `esfc.experiments.fold_grid` | `configs/paperA_A7_directed.yaml` | `{report.run_name('paperA_A7')}` |",
+          f"| Cloud fold runs agree with local fold runs | index P2.2, P2.3 | `experiments/fold.py`, `esfc.report.cloud_fold_cells` | `{report.cloud_run_name()}/config.yaml` | `{report.cloud_run_name()}` |",
+          f"| Branch shift on directed graphs matches the dynamic theory and excludes the Rician closure | index status card, P2.4; README | `experiments/branch_sim.py`, `esfc.report.branch_cells` | `{report.cloud_run_name()}/config.yaml` | `{report.cloud_run_name()}` |",
+          f"| Branch theory values (dynamic, reaction, closure) | index P2.4 | `experiments/branch_theory.py`, `experiments/react_branch.py` | n/a | `{report.cloud_run_name()}/branch_theory_reported.json` (copied from the run note, not regenerated) |",
+          f"| Stored branch summary equals the raw runs | index P2.1 | `esfc.report.branch_summary_check` | n/a | `{report.cloud_run_name()}` |",
           f"| Compiled kernel equals `research/model.py` | `tests/test_regression_model.py`, `tests/test_invariants.py` | `esfc.fast`, `esfc.integrate` | n/a | test suite |",
           f"| Corrected intraday crash-warning results | index B1; README | `esfc.experiments_b.intraday_study` | `configs/paperB_intraday.yaml` | `{report.run_name('paperB_intraday')}` |",
           f"| Design fixed before the corrected run | `docs/PREREGISTRATION_B.md` | n/a | n/a | not version controlled; no independent timestamp |", ""]
@@ -1402,7 +1700,7 @@ def write_readme_and_evidence() -> None:
 def summary_card() -> str:
     return """
 <section class="summary">
-<h2>Bottom line</h2>
+<h2>Earlier summary (kept as a record)</h2>
 <p class="note"><b class="bad">Under audit.</b> This summary was written before the audit in section
 <a href="#p0">P0</a>. Items 1, 3 (the "12%" sentence) and 4 in the left column, and the false-alarm counts in the
 right column, are <b>not currently supported</b> by committed data. They are left in place so the record stays
@@ -1469,7 +1767,7 @@ asymmetric herding gives the wrong sign on the leverage effect.</li>
 model's own prediction by a factor of four.</li>
 <li>The repository's original degree-normalized model has no explosive synchronization (S1).</li>
 </ul></div></div>
-<p class="note">Honest status: the analytic core is in better shape than when this started (closed-form
+<p class="note">Status when this summary was written: the analytic core is in better shape than when this started (closed-form
 thresholds, a genuine discontinuity, a sharper cause), while the empirical case is weaker (no early
 warning at any resolution, and the central bistability largely absent on real networks). The most
 valuable next step is deciding whether E5's collapse is the clustering gap or an artifact of how the
@@ -1559,16 +1857,20 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
 <header><h1>Explosive synchronization &amp; market crashes</h1>
 <p>Simulations, analytic results and real-data tests. Every figure explains what is shown and why it matters; verdict tags state plainly whether a result holds.</p>
 <div class="starthere">
-<a class="sh" href="#p0"><b>Audit status (read first)</b><span>Which headline claims are backed by committed files, with an independent re-run of the key measurement.</span></a>
+<a class="sh" href="#status"><b>Where the project stands (read first)</b><span>One screen: what is established, what is not, and the single new result, with the numbers behind each statement.</span></a>
+<a class="sh" href="#p2"><b>Cloud runs and the branch test</b><span>Two independent sets of simulations checked against each other, and the measurement that confirms the dynamic theory on directed graphs.</span></a>
+<a class="sh" href="#p0"><b>Audit status</b><span>Which headline claims are backed by committed files, with an independent re-run of the key measurement.</span></a>
 <a class="sh" href="reference.html"><b>Build the model from one oscillator</b><span>The whole model in the order you would discover it: each step shows where the previous one breaks and adds exactly one term. Every assumption listed.</span></a>
 <a class="sh" href="../simulation/index.html"><b>Interactive simulation</b><span>Watch a crash spread node by node through the network. Click any desk to see its own numbers in the locking inequality.</span></a>
 <a class="sh" href="RESEARCH_IDEAS.md"><b>Research ideas</b><span>What is still open, keyed paper by paper to the prior art, with what would have to be computed for each.</span></a>
 </div></header>
-<nav><div class="in"><a href="#summary"><span>★</span>Bottom line</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>§</span>Symbols</a>{nav}<a href="#refs"><span>¶</span>References</a></div></nav>
+<nav><div class="in"><a href="#status"><span>NOW</span>Status</a><a href="#summary"><span>OLD</span>Earlier summary</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#p2"><span>P2</span>Cloud runs and branch test</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>SYM</span>Symbols</a>{nav}<a href="#refs"><span>REF</span>References</a></div></nav>
 <main>
+{status_card()}
 <div id="summary">{summary_card()}</div>
 {audit_card()}
 {physics_card()}
+{cloud_card()}
 {empirical_card()}
 <section id="glossary"><h2>Symbols and terms</h2><div class="tbl"><table><tbody>{gloss}</tbody></table></div></section>
 {''.join(render_section(s) for s in SECTIONS)}

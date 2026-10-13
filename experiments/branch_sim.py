@@ -1,4 +1,6 @@
-import sys, json, time
+import sys
+import json
+import time
 import numpy as np
 from multiprocessing import Pool
 from esfc.graphs import make_network, directed_regular

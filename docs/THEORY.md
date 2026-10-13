@@ -1,9 +1,9 @@
 # Leading 1/k theory of the fold: derivation
 
-Status: derived on 2026-10-13 in response to the audit. A pilot at N = 10,000 supports the directed-graph
-prediction and contradicts the Rician closure there; on undirected graphs the measured coefficient is
-below this theory's prediction and the echo term comes out smaller than predicted, so the undirected
-prediction is **not confirmed**. Measured values are in
+Status: derived on 2026-10-13 in response to the audit. On directed graphs the prediction is confirmed
+by the branch-shift test of section 6 and the Rician closure is excluded. On undirected graphs the
+reaction term has the predicted sign and roughly the predicted size, but the prediction is **not
+confirmed**: too few seeds, and disagreement at small and at very large k. Measured values are in
 `results/` and on `research/index.html`; none are quoted here. Code: `src/esfc/cavity.py`. Units:
 `gamma = 1`.
 
@@ -123,3 +123,44 @@ Prediction: `a = a_dyn(p) + a_react(p)` on undirected tree-like graphs.
   clustering, and the quenched sample-to-sample fluctuation of the fold at finite N.
 - Whether bistability disappears below a critical connectivity is **not** addressed by a leading-order
   expansion.
+
+## 6. The same expansion on the synchronised branch
+
+Sections 3 and 4 evaluate the second-order term at the all-to-all fold. Nothing in the expansion
+requires that. At any coupling `lam > lam_b_inf` let `R0` be the stable all-to-all solution,
+`R0 = z0(lam R0^(p+1))`, and `h = lam R0^(p+1)`. At finite k
+
+```
+R = z0(lam R^(p+1)) + <a2>/k + O(k^-3/2)
+```
+
+with `<a2>` the same second-order average as in section 3, evaluated with the branch constants
+`(R0, h, mu = sqrt(1 + h^2))` in place of the fold constants. Linearising in `R - R0`:
+
+```
+k (R - R0)  ->  c(lam) = <a2> / (1 - z0'(h) lam (p+1) R0^p),      z0'(h) = (mu - 1)/(mu h^2)
+```
+
+The denominator vanishes at the fold, where `c` diverges and the shift of `R` turns into a shift of
+`lam_b`; that is the limit sections 3 and 4 treat. Away from the fold `c` is finite and can be measured
+as a difference of two stationary order parameters.
+
+The three treatments enter through the variance used for the response term of `<a2>`:
+
+| treatment | variance of the neighbour scatter acting on node i | graphs |
+|---|---|---|
+| Rician closure | instantaneous, `(1 - R0^2)/2` | none exactly |
+| dynamic | frozen part plus rotating part filtered by `mu^2/(mu^2 + (n W)^2)` per harmonic | directed |
+| dynamic plus reaction | as dynamic, plus the reaction integral of section 4 at the branch point | undirected |
+
+Code: `experiments/branch_theory.py` (closure and dynamic variants; its closure variant is checked
+against `closure.self_consistency` at large k) and `experiments/react_branch.py` (reaction integral
+with branch constants substituted into `cavity.reaction_parts`). Measurement:
+`experiments/branch_sim.py`.
+
+Two conditions for comparing with simulation:
+
+1. **Neighbourhood overlap.** Independence of the neighbours requires `k^2/N` well below 1.
+2. **Reference.** `R0` must be measured on the same clipped, finite frequency sample, because an
+   offset in `R0` is multiplied by k.
+

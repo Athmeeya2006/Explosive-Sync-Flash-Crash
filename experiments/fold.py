@@ -1,4 +1,6 @@
-import sys, time, json
+import sys
+import time
+import json
 import numpy as np
 from multiprocessing import Pool
 from esfc.graphs import make_network, directed_regular
@@ -6,7 +8,6 @@ from esfc.fast import FastSim
 from esfc.continuation import measure_fold
 from esfc.closure import lam_b_inf
 from esfc.frequencies import *  # noqa
-import esfc.frequencies as F
 
 def omegas(n, seed):
     u = (np.arange(n) + 0.5) / n

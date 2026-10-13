@@ -19,7 +19,7 @@ the same footing, against the same real-market targets.
        is applied post hoc to the same trajectories.
 
 Scored on: the four stylised facts from S10 (excess kurtosis 10.20, volatility clustering 0.246,
-leverage -0.113, crash co-movement 0.389) and, decisively, whether the bistable window survives.
+leverage -0.113, crash co-movement 0.389) and, most importantly, whether the bistable window survives.
 
 Output: data/s12_scores.csv, data/s12_hysteresis.csv, figures/s12_structural.png
 """
