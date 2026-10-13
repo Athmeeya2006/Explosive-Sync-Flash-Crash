@@ -107,6 +107,69 @@ def clustered_regular(n: int, k: int, triangles: int, seed: int) -> Network:
     return from_graph(g, f"CRR N={n} k={k} t={triangles}")
 
 
+
+LARGE_PAIRING = 4_000_000     # above this many stubs the mutual part is paired with numpy instead of networkx
+
+
+def _regular_pairs(n: int, m: int, rng: np.random.Generator) -> tuple[np.ndarray, np.ndarray]:
+    """Edge list of a simple m-regular graph by stub pairing. Self loops and repeated edges are repaired
+    by re-pairing their stubs together with an equal number of randomly chosen good edges, until none
+    remain. Used for sizes at which networkx is too slow."""
+    stubs = np.repeat(np.arange(n, dtype=np.int64), m)
+    rng.shuffle(stubs)
+    a, b = stubs[::2].copy(), stubs[1::2].copy()
+    for _ in range(1000):
+        code = np.minimum(a, b) * n + np.maximum(a, b)
+        _, first = np.unique(code, return_index=True)
+        bad = np.ones(a.size, dtype=bool)
+        bad[first] = False
+        bad |= a == b
+        idx = np.flatnonzero(bad)
+        if idx.size == 0:
+            return a, b
+        idx = np.union1d(idx, rng.integers(0, a.size, size=idx.size + 8))
+        pool = np.concatenate([a[idx], b[idx]])
+        rng.shuffle(pool)
+        a[idx], b[idx] = pool[: idx.size], pool[idx.size:]
+    raise RuntimeError("stub pairing did not converge")
+
+
+def reciprocal_regular(n: int, k: int, m: int, seed: int) -> Network:
+    """Every node listens to exactly k others; m of those links are mutual and k - m are one-way.
+
+    The mutual part is a random m-regular undirected graph. The one-way part is drawn as in
+    `directed_regular`, excluding the node itself and its mutual partners. m = 0 is a directed graph
+    with no back-reaction, m = k a random regular undirected graph, so rho = m / k interpolates
+    between the two at fixed in-degree. A one-way link can be reciprocated by chance (probability of
+    order k / n per link); `reciprocity` reports the realised fraction."""
+    if not 0 <= m <= k:
+        raise ValueError("need 0 <= m <= k")
+    if (n * m) % 2:
+        raise ValueError("n * m must be even")
+    rng = np.random.default_rng(seed)
+    src = np.empty((n, k), dtype=np.int64)
+    if m:
+        sub_seed = int(rng.integers(2 ** 31))
+        if n * m <= LARGE_PAIRING:
+            e = np.array(nx.random_regular_graph(m, n, seed=sub_seed).edges(), dtype=np.int64)
+            a_, b_ = e[:, 0], e[:, 1]
+        else:
+            a_, b_ = _regular_pairs(n, m, np.random.default_rng(sub_seed))
+        lst, nbr = np.concatenate([a_, b_]), np.concatenate([b_, a_])
+        src[:, :m] = nbr[np.argsort(lst, kind="stable")].reshape(n, m)
+    for i in range(n if k > m else 0):
+        c = rng.choice(n, size=k + 1, replace=False)
+        src[i, m:] = c[(c != i) & ~np.isin(c, src[i, :m])][: k - m]
+    ei = np.repeat(np.arange(n, dtype=np.int64), k)
+    return Network(n, ei, src.ravel(), np.full(n, float(k)), f"REC N={n} k_in={k} mutual={m}")
+
+
+def reciprocity(net: Network) -> float:
+    """Fraction of links (i listens to j) for which j also listens to i."""
+    code = net.ei * net.n + net.ej
+    return float(np.isin(net.ej * net.n + net.ei, code).mean())
+
+
 def to_csr(net: Network) -> tuple[np.ndarray, np.ndarray]:
     """(indptr, indices) of the neighbour lists, for the compiled kernels."""
     order = np.argsort(net.ei, kind="stable")

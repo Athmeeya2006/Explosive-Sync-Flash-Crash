@@ -30,16 +30,31 @@ SPECS = {
     # between them is whether a desk's own behaviour comes back to it through the desks it watches.
     "rr12": {"kind": "rr", "meanDeg": 12, "label": "Random regular, two-way  N=500  k=12"},
     "dir12": {"kind": "dir", "meanDeg": 12, "label": "Random regular, one-way  N=500  k_in=12"},
+    # Half-way between the two: every desk watches 12 others, 6 of whom watch it back. Used for the
+    # reciprocity test, which predicts an effect proportional to the number of mutual links.
+    "half12": {"kind": "dir", "meanDeg": 12, "mutual": 6, "label": "Random regular, half mutual  N=500  k_in=12"},
 }
 
 
-def build_directed(mean_deg: int, label: str) -> dict:
-    """Each desk listens to exactly mean_deg distinct others; listening is not mutual."""
+def build_directed(mean_deg: int, label: str, mutual: int = 0) -> dict:
+    """Each desk listens to exactly mean_deg distinct others. `mutual` of those links are two-way (a
+    random regular graph of that degree); the rest are one-way. mutual = 0 reproduces the original
+    one-way network exactly."""
     rng = np.random.default_rng(SEED)
     pairs = []
-    for i in range(N):
-        c = rng.choice(N - 1, size=mean_deg, replace=False)
-        pairs += [(i, int(j + (j >= i))) for j in sorted(c)]
+    if mutual:
+        partners = [[] for _ in range(N)]
+        for a, b in nx.random_regular_graph(mutual, N, seed=SEED + 1).edges():
+            partners[a].append(b)
+            partners[b].append(a)
+        for i in range(N):
+            c = rng.choice(N, size=mean_deg + 1, replace=False)
+            c = [int(j) for j in c if j != i and j not in partners[i]][: mean_deg - mutual]
+            pairs += [(i, j) for j in sorted(partners[i] + c)]
+    else:
+        for i in range(N):
+            c = rng.choice(N - 1, size=mean_deg, replace=False)
+            pairs += [(i, int(j + (j >= i))) for j in sorted(c)]
     edges = np.array(pairs, dtype=int)                     # (listener, watched)
     g = nx.Graph()
     g.add_nodes_from(range(N))
@@ -60,9 +75,9 @@ def build_directed(mean_deg: int, label: str) -> dict:
             "nbrList": edges[:, 1].tolist()}
 
 
-def build(kind: str, mean_deg: int, label: str) -> dict:
+def build(kind: str, mean_deg: int, label: str, mutual: int = 0) -> dict:
     if kind == "dir":
-        return build_directed(mean_deg, label)
+        return build_directed(mean_deg, label, mutual)
     if kind == "rr":
         g = nx.random_regular_graph(mean_deg, N, seed=SEED)
     elif kind == "ba":
@@ -117,7 +132,7 @@ def build(kind: str, mean_deg: int, label: str) -> dict:
 
 
 def main() -> None:
-    nets = {key: build(s["kind"], s["meanDeg"], s["label"]) for key, s in SPECS.items()}
+    nets = {key: build(s["kind"], s["meanDeg"], s["label"], s.get("mutual", 0)) for key, s in SPECS.items()}
     out = ROOT / "network.js"
     out.write_text("window.NETWORKS = " + json.dumps(nets, separators=(",", ":")) +
                    ";\nwindow.NETWORK = window.NETWORKS.er12;\n")
@@ -125,7 +140,8 @@ def main() -> None:
     for key, n in nets.items():
         m = n["meta"]
         print(f"  {key:6s} {m['model']:32s} E={m['m']:5d}  <k>={m['meanDeg']:5.2f}  kmax={m['maxDeg']:3d}"
-              f"  kappa={m['kappa']:.2f}  C={m['clustering']:.3f}  r={m['assortativity']:+.3f}")
+              f"  kappa={m['kappa']:.2f}  C={m['clustering']:.3f}  r={m['assortativity']:+.3f}"
+              f"  mutual={m['reciprocity']:.3f}")
 
 
 if __name__ == "__main__":

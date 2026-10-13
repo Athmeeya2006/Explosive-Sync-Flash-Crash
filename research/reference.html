@@ -149,6 +149,7 @@
   <a href="#s26">26. Audit: what is unverified</a>
   <a href="#s27">27. Rotating neighbours and the echo</a>
   <a href="#s28">28. Testing the idea away from the fold</a>
+  <a href="#s29">29. What is new, what is not, and the reciprocity test</a>
 </nav>
 
 <main>
@@ -2134,6 +2135,162 @@
   of the disagreement a desk sees among the desks it watches is fast rotation that it cannot follow.
   Nothing here changes the empirical side. The corrected tests on market data in section B1 still find
   no usable warning from synchrony.</p>
+</section>
+
+<!-- ============================================================= 29 -->
+<section id="s29">
+  <h2>Step 29 &middot; After the audit</h2>
+  <h3>What is new, what is not, and a sharper test of the echo</h3>
+  <p>Step 28 confirmed the one-way half of the theory and left the echo unconfirmed. Before going
+  further the work was checked against the literature by an external audit. That check changed how
+  the result has to be described, and it suggested the most informative experiment still missing. This
+  step records both. As before, no measured value is quoted here: the numbers are in section P3 of
+  <a href="index.html#p3">research/index.html</a>, and the full audit, paper by paper, is in section
+  N1 of the same page.</p>
+
+  <h4>1. The uncomfortable part first: the two mechanisms were already known</h4>
+  <p>Steps 27 and 28 introduced two ideas as if they had been found here: a desk cannot follow
+  neighbours that rotate too fast, and on a two-way network a desk hears an echo of itself. Both exist
+  in the literature in general form.</p>
+  <div class="tw"><table>
+    <tr><th>idea in steps 27 and 28</th><th>where it already exists</th><th>what that earlier work does not do</th></tr>
+    <tr><td><b>Rotating neighbours act as a filtered, time-correlated noise</b></td>
+        <td>Dynamical mean-field theory for sparse one-way graphs (Metz, 2025). The exact equation for
+        one node driven by its neighbours' full time histories is written down for a class of models
+        that includes coupled oscillators</td>
+        <td>It is solved for neural, ecological and epidemic models, not for oscillators, and it gives
+        no formula for how a synchronization threshold moves with k</td></tr>
+    <tr><td><b>Two-way links add an echo</b></td>
+        <td>The dynamical cavity method for sparse graphs with mutual links (Metz and P&eacute;rez
+        Castillo, 2026): mutual links add a "response" term that one-way links lack</td>
+        <td>General method; no oscillator calculation</td></tr>
+    <tr><td><b>Two-way minus one-way isolates the echo</b></td>
+        <td>Aonishi, Kurata and Okada (2002) compared oscillator networks with symmetric and with
+        asymmetric couplings for exactly this purpose. The echo has a standard name, the Onsager
+        reaction term</td>
+        <td>A different kind of network (associative memory), not sparse random graphs, and no
+        adaptive coupling</td></tr>
+    <tr><td><b>The old formula's picture of a frozen random offset</b></td>
+        <td>Ichinomiya (2005): a sparse random network behaves like a fully connected one with random
+        fixed couplings</td>
+        <td>This is the picture step 28 showed to be wrong for this model</td></tr>
+  </table></div>
+
+  <div class="note why"><h5>Why this matters and is not a disaster</h5>
+  <p>A general framework that <em>contains</em> an effect is different from a formula that says how
+  big the effect is in a particular model. Nobody appears to have worked out, for oscillators whose
+  coupling adapts to local agreement, by how much a finite number of neighbours moves the level of
+  synchrony or the recovery threshold. That explicit result, and its test, is what this project can
+  claim. What it cannot claim is a new method, or the discovery that one-way and two-way networks
+  differ.</p></div>
+
+  <h4>2. What can be claimed, item by item</h4>
+  <div class="tw"><table>
+    <tr><th>statement</th><th>status</th></tr>
+    <tr><td>The old formula (frozen scatter) is wrong for this model</td>
+        <td>A useful negative result. To be presented as a baseline that was tested and failed</td></tr>
+    <tr><td>Explicit size of the rotating-neighbour correction on one-way graphs</td>
+        <td>New explicit result inside a known framework. Confirmed by simulation (step 28)</td></tr>
+    <tr><td>Explicit size of the echo on two-way graphs</td>
+        <td>New explicit result. Tested in part 4 below</td></tr>
+    <tr><td>How far the recovery threshold itself moves at finite k</td>
+        <td>The most novel statement and the one with the weakest agreement so far</td></tr>
+    <tr><td>The slow, non-standard approach to the large-k limit near the threshold</td>
+        <td>Plausible and apparently untreated elsewhere. Worth claiming only once the exponent is
+        derived on paper</td></tr>
+  </table></div>
+
+  <h4>3. The test the audit asked for: dial the echo up and down</h4>
+  <p>Steps 27 and 28 compared two networks: all links one-way, or all links two-way. Two points can
+  always be joined by a line, so that comparison cannot show that the difference between them is
+  really the echo. A stronger test uses networks in between.</p>
+  <p>Build a network in which every desk watches exactly k others, and arrange that a chosen
+  fraction &rho; of those k are desks that watch it back. Then &rho; = 0 is the one-way network,
+  &rho; = 1 is the two-way network, and &rho; = 0.5 is a network where half of the desks you watch are
+  watching you.</p>
+  <p>The echo reaches a desk only through desks that watch it back. There are &rho;k of them. Each
+  returns a signal of size 1/k&sup2; (your influence on them is 1/k, and they are one of k voices you
+  hear), so the total echo is &rho;k &times; 1/k&sup2; = &rho;/k. The rotating-neighbour effect does
+  not care who watches whom. So the theory predicts</p>
+  <div class="eq">c(&rho;) &nbsp;=&nbsp; c<sub>rotating</sub> &nbsp;+&nbsp; &rho; &times; c<sub>echo</sub>
+    <small>c = k &times; (R &minus; R<sub>0</sub>) is the scaled loss of synchrony of step 28.
+    c<sub>rotating</sub> is the one-way value and c<sub>echo</sub> the extra loss on a fully two-way
+    network. Both are fixed by the theory before any simulation is run. The prediction is a straight
+    line in &rho; with a known starting point and a known slope.</small></div>
+  <div class="tw"><table>
+    <tr><th>theory</th><th>predicted shape of c against &rho;</th></tr>
+    <tr><td>Old formula (frozen scatter, no echo)</td><td>flat: it never asks whether links are mutual</td></tr>
+    <tr><td>Rotating neighbours with echo</td><td>a straight line, falling from the one-way value to the two-way value</td></tr>
+    <tr><td>Echo right in kind, wrong in size</td><td>a straight line with a different slope</td></tr>
+    <tr><td>Something other than an echo</td><td>a curve, or steps, or no trend</td></tr>
+  </table></div>
+  <p>This is what makes the test worth more than the two-point comparison: a straight line through
+  five points, with the right slope, is hard to get by accident.</p>
+
+  <h4>4. How the networks are built and measured</h4>
+  <ol class="steps">
+    <li>Draw a random graph in which every desk has exactly &rho;k partners. These are the mutual
+    links.</li>
+    <li>For each desk add k &minus; &rho;k further desks to watch, chosen at random among the desks that
+    are not already its partners. These are the one-way links. A one-way link can be returned by
+    chance, which happens with probability of order k/N, so the realised mutual fraction is counted
+    and reported.</li>
+    <li>Measure the synchrony of the locked state exactly as in step 28, at the same coupling, and
+    subtract the all-to-all reference measured on the same frequencies.</li>
+    <li>Repeat over ten independently built networks at each &rho;, and at two values of k, with the
+    number of desks chosen so that k&sup2;/N stays small (the overlap condition of step 28).</li>
+  </ol>
+
+  <h4>5. What the measurement says</h4>
+  <!--RECIPROCITY-RESULT-->
+
+  <h4>6. Why the next runs need a cluster</h4>
+  <p>The remaining doubt is about large k, and the overlap condition makes large k expensive. Keeping
+  k&sup2;/N fixed means the number of desks must grow as k&sup2;, and the work per time step grows as
+  N &times; k, so the cost grows as k&sup3;. Going from k = 48 to k = 192 costs about 64 times more
+  per run and needs networks of several hundred thousand desks. That is a job for the institute
+  cluster, and a ready configuration is in <code>configs/paperA_branch_ada.yaml</code>.</p>
+
+  <h4>7. What a referee will still ask for</h4>
+  <div class="tw"><table>
+    <tr><th>requirement</th><th>why</th><th>state</th></tr>
+    <tr><td>Show that the rotating-neighbour result is the large-k limit of the exact one-way theory</td>
+        <td>It answers the objection "this is already in Metz (2025)" by making the connection explicit</td>
+        <td>not started</td></tr>
+    <tr><td>Derive the slow correction near the threshold on paper</td>
+        <td>Desks about to unlock respond without limit; the resulting correction should fall as
+        1/&radic;k. A derived exponent turns a discrepancy into a prediction</td><td>not started</td></tr>
+    <tr><td>At least four values of k, with a comparison of fitting forms</td>
+        <td>Two points cannot distinguish 1/k from 1/&radic;k</td><td>needs the cluster</td></tr>
+    <tr><td>Ten or more networks per point, with confidence intervals</td>
+        <td>The earlier two-way points rested on two runs each</td><td>done for the reciprocity test</td></tr>
+    <tr><td>Random regular against random (Erd&#337;s-R&eacute;nyi) graphs</td>
+        <td>Unequal numbers of neighbours add a correction of their own</td><td>not started</td></tr>
+    <tr><td>Code and data archived with a permanent identifier</td>
+        <td>Expected for a numerical claim</td><td>not done</td></tr>
+  </table></div>
+
+  <h4>8. A new question the audit raised: is there a crash threshold at all when everyone watches everyone?</h4>
+  <p>In the all-to-all model the calm market is stable at every coupling, because the herding gain is
+  r<sup>p</sup> and r is exactly zero when nobody agrees (step 21). A crash then needs a push. With
+  only k neighbours this is no longer exact. Twelve arrows pointing in random directions do not
+  cancel perfectly: their average has length about 1/&radic;k. So each desk feels a small but non-zero
+  herding gain even in a calm market, and at a large enough coupling the calm state may give way
+  without any push. If so, the width of the bistable window is finite and depends on k. This is a
+  hypothesis from the audit, not a result, and it is cheap to test.</p>
+
+  <h4>9. Consequences for the market side</h4>
+  <ul>
+    <li><b>The physics and the market test are separate pieces of work.</b> The market test has one
+    positive number, and it comes from a variant examined after the planned test failed. It is
+    exploratory.</li>
+    <li><b>Testing again on different stocks is not an independent test.</b> A crash is a market-wide
+    event. Different stocks over the same months share the same crashes. A confirming test needs a
+    later period, with every choice fixed beforehand.</li>
+    <li><b>Earlier studies point the same way.</b> One-minute data around the 2010 flash crash showed
+    herding appearing with the crash, not before it. Co-movement looks like a symptom, not a
+    warning.</li>
+  </ul>
 </section>
 
 </main>

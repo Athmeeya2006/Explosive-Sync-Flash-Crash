@@ -34,3 +34,21 @@ Recorded as they are made. Newest last.
    seeds. The pages show both, and no two-seed cell is described as a confirmation.
 10. **The results page opens with a generated status card.** The older hand-written summary is kept
     below it, retitled as an earlier summary.
+11. **Framing after the external novelty audit** (2026-10-14). The physics paper is a regular article
+    on explicit leading-order sparse-graph corrections for adaptive Kuramoto dynamics, with a
+    directed/undirected decomposition verified by simulation. It is not presented as a new cavity
+    method, and the directed/undirected distinction is not claimed as new. The Rician closure is
+    presented as a falsified static-scatter baseline. See `docs/PRIOR_ART.md`.
+12. **The finance paper stays separate** from the physics paper. Its one positive number comes from a
+    robustness variant after the primary test failed and is reported as exploratory.
+13. **The planned confirmatory test on a disjoint set of stocks is dropped.** Crash events are
+    market-wide, so different stocks over the same period test the same events. A confirmatory test
+    needs a later time period, with the event definition, horizon and volatility matching fixed in
+    advance.
+14. **Branch theory moved into the package.** `esfc.branch` computes the branch shift for all three
+    treatments; `cavity` was refactored so its integrals accept the constants of any branch point.
+    The fold results are unchanged (`tests/test_cavity.py`). The scripts in `experiments/` remain as the
+    record of the cloud run.
+15. **Mutual links in very large graphs are paired with numpy** (above 4 million stubs) because
+    networkx is too slow there. Smaller graphs keep the networkx generator.
+

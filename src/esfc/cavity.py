@@ -45,7 +45,11 @@ def variance_budget(p: float) -> dict:
     """Per-component variance of a neighbour phasor at the all-to-all fold, split into the frozen part
     (time-averaged phasors), the rotating part (drifters), and the rotating part after the response
     filter mu^2/(mu^2 + n^2 W^2). instantaneous = frozen + rotating = (1 - R^2)/2 exactly."""
-    c = _fold_constants(p)
+    return _variance_budget(_fold_constants(p))
+
+
+def _variance_budget(c: dict) -> dict:
+    """`variance_budget` at any point (lam, R) of the all-to-all branch, given its constants."""
     h, mu, R = c["h"], c["mu"], c["R"]
     g = lambda x: (1 / h) / (np.pi * (x * x + 1 / h ** 2))  # noqa: E731   density of x = omega / h
 
@@ -76,13 +80,17 @@ def _coefficient_from_variance(p: float, v_response: float) -> float:
     of the fold. `v_response` is the per-component variance that enters the response terms; the
     instantaneous variance always enters the direct nonlinearity |F|^p F."""
     c = _fold_constants(p)
+    return float(-_second_order(c, p, v_response) / c["dz0_dlam"] / c["lam"])
+
+
+def _second_order(c: dict, p: float, v_response: float) -> float:
+    """<a2>: the O(1/k) term of the self-consistency R = z0(lam R^(p+1)) + <a2>/k, at the branch point c."""
     lam, R, h, mu, L, al, be = (c[k] for k in ("lam", "R", "h", "mu", "L", "alpha", "beta"))
     v_inst = (1 - R * R) / 2
-    a2 = (1 / (2 * mu)) * ((1 - R * R) * lam * R ** (p - 1) * (p * (p + 2) / 2) * v_inst
-                           - 2 * R * al * L * L * (p + 1) ** 2 * v_response / mu
-                           - 2 * R * be * L * L * v_response / mu
-                           - h * L * L * (al ** 2 * (p + 1) ** 2 - be ** 2) * v_response / mu ** 2)
-    return float(-a2 / c["dz0_dlam"] / lam)
+    return float((1 / (2 * mu)) * ((1 - R * R) * lam * R ** (p - 1) * (p * (p + 2) / 2) * v_inst
+                                   - 2 * R * al * L * L * (p + 1) ** 2 * v_response / mu
+                                   - 2 * R * be * L * L * v_response / mu
+                                   - h * L * L * (al ** 2 * (p + 1) ** 2 - be ** 2) * v_response / mu ** 2))
 
 
 @lru_cache(maxsize=None)
@@ -157,7 +165,11 @@ def reaction_parts(p: float, n_drift: int = 240, eps: float = 0.02) -> tuple[flo
     longitudinal response L (p+1) dz0/dh, both relaxing at rate mu. Their k responses sum to a field
     on i of order 1/k. Locked nodes: closed form. Drifting nodes: the reaction is itself oscillating,
     so it is integrated numerically."""
-    c = _fold_constants(p)
+    return _reaction_parts(_fold_constants(p), p, n_drift, eps)
+
+
+def _reaction_parts(c: dict, p: float, n_drift: int = 240, eps: float = 0.02) -> tuple[float, float]:
+    """`reaction_parts` at any point of the all-to-all branch, given its constants."""
     h, mu, R, L, D = c["h"], c["mu"], c["R"], c["L"], c["dz0_dh"]
     g = lambda x: (1 / h) / (np.pi * (x * x + 1 / h ** 2))  # noqa: E731
     lon = L * L * (p + 1) ** 2 * D

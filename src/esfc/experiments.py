@@ -14,7 +14,7 @@ from . import closure
 from .continuation import backward_continuation, measure_fold
 from .fast import FastSim
 from .frequencies import lorentz_omegas, lorentz_random
-from .graphs import Network, clustered_regular, directed_regular, from_graph, make_network
+from .graphs import Network, clustered_regular, directed_regular, from_graph, make_network, reciprocal_regular, reciprocity
 from .observables import neighbourhood_stats, self_alignment
 from .runner import RowWriter, spawn_seeds
 from .stats import mean_ci
@@ -26,6 +26,8 @@ def build_graph(spec: dict, n: int, k: int, seed: int) -> Network | None:
         return None
     if kind == "dir":
         return directed_regular(n, k, seed)
+    if kind == "rec":
+        return reciprocal_regular(n, k, int(round(float(spec["rho"]) * k)), seed % (2 ** 31))
     if kind == "crr":
         return clustered_regular(n, k, int(spec["triangles"]), seed)
     if kind == "ws":
@@ -135,10 +137,91 @@ def theory_reaction_at_k(cfg: dict, run_dir: Path) -> None:
     (run_dir / "summary.json").write_text(json.dumps({"rows": rows}, indent=1))
 
 
+
+def _branch_job(a: dict) -> dict:
+    t0 = time.time()
+    spec, n, k, p = a["graph"], a["n"], a["k"], a["p"]
+    lam = a["mult"] * closure.lam_b_inf(p)
+    net = build_graph(spec, n, k, a["graph_seed"])
+    omega = lorentz_omegas(n, np.random.default_rng(a["freq_seed"]), clip=a.get("clip", 60.0))
+    sim = FastSim(net, omega, p, dt=a["dt"])
+    _, _, th = sim.relax(lam, np.zeros(n), a["t_burn"])
+    _, Rs, _ = sim.relax(lam, th, a["t_measure"], record_every=0.5)
+    half = Rs.size // 2
+    row = {key: a[key] for key in ("n", "k", "p", "mult", "index", "graph_seed", "freq_seed", "dt", "t_burn", "t_measure")}
+    row.update(kind=spec["kind"], variant=a["variant"], rho=float(spec.get("rho", np.nan)), lam=lam,
+               R=float(Rs.mean()), R_time_sd=float(Rs.std()), R_first_half=float(Rs[:half].mean()),
+               R_second_half=float(Rs[half:].mean()),
+               reciprocity=float("nan") if net is None else reciprocity(net),
+               seconds=round(time.time() - t0, 1))
+    return row
+
+
+def branch_grid(cfg: dict, run_dir: Path) -> None:
+    """Stationary R on the synchronised branch at lam = mult x all-to-all fold, per (graph, k, p, mult, N) x
+    seeds, plus one all-to-all reference per (p, mult, N) on the same frequency quantiles."""
+    import json
+    seeds = spawn_seeds(cfg["root_seed"], cfg["n_seeds"])
+    (run_dir / "seeds.json").write_text(json.dumps(seeds, indent=1))
+    common = {key: cfg[key] for key in ("dt", "t_burn", "t_measure")}
+    jobs = []
+    sizes = cfg["n"]                       # either a list, or a map k -> N so that k^2/N can be held small
+    for k in cfg["k"]:
+        for n in ([sizes[k]] if isinstance(sizes, dict) else sizes):
+            for spec, p, mult, sd in itertools.product(cfg["graphs"], cfg["p"], cfg["mult"], seeds):
+                jobs.append({"graph": spec, "variant": spec.get("label", spec["kind"]), "n": n, "k": k, "p": float(p),
+                             "mult": float(mult), **sd, **common})
+    all_n = sorted({j["n"] for j in jobs})
+    for n, p, mult in itertools.product(all_n, cfg["p"], cfg["mult"]):
+        jobs.append({"graph": {"kind": "meanfield"}, "variant": "meanfield", "n": n, "k": 0, "p": float(p),
+                     "mult": float(mult), "index": -1, "graph_seed": 0, "freq_seed": seeds[0]["freq_seed"], **common})
+    jobs.sort(key=lambda j: -j["n"] * (j["k"] + 16))
+    w = RowWriter(run_dir)
+    with Pool(cfg.get("workers", 14)) as pool:
+        for row in pool.imap_unordered(_branch_job, jobs, chunksize=1):
+            w.write(row)
+    w.finish(run_dir, summarise_branch(run_dir))
+
+
+def summarise_branch(run_dir: Path) -> dict:
+    import pandas as pd
+    df = pd.read_json(run_dir / "rows.jsonl", lines=True)
+    ref = df[df.variant == "meanfield"].set_index(["p", "mult", "n"]).R
+    x = df[df.variant != "meanfield"].copy()
+    x["R0"] = [ref.get((p, m, n), np.nan) for p, m, n in zip(x.p, x.mult, x.n)]
+    x["c"] = x.k * (x.R - x.R0)
+    cells = []
+    for (variant, p, mult, k, n), g in x.groupby(["variant", "p", "mult", "k", "n"]):
+        m, lo, hi, cnt = mean_ci(g.c)
+        cells.append({"variant": variant, "p": float(p), "mult": float(mult), "k": int(k), "n": int(n),
+                      "rho": None if g.rho.isna().all() else float(g.rho.iloc[0]),
+                      "reciprocity": float(g.reciprocity.mean()), "R0": float(g.R0.iloc[0]),
+                      "c_mean": m, "ci_lo": lo, "ci_hi": hi, "sd": float(g.c.std(ddof=1)) if cnt > 1 else None,
+                      "n_ok": cnt, "overlap": k * k / n,
+                      "max_half_drift": float((g.k * (g.R_second_half - g.R_first_half)).abs().max()),
+                      "core_seconds": float(g.seconds.sum())})
+    return {"cells": cells, "core_seconds": float(df.seconds.sum())}
+
+
+def _branch_theory_job(a: tuple[float, float]) -> dict:
+    from . import branch
+    p, mult = a
+    return branch.branch_shift(mult * closure.lam_b_inf(p), p)
+
+
+def branch_theory(cfg: dict, run_dir: Path) -> None:
+    """Predicted branch shift c(lam) for the closure, dynamic and dynamic-plus-reaction treatments."""
+    import json
+    jobs = [(float(p), float(m)) for p in cfg["p"] for m in cfg["mult"]]
+    with Pool(min(cfg.get("workers", 10), len(jobs))) as pool:
+        rows = pool.map(_branch_theory_job, jobs, chunksize=1)
+    (run_dir / "summary.json").write_text(json.dumps({"rows": rows}, indent=1))
+
+
 def _intraday(cfg: dict, run_dir: Path) -> None:
     from .experiments_b import intraday_study
     intraday_study(cfg, run_dir)
 
 
 REGISTRY = {"fold_grid": fold_grid, "intraday_study": _intraday, "theory_coefficients": theory_coefficients,
-            "theory_reaction_at_k": theory_reaction_at_k}
+            "theory_reaction_at_k": theory_reaction_at_k, "branch_grid": branch_grid, "branch_theory": branch_theory}

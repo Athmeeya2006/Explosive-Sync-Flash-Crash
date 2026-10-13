@@ -1,0 +1,8 @@
+# Predicted shift of the synchronised branch, c = lim k (R - R0), at several couplings above the
+# all-to-all fold: Rician closure, dynamic theory (directed graphs), dynamic plus reaction (undirected).
+# docs/THEORY.md section 6. Numerical integrals only, no simulation.
+id: paperA_branch_theory
+experiment: branch_theory
+p: [1.0, 2.0]
+mult: [1.1, 1.25, 1.5, 2.0, 3.0]
+workers: 4

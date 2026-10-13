@@ -58,7 +58,7 @@ index.html?net=ba6&lam=2.8&warmup=100                the scale-free network
 Parameters: `lam`, `sigma`, `sigmac`, `net` (`er12`|`ba6`), `warmup` (time units), `shock`
 (`random`|`hubs`|`periphery`), `halt` (duration).
 
-## The four networks
+## The five networks
 
 | key | network | links | use |
 |---|---|---|---|
@@ -66,6 +66,7 @@ Parameters: `lam`, `sigma`, `sigmac`, `net` (`er12`|`ba6`), `warmup` (time units
 | `ba6` | Barabasi-Albert | two-way | **hub targeting**: has hubs, but almost no bistable window |
 | `rr12` | random regular, exactly 12 neighbours | two-way | matched pair for the **echo experiment** (block 10 of the page) |
 | `dir12` | random regular, exactly 12 watched desks | one-way | the same, with no echo: nobody a desk watches is watching it back |
+| `half12` | random regular, exactly 12 watched desks | 6 mutual, 6 one-way | half the echo: the middle point of the **reciprocity test** (results page section P3) |
 
 `rr12` and `dir12` differ only in whether watching is mutual. `measure_echo.py` measures the recovery
 threshold on 24 independently generated networks of each kind at the page's settings and writes

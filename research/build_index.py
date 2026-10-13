@@ -1289,6 +1289,10 @@ those cells has only {int(und.n_seeds.min())} seeds.</li>
 <li><b>The fold coefficient on directed graphs.</b> The closure is excluded, but {n_below} of {len(dfold)}
 measured cells at p = 1 lie below the dynamic theory's {dfold.theory.iloc[0]:.2f}. The leading-order number is
 too high at the connectivities reached.</li>
+<li><b>Novelty of the mechanisms.</b> They are not new: sparse dynamical mean-field and cavity frameworks
+(Metz 2025; Metz and P&eacute;rez Castillo 2026) and the symmetric-against-asymmetric comparison (Aonishi,
+Kurata and Okada 2002) already contain them. What appears new is the explicit coefficients for the adaptive
+model and their tests (<code>docs/PRIOR_ART.md</code>).</li>
 <li><b>Everything that depended on the closure</b>: the critical connectivity k<sub>c</sub>(p) and the
 effective connectivity for clustered graphs.</li>
 <li><b>Any usable crash warning from synchrony</b> (section <a href="#b1">B1</a>): unchanged, still not
@@ -1364,8 +1368,9 @@ from the fold, and it states what is and is not established. All numbers are rea
     ["Crash-warning figures quoted in the run note against <code>results/paperB_intraday</code> and <code>results/paperB_daily</code>",
      "match (compared by hand on 2026-10-14; section B1 reads the same files at build time)"],
     ["Branch theory values (table P2.4, columns theory and Rician closure)",
-     "<b class='bad'>not regenerated locally</b>. Taken from the run note and stored in <code>branch_theory_reported.json</code>. "
-     "Regenerate with <code>experiments/branch_theory.py</code> and <code>experiments/react_branch.py</code> (numerical integrals, no simulation)"],
+     (f"recomputed by <code>esfc.branch</code>; largest difference from the values copied out of the run note "
+      f"{report.branch_theory_agreement():.1e} (table P3.1)") if report.branch_theory_agreement() is not None else
+     "<b class='bad'>not regenerated locally</b>. Taken from the run note and stored in <code>branch_theory_reported.json</code>"],
 ])}
 
 <h3>Table P2.2. Fold coefficient, every cloud and local cell</h3>
@@ -1460,23 +1465,249 @@ two-seed interval spans {wide.w.max():.2f} in c.</li>
 is complete locally and the undirected pilot is partial (section P1).</li>
 </ul>
 
-<h3>Next steps, in order</h3>
+<h3>Next steps, in order (revised after the external novelty audit)</h3>
 <ol>
-<li><b>Lock the directed result.</b> Five couplings (1.1, 1.25, 1.5, 2, 3 times the all-to-all fold), p = 0.5,
-1, 2, 3, k = 12, 24, 48, N = 20000, at least 8 seeds, run through <code>esfc run</code> with a config. This is the
-main figure of the physics paper: three theory curves c(&lambda;) and one set of points.</li>
-<li><b>Decide the undirected case with a size scan.</b> k = 48, 96, 192 at N = 20000, 80000, 320000 on both
-graph types. If the k = 192 point moves to the prediction as the overlap falls, the reaction term is right.</li>
-<li><b>Carry the finite-k reaction calculation to the branch.</b> At k = 12 and 24 the undirected shift is far
-from the asymptote. <code>esfc.cavity.reaction_coefficient_at_k</code> already keeps the node's own response
-nonlinear at the fold; the same calculation at a branch point gives a prediction where simulation is cheap.</li>
-<li><b>Predict the fold instead of expanding around it.</b> Solve the second-order self-consistency at finite k
-for the coupling at which the branch ends, and compare with table P2.2.</li>
-<li><b>Only then</b> revisit the critical connectivity and clustering, both of which were derived from the
-closure.</li>
-<li><b>Store the branch theory as a result.</b> Have the two theory scripts write a <code>summary.json</code> so
-table P2.4 no longer depends on values copied from a note.</li>
+<li><b>Reciprocity interpolation.</b> Done at k = 24 and 48: section <a href="#p3">P3</a>.</li>
+<li><b>Large connectivity with small overlap.</b> k = 96 and 192, directed, half mutual and undirected, with
+k&sup2;/N at 0.05. Needs the cluster: <code>configs/paperA_branch_ada.yaml</code>.</li>
+<li><b>Tie the dynamic term to the exact directed theory.</b> Show it is the leading 1/k expansion of the
+equation of Metz (2025), analytically or by population dynamics at small k.</li>
+<li><b>Derive the exponent of the non-analytic correction at the fold.</b> Nodes about to unlock respond
+without limit, which should give a correction of relative order k<sup>&minus;1/2</sup>. Derive it, then fit
+the fold data of table P2.2 with the exponent fixed and at least four connectivities.</li>
+<li><b>Branch curve.</b> Several couplings and exponents (p = 1, 2, 3) on directed graphs with 10 or more
+seeds, against the three curves of table P3.1.</li>
+<li><b>Degree fluctuations.</b> Erd&#337;s-R&eacute;nyi graphs add their own 1/k term through the spread of
+degrees; measure it against random regular graphs.</li>
+<li><b>Forward threshold at finite k</b> (a hypothesis, cheap to test): in the incoherent state the local
+order parameter is of order k<sup>&minus;1/2</sup>, not zero, so incoherence may lose stability at a finite
+coupling that grows with k.</li>
+<li><b>Only then</b> the critical connectivity and clustering, both derived from the closure.</li>
 </ol>
+</section>"""
+
+
+def reciprocity_card() -> str:
+    """Section P3: the reciprocity interpolation and the stored branch predictions."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    cells, fit, tt = report.reciprocity_cells(), report.reciprocity_fit(), report.branch_theory_table()
+    if cells is None or cells.empty or tt.empty:
+        return '<section id="p3"><h2>P3 Reciprocity test</h2><div class="missing">results not available yet</div></section>'
+
+    def fz(v, ref, se):
+        return "n/a" if pd.isna(se) or pd.isna(ref) or se == 0 else f"{(v - ref) / se:+.1f}"
+
+    t_th = _tbl(["p", "coupling / all-to-all fold", "R<sub>0</sub>", "Rician closure", "dynamic (directed)", "reaction",
+                 "dynamic + reaction (undirected)", "reaction from locked nodes", "reaction from drifting nodes"],
+                [[f"{r.p:g}", f"{r.mult:g}", f"{r.R0:.4f}", f"{r.closure:.3f}", f"<b>{r.dynamic:.3f}</b>", f"{r.reaction:.3f}",
+                  f"<b>{r.undirected:.3f}</b>", f"{r.reaction_locked:.3f}", f"{r.reaction_drifting:.3f}"]
+                 for r in tt.sort_values(["p", "mult"]).itertuples()])
+    t_cells = _tbl(["p", "k", "N", "overlap k&sup2;/N", "intended mutual fraction &rho;", "realised mutual fraction", "seeds",
+                    "c = k(R&minus;R<sub>0</sub>) [95% CI]", "standard error", "theory: dynamic + &rho; &times; reaction",
+                    "Rician closure", "distance from theory (SE)", "distance from Rician (SE)"],
+                   [[f"{r.p:g}", int(r.k), int(r.N), f"{r.overlap:.3f}", f"{r.rho:g}", f"{r.reciprocity:.4f}", int(r.n_seeds),
+                     _ci(r.c, r.c_lo, r.c_hi, 3), f"{r.se:.3f}", f"{r.theory:.3f}", f"{r.closure:.3f}",
+                     fz(r.c, r.theory, r.se), fz(r.c, r.closure, r.se)]
+                    for r in cells.sort_values(["p", "k", "rho"]).itertuples()])
+    t_fit = _tbl(["p", "k", "runs", "fitted intercept &plusmn; SE", "predicted (dynamic)", "distance (SE)",
+                  "fitted slope &plusmn; SE", "predicted (reaction)", "distance (SE)", "curvature &plusmn; SE (zero if linear)"],
+                 [[f"{r.p:g}", int(r.k), int(r.n_points), f"{r.intercept:.3f} &plusmn; {r.intercept_se:.3f}", f"{r.dynamic:.3f}",
+                   fz(r.intercept, r.dynamic, r.intercept_se), f"<b>{r.slope:.3f} &plusmn; {r.slope_se:.3f}</b>",
+                   f"{r.reaction:.3f}", fz(r.slope, r.reaction, r.slope_se), f"{r.curvature:+.3f} &plusmn; {r.curvature_se:.3f}"]
+                  for r in fit.sort_values(["p", "k"]).itertuples()]) if fit is not None and len(fit) else ""
+    agree = report.branch_theory_agreement()
+    got = report._rows("paperA_reciprocity")
+    partial = ('<p class="note"><b class="bad">Run incomplete.</b> ' + f"{len(got[0])} rows so far; the tables below use what has finished.</p>"
+               if report.is_partial("paperA_reciprocity") else "")
+    bullets = []
+    if fit is not None and len(fit):
+        for r in fit.sort_values("k").itertuples():
+            zs, zi = (r.slope - r.reaction) / r.slope_se, (r.intercept - r.dynamic) / r.intercept_se
+            zc = r.curvature / r.curvature_se
+            bullets.append(
+                f"<li><b>k = {int(r.k)}.</b> Slope {r.slope:.3f} &plusmn; {r.slope_se:.3f} against a predicted reaction of "
+                f"{r.reaction:.3f} ({abs(zs):.1f} standard errors apart; the measured slope is {100 * r.slope / r.reaction:.0f}% "
+                f"of the prediction). Intercept {r.intercept:.3f} &plusmn; {r.intercept_se:.3f} against the dynamic value "
+                f"{r.dynamic:.3f} ({abs(zi):.1f} standard errors). Curvature {r.curvature:+.3f} &plusmn; {r.curvature_se:.3f} "
+                f"({abs(zc):.1f} standard errors from zero). The Rician closure predicts slope 0, which is "
+                f"{abs(r.slope / r.slope_se):.0f} standard errors from the measured slope.</li>")
+    fig_html = render_fig(fig("figures/p3_reciprocity.png",
+        "Horizontal axis: &rho;, the fraction of a node's k in-neighbours that listen back (0 = fully one-way, 1 = fully two-way). Vertical axis: the branch shift c = k (R &minus; R<sub>0</sub>); more negative means finite connectivity costs more synchrony. Points: mean over seeds, one colour and marker per connectivity k, with 95% confidence bars; points at the same &rho; are nudged sideways so the bars do not hide each other. Solid black line: the theory, dynamic + &rho; &times; reaction, with no fitted parameter. Dotted grey line: the Rician closure, which gives the same value at every &rho;.",
+        "A flat set of points would support the closure. Points on the black line support the theory in full. Points that fall on a straight line with a different slope mean the reaction mechanism is right in kind (it scales with the number of mutual links) but its leading-order size is not yet reached at this k."))
+    return f"""
+<section id="p3" class="summary">
+<div class="sec-head"><span class="tag">P3</span><h2>Reciprocity test: does the branch shift grow in proportion to the fraction of mutual links?</h2><span class="verdict v-open">test of the reaction term</span></div>
+{partial}
+<p>Section P2 left the reaction (echo) term unconfirmed, and an external novelty audit pointed out that
+the idea behind it is not new: comparing symmetric with asymmetric coupling to isolate an Onsager reaction
+term was done for oscillator networks by Aonishi, Kurata and Okada (2002), and the general sparse-graph
+frameworks of Metz (2025) and Metz and P&eacute;rez Castillo (2026) contain both mechanisms
+(<code>docs/PRIOR_ART.md</code>). What this project can add is a quantitative prediction and its test. This
+section is that test. Runs: <code>{report.run_name('paperA_reciprocity')}</code>,
+<code>{report.run_name('paperA_branch_theory')}</code>. Configs: <code>configs/paperA_reciprocity.yaml</code>,
+<code>configs/paperA_branch_theory.yaml</code>.</p>
+
+<h3>The prediction</h3>
+<p>Take graphs in which every node listens to exactly k others, and make a fraction &rho; of those links
+mutual (the node listened to also listens back) and the rest one-way. &rho; = 0 is the directed graph of
+section P2 and &rho; = 1 is an ordinary undirected random regular graph. The echo reaches a node only
+through neighbours that listen back, and there are &rho;k of them, so at leading order in 1/k:</p>
+<div class="math">c(&rho;) = c<sub>dynamic</sub> + &rho; &times; c<sub>reaction</sub></div>
+<p>a straight line in &rho; whose intercept and slope are both fixed by the theory. The Rician closure never asks
+whether links are mutual, so it predicts a horizontal line.</p>
+
+<h3>Table P3.1. Predicted branch shift, computed in this repository</h3>
+<p>These are the values that section P2 could only copy from a run note. They are now computed by
+<code>esfc.branch</code> (numerical integrals, no simulation) and stored as a result.
+{"The computed values differ from the copied ones by at most " + f"{agree:.1e}" + ", so the copied values were correct." if agree is not None else ""}
+<b>R<sub>0</sub></b> is the all-to-all synchrony at that coupling. <b>Reaction</b> is split into the part from
+locked nodes (closed form) and the part from drifting nodes (integrated numerically). All shifts are negative:
+finite connectivity lowers synchrony.</p>
+{t_th}
+
+<h3>Table P3.2. Measured branch shift at each mutual fraction</h3>
+<p>Coupling 1.25 times the all-to-all fold, start synchronised, relax 150 time units, average R over the next
+250. <b>Realised mutual fraction</b> is counted on the generated graphs; it exceeds the intended value by the
+small chance that a one-way link is reciprocated by accident. N is chosen for each k so that the overlap
+k&sup2;/N stays below 0.05. The interval is a Student-t 95% interval over seeds.</p>
+{t_cells}
+{fig_html}
+
+<h3>Table P3.3. Straight-line fit per connectivity</h3>
+<p>Least squares of c on &rho; over all individual runs. The theory fixes both numbers: the intercept should
+equal the dynamic value and the slope the reaction value. <b>Curvature</b> is the coefficient of
+&rho;&sup2; when a quadratic term is added; it tests whether the dependence is a straight line at all.</p>
+{t_fit}
+
+<h3>Reading</h3>
+<ul class="findings">
+{"".join(bullets)}
+</ul>
+
+<h3>What remains for this test</h3>
+<ul class="findings">
+<li><b>Larger k with small overlap.</b> k = 96 and 192 need N of 200,000 and 800,000 to keep k&sup2;/N at
+0.05. That is a cluster job: <code>configs/paperA_branch_ada.yaml</code>.</li>
+<li><b>Second exponent and other couplings.</b> This sweep is p = 1 at one coupling.</li>
+<li><b>Link to the exact directed theory.</b> Show that the dynamic term is the leading 1/k expansion of the
+equation of Metz (2025), analytically or by population dynamics.</li>
+</ul>
+</section>"""
+
+
+def novelty_card() -> str:
+    """Section N1: what the external novelty audit found, in full. No measured values of this repository."""
+    rows = [
+        ["Metz, PRL 134, 037401 (2025)", "Exact single-site equation for nonlinear dynamics on sparse <b>directed</b> random graphs, solved by population dynamics. Synchronization is named as an application; the audit reports that the Kuramoto model is listed but not solved, and that graphs with two-way edges are excluded",
+         "Our directed-graph (dynamic filtering) term is, in principle, the leading 1/k expansion of this equation for the adaptive coupling", "State this in the paper and show it, analytically or by population dynamics", "abstract checked"],
+        ["Metz and P&eacute;rez Castillo, arXiv:2606.08689 (2026)", "Dynamical cavity method for sparse random graphs with one-way and two-way edges. Two-way edges need conditional path kernels; dense limits give drift, noise and <b>response</b> channels",
+         "Our dynamic term is its noise channel and our reaction term is its response channel", "Cite as the framework that predicts the structure. Our part is the explicit coefficients and their test. Unrefereed preprint", "abstract checked"],
+        ["Aonishi, Kurata and Okada, PRE 65, 046223 (2002)", "Oscillator associative-memory models with symmetric and with asymmetric dilution of couplings, which differ by the Onsager reaction term",
+         "Direct precedent for the idea that undirected minus directed isolates the reaction term", "Must be cited. Differences: random sparse topology, Lorentzian Kuramoto setting, adaptive gain, explicit 1/k coefficient", "abstract checked"],
+        ["Ichinomiya, PRE 72, 016109 (2005)", "Path-integral treatment of dynamics on a sparse random network: equivalent to globally coupled oscillators with random Gaussian interactions",
+         "The origin of the static Gaussian scatter picture, which is what the Rician closure assumes", "Cite as the picture that the branch test falsifies", "abstract checked"],
+        ["Pr&uuml;ser, Rosmej and Engel, PRL 132, 187201 (2024)", "Dynamical cavity method for the fully disordered <b>dense</b> Kuramoto model, with self-consistent correlation and response functions",
+         "Dense counterpart of the reaction term", "Cite", "abstract checked"],
+        ["Reddy, arXiv:2603.09402 (2026)", "Dense dynamical mean-field theory of oscillator networks: one oscillator driven by a mean field and self-consistent coloured noise; reduces to Ott-Antonsen without disorder",
+         "Closest dense analogue of Ott-Antonsen driven by coloured noise", "Cite. The audit reports that it lists the sparse case as open", "abstract checked"],
+        ["Hatchett and Uezu, PRE 78, 036106 (2008)", "Cavity analysis of oscillator networks on sparse random graphs in an equilibrium (Hamiltonian) case",
+         "Could contain a finite-connectivity threshold expansion", "<b class='bad'>Read in full before submission</b>", "from the audit, unread"],
+        ["Skantzos, P&eacute;rez Castillo and Hatchett, PRE 72, 066127 (2005)", "Equilibrium cavity method for XY spins on small-world graphs",
+         "Finite-connectivity cavity lineage for phase variables. No frequency disorder, so no drifting oscillators", "Cite for lineage", "from the audit"],
+        ["Restrepo, Ott and Hunt, PRE 71, 036151 (2005); Chaos 16, 015107 (2006)", "Onset of synchronization on networks from the largest adjacency eigenvalue, extended to directed networks",
+         "Directed against undirected for the continuous onset only; no reaction term", "Cite. Our problem is the fold of an explosive transition, where that criterion does not apply", "from the audit"],
+        ["Khanra, Kundu, Pal, Ji and Hens, Chaos 30, 031101 (2020)", "Adaptive power-law coupling widens hysteresis; semi-analytic mean-field backward threshold",
+         "Mean field only, no 1/k term", "Cite as the group's prior work; our result says why mean-field backward thresholds are biased at finite degree", "read earlier"],
+        ["Dutta, Pal and Hens, arXiv:2507.18421 (2025)", "Ott-Antonsen with an annealed degree-class closure on dense hypergraphs; double-jump transitions",
+         "The annealed closure removes exactly the effects computed here", "Cite; a short section can quantify the error of that closure at moderate connectivity", "from the audit"],
+        ["Kumpeerakij and Restrepo, arXiv:2605.24701 (2026)", "Self-consistent local order parameter theory for dyadic plus triadic interactions on finite structures",
+         "Static self-consistency; misses the fluctuations from drifting neighbours", "Cite for the p = 2 (triadic) framing", "read earlier"],
+    ]
+    verdicts = [
+        ["The Rician closure is wrong", "A useful negative result, since the static-scatter picture goes back to Ichinomiya (2005)", "Present as a falsified baseline, not as the headline"],
+        ["(a) Dynamic filtering, exact on directed graphs", "Mechanism known (Metz 2025; noise channel of Metz and P&eacute;rez Castillo 2026). The closed-form coefficients for the adaptive coupling appear new", "New explicit result within a known framework"],
+        ["(b) Onsager reaction on undirected graphs", "Concept known (Aonishi et al. 2002; dense case Pr&uuml;ser and Engel 2024; generic in Metz and P&eacute;rez Castillo 2026). The explicit sparse Kuramoto calculation appears new", "New explicit result; validation incomplete (sections P2, P3)"],
+        ["(c) Directed against undirected contrast", "The structural distinction is known", "New only as a measured decomposition for explosive synchronization"],
+        ["(d) Finite-degree shift of the fold", "No prior closed-form result found", "The most novel claim and the least supported by data (table P2.2)"],
+        ["Non-analytic correction from nodes about to unlock", "No prior treatment found for sparse Kuramoto", "A selling point only if the exponent is derived, not inferred from two points"],
+    ]
+    referee = [
+        ["Two limits kept apart", "N to infinity at fixed k for every k, by scaling in N or by holding k&sup2;/N fixed. Juh&aacute;sz, Kelling and &Oacute;dor (2019) warn that finite-size scaling on sparse graphs must be treated cautiously", "Partly: overlap held below 0.05 in section P3; no N scan yet"],
+        ["Realisations and error bars", "10 to 20 independent graph and frequency realisations per point at the largest N, with confidence intervals; quantile frequencies to remove sampling noise; converged transient and averaging times", "Section P3: 10 seeds, quantile frequencies, Student-t intervals. Section P2 cloud cells: 1 to 4 seeds, not enough"],
+        ["Fold protocol", "Fine backward sweeps and a square-root (saddle-node) fit to locate the fold, with sweep rate and step size shown not to matter", "Not done. The fold is found by bisection with a survival criterion; the convergence config exists and has not been run"],
+        ["Extrapolation in k", "At least four connectivities, two candidate forms (a + b/k and a + b k<sup>&minus;1/2</sup>) with an information criterion, and a derived subleading exponent", "Not done"],
+        ["Independent theoretical check", "Comparison with population dynamics of the exact equations, as in Skantzos et al. (2005) and Metz (2025)", "Not done"],
+        ["Code and data", "Archived code and figure data with a DOI and a data-availability statement", "Repository is reproducible from configs; no archive or DOI yet"],
+    ]
+    programme = [
+        ["1", "Reciprocity interpolation", "Graphs with a tunable fraction of mutual links; the theory predicts a straight line", "<b>Done at k = 24 and 48: section <a href='#p3'>P3</a></b>"],
+        ["2", "Population dynamics of the exact directed equation", "Shows the dynamic term is the correct asymptote of Metz (2025), which answers the strongest novelty objection", "Not started"],
+        ["3", "Analytic boundary-layer exponent", "Scatter of size k<sup>&minus;1/2</sup> smears the diverging response of nodes about to unlock; derive the resulting correction and fit the fold data with the exponent fixed", "Not started"],
+        ["4", "Fold and branch at k = 96 and 192", "With N chosen so that k&sup2;/N is at most 0.05", "Config ready for the cluster: <code>configs/paperA_branch_ada.yaml</code> (branch); fold not yet configured"],
+        ["5", "Random regular against Erd&#337;s-R&eacute;nyi", "Degree fluctuations add their own 1/k term through the spread of degrees", "Not started"],
+        ["6", "Exponent dependence", "p = 1, 2, 3 on one theory curve", "Theory computed for p = 1, 2 (table P3.1); simulations at p = 1 mainly"],
+    ]
+    return f"""
+<section id="n1" class="summary">
+<div class="sec-head"><span class="tag">N1</span><h2>Novelty audit: what is new, what is not, and what a referee will ask for</h2><span class="verdict v-open">narrow but real</span></div>
+<p>An external audit of the literature was run against the theory of section P1 (the summary is in
+<code>docs/PRIOR_ART.md</code>). Its conclusion changes how this work must be described, so it is given here
+in full. This section quotes no measured value of this repository; the measurements are in sections P1 to P3.
+The audit could not run full-text searches, so a paper with an explicit 1/k Kuramoto threshold could still
+exist in the literature it did not reach.</p>
+
+<h3>The conclusion in four sentences</h3>
+<ul class="findings">
+<li><b>The mechanisms are known.</b> Filtering of fast neighbour fluctuations and the reaction of a node on
+its own neighbours are both contained in existing dynamical mean-field and cavity frameworks for sparse
+graphs.</li>
+<li><b>The explicit results appear new.</b> No published closed-form 1/k shift of the fold or of the
+synchronised branch was found for adaptive (local order parameter) Kuramoto oscillators on sparse graphs.</li>
+<li><b>The right form is a regular article</b>, framed as explicit leading-order sparse-graph corrections
+with a directed/undirected decomposition verified by simulation. It is not a new cavity method.</li>
+<li><b>The finance study is kept separate.</b> Attaching a weak empirical result to the physics would lead a
+referee to discount both.</li>
+</ul>
+
+<h3>Table N1.1. Prior work and how it relates</h3>
+<p><b>What it does</b> describes the earlier paper. <b>Overlap</b> says which part of this project it
+anticipates. <b>What to do</b> is the action for the manuscript. <b>Status</b> records how far the
+description has been verified here: <i>abstract checked</i> means the arXiv abstract page was fetched and
+matches; <i>from the audit</i> means the description is the audit's and has not been checked against the
+paper; <i>read earlier</i> means it was read during the first search.</p>
+{_tbl(["paper", "what it does", "overlap with this project", "what to do", "status"], rows)}
+
+<h3>Table N1.2. Verdict on each claim</h3>
+{_tbl(["claim", "what is already known", "verdict"], verdicts)}
+
+<h3>Table N1.3. What a referee will expect, and where this repository stands</h3>
+<p>Based on the norms of comparable published work, not on a journal checklist.</p>
+{_tbl(["requirement", "what it means", "status here"], referee)}
+
+<h3>Table N1.4. Programme, in order of value</h3>
+{_tbl(["rank", "item", "why", "status"], programme)}
+
+<h3>Hypothesis worth a cheap test</h3>
+<p>In the all-to-all model the incoherent state is linearly stable at every coupling, because the gain
+r<sup>p</sup> vanishes there. On a sparse graph the local order parameter of an incoherent state is of order
+k<sup>&minus;1/2</sup>, not zero, so the effective coupling is finite. This suggests a finite forward
+threshold that grows with k, roughly as k<sup>p/2</sup>, which would make the width of the hysteresis loop
+finite and dependent on connectivity. This is the audit's inference, not a published result.</p>
+
+<h3>The finance study after the audit</h3>
+<ul class="findings">
+<li><b>The one positive number is exploratory.</b> It comes from a robustness variant after the primary test
+did not reject, and must be reported that way.</li>
+<li><b>A disjoint set of stocks is not an independent test.</b> Crash events are market-wide and stock
+co-movement is dominated by a common factor, so different stocks over the same period test the same events. A
+confirmatory test needs a later time period with the event rule, horizon and volatility matching fixed in
+advance.</li>
+<li><b>Benchmarks to include:</b> the co-jump synchronization measures of Calcagnile et al. (2018) and the
+absorption ratio of Kritzman et al. (2011). Demirer, Leggio and Lien (2019) found no herding before the 2010
+flash crash at one-minute resolution, consistent with co-movement being coincident and not leading.</li>
+</ul>
 </section>"""
 
 
@@ -1864,13 +2095,15 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
 <a class="sh" href="../simulation/index.html"><b>Interactive simulation</b><span>Watch a crash spread node by node through the network. Click any desk to see its own numbers in the locking inequality.</span></a>
 <a class="sh" href="RESEARCH_IDEAS.md"><b>Research ideas</b><span>What is still open, keyed paper by paper to the prior art, with what would have to be computed for each.</span></a>
 </div></header>
-<nav><div class="in"><a href="#status"><span>NOW</span>Status</a><a href="#summary"><span>OLD</span>Earlier summary</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#p2"><span>P2</span>Cloud runs and branch test</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>SYM</span>Symbols</a>{nav}<a href="#refs"><span>REF</span>References</a></div></nav>
+<nav><div class="in"><a href="#status"><span>NOW</span>Status</a><a href="#summary"><span>OLD</span>Earlier summary</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#p2"><span>P2</span>Cloud runs and branch test</a><a href="#p3"><span>P3</span>Reciprocity test</a><a href="#n1"><span>N1</span>Novelty audit</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>SYM</span>Symbols</a>{nav}<a href="#refs"><span>REF</span>References</a></div></nav>
 <main>
 {status_card()}
 <div id="summary">{summary_card()}</div>
 {audit_card()}
 {physics_card()}
 {cloud_card()}
+{reciprocity_card()}
+{novelty_card()}
 {empirical_card()}
 <section id="glossary"><h2>Symbols and terms</h2><div class="tbl"><table><tbody>{gloss}</tbody></table></div></section>
 {''.join(render_section(s) for s in SECTIONS)}

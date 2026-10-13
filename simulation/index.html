@@ -495,12 +495,14 @@
         <b>The two curves do not retrace.</b> The market crashes on the way up at 4.1 but does not recover
         until 3.1 on the way down. That loop is hysteresis, the reason a crash outlives its trigger.</td></tr>
       <tr><td><b>&#9939; network</b></td><td></td>
-        <td>Cycles through four observation networks, each with 500 desks, and restarts the simulation.
+        <td>Cycles through five observation networks, each with 500 desks, and restarts the simulation.
         <b>ER &lang;k&rang;=12</b>: random two-way links, about 12 per desk, the network every crash scenario in
         this project uses. <b>BA scale-free</b>: a few heavily watched hubs, for the hub-shock story.
         <b>Regular, two-way links</b>: every desk watches exactly 12 others and each of them watches it
         back. <b>Regular, one-way links</b>: every desk watches exactly 12 others, but they do not watch
-        it back. The last two differ in one thing only, which is what block 10 uses them for.</td></tr>
+        it back. <b>Regular, half mutual links</b>: every desk watches exactly 12 others, and 6 of those 12
+        watch it back. The last three differ in one thing only, the share of mutual links (100%, 0% and
+        50%), which is what block 10 uses them for.</td></tr>
       <tr><td><b>&#9689; colour</b></td><td></td>
         <td>Cycles three ways. <b>order flow</b>: red/cyan by q<sub>i</sub>, the default.
         <b>phase &theta;</b>: a cyclic map, so you see waves travel even when nothing is crashing.
@@ -650,6 +652,30 @@
     <p>Those statements are about large networks (20,000 desks or more), Lorentzian frequencies and no
     noise. The numbers and their uncertainties are in section P2 of the results page. This page remains
     a demonstration and is not evidence for them.</p>
+
+    <p><b>The reciprocity test, and the fifth network.</b> Comparing only "all one-way" with "all two-way"
+    leaves a gap in the argument: two points can always be joined by a line. If the difference really is
+    an echo, it should grow in proportion to how many of the desks you watch are watching you back. The
+    network button now has a fifth setting, <i>regular, half mutual links</i>, in which every desk
+    watches 12 others and exactly 6 of them watch it back. The TWO-WAY LINKS readout shows the share of
+    mutual links for whichever network is loaded (about 0%, 50% or 100%), and the desk inspector lists,
+    for the desk you click, which of its neighbours watch it back.</p>
+    <ol>
+      <li>Lock the market at &lambda; near 5 on <i>regular, one-way links</i> and note R.</li>
+      <li>Switch to <i>regular, half mutual links</i> at the same &lambda; and note R.</li>
+      <li>Switch to <i>regular, two-way links</i> and note R.</li>
+    </ol>
+    <p>The prediction is that the three readings fall in order, with the half-mutual network in the
+    middle. With 500 desks and noise the readings wander, so average by eye over a few seconds.</p>
+    <!--RECIPROCITY-RESULT-->
+    <p><b>What the literature check changed.</b> The two ideas in this block, rotating neighbours that
+    are too fast to follow and the echo on two-way links, are not new as ideas. General theories of
+    dynamics on sparse networks already contain both, and the trick of comparing symmetric with
+    asymmetric coupling to isolate the echo was used for oscillators in 2002. What this project adds is
+    the explicit size of each effect for this model and the tests of those sizes. The details, paper by
+    paper, are in section N1 of
+    <a href="../research/index.html#n1" style="color:var(--cold)">the results page</a> and step 29 of
+    <a href="../research/reference.html#s29" style="color:var(--cold)">the reference page</a>.</p>
   </div>
 </section>
 
@@ -696,7 +722,7 @@ const NETS = window.NETWORKS;
 })();
 if(!NETS){ throw new Error('network.js did not load (run simulation/build_network.py)'); }
 const KEYS = Object.keys(NETS);
-const NETLABEL = {er12:'ER ⟨k⟩=12', ba6:'BA scale-free', rr12:'regular, two-way links', dir12:'regular, one-way links'};
+const NETLABEL = {er12:'ER ⟨k⟩=12', ba6:'BA scale-free', rr12:'regular, two-way links', dir12:'regular, one-way links', half12:'regular, half mutual links'};
 let netKey = 'er12';
 let NET = NETS[netKey];
 let sim = new Sim(NET, {lam:2.0, sigma:0.3, sigmaC:0.0, f:1.0, seed:7});

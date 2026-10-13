@@ -142,10 +142,104 @@ def branch_runs() -> pd.DataFrame | None:
     return x
 
 
-def branch_theory() -> dict | None:
+def branch_theory_reported() -> dict | None:
+    """Branch predictions as printed by the cloud run and copied from its note."""
     d = _cloud_dir()
     f = None if d is None else d / "branch_theory_reported.json"
     return json.loads(f.read_text()) if f is not None and f.exists() else None
+
+
+def branch_theory_table() -> pd.DataFrame:
+    """Branch predictions computed in this repository (experiment `branch_theory`), one row per (p, mult)."""
+    s = load_summary("paperA_branch_theory")
+    return pd.DataFrame(s["rows"]) if s else pd.DataFrame()
+
+
+def branch_theory(mult: float = 1.25) -> dict | None:
+    """Predictions used by the tables: the computed ones if that run exists, otherwise the reported ones.
+    `source` says which."""
+    t = branch_theory_table()
+    if not t.empty:
+        t = t[np.isclose(t.mult, mult)]
+        return {"source": "computed", "rows": [{"p": r.p, "R0": r.R0, "closure": r.closure, "dynamic": r.dynamic,
+                                                "reaction": r.reaction, "dynamic_plus_reaction": r.undirected}
+                                               for r in t.itertuples()]}
+    rep = branch_theory_reported()
+    return None if rep is None else {**rep, "source": "reported"}
+
+
+def branch_theory_agreement() -> float | None:
+    """Largest absolute difference between the computed and the reported branch predictions."""
+    rep, t = branch_theory_reported(), branch_theory_table()
+    if rep is None or t.empty:
+        return None
+    worst = 0.0
+    for r in rep["rows"]:
+        m = t[np.isclose(t.p, r["p"]) & np.isclose(t.mult, rep["lam_over_lam_b_inf"])]
+        if m.empty:
+            continue
+        for a, b in (("closure", "closure"), ("dynamic", "dynamic"), ("dynamic_plus_reaction", "undirected")):
+            if r.get(a) is not None:
+                worst = max(worst, abs(r[a] - float(m.iloc[0][b])))
+    return worst
+
+
+def reciprocity_runs() -> pd.DataFrame | None:
+    """Seed-level rows of the reciprocity sweep with c = k (R - R0)."""
+    got = _rows("paperA_reciprocity")
+    if got is None:
+        return None
+    df, _ = got
+    ref = df[df.variant == "meanfield"].set_index(["p", "mult", "n"]).R
+    x = df[df.variant != "meanfield"].copy()
+    x["R0"] = [ref.get((p, m, n), np.nan) for p, m, n in zip(x.p, x.mult, x.n)]
+    x["c"] = x.k * (x.R - x.R0)
+    return x[np.isfinite(x.c)]
+
+
+def reciprocity_cells() -> pd.DataFrame | None:
+    """One row per (p, mult, k, rho): mean c with Student-t 95% CI and the prediction dynamic + rho reaction."""
+    x = reciprocity_runs()
+    if x is None or x.empty:
+        return None
+    out = []
+    for (p, mult, k, n, rho), g in x.groupby(["p", "mult", "k", "n", "rho"]):
+        m, lo, hi, cnt = mean_ci(g.c)
+        th = {r["p"]: r for r in (branch_theory(mult) or {"rows": []})["rows"]}.get(float(p), {})
+        ok = th.get("reaction") is not None
+        out.append({"p": p, "mult": mult, "k": k, "N": n, "rho": rho, "reciprocity": g.reciprocity.mean(),
+                    "n_seeds": cnt, "c": m, "c_lo": lo, "c_hi": hi,
+                    "se": g.c.std(ddof=1) / np.sqrt(cnt) if cnt > 1 else np.nan, "overlap": k * k / n,
+                    "theory": th["dynamic"] + rho * th["reaction"] if ok else np.nan,
+                    "closure": th.get("closure", np.nan)})
+    return pd.DataFrame(out)
+
+
+def reciprocity_fit() -> pd.DataFrame | None:
+    """Straight line c = intercept + slope x rho per (p, mult, k), ordinary least squares over all seeds,
+    with a quadratic term fitted separately as a test of linearity. Prediction: intercept = dynamic,
+    slope = reaction."""
+    x = reciprocity_runs()
+    if x is None or x.empty:
+        return None
+    out = []
+    for (p, mult, k), g in x.groupby(["p", "mult", "k"]):
+        if g.rho.nunique() < 3:
+            continue
+        r, y = g.rho.to_numpy(float), g.c.to_numpy(float)
+
+        def ols(A):
+            beta, res, *_ = np.linalg.lstsq(A, y, rcond=None)
+            dof = len(y) - A.shape[1]
+            s2 = float(((y - A @ beta) ** 2).sum()) / dof
+            return beta, np.sqrt(np.diag(s2 * np.linalg.inv(A.T @ A)))
+        b1, e1 = ols(np.vstack([np.ones_like(r), r]).T)
+        b2, e2 = ols(np.vstack([np.ones_like(r), r, r * r]).T)
+        th = {t["p"]: t for t in (branch_theory(mult) or {"rows": []})["rows"]}.get(float(p), {})
+        out.append({"p": p, "mult": mult, "k": k, "n_points": len(y), "intercept": b1[0], "intercept_se": e1[0],
+                    "slope": b1[1], "slope_se": e1[1], "curvature": b2[2], "curvature_se": e2[2],
+                    "dynamic": th.get("dynamic", np.nan), "reaction": th.get("reaction", np.nan)})
+    return pd.DataFrame(out)
 
 
 def branch_cells() -> pd.DataFrame | None:
@@ -240,4 +334,5 @@ def run_name(exp_id: str) -> str:
 
 __all__ = ["RESULTS", "load_summary", "theory_table", "fold_cells", "extrapolate", "md_table", "html_table", "intraday_summary",
            "run_name", "cloud_run_name", "cloud_fold_cells", "branch_runs", "branch_cells", "branch_pooled",
-           "branch_theory", "branch_summary_check"]
+           "branch_theory", "branch_summary_check", "branch_theory_table", "branch_theory_reported",
+           "branch_theory_agreement", "reciprocity_runs", "reciprocity_cells", "reciprocity_fit"]
