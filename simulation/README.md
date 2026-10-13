@@ -58,12 +58,20 @@ index.html?net=ba6&lam=2.8&warmup=100                the scale-free network
 Parameters: `lam`, `sigma`, `sigmac`, `net` (`er12`|`ba6`), `warmup` (time units), `shock`
 (`random`|`hubs`|`periphery`), `halt` (duration).
 
-## The two networks
+## The four networks
 
-| key | network | E | ⟨k⟩ | κ | use |
-|---|---|---|---|---|---|
-| `er12` *(default)* | Erdős-Rényi | 3076 | 12.3 | 1.07 | **hysteresis**, the exact configuration S2-S5 measure |
-| `ba6` | Barabási-Albert | 1491 | 5.96 | 2.29 | **hub targeting**, has hubs, but almost no bistable window |
+| key | network | links | use |
+|---|---|---|---|
+| `er12` *(default)* | Erdos-Renyi, about 12 neighbours | two-way | **hysteresis**, the exact configuration S2 to S5 measure |
+| `ba6` | Barabasi-Albert | two-way | **hub targeting**: has hubs, but almost no bistable window |
+| `rr12` | random regular, exactly 12 neighbours | two-way | matched pair for the **echo experiment** (block 10 of the page) |
+| `dir12` | random regular, exactly 12 watched desks | one-way | the same, with no echo: nobody a desk watches is watching it back |
+
+`rr12` and `dir12` differ only in whether watching is mutual. `measure_echo.py` measures the recovery
+threshold on 24 independently generated networks of each kind at the page's settings and writes
+`echo_measurement.js`, which the page reads; no number in block 10 is typed by hand. Realised degree,
+heterogeneity and clustering of each network are printed by `build_network.py` and shown in the page
+header and footer.
 
 On `er12` an adiabatic sweep here gives **λ_b = 3.1, λ_f = 4.1, max hysteresis gap 0.80**, reproducing
 the window [3.21, 3.96] measured in S2 for the same configuration. `ba6` has width ≈ 0, consistent with

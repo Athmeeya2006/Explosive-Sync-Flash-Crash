@@ -1080,6 +1080,39 @@ def physics_card() -> str:
                          f"{_ci(b.ratio, b.ci_lo, b.ci_hi)}, against {b.closure_ratio:.4f} from the closure. The statement in "
                          f"section P0 that simulation sits below the closure in every run is true of those short, small "
                          f"runs and must not be read as a statement about the infinite-size fold.</li>")
+    demo_note = ""
+    ej = REPO / "simulation" / "echo_measurement.js"
+    if ej.exists():
+        E = json.loads(ej.read_text().split("=", 1)[1].rstrip().rstrip(";"))
+        demo_note = (f"<li><b>The same contrast at the interactive demo's settings.</b> With Gaussian frequencies, noise "
+                     f"&sigma; = {E['sigma']}, N = {E['n']} and k = {E['k']} (not the conditions the theory is derived for), "
+                     f"the recovery threshold over {E['seeds']} networks of each kind is "
+                     f"{E['two_way']['mean']:.2f} [{E['two_way']['lo']:.2f}, {E['two_way']['hi']:.2f}] with two-way links "
+                     f"and {E['one_way']['mean']:.2f} [{E['one_way']['lo']:.2f}, {E['one_way']['hi']:.2f}] with one-way "
+                     f"links, a gap of {E['difference']['mean']:.2f} &plusmn; {E['difference']['se']:.2f} "
+                     f"({E['relative_percent']:.1f}%). The Rician closure cannot produce any gap, because it never asks "
+                     f"whether links are mutual. Script: <code>simulation/measure_echo.py</code>; try it in block 10 of "
+                     f"<a href='../simulation/index.html'>the simulation</a>.</li>")
+    # the reaction (echo) term measured directly: undirected minus directed coefficient at the same p, k, N
+    t_echo = ""
+    u, dd = big[big.graph == "rr"], big[big.graph == "dir"]
+    mm = u.merge(dd, on=["p", "k", "N"], suffixes=("_u", "_d"))
+    if len(mm):
+        rk = report.load_summary("paperA_theory_k")
+        rows_e = []
+        for r in mm.sort_values(["p", "k"]).itertuples():
+            se = ((r.coef_hi_u - r.coef_lo_u) ** 2 + (r.coef_hi_d - r.coef_lo_d) ** 2) ** 0.5 / 3.92
+            pred = [x["reaction_at_k"] for x in (rk["rows"] if rk else []) if abs(x["p"] - r.p) < 1e-9 and x["k"] == int(r.k)]
+            diff = r.coef_u - r.coef_d
+            rows_e.append([f"{r.p:g}", r.k, r.N, f"{r.coef_u:.2f}", f"{r.coef_d:.2f}", f"<b>{diff:.2f} &plusmn; {se:.2f}</b>",
+                           f"{pred[0]:.2f}" if pred else "n/a", f"{100 * diff / pred[0]:.0f}%" if pred else "n/a", "0.00"])
+        t_echo = ("<h3>Table P1.2b. The echo measured directly</h3><p>Subtracting the directed coefficient from the "
+                  "undirected one at the same p, k and N isolates what two-way links add. <b>Predicted echo</b> is the "
+                  "reaction term of the theory evaluated at that k. The Rician closure predicts zero, because it gives "
+                  "the same coefficient to both kinds of graph. The uncertainty combines the two confidence intervals "
+                  "and treats the two sets of seeds as independent.</p>"
+                  + _tbl(["p", "k", "N", "undirected coefficient", "directed coefficient", "measured echo &plusmn; SE",
+                          "predicted echo", "measured as share of predicted", "Rician closure's echo"], rows_e))
     sd = df[df.graph == "rr"].groupby("N").sd.mean()
     sd_note = "; ".join(f"N = {int(n)}: {v:.4f}" for n, v in sd.items() if pd.notna(v))
     def tally(g, col):
@@ -1087,12 +1120,26 @@ def physics_card() -> str:
         return int(((d.coef_lo <= d[col]) & (d[col] <= d.coef_hi)).sum()), len(d)
     ut, un = tally("rr", "theory_coef"); ur, _ = tally("rr", "rician_coef")
     dt_, dn = tally("dir", "theory_coef"); dr, _ = tally("dir", "rician_coef")
+    got = report._rows("paperA_A1_pilot")
+    pilot_note = ""
+    if report.is_partial("paperA_A1_pilot") and got is not None:
+        cfg = __import__("yaml").safe_load((got[1] / "config.yaml").read_text())
+        planned = len(cfg["k"]) * len(cfg["p"]) * len(cfg["n"]) * cfg["n_seeds"]
+        done_n = sorted(int(x) for x in got[0].n.unique())
+        missing = [nm for nm, eid in (("the estimator convergence checks", "paperA_convergence"),
+                                      ("the all-to-all validation", "paperA_A0")) if report._rows(eid) is None]
+        pilot_note = (f'<p class="note"><b class="bad">Incomplete pilot.</b> The undirected pilot was interrupted when '
+                      f'the session that launched it ended: {len(got[0])} of {planned} planned runs finished, all at N = '
+                      f'{", ".join(str(x) for x in done_n)}. The smaller sizes were never run, so there is no finite-size '
+                      f'extrapolation. The directed-graph experiment was run separately and is complete.'
+                      + (f' Not yet run: {" and ".join(missing)}.' if missing else "") + '</p>')
     fig_html = render_fig(fig("figures/p1_fold_coefficient.png",
         "One panel per exponent p. Horizontal axis: number of neighbours k (log scale). Vertical axis: the coefficient k &times; (fold ratio &minus; 1), which is flat in k if the correction really goes as 1/k. Blue circles: undirected random regular graphs. Orange squares: directed graphs with k in-neighbours. Bars: 95% confidence interval over seeds at the largest size run. Dotted grey line: the Rician closure's (p+2)/2. Dashed blue and orange lines: the leading-order theory for undirected and directed graphs.",
         "The directed points are the discriminating test: the Rician closure predicts the same value for both graph types, the new theory predicts a much smaller value on directed graphs. Points drifting with k signal second-order terms, which the leading-order lines do not include."))
     return f"""
 <section id="p1" class="summary">
 <div class="sec-head"><span class="tag">P1</span><h2>New measurements and a leading-order theory of the fold at finite connectivity</h2><span class="verdict v-open">pilot, not final</span></div>
+{pilot_note}
 <p>This section reports what was measured after the audit, with a new compiled simulator that reproduces the
 old one to machine precision (56 regression and analytic tests). All numbers are read from
 <code>results/</code> at build time. Runs: <code>{report.run_name('paperA_A1_pilot')}</code>,
@@ -1130,6 +1177,7 @@ seeds with a 95% confidence interval; <b>closure ratio</b> is the full Rician cl
 measured coefficient lies from each prediction (within about &plusmn;2 is compatible). The fold is found by
 bisection from a fully synchronised start with relaxation time 480, tolerance 0.2%.</p>
 {t_big}
+{t_echo}
 {fig_html}
 <ul class="findings">
 <li><b>Undirected graphs:</b> the 95% interval contains the new theory's value in {ut} of {un} cells and the
@@ -1137,6 +1185,7 @@ Rician value in {ur} of {un}. <b>Directed graphs:</b> the new theory in {dt_} of
 {dr} of {dn}. Read the table, not this count, for the size of each discrepancy: both predictions are
 leading-order in 1/k and are expected to fail at small k.</li>
 {size_note}
+{demo_note}
 <li><b>The fold varies from sample to sample.</b> Mean standard deviation of the fold ratio across seeds on
 undirected graphs: {sd_note}. Any single-seed fold is uncertain by about this much.</li>
 <li><b>What is not established.</b> Whether the coefficients converge to the predicted values needs larger k and

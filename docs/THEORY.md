@@ -1,7 +1,9 @@
 # Leading 1/k theory of the fold: derivation
 
-Status: derived on 2026-10-13 in response to the audit. The directed-graph prediction has preliminary
-numerical support; the undirected prediction is **not yet confirmed**. Measured values are in
+Status: derived on 2026-10-13 in response to the audit. A pilot at N = 10,000 supports the directed-graph
+prediction and contradicts the Rician closure there; on undirected graphs the measured coefficient is
+below this theory's prediction and the echo term comes out smaller than predicted, so the undirected
+prediction is **not confirmed**. Measured values are in
 `results/` and on `research/index.html`; none are quoted here. Code: `src/esfc/cavity.py`. Units:
 `gamma = 1`.
 

@@ -32,7 +32,9 @@ function check(name, cond, detail) {
 /* the default network is the one the interactive page opens on, and it is the one that must
    demonstrate hysteresis; ba6 is checked too but only warned about */
 for (const [KEY, NET] of Object.entries(NETS)) {
-  const STRICT = KEY === 'er12';
+  /* ba6 (scale-free) has no bistable window, so the window checks are notes there. The other three
+     networks (er12 and the matched two-way / one-way pair) must all show hysteresis. */
+  const STRICT = KEY !== 'ba6';
   const fresh = (o) => new Sim(NET, Object.assign({ sigma: 0.3, f: 1.0, seed: 11 }, o));
   console.log(`\n=================  ${KEY}: ${NET.meta.model}  E=${NET.meta.m}  ` +
     `<k>=${NET.meta.meanDeg.toFixed(2)}  kappa=${NET.meta.kappa.toFixed(2)}  =================\n`);
@@ -86,8 +88,11 @@ const c = fresh({ lam: LAM_LO }); run(c, 60);
 c.applyShock(1.5, 0.3, 'random'); run(c, 8);
 const cPeak = c.R;
 c.clearShock(); run(c, 120);
+/* the page opens on er12, where the shocked peak must be a clear crash (R > 0.5). On the regular
+   networks the same shock one unit below a lower window gives a smaller transient, so there the
+   requirement is a visible spike that then decays. */
 check('3  shock below window = flash crash then recovery',
-  cPeak > 0.5 && c.R < 0.45, `lambda=${LAM_LO} peak R=${cPeak.toFixed(3)} -> final R=${c.R.toFixed(3)}`);
+  (KEY === 'er12' ? cPeak > 0.5 : cPeak > c.R + 0.2) && c.R < 0.45, `lambda=${LAM_LO} peak R=${cPeak.toFixed(3)} -> final R=${c.R.toFixed(3)}`);
 
 /* ---- 4 persistent crash (inside the window) ---------------------------------------- */
 const d = fresh({ lam: LAM_IN }); run(d, 60);

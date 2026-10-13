@@ -178,6 +178,10 @@
         <div class="stat"><div class="k">λ COUPLING</div><div class="v" id="sLam">2.00</div></div>
         <div class="stat"><div class="k">Ψ HERD PHASE</div><div class="v" id="sPsi">-</div></div>
         <div class="stat"><div class="k">FPS</div><div class="v" id="sFps">-</div></div>
+        <div class="stat"><div class="k">ROTATING DESKS</div><div class="v" id="sRot">-</div></div>
+        <div class="stat"><div class="k">FROZEN SHARE OF SCATTER</div><div class="v" id="sFroz">-</div></div>
+        <div class="stat"><div class="k">TWO-WAY LINKS</div><div class="v" id="sRec">-</div></div>
+        <div class="stat"><div class="k">ECHO ALIGNMENT</div><div class="v" id="sEcho">-</div></div>
       </div>
     </div>
 
@@ -266,7 +270,8 @@
       values, is in section P0 of
       <a href="../research/index.html#p0" style="color:var(--cold)">the results page</a>, and the reasoning
       is in step 26 of <a href="../research/reference.html#s26" style="color:var(--cold)">the model
-      reference</a>.</li>
+      reference</a>. The idea that came out of that audit can be tried on this page: see
+      <a href="#idea" style="color:var(--cold)">block 10</a>.</li>
       <li><b>The frequencies here are Gaussian.</b> The exact closed-form thresholds in the research
       pages hold only for Lorentzian frequencies, so the bistable window quoted further down this page was
       measured from simulation for this configuration, not predicted by a formula.</li>
@@ -274,8 +279,8 @@
       Whether that is a crash or a melt-up is decided only by the sell shock you trigger or by the small
       bias added by hand. The model shows why a move can become collective and persistent. It does not
       explain, on its own, why the move is down.</li>
-      <li><b>The network is synthetic.</b> It is a random graph (Erdos-Renyi or Barabasi-Albert, chosen with the
-      network selector), not a measured who-watches-whom network
+      <li><b>The network is synthetic.</b> It is one of four generated graphs (chosen with the network
+      button), not a measured who-watches-whom network
       of real trading desks. Real market networks are far more clustered, and the bistable window
       behaves differently on them.</li>
     </ul>
@@ -387,6 +392,27 @@
       <tr><td><b>FPS</b></td><td>typically 60</td>
         <td>Rendering speed only. It tells you nothing about the market, just whether your browser is
         keeping up. Not a physics quantity.</td></tr>
+      <tr><td><b>ROTATING DESKS</b></td><td>0% to 100%</td>
+        <td>Share of desks that are <i>not</i> locked: their own pace |&omega;<sub>i</sub>| beats the pull
+        h<sub>i</sub> they feel, so they keep cycling. Every such desk sends its watchers a push that
+        keeps changing direction. This is the count the old theory got wrong: it treated these desks as
+        if they were standing still. Explained in block 10.</td></tr>
+      <tr><td><b>FROZEN SHARE OF SCATTER</b></td><td>0% to 100%</td>
+        <td>The desks' arrows never all point exactly along the herd direction; the leftover spread is the
+        "scatter". This readout says what fraction of that spread is <b>steady</b> (desks parked at a fixed
+        angle away from the herd) as opposed to <b>rotating</b>. It is measured from a running time-average
+        of each desk's arrow over roughly the last 70 frames, so it shows "&hellip;" for a moment after a reset
+        or a network change. Only the steady part, plus the slowest of the rotating part, can shift the
+        crash threshold.</td></tr>
+      <tr><td><b>TWO-WAY LINKS</b></td><td>0% to 100%</td>
+        <td>Of all "A watches B" links, the share where B also watches A. It is 100% on the first three
+        networks and close to 0% on the one-way network (a few links are mutual by chance). A property of the network, so it does not change
+        while the simulation runs. It is what makes the echo possible.</td></tr>
+      <tr><td><b>ECHO ALIGNMENT</b></td><td>&minus;1 to +1</td>
+        <td>How closely each desk's arrow points along the average arrow of the desks it watches, averaged
+        over all desks: the mean of cos(&theta;<sub>i</sub> &minus; &phi;<sub>i</sub>), with
+        &phi;<sub>i</sub> the direction of desk i's own neighbours. It rises as the market locks on any
+        network. On two-way links part of it is the desk seeing its own influence reflected back.</td></tr>
     </table>
 
     <h5 class="ui-sub">The legend under the network</h5>
@@ -469,9 +495,12 @@
         <b>The two curves do not retrace.</b> The market crashes on the way up at 4.1 but does not recover
         until 3.1 on the way down. That loop is hysteresis, the reason a crash outlives its trigger.</td></tr>
       <tr><td><b>&#9939; network</b></td><td></td>
-        <td>Switches between <b>ER &lang;k&rang;=12</b> (uniform connectivity, the configuration whose
-        bistable window the research measured) and <b>BA scale-free</b> (has real hubs, but almost no
-        bistable window). Use ER for hysteresis, BA for the hub-targeting story.</td></tr>
+        <td>Cycles through four observation networks, each with 500 desks, and restarts the simulation.
+        <b>ER &lang;k&rang;=12</b>: random two-way links, about 12 per desk, the network every crash scenario in
+        this project uses. <b>BA scale-free</b>: a few heavily watched hubs, for the hub-shock story.
+        <b>Regular, two-way links</b>: every desk watches exactly 12 others and each of them watches it
+        back. <b>Regular, one-way links</b>: every desk watches exactly 12 others, but they do not watch
+        it back. The last two differ in one thing only, which is what block 10 uses them for.</td></tr>
       <tr><td><b>&#9689; colour</b></td><td></td>
         <td>Cycles three ways. <b>order flow</b>: red/cyan by q<sub>i</sub>, the default.
         <b>phase &theta;</b>: a cyclic map, so you see waves travel even when nothing is crashing.
@@ -538,6 +567,71 @@
       shrinks with strategy diversity.</li>
     </ol>
   </div>
+
+  <div class="ex-block" id="idea">
+    <h4>10. The idea this project is now testing: steady neighbours, rotating neighbours, and the echo</h4>
+    <p>The question is narrow: <b>how low can &lambda; go before a locked crash falls apart?</b> That
+    coupling is the recovery threshold &lambda;<sub>b</sub>. If every desk watched every other desk it is
+    known exactly. Here each desk watches only k = 12 others, and the threshold moves. The project's
+    earlier formula for that shift made two simplifications, and you can see both of them fail on this
+    page.</p>
+
+    <p><b>What a desk actually sees.</b> Desk i does not see the market-wide synchrony R. It sees the
+    average arrow of its 12 neighbours, which is R plus a random error, because 12 is a small sample.
+    The earlier formula (the "Rician closure") assumed that error is <b>frozen</b>: a fixed offset, like
+    a miscalibrated instrument. That is only partly true.</p>
+    <ul>
+      <li><b>Locked neighbours</b> sit at a fixed angle. Their contribution to the error really is
+      frozen.</li>
+      <li><b>Rotating neighbours</b> (the ROTATING DESKS readout) keep cycling. Their contribution swings
+      round and round. A desk that is locked to the herd responds sluggishly, at a rate set by how hard
+      it is held, so a push that reverses faster than that mostly cancels itself out. Only the slow
+      rotators count.</li>
+    </ul>
+    <p>The FROZEN SHARE OF SCATTER readout shows this split live. In a locked market it is well below
+    100%, which means a large part of what the old formula counted as harmful disorder is rotation that
+    does little. Taken alone, this makes a crash <i>easier</i> to hold than the old formula said.</p>
+
+    <p><b>The echo.</b> The old formula also assumed a desk's neighbours behave independently of the
+    desk itself. On a two-way network they cannot. If I watch you and you watch me, my phase pulls
+    yours slightly toward mine, and then I see my own position reflected in what you show me. Twelve
+    neighbours each nudged a little toward me add up to a field that leans toward wherever I already
+    am, instead of toward the herd. That weakens the pull toward consensus, which makes a crash
+    <i>harder</i> to hold. The desk inspector shows, for any desk you click, how many of its neighbours
+    watch it back.</p>
+
+    <p><b>Why the old formula still looked right.</b> The two errors push in opposite directions. On a
+    two-way network they largely cancel, so the old formula lands near the truth for the wrong reason.
+    Remove the echo and the cancellation is gone. That is what the one-way network is for.</p>
+
+    <div class="ex-eq">recovery threshold on this page's settings:&nbsp; two-way links
+      <b id="echoTwo">(run simulation/measure_echo.py)</b> &nbsp;&middot;&nbsp; one-way links
+      <b id="echoOne"></b> &nbsp;&middot;&nbsp; gap <b id="echoGap"></b></div>
+    <p id="echoNote">These numbers are measured, not predicted. They are loaded from
+    <code>simulation/echo_measurement.js</code>, written by <code>simulation/measure_echo.py</code>.</p>
+
+    <p><b>Try it yourself.</b></p>
+    <ol>
+      <li>Press the network button until it reads <i>regular, two-way links</i>. Press auto ramp and
+      watch the R vs &lambda; panel. On the way down, note the &lambda; at which R collapses.</li>
+      <li>Switch to <i>regular, one-way links</i> and do the same. The crash survives to a visibly lower
+      &lambda;. Nothing else differs between the two networks: same number of desks, same 12 neighbours
+      each, same frequencies.</li>
+      <li>On either network, lock the market (&lambda; near 5), then compare ROTATING DESKS with FROZEN
+      SHARE OF SCATTER.</li>
+      <li>Click a desk on each network and read the last two lines of the inspector.</li>
+    </ol>
+
+    <p><b>What this does and does not show.</b> The one-way against two-way gap on this page is a real,
+    repeatable measurement at these settings. It is consistent with the echo mechanism, and it is the
+    kind of difference the old formula cannot produce, since that formula never asks whether links are
+    mutual. It is <b>not</b> a quantitative test of the theory: the theory is worked out for a different
+    frequency distribution (Lorentzian), no noise, and many neighbours, while this page uses Gaussian
+    frequencies, noise, 500 desks and k = 12. The quantitative comparison, with its uncertainties, is in
+    section P1 of <a href="../research/index.html#p1" style="color:var(--cold)">the results page</a>, and
+    the derivation is in <code>docs/THEORY.md</code>. Whether real markets have one-way or two-way
+    attention is an empirical question this project has not measured.</p>
+  </div>
 </section>
 
 <footer>
@@ -547,6 +641,8 @@
   (max hysteresis gap 0.80), reproducing the window [3.21, 3.96] measured in S2 for the same
   configuration. The scale-free network has almost no bistable window (S2: heterogeneous networks
   resist herding-induced bistability), so use it for the hub-targeting story, not for hysteresis.
+  The two regular networks (every desk watches exactly 12 others, two-way or one-way) are a matched pair
+  for the experiment in block 10.
   Verified by <code>simulation/validate_scenarios.js</code>.
 </footer>
 </div>
@@ -562,13 +658,26 @@ window.addEventListener('error', function(e){
 </script>
 <script src="network.js"></script>
 <script src="sim.js"></script>
+<script src="echo_measurement.js"></script>
 <script>
 (function(){
 'use strict';
 const NETS = window.NETWORKS;
+/* numbers for block 10 come from a measurement file, never from the page source */
+(function(){
+  const E = window.ECHO; if(!E) return;
+  const f=(o)=>o.mean.toFixed(2)+' ['+o.lo.toFixed(2)+', '+o.hi.toFixed(2)+']';
+  document.getElementById('echoTwo').textContent='λ_b = '+f(E.two_way);
+  document.getElementById('echoOne').textContent='λ_b = '+f(E.one_way);
+  document.getElementById('echoGap').textContent=E.difference.mean.toFixed(2)+' ± '+E.difference.se.toFixed(2)+' ('+E.relative_percent.toFixed(1)+'%)';
+  document.getElementById('echoNote').innerHTML='Measured, not predicted: mean and 95% interval over '+E.seeds+
+    ' independently generated networks of each kind, N = '+E.n+', k = '+E.k+', σ = '+E.sigma+
+    ', threshold found by bisection to ±'+(E.tolerance/2).toFixed(2)+'. Loaded from <code>simulation/echo_measurement.js</code>, '+
+    'written by <code>simulation/measure_echo.py</code>.';
+})();
 if(!NETS){ throw new Error('network.js did not load (run simulation/build_network.py)'); }
 const KEYS = Object.keys(NETS);
-const NETLABEL = {er12:'ER ⟨k⟩=12', ba6:'BA scale-free'};
+const NETLABEL = {er12:'ER ⟨k⟩=12', ba6:'BA scale-free', rr12:'regular, two-way links', dir12:'regular, one-way links'};
 let netKey = 'er12';
 let NET = NETS[netKey];
 let sim = new Sim(NET, {lam:2.0, sigma:0.3, sigmaC:0.0, f:1.0, seed:7});
@@ -628,6 +737,13 @@ function bindNet(){
   nx=NET.x; ny=NET.y; deg=NET.deg;
   lockPulse=new Float32Array(N); wasLocked=new Uint8Array(N);
   lockTime=new Float64Array(N); lockTime.fill(NaN); selected=-1;
+  /* who watches whom: a link i<-j is two-way if j also watches i. On the one-way network almost none are. */
+  watchSet=new Set();
+  for(let i=0;i<N;i++) for(let e=NET.nbrOffset[i];e<NET.nbrOffset[i+1];e++) watchSet.add(i*N+NET.nbrList[e]);
+  let rec=0, tot=NET.nbrList.length;
+  for(let i=0;i<N;i++) for(let e=NET.nbrOffset[i];e<NET.nbrOffset[i+1];e++) if(watchSet.has(NET.nbrList[e]*N+i)) rec++;
+  reciprocity=rec/tot;
+  avgCos=new Float64Array(N); avgSin=new Float64Array(N); avgN=0;
   document.getElementById('netmeta').textContent =
     'N='+N+'  E='+NE+'  ⟨k⟩='+NET.meta.meanDeg.toFixed(2)+'  k_max='+maxDeg+'  κ='+NET.meta.kappa.toFixed(2);
   document.getElementById('footnet').textContent =
@@ -640,6 +756,8 @@ const SPEEDS=[0.25,0.5,1,2,4,8,16];
 let dt=0.02, speedIdx=2, speed=SPEEDS[2], paused=false, mode='flow';
 let stepAcc=0;               // fractional-substep accumulator, so 0.25x really is slow motion
 let lockTime=null;           // sim-time at which each node most recently locked (NaN = never)
+let watchSet=null, reciprocity=1;      // which links are two-way (the echo needs them)
+let avgCos=null, avgSin=null, avgN=0;  // running time-average of each desk's phase arrow, in the herd frame
 let selected=-1, tx={ox:0,oy:0,S:1};   // node inspector + the current canvas transform
 let peak=100, drawdown=0, stage='INCOHERENT', stageNote=PH.INCOHERENT.ds;
 let everCrashed=false, dR=0, lastR=0, shockUntil=-1, rampDir=0, fps=0, fpsAcc=0, fpsN=0;
@@ -881,6 +999,13 @@ function renderInspector(){
       g('&alpha;<sub>i</sub> herding gain', adapt?('r<sub>i</sub> = '+r.toFixed(3)):'1 (not a herder)')+
       g('h<sub>i</sub> field it feels', h.toFixed(3))+
       g('|&omega;<sub>i</sub>| detuning', detune.toFixed(3))+
+      g('neighbours frozen / rotating', (function(){ let lk=0; const md=NET.meta.meanDeg;
+          for(let e=NET.nbrOffset[i];e<NET.nbrOffset[i+1];e++){ const j=NET.nbrList[e], rj=sim.rLocal[j];
+            if(Math.abs(sim.omega[j])<=(sim.lam/md)*(sim.adaptive[j]?rj:1)*deg[j]*rj) lk++; }
+          return lk+' locked (steady pull), '+(k-lk)+' rotating (pull that averages out)'; })())+
+      g('neighbours that watch it back', (function(){ let b=0;
+          for(let e=NET.nbrOffset[i];e<NET.nbrOffset[i+1];e++) if(watchSet.has(NET.nbrList[e]*N+i)) b++;
+          return b+' of '+k+(b===0?'  (no echo: one-way links)':'  (its own phase echoes back through these)'); })())+
     '</div>'+
     '<div class="ins-eq">d&theta;<sub>'+i+'</sub>/dt = <b>'+w.toFixed(3)+'</b>'+
       ' + (<b>'+sim.lam.toFixed(2)+'</b>/'+NET.meta.meanDeg.toFixed(1)+')&middot;<b>'+alpha.toFixed(3)+'</b>'+
@@ -959,6 +1084,32 @@ function frame(now){
   let locked=0; for(let i=0;i<N;i++) if(sim.rLocal[i]>0.72) locked++;
   document.getElementById('sL').textContent=(100*locked/N).toFixed(0)+'%';
   document.getElementById('sLam').textContent=sim.lam.toFixed(2);
+  /* --- the idea under test: which part of what a desk sees is frozen, which part rotates, and how
+         much of a desk's own behaviour comes back to it. See block 5 of "How this works". --- */
+  {
+    const md=NET.meta.meanDeg; let rot=0, echo=0, cnt=0;
+    const decay=0.985;                       // running average over roughly the last 70 frames
+    let frozen=0;
+    for(let i=0;i<N;i++){
+      const r=sim.rLocal[i], h=(sim.lam/md)*(sim.adaptive[i]?r:1)*deg[i]*r;
+      if(Math.abs(sim.omega[i])>h) rot++;
+      /* direction of this desk's own neighbour sum, and how well the desk is aligned with it */
+      let c=0,s2=0; for(let e=NET.nbrOffset[i];e<NET.nbrOffset[i+1];e++){ const j=NET.nbrList[e]; c+=Math.cos(sim.theta[j]); s2+=Math.sin(sim.theta[j]); }
+      if(c*c+s2*s2>1e-12){ echo+=Math.cos(sim.theta[i]-Math.atan2(s2,c)); cnt++; }
+      const a=sim.theta[i]-sim.psi;
+      avgCos[i]=decay*avgCos[i]+(1-decay)*Math.cos(a); avgSin[i]=decay*avgSin[i]+(1-decay)*Math.sin(a);
+      frozen+=avgCos[i]*avgCos[i]+avgSin[i]*avgSin[i];
+    }
+    avgN=decay*avgN+(1-decay);
+    /* scatter of the desks' arrows about the herd: total = 1 - R^2. The frozen part is the scatter of
+       the TIME-AVERAGED arrows; the rest is rotation that a slow desk cannot follow. */
+    const R2=sim.R*sim.R, tot=Math.max(1e-9,1-R2);
+    const froz=Math.max(0,Math.min(1,(frozen/(N*Math.max(avgN*avgN,1e-9))-R2)/tot));
+    document.getElementById('sRot').textContent=(100*rot/N).toFixed(0)+'%';
+    document.getElementById('sFroz').textContent=(avgN>0.6?(100*froz).toFixed(0)+'%':'…');
+    document.getElementById('sRec').textContent=(100*reciprocity).toFixed(0)+'%';
+    document.getElementById('sEcho').textContent=(cnt?(echo/cnt).toFixed(3):'-');
+  }
   document.getElementById('sPsi').textContent=(sim.psi*180/Math.PI).toFixed(0)+'°';
   document.getElementById('phclock').textContent='t = '+sim.t.toFixed(1);
   document.getElementById('pxnote').textContent='peak '+peak.toFixed(1);

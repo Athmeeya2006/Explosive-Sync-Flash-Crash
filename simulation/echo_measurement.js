@@ -1,0 +1,1 @@
+window.ECHO = {"n": 500, "k": 12, "sigma": 0.3, "seeds": 24, "tolerance": 0.02, "two_way": {"mean": 3.266, "se": 0.014, "lo": 3.239, "hi": 3.293, "min": 3.13, "max": 3.37}, "one_way": {"mean": 2.981, "se": 0.012, "lo": 2.958, "hi": 3.004, "min": 2.88, "max": 3.07}, "difference": {"mean": 0.285, "se": 0.019}, "relative_percent": 9.6};

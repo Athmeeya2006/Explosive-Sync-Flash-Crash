@@ -1,0 +1,32 @@
+[
+ {
+  "index": 0,
+  "graph_seed": 1765307115,
+  "freq_seed": 3436268403
+ },
+ {
+  "index": 1,
+  "graph_seed": 1328927541,
+  "freq_seed": 1298676492
+ },
+ {
+  "index": 2,
+  "graph_seed": 192204277,
+  "freq_seed": 118981529
+ },
+ {
+  "index": 3,
+  "graph_seed": 2952989005,
+  "freq_seed": 3096131903
+ },
+ {
+  "index": 4,
+  "graph_seed": 3036182775,
+  "freq_seed": 373221829
+ },
+ {
+  "index": 5,
+  "graph_seed": 1728456039,
+  "freq_seed": 3873433192
+ }
+]

@@ -145,8 +145,8 @@ def intraday_summary() -> dict | None:
 def run_name(exp_id: str) -> str:
     got = _rows(exp_id)
     d = got[1] if got else latest_run(exp_id)
-    return "not run" if d is None else str(d.relative_to(REPO)) + (" (still running, partial)" if is_partial(exp_id) else "")
+    return "not run" if d is None else str(d.relative_to(REPO)) + (" (interrupted before completion, partial)" if is_partial(exp_id) else "")
 
 
-__all__ = ["RESULTS", "theory_table", "fold_cells", "extrapolate", "md_table", "html_table", "intraday_summary",
+__all__ = ["RESULTS", "load_summary", "theory_table", "fold_cells", "extrapolate", "md_table", "html_table", "intraday_summary",
            "run_name"]

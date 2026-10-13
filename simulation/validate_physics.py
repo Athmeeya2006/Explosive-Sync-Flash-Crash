@@ -36,8 +36,11 @@ def load_networks() -> dict:
 
 def as_network(data: dict) -> tuple[Network, dict]:
     e = np.array(data["edges"], dtype=np.int64).reshape(-1, 2)
-    ei = np.concatenate([e[:, 0], e[:, 1]])
-    ej = np.concatenate([e[:, 1], e[:, 0]])
+    if data["meta"].get("directed"):
+        ei, ej = e[:, 0], e[:, 1]          # one-way: column 0 listens to column 1
+    else:
+        ei = np.concatenate([e[:, 0], e[:, 1]])
+        ej = np.concatenate([e[:, 1], e[:, 0]])
     n = data["meta"]["n"]
     deg = np.bincount(ei, minlength=n).astype(float)
     return Network(n, ei, ej, deg, data["meta"]["model"]), data

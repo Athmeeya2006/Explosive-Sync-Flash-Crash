@@ -100,7 +100,7 @@
   to be impossible in principle, and one discovery that the network the model runs on is nothing like the
   network a market actually has. Steps 22 to 24 list every assumption the whole thing rests on, what should
   be deleted, and which of the proposed repairs were tried and whether they helped. Step 25 traces the arc
-  from the first equation to the last result, including the detours. <b>Step 26 was added after an outside
+  from the first equation to the last result, including the detours. <b>Steps 26 and 27 were added after an outside
   audit and should be read before trusting steps 21 and 25</b>: the main "new" result is proved for an
   approximation and is not yet confirmed by simulation.</p>
   <p class="lede" style="margin-top:12px">Results are labelled throughout by what kind of result they are:
@@ -147,6 +147,7 @@
   <a href="#s25">25. What this turned into</a>
   <div class="grp">After the audit</div>
   <a href="#s26">26. Audit: what is unverified</a>
+  <a href="#s27">27. Rotating neighbours and the echo</a>
 </nav>
 
 <main>
@@ -1880,6 +1881,120 @@
     <li><b>Manuscripts wait.</b> By the author's decision none is written until step 5 says what is
     true.</li>
   </ol>
+</section>
+
+
+<!-- ============================================================= 27 -->
+<section id="s27">
+  <h2>Step 27 &middot; After the audit</h2>
+  <h3>The idea that came out of it: steady neighbours, rotating neighbours, and the echo</h3>
+  <p>Step 26 ended with a puzzle: a formula that was proved for an approximation, and small simulations
+  that sat below it. This step records how the puzzle was taken apart. As in step 26, no measured
+  value is quoted here. The numbers, with confidence intervals and the runs that produced them, are in
+  section P1 of <a href="index.html#p1">research/index.html</a>; the algebra is in
+  <code>docs/THEORY.md</code>; and the effect can be watched live in block 10 of
+  <a href="../simulation/index.html">the simulation</a>.</p>
+
+  <h4>1. First, the measurement was fixed</h4>
+  <p>The simulations that sat below the closure were small and short. Close to the fold a collapsing
+  state can take a very long time to collapse, so a short run counts it as surviving and reports a fold
+  that is too low. With a system roughly eight times larger and a relaxation time four times longer,
+  the measured fold on ordinary (two-way) graphs moved up, most of the way to the closure's value. So
+  the audit's gap was largely a property of how the fold was being measured, and the lesson is about
+  method: a fold has to be measured at several sizes and run lengths before it is compared with
+  anything.</p>
+  <p>That could have been the end of it: closure roughly right, case closed. It is not, because of what
+  the closure assumes.</p>
+
+  <h4>2. What a desk sees, taken apart</h4>
+  <p>Desk i feels the average arrow of its k neighbours. Write that as the global synchrony R plus an
+  error of size 1/&radic;k, which is there simply because k neighbours are a small sample of the
+  market. The Rician closure of step 21 treats this error as a fixed, random offset. Look at where the
+  error comes from:</p>
+  <div class="tw"><table>
+    <tr><th>kind of neighbour</th><th>what it contributes to the error</th><th>does the closure treat it correctly?</th></tr>
+    <tr><td><b>Locked</b>: its own pace is slower than the pull it feels</td>
+        <td>a fixed arrow at a fixed angle from the herd. A genuine frozen offset</td><td>Yes</td></tr>
+    <tr><td><b>Rotating</b>: its own pace beats the pull, so it keeps cycling</td>
+        <td>an arrow that sweeps round and round. A push on desk i that keeps reversing</td>
+        <td><b class="lb">No.</b> The closure counts it as frozen</td></tr>
+  </table></div>
+  <p>Why does that matter? A desk locked to the herd behaves like a ball in a bowl: push it and it
+  settles at a new position, but only at a finite rate, set by how steep the bowl is. Call that rate
+  &mu;. A push that reverses much faster than &mu; moves the ball hardly at all, because it has
+  reversed before the ball has responded. So a rotating neighbour spinning at frequency W counts with
+  a weight</p>
+  <div class="eq">weight of a fluctuation at frequency W &nbsp;=&nbsp; &mu;&sup2; / (&mu;&sup2; + W&sup2;)
+    <small>Equal to 1 for a frozen offset (W = 0) and falling to zero for fast rotation. &mu; is the
+    relaxation rate of the locked state, &radic;(&gamma;&sup2; + h&sup2;), with h the locking field.
+    This is the same filter that describes a low-pass electrical circuit.</small></div>
+  <p>At the fold a large fraction of the desks are rotating, so a large fraction of what the closure
+  counts as harmful disorder is mostly filtered away. Correcting this <em>lowers</em> the predicted
+  shift of the fold.</p>
+
+  <div class="note why"><h5>Why this could be done exactly</h5>
+  <p>For Lorentzian frequencies there is a classical result (Ott and Antonsen, 2008): the average
+  arrow of a whole population obeys one simple equation, whatever the time dependence of the field
+  driving it. Because desk i's own frequency is independent of the error in its neighbour sum, the
+  average over all desks can be taken first, and the many-desk problem collapses to one equation
+  driven by a noisy field. Expanding that equation to second order in the noise gives the shift of the
+  fold in closed form. As a check, giving every fluctuation the weight 1 reproduces the old
+  coefficient (p+2)/2 exactly.</p></div>
+
+  <h4>3. The echo</h4>
+  <p>The closure makes a second assumption: the neighbours of desk i behave independently of desk i. On
+  a two-way network that cannot be true. If i watches j, then j watches i, so i's phase pulls j's
+  slightly toward it. Each neighbour moves only a little, of order 1/k. But there are k of them, and
+  their small shifts add up, so the field desk i receives carries a term of order 1/k that points
+  toward <em>wherever desk i already is</em>, instead of toward the herd. Physicists call this the
+  Onsager reaction term; here it is easier to think of it as an echo.</p>
+  <p>An echo of yourself is no help in finding the consensus. It weakens the pull toward the herd,
+  which makes the synchronised state harder to hold and <em>raises</em> the fold.</p>
+
+  <h4>4. Two errors that nearly cancel</h4>
+  <div class="tw"><table>
+    <tr><th>treatment</th><th>rotating neighbours</th><th>echo</th><th>where it should be right</th></tr>
+    <tr><td><b>Rician closure</b> (step 21)</td><td>counted as frozen (too much disorder)</td>
+        <td>ignored (too little)</td><td>nowhere exactly; close on two-way graphs by cancellation</td></tr>
+    <tr><td><b>Filtered, no echo</b></td><td>filtered correctly</td><td>none</td>
+        <td><b>one-way (directed) graphs</b>, where nobody you watch is watching you</td></tr>
+    <tr><td><b>Filtered, with echo</b></td><td>filtered correctly</td><td>included</td>
+        <td>two-way (undirected) graphs</td></tr>
+  </table></div>
+  <p>This explains why the closure looked right: it over-counts one effect and omits another of the
+  opposite sign. It also gives a way to prove that the agreement was accidental. On a one-way graph
+  the echo is absent, the cancellation is gone, and the closure should be badly wrong, while the
+  filtered theory should hold.</p>
+
+  <h4>5. What the measurements say</h4>
+  <ul>
+    <li><b>One-way graphs: the closure fails, the new theory holds.</b> The measured shift of the fold is
+    several times smaller than the closure predicts. It lies a little below the filtered theory, within
+    or just outside the pilot's uncertainty depending on the case, and moves toward it as k grows.</li>
+    <li><b>The echo is real.</b> Subtracting the one-way result from the two-way result at the same k
+    gives a clearly non-zero difference, where the closure predicts none. The same contrast appears in
+    the interactive simulation, under quite different conditions.</li>
+    <li><b>The echo is smaller than predicted.</b> The measured difference is somewhat below the
+    theory's reaction term, at every k tried. As a result the two-way prediction overshoots, and on
+    two-way graphs the old closure's number is, for now, the closer of the two.</li>
+  </ul>
+
+  <div class="note fail"><h5>What is not established</h5>
+  <p>The theory is a leading-order expansion in 1/k, and the echo converges slowly: desks on the verge
+  of unlocking respond very strongly, which makes the next correction larger than usual. Whether the
+  shortfall in the echo disappears at larger k, or points to something missing, cannot be told from a
+  pilot with a handful of seeds at one system size. The pilot itself is incomplete (see P1). Nothing
+  here tests the closure's other two predictions, a minimum connectivity for bistability and the
+  effect of clustering. And a search of the literature that found no earlier version of this result
+  was a web search, not a full-text search.</p></div>
+
+  <h4>6. What it means for the market reading</h4>
+  <p>Very little yet, and it should not be oversold. In the model, a crash that has locked in is
+  easier to sustain when attention is one-way (many desks watching a few who do not watch back) than
+  when attention is mutual, because mutual attention feeds each desk its own echo. Whether attention
+  in real markets is mostly one-way or mostly mutual is not something this project has measured, and
+  the corrected data tests in section B1 of the results page still find no usable warning signal from
+  synchrony.</p>
 </section>
 
 </main>
