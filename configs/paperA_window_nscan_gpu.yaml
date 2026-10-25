@@ -1,0 +1,24 @@
+# Robustness of paperA_window_gpu in N (3000, 10000, 30000) at k = 4, 6, 12, 24. Original header:
+# Bistable window at low connectivity: fold (synchronised start) and forward threshold (random incoherent
+# start) per realisation, k = 3 to 24. Tests the closure's critical connectivity (closure.critical_connectivity:
+# the window closes near k = 6 to 8 at p = 1 and near k = 3 to 4 at p = 2), listed as unverified in the README.
+# The forward threshold is a first-passage quantity at t_relax_fwd and N; it is reported with them.
+id: paperA_window_nscan_gpu
+experiment: window_grid
+root_seed: 20261029
+graphs:
+  - {kind: rec, rho: 1.0, label: rho1.00}
+  - {kind: dir, label: dir}
+k: [4, 6, 12, 24]
+n: [3000, 10000, 30000]
+p: [1.0, 2.0]
+n_seeds: 8
+dt: 0.02
+t_relax: 480
+frac: 0.55
+rel_tol: 0.002
+t_relax_fwd: 400
+rel_tol_fwd: 0.005
+fwd_hi: 6.0
+workers: 10
+backend: gpu

@@ -1,0 +1,337 @@
+{
+ "k_eq": {
+  "w": 854,
+  "h": 232,
+  "file": "presentation/assets/eq_k_eq.png"
+ },
+ "k_th": {
+  "w": 47,
+  "h": 56,
+  "file": "presentation/assets/eq_k_th.png"
+ },
+ "k_dth": {
+  "w": 137,
+  "h": 61,
+  "file": "presentation/assets/eq_k_dth.png"
+ },
+ "k_om": {
+  "w": 54,
+  "h": 56,
+  "file": "presentation/assets/eq_k_om.png"
+ },
+ "k_K": {
+  "w": 54,
+  "h": 56,
+  "file": "presentation/assets/eq_k_K.png"
+ },
+ "k_N": {
+  "w": 51,
+  "h": 56,
+  "file": "presentation/assets/eq_k_N.png"
+ },
+ "k_sin": {
+  "w": 232,
+  "h": 63,
+  "file": "presentation/assets/eq_k_sin.png"
+ },
+ "o_eq": {
+  "w": 534,
+  "h": 232,
+  "file": "presentation/assets/eq_o_eq.png"
+ },
+ "o_e": {
+  "w": 72,
+  "h": 57,
+  "file": "presentation/assets/eq_o_e.png"
+ },
+ "o_avg": {
+  "w": 136,
+  "h": 159,
+  "file": "presentation/assets/eq_o_avg.png"
+ },
+ "o_R": {
+  "w": 49,
+  "h": 56,
+  "file": "presentation/assets/eq_o_R.png"
+ },
+ "o_psi": {
+  "w": 44,
+  "h": 56,
+  "file": "presentation/assets/eq_o_psi.png"
+ },
+ "o_r": {
+  "w": 46,
+  "h": 56,
+  "file": "presentation/assets/eq_o_r.png"
+ },
+ "m_eq1": {
+  "w": 1003,
+  "h": 232,
+  "file": "presentation/assets/eq_m_eq1.png"
+ },
+ "m_eq2": {
+  "w": 789,
+  "h": 163,
+  "file": "presentation/assets/eq_m_eq2.png"
+ },
+ "m_KR": {
+  "w": 92,
+  "h": 56,
+  "file": "presentation/assets/eq_m_KR.png"
+ },
+ "l_eq1": {
+  "w": 538,
+  "h": 145,
+  "file": "presentation/assets/eq_l_eq1.png"
+ },
+ "l_eq2": {
+  "w": 327,
+  "h": 89,
+  "file": "presentation/assets/eq_l_eq2.png"
+ },
+ "l_int": {
+  "w": 806,
+  "h": 160,
+  "file": "presentation/assets/eq_l_int.png"
+ },
+ "l_kc": {
+  "w": 280,
+  "h": 137,
+  "file": "presentation/assets/eq_l_kc.png"
+ },
+ "l_lor": {
+  "w": 641,
+  "h": 144,
+  "file": "presentation/assets/eq_l_lor.png"
+ },
+ "a_eq": {
+  "w": 1012,
+  "h": 207,
+  "file": "presentation/assets/eq_a_eq.png"
+ },
+ "a_lam": {
+  "w": 41,
+  "h": 56,
+  "file": "presentation/assets/eq_a_lam.png"
+ },
+ "a_k": {
+  "w": 38,
+  "h": 56,
+  "file": "presentation/assets/eq_a_k.png"
+ },
+ "a_A": {
+  "w": 73,
+  "h": 60,
+  "file": "presentation/assets/eq_a_A.png"
+ },
+ "a_p": {
+  "w": 37,
+  "h": 56,
+  "file": "presentation/assets/eq_a_p.png"
+ },
+ "a_rp": {
+  "w": 58,
+  "h": 64,
+  "file": "presentation/assets/eq_a_rp.png"
+ },
+ "h_f": {
+  "w": 57,
+  "h": 60,
+  "file": "presentation/assets/eq_h_f.png"
+ },
+ "h_b": {
+  "w": 55,
+  "h": 56,
+  "file": "presentation/assets/eq_h_b.png"
+ },
+ "oa_eq": {
+  "w": 820,
+  "h": 163,
+  "file": "presentation/assets/eq_oa_eq.png"
+ },
+ "oa_g": {
+  "w": 424,
+  "h": 125,
+  "file": "presentation/assets/eq_oa_g.png"
+ },
+ "oa_t1": {
+  "w": 113,
+  "h": 56,
+  "file": "presentation/assets/eq_oa_t1.png"
+ },
+ "oa_t2": {
+  "w": 280,
+  "h": 111,
+  "file": "presentation/assets/eq_oa_t2.png"
+ },
+ "oa_sol": {
+  "w": 708,
+  "h": 144,
+  "file": "presentation/assets/eq_oa_sol.png"
+ },
+ "e_K": {
+  "w": 300,
+  "h": 63,
+  "file": "presentation/assets/eq_e_K.png"
+ },
+ "e_eq": {
+  "w": 876,
+  "h": 163,
+  "file": "presentation/assets/eq_e_eq.png"
+ },
+ "e_ss": {
+  "w": 551,
+  "h": 98,
+  "file": "presentation/assets/eq_e_ss.png"
+ },
+ "e_cub": {
+  "w": 454,
+  "h": 72,
+  "file": "presentation/assets/eq_e_cub.png"
+ },
+ "f_max": {
+  "w": 280,
+  "h": 122,
+  "file": "presentation/assets/eq_f_max.png"
+ },
+ "f_gen": {
+  "w": 1329,
+  "h": 208,
+  "file": "presentation/assets/eq_f_gen.png"
+ },
+ "f_p1": {
+  "w": 1238,
+  "h": 177,
+  "file": "presentation/assets/eq_f_p1.png"
+ },
+ "f_R": {
+  "w": 67,
+  "h": 56,
+  "file": "presentation/assets/eq_f_R.png"
+ },
+ "t_fold": {
+  "w": 693,
+  "h": 148,
+  "file": "presentation/assets/eq_t_fold.png"
+ },
+ "t_R": {
+  "w": 474,
+  "h": 145,
+  "file": "presentation/assets/eq_t_R.png"
+ },
+ "t_filt": {
+  "w": 267,
+  "h": 185,
+  "file": "presentation/assets/eq_t_filt.png"
+ },
+ "t_c": {
+  "w": 478,
+  "h": 89,
+  "file": "presentation/assets/eq_t_c.png"
+ },
+ "t_inf": {
+  "w": 243,
+  "h": 61,
+  "file": "presentation/assets/eq_t_inf.png"
+ },
+ "t_ac": {
+  "w": 94,
+  "h": 56,
+  "file": "presentation/assets/eq_t_ac.png"
+ },
+ "t_W": {
+  "w": 58,
+  "h": 56,
+  "file": "presentation/assets/eq_t_W.png"
+ },
+ "t_mu": {
+  "w": 42,
+  "h": 56,
+  "file": "presentation/assets/eq_t_mu.png"
+ },
+ "m_phase": {
+  "w": 2259,
+  "h": 207,
+  "file": "presentation/assets/eq_m_phase.png"
+ },
+ "m_price": {
+  "w": 1893,
+  "h": 194,
+  "file": "presentation/assets/eq_m_price.png"
+ },
+ "m_eps": {
+  "w": 77,
+  "h": 56,
+  "file": "presentation/assets/eq_m_eps.png"
+ },
+ "m_sig": {
+  "w": 130,
+  "h": 56,
+  "file": "presentation/assets/eq_m_sig.png"
+ },
+ "m_sigc": {
+  "w": 146,
+  "h": 56,
+  "file": "presentation/assets/eq_m_sigc.png"
+ },
+ "m_Q": {
+  "w": 51,
+  "h": 56,
+  "file": "presentation/assets/eq_m_Q.png"
+ },
+ "m_beta": {
+  "w": 40,
+  "h": 56,
+  "file": "presentation/assets/eq_m_beta.png"
+ },
+ "m_kappa": {
+  "w": 41,
+  "h": 56,
+  "file": "presentation/assets/eq_m_kappa.png"
+ },
+ "m_eta": {
+  "w": 106,
+  "h": 56,
+  "file": "presentation/assets/eq_m_eta.png"
+ },
+ "m_q": {
+  "w": 650,
+  "h": 172,
+  "file": "presentation/assets/eq_m_q.png"
+ },
+ "m_shock": {
+  "w": 438,
+  "h": 114,
+  "file": "presentation/assets/eq_m_shock.png"
+ },
+ "m_dW": {
+  "w": 856,
+  "h": 69,
+  "file": "presentation/assets/eq_m_dW.png"
+ },
+ "m_dx": {
+  "w": 968,
+  "h": 69,
+  "file": "presentation/assets/eq_m_dx.png"
+ },
+ "m_xstar": {
+  "w": 1030,
+  "h": 126,
+  "file": "presentation/assets/eq_m_xstar.png"
+ },
+ "m_pulls": {
+  "w": 911,
+  "h": 72,
+  "file": "presentation/assets/eq_m_pulls.png"
+ },
+ "m_unlock": {
+  "w": 307,
+  "h": 75,
+  "file": "presentation/assets/eq_m_unlock.png"
+ },
+ "m_decay": {
+  "w": 479,
+  "h": 82,
+  "file": "presentation/assets/eq_m_decay.png"
+ }
+}

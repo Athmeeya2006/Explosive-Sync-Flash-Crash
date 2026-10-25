@@ -1,0 +1,9 @@
+transition,value,source
+Stuart-Landau single: amplitude |z| at mu,sqrt(mu),normal form
+"Stuart-Landau amplitude death, lower edge",1.0,linear stability
+"Stuart-Landau amplitude death, upper edge",5.529201935930301,linear stability
+Winfree oscillator death,0.7749281411305424,existence of the death state
+FitzHugh-Nagumo Hopf point,0.3312813374547458,trace of the Jacobian
+theta neurons: active state collapses (shift),-13.375,"Ott-Antonsen continuation, between -13.40 and -13.35"
+theta neurons: quiet state recovers (shift),-5.125,"Ott-Antonsen continuation, between -5.15 and -5.10"
+Kuramoto with inertia: incoherence unstable,5.305747959322973,linear stability (Gupta et al. 2014)

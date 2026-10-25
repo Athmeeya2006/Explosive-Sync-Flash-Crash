@@ -1,0 +1,34 @@
+id: paperA_convergence
+experiment: fold_grid
+root_seed: 20261015
+graph:
+  kind: rr
+k:
+- 24
+p:
+- 1.0
+n:
+- 3000
+n_seeds: 4
+dt: 0.02
+t_relax: 480
+frac: 0.55
+rel_tol: 0.002
+workers: 14
+variants:
+- label: baseline
+- label: dt_0.01
+  dt: 0.01
+- label: t_relax_240
+  t_relax: 240
+- label: t_relax_960
+  t_relax: 960
+- label: threshold_0.40
+  frac: 0.4
+- label: threshold_0.70
+  frac: 0.7
+- label: clip_600
+  clip: 600.0
+- label: random_lorentzian_clip_60
+  omega: random
+  clip: 60.0

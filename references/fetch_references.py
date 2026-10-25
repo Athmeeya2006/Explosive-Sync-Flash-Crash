@@ -103,6 +103,22 @@ PAPERS: list[tuple[str, str, str]] = [
     ("adaptation_hypergraphs2025", "10_prior_art_adaptive", "Generalized Adaptation-Induced Non-universal Synchronization Transitions in Random Hypergraphs"),
     ("selfconsistent_hoi2026", "10_prior_art_adaptive", "Self-consistent analysis of the Kuramoto model with higher-order interactions"),
     ("miranda2023_topological_suppression", "10_prior_art_adaptive", "Topologically-induced suppression of explosive synchronization"),
+    # --- 11: the oscillator families of oscillators/ (zoo.py), one anchor paper per family or method
+    ("nakao2016_phase_reduction", "11_oscillator_zoo", "Phase reduction approach to synchronisation of nonlinear oscillators"),
+    ("pikovsky_rosenblum2015_global_coupling", "11_oscillator_zoo", "Dynamics of globally coupled oscillators: Progress and perspectives"),
+    ("koseska2013_oscillation_quenching", "11_oscillator_zoo", "Oscillation quenching mechanisms: Amplitude vs. oscillation death"),
+    ("ariaratnam_strogatz2001_winfree", "11_oscillator_zoo", "Phase diagram for the Winfree model of coupled nonlinear oscillators"),
+    ("pazo_montbrio2014_winfree_oa", "11_oscillator_zoo", "Low-dimensional dynamics of populations of pulse-coupled oscillators"),
+    ("montbrio2015_qif_meanfield", "11_oscillator_zoo", "Macroscopic description for networks of spiking neurons"),
+    ("luke2013_theta_neurons", "11_oscillator_zoo", "Complete classification of the macroscopic behavior of a heterogeneous network of theta neurons"),
+    ("gupta2014_inertia_review", "11_oscillator_zoo", "Kuramoto model of synchronization: equilibrium and nonequilibrium aspects"),
+    ("acebron2000_inertia", "11_oscillator_zoo", "Synchronization in populations of globally coupled oscillators with inertial effects"),
+    # Rosenblum, Pikovsky and Kurths, PRL 76, 1804 (1996) is not on arXiv; a title search for it matches the
+    # paper below instead, which is kept because it gives the phase description of the Roessler oscillator
+    ("imai2021_chaotic_phase_description", "11_oscillator_zoo", "Phase description of chaotic oscillators"),
+    ("bi2014_explosive_oscillation_death", "11_oscillator_zoo", "Explosive oscillation death in coupled Stuart-Landau oscillators"),
+    ("bury2020_spectral_ews", "05_early_warning", "Detecting and distinguishing tipping points using spectral early warning signals"),
+    ("ghanavati2014_power_ews", "05_early_warning", "Understanding early indicators of critical transitions in power systems from autocorrelation functions"),
 ]
 
 # Open-access sources that are NOT on arXiv, fetched by direct URL. Each is verified to be a PDF

@@ -23,13 +23,26 @@ RESULTS = REPO / "results"
 
 
 def git_hash() -> str:
+    """Short commit hash, "-dirty" if tracked files changed. A copy of the repository without .git (the
+    Ada cluster) reads the hash written into .esfc_git when the copy was made."""
     try:
         h = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()
         dirty = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=REPO, capture_output=True,
                                text=True).stdout.strip()
-        return h + ("-dirty" if dirty else "")
     except OSError:
-        return "nogit"
+        h = ""
+    if not h:
+        f = REPO / ".esfc_git"
+        return f.read_text().strip() if f.exists() else "nogit"
+    return h + ("-dirty" if dirty else "")
+
+
+def _gpus() -> str:
+    try:
+        return subprocess.run(["nvidia-smi", "--query-gpu=name,driver_version", "--format=csv,noheader"],
+                              capture_output=True, text=True).stdout.strip().replace("\n", "; ")
+    except OSError:
+        return ""
 
 
 def spawn_seeds(root: int, n: int) -> list[dict]:
@@ -49,7 +62,8 @@ def new_run_dir(exp_id: str, cfg: dict) -> Path:
     import scipy
     (d / "env.txt").write_text(
         f"python {sys.version.split()[0]}\nnumpy {np.__version__}\nscipy {scipy.__version__}\n"
-        f"numba {numba.__version__}\nplatform {platform.platform()}\ngit {git_hash()}\n")
+        f"numba {numba.__version__}\nplatform {platform.platform()}\ngit {git_hash()}\n"
+        + (f"backend gpu\ngpus {_gpus()}\n" if cfg.get("backend") == "gpu" else ""))
     return d
 
 

@@ -164,3 +164,47 @@ Two conditions for comparing with simulation:
 2. **Reference.** `R0` must be measured on the same clipped, finite frequency sample, because an
    offset in `R0` is multiplied by k.
 
+
+## 7. Degree heterogeneity: the degree-based mean field
+
+Sections 3 and 4 treat graphs in which every node has the same degree. With a degree distribution P(k), the
+simplest treatment that keeps only the heterogeneity is the degree-based (annealed) mean field: neighbours are
+drawn in proportion to their degree, so every node sees the same local order parameter r, and a node of degree k
+feels the field `lam (k/<k>) r^(p+1)` (gain r^p, coupling scaled by 1/<k>, k neighbours). With x = k/<k>:
+
+```
+r = E[ x c(lam x r^(p+1)) ],     c(h) = (sqrt(h^2 + gamma^2) - gamma) / h      (exact Lorentzian response)
+```
+
+For a single degree this is the all-to-all self-consistency, with the fold lam_b(inf). Expanding to second order
+in x - 1 (E[x - 1] = 0, E[(x - 1)^2] = CV^2, the squared coefficient of variation of the degree) and shifting
+the fold at fixed r (the fold is the minimum of lam(r), so its first-order shift is -F_v / F_lam there):
+
+```
+lam_b / lam_b(inf) = 1 - (p + 2) / (2 (p + 1)^2) * CV^2 + O(CV^3)
+```
+
+Derivation. Write u = lam r^(p+1) (the field at x = 1) and g(x) = c(u x), so the right-hand side is
+E[(1 + eps) g(1 + eps)] = c(u) + CV^2 (u c'(u) + u^2 c''(u) / 2) + O(eps^3), eps = x - 1. The all-to-all fold
+has c(u) = r and lam (p+1) r^p c'(u) = 1, i.e. u c'(u) = r / (p+1), with r = sqrt(p/(p+2)) and
+u = 2 gamma r / (1 - r^2). The derivative of the right-hand side with respect to lam at fixed r is
+(u/lam) c'(u), so
+
+```
+(lam_b - lam_b(inf)) / lam_b(inf) = - CV^2 (u c' + u^2 c''/2) / (u c') = - CV^2 (1 + u c''(u) / (2 c'(u)))
+```
+
+and with sqrt(u^2 + gamma^2) = gamma + r u (from c(u) = r) this simplifies exactly to -(p+2)/(2(p+1)^2),
+independent of gamma (symbolic check with sympy). The numerical solution of the full self-consistency
+(`esfc.hetero`, `results/paperA_theory_hetero/`) agrees to 1e-7 for p = 0.25 to 6, and the next order shows up
+as expected for broader distributions (uniform degrees with CV^2 = 0.085: -0.42 instead of -0.375 at p = 1).
+For Poisson degrees CV^2 = 1/<k>, so heterogeneity
+enters at the same order as the finite-connectivity terms, with coefficient a_het = -3/8 at p = 1 and -2/9 at
+p = 2. Heterogeneity LOWERS the fold: high-degree nodes are coupled more strongly (k_i/<k>) and hold the
+synchronised state.
+
+Test (`results/paperA_structure_gpu/`, N = 10000): random-regular coefficient plus a_het(k) against the measured
+Erdos-Renyi coefficient: k = 24, p = 1: 0.82 against 0.79 [0.71, 0.87]; p = 2: 1.64 against 1.63 [1.46, 1.80];
+at k = 12 the prediction is too high (0.66 against 0.34; 1.40 against 1.10), as expected if terms of order 1/k^2
+(low-degree nodes, and the interaction of heterogeneity with the finite-k terms) matter there.
+`configs/paperA_hetero_gpu.yaml` measures k = 24, 48, 96 to test whether the two contributions add at leading order.

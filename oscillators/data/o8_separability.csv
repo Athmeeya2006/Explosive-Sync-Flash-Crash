@@ -1,0 +1,8 @@
+family,"coupling G(x_i, x_j)","x, y are",D1,product_separable,separable_rank,herding_cross_derivative_max,plain_cross_derivative,herding_pairwise_additive
+"Kuramoto, with or without inertia",-sin(x - y),phases,1,False,2,0.4603374281397801,0,False
+Stuart-Landau population,-x + y,one complex component z (the other is the same),1,False,2,,,
+van der Pol population,-x + y,velocities v,1,False,2,,,
+FitzHugh-Nagumo population,-x + y,membrane variables v,1,False,2,,,
+Roessler population,-x + y,x coordinates,1,False,2,,,
+Winfree,-(cos(y) + 1)*sin(x),phases,0,True,1,1.3706558482459819,0,False
+theta neurons (pulse coupling),(1 - cos(y))**2*(2*cos(x)/3 + 2/3),phases,0,True,1,3.275667953181992,0,False

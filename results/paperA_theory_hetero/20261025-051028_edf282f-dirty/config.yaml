@@ -1,0 +1,20 @@
+id: paperA_theory_hetero
+experiment: theory_hetero
+p:
+- 0.5
+- 1.0
+- 1.5
+- 2.0
+- 3.0
+k:
+- 6
+- 8
+- 12
+- 16
+- 24
+- 32
+- 48
+- 64
+- 96
+- 192
+- 1000

@@ -38,6 +38,38 @@ def _powerlaw_degrees(n: int, gamma: float, mean_deg: float, rng: np.random.Gene
     return k
 
 
+LARGE_ER = 20_000     # above this size Erdos-Renyi graphs are drawn with numpy (networkx needs several GB at k ~ 100)
+
+
+def _er_numpy(n: int, mean_deg: float, seed: int) -> Network:
+    """G(n, p) with p = mean_deg / (n - 1), giant component only, drawn with numpy: the number of edges is
+    Binomial(n(n-1)/2, p) and the edges are uniform distinct pairs, which is G(n, p) exactly."""
+    from scipy.sparse import coo_matrix
+    from scipy.sparse.csgraph import connected_components
+    rng = np.random.default_rng(seed)
+    n_pairs = n * (n - 1) // 2
+    m = int(rng.binomial(n_pairs, mean_deg / (n - 1)))
+    codes = np.unique(rng.integers(0, n_pairs, size=int(m * 1.02) + 100))
+    while codes.size < m:
+        codes = np.unique(np.concatenate([codes, rng.integers(0, n_pairs, size=m - codes.size + 100)]))
+    codes = rng.permutation(codes)[:m]
+    # decode pair index -> (i, j), i < j, row-major over the upper triangle
+    i = (n - 2 - np.floor(np.sqrt(-8.0 * codes + 4.0 * n * (n - 1) - 7) / 2.0 - 0.5)).astype(np.int64)
+    j = (codes + i + 1 - n * (n - 1) // 2 + (n - i) * ((n - i) - 1) // 2).astype(np.int64)
+    a = coo_matrix((np.ones(m), (i, j)), shape=(n, n))
+    ncomp, lab = connected_components(a, directed=False)
+    big = np.argmax(np.bincount(lab))
+    keep = lab == big
+    new = -np.ones(n, dtype=np.int64)
+    new[keep] = np.arange(keep.sum())
+    e = keep[i] & keep[j]
+    ei0, ej0 = new[i[e]], new[j[e]]
+    ei, ej = np.concatenate([ei0, ej0]), np.concatenate([ej0, ei0])
+    nn = int(keep.sum())
+    deg = np.bincount(ei, minlength=nn).astype(float)
+    return Network(nn, ei, ej, deg, f"ER N={nn} <k>={deg.mean():.1f}")
+
+
 def make_network(kind: str, n: int, mean_deg: float, seed: int, gamma: float = 2.5, rewire: float = 0.1) -> Network:
     """Undirected network, giant component only (so every node has degree >= 1).
 
@@ -52,6 +84,8 @@ def make_network(kind: str, n: int, mean_deg: float, seed: int, gamma: float = 2
     k_int = max(2, int(round(mean_deg)))
     if kind == "ba":
         g = nx.barabasi_albert_graph(n, max(1, int(round(mean_deg / 2))), seed=seed)
+    elif kind == "er" and n > LARGE_ER:
+        return _er_numpy(n, mean_deg, seed)
     elif kind == "er":
         g = nx.fast_gnp_random_graph(n, mean_deg / (n - 1), seed=seed)
     elif kind == "sf":

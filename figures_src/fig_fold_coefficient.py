@@ -1,6 +1,6 @@
 """Figure P1: the 1/k coefficient of the fold, simulation against the three theories.
 
-Reads only results/ (via esfc.report). One panel per exponent p. Each point is
+Reads only results/ (via esfc.report): the A1 pilot, A7 and the GPU k scan. One panel per exponent p. Each point is
 k (lam_b / lam_b_inf - 1) with its 95% confidence interval over seeds; horizontal lines are the
 leading-order predictions. Writes research/figures/p1_fold_coefficient.{png,pdf}.
 """
@@ -24,12 +24,14 @@ SERIES = {"rr": ("#2a78d6", "o", "undirected (simulation)"), "dir": ("#eb6834", 
 
 
 def main() -> int:
-    frames = [f for f in (report.fold_cells("paperA_A1_pilot"), report.fold_cells("paperA_A7")) if f is not None]
+    frames = [f for f in (report.fold_cells("paperA_A1_pilot"), report.fold_cells("paperA_A7"),
+                          report.fold_cells("paperA_fold_kscan_gpu")) if f is not None]
     th = report.theory_table()
     if not frames or th.empty:
         print("no results yet")
         return 1
     df = pd.concat(frames, ignore_index=True)
+    df["graph"] = df.graph.replace({"rho1.00": "rr"})       # random regular undirected graphs of the GPU k scan
     df = df[df.N == df.groupby(["graph", "p", "k"]).N.transform("max")]       # largest size per cell
     df = df.sort_values("n_seeds").drop_duplicates(["graph", "p", "k"], keep="last")
     ps = sorted(df.p.unique())

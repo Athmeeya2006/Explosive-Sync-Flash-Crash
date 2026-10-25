@@ -52,3 +52,20 @@ Recorded as they are made. Newest last.
 15. **Mutual links in very large graphs are paired with numpy** (above 4 million stubs) because
     networkx is too slow there. Smaller graphs keep the networkx generator.
 
+16. **GPU path for the cluster runs** (2026-10-24). `esfc.gpu` integrates many realisations at once as one
+    block-diagonal graph (the Heun step of `esfc.fast`, float64, sigma = 0); `esfc.gpu_runner` runs
+    `fold_grid` and `branch_grid` on it when a config sets `backend: gpu`. The bisection of `measure_fold`
+    was moved into the generator `continuation.fold_steps`, which the CPU and GPU drivers share, so both
+    make the same decisions; CPU results are unchanged (tests pass). GPU arithmetic differs from the CPU in
+    the last bits, which can flip a verdict at a coupling within rounding distance of a sample's fold: on
+    the A7 rerun (same seeds) 22 of 24 folds were identical and 2 moved by one final bisection step (0.19%,
+    inside the 0.2% tolerance). One GTX 1080 Ti did the 12 core-hours of A7 in 6 minutes. GPU rows carry
+    `backend`; their `seconds` is the batch wall time per realisation, not core time.
+17. **Oscillator zoo on the GPU** (2026-10-24). `oscillators/zoo_gpu.py` holds the nine population kernels
+    of `zoo.py` (one thread block per run); with noise off they match the CPU kernels to 1e-14
+    (`zoo_gpu_check.py`). The noise stream differs from the CPU one, so single runs differ; transition
+    points and mean signals agree statistically. `ZOO_GPU=1` (run_zoo.py) and `Z2_GPU=1` (z2_fold_scaling.py)
+    select it. Z2 batches share one frequency array across seeds, which is equivalent in distribution
+    (the seeds only permute the same quantiles, and all units start at phase 0).
+18. **Copies without .git** (the Ada cluster) take the commit stamp from `.esfc_git`, written when the
+    copy is made, so run directories keep the `<hash>[-dirty]` suffix.

@@ -74,6 +74,8 @@ def intraday_study(cfg: dict, run_dir: Path) -> None:
     t0 = time.time()
     rng = np.random.default_rng(cfg["root_seed"])
     px = load_minutes()
+    if cfg.get("drop_tickers"):          # e.g. SPY: an index ETF, not a stock, inflates mean_corr and lead_eig_share
+        px = px.drop(columns=[c for c in cfg["drop_tickers"] if c in px.columns])
     sess = intraday.session_ids(px.index)
     ret = intraday.session_returns(px, sess)
     _, lvl = intraday.session_index(ret, sess)
@@ -163,7 +165,7 @@ def intraday_study(cfg: dict, run_dir: Path) -> None:
     old = pd.read_csv(EMP / "e7_events.csv")
     old_t = pd.to_datetime(old.date, utc=True).dt.tz_convert("US/Eastern")
     old_first30 = int(((old_t.dt.hour * 60 + old_t.dt.minute) < 10 * 60).sum())
-    summary = {"n_tickers": int(px.shape[1]), "n_bars": int(px.shape[0]), "n_sessions": int(sess.max() + 1),
+    summary = {"n_tickers": int(px.shape[1]), "tickers": list(map(str, px.columns)), "n_bars": int(px.shape[0]), "n_sessions": int(sess.max() + 1),
                "span": [str(px.index[0])[:10], str(px.index[-1])[:10]],
                "regression_slope_train": float(beta[1]), "wall_seconds": round(time.time() - t0, 1),
                "old_e7_onsets": int(len(old)), "old_e7_onsets_before_10am": old_first30,

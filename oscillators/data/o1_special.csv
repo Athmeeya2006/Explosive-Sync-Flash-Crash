@@ -1,0 +1,57 @@
+kind,seed,direction,event,param
+theta,11,down,collapses,-13.265992
+theta,11,up,recovers,-5.104008
+theta,111,down,collapses,-13.125992
+theta,111,up,recovers,-5.080007999999999
+theta,211,down,collapses,-13.297992
+theta,211,up,recovers,-5.090007999999999
+theta,311,down,collapses,-13.361992
+theta,311,up,recovers,-5.100008000000001
+sl_death,11,up,dies,1.0322734
+sl_death,11,up,revives,5.4899134
+sl_death,11,down,dies,5.3539666
+sl_death,11,down,revives,1.0039066000000005
+sl_death,111,up,dies,1.0329334000000001
+sl_death,111,up,revives,5.5103734
+sl_death,111,down,dies,5.3486866
+sl_death,111,down,revives,1.0045666000000004
+sl_death,211,up,dies,1.0355734
+sl_death,211,up,revives,5.4866134
+sl_death,211,down,dies,5.3473666
+sl_death,211,down,revives,1.0052266000000003
+sl_death,311,up,dies,1.0342533999999999
+sl_death,311,up,revives,5.5077334
+sl_death,311,down,dies,5.3539666
+sl_death,311,down,revives,1.0039066000000005
+winfree,11,up,dies,0.7754422
+winfree,11,down,revives,0.7753302999999999
+winfree,111,up,dies,0.7752846999999999
+winfree,111,down,revives,0.7752853
+winfree,211,up,dies,0.7765597
+winfree,211,down,revives,0.7754652999999999
+winfree,311,up,dies,0.7774747
+winfree,311,down,revives,0.7752778
+fhn_single,11,up,starts spiking,0.39445969999999997
+fhn_single,11,down,stops spiking,0.3227303
+fhn_single,111,up,starts spiking,0.39445969999999997
+fhn_single,111,down,stops spiking,0.3227303
+fhn_single,211,up,starts spiking,0.39445969999999997
+fhn_single,211,down,stops spiking,0.3227303
+fhn_single,311,up,starts spiking,0.39445969999999997
+fhn_single,311,down,stops spiking,0.3227303
+sl_single,11,up,|z| at mu = 0.1,0.314018012408295
+sl_single,11,up,|z| at mu = 0.2,0.44736573976436067
+sl_single,11,up,|z| at mu = 0.3,0.5474733944128636
+sl_single,11,up,|z| at mu = 0.4,0.6321185979702552
+sl_single,111,up,|z| at mu = 0.1,0.3158591341133411
+sl_single,111,up,|z| at mu = 0.2,0.44725908776191464
+sl_single,111,up,|z| at mu = 0.3,0.5474843660086233
+sl_single,111,up,|z| at mu = 0.4,0.6324143118140934
+sl_single,211,up,|z| at mu = 0.1,0.3149493381622474
+sl_single,211,up,|z| at mu = 0.2,0.4458253251380827
+sl_single,211,up,|z| at mu = 0.3,0.5476995251524781
+sl_single,211,up,|z| at mu = 0.4,0.6321348611464348
+sl_single,311,up,|z| at mu = 0.1,0.3153053838311491
+sl_single,311,up,|z| at mu = 0.2,0.44671107803257837
+sl_single,311,up,|z| at mu = 0.3,0.5469892922120884
+sl_single,311,up,|z| at mu = 0.4,0.6316923227263302

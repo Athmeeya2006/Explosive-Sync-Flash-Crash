@@ -11,6 +11,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from scipy import stats
 
 from . import closure
 from .runner import REPO, RESULTS, latest_run, load_summary
@@ -185,8 +186,9 @@ def branch_theory_agreement() -> float | None:
 
 
 def reciprocity_runs() -> pd.DataFrame | None:
-    """Seed-level rows of the reciprocity sweep with c = k (R - R0)."""
-    got = _rows("paperA_reciprocity")
+    """Seed-level rows of the reciprocity sweep with c = k (R - R0) (the GPU run; the CPU run of 2026-10-14
+    was interrupted before writing rows)."""
+    got = _rows("paperA_reciprocity_gpu") or _rows("paperA_reciprocity")
     if got is None:
         return None
     df, _ = got
@@ -336,3 +338,69 @@ __all__ = ["RESULTS", "load_summary", "theory_table", "fold_cells", "extrapolate
            "run_name", "cloud_run_name", "cloud_fold_cells", "branch_runs", "branch_cells", "branch_pooled",
            "branch_theory", "branch_summary_check", "branch_theory_table", "branch_theory_reported",
            "branch_theory_agreement", "reciprocity_runs", "reciprocity_cells", "reciprocity_fit"]
+
+
+BRANCH_CURVE = "paperA_branch_curve_gpu"
+
+
+def branch_curve_cells() -> pd.DataFrame | None:
+    """Branch shift c = k (R - R0) per (graph, p, mult, k) from the branch-curve run, with the prediction
+    for that graph type (dynamic for directed, dynamic plus reaction for undirected) and the closure.
+    `valid` is False where the coupling lies at or below the realised graphs' own fold, so that some
+    seeds left the branch (seen as a large drift of R between the two halves of the measurement)."""
+    s = load_summary(BRANCH_CURVE)
+    t = branch_theory_table()
+    if s is None or t.empty:
+        return None
+    c = pd.DataFrame(s["cells"])
+    th = t.set_index(["p", "mult"])
+    c["theory"] = [th.loc[(p, m), "dynamic" if v == "dir" else "undirected"] for v, p, m in zip(c.variant, c.p, c.mult)]
+    c["closure"] = [th.loc[(p, m), "closure"] for p, m in zip(c.p, c.mult)]
+    c["se"] = [(hi - lo) / 2 / stats.t.ppf(0.975, n - 1) for lo, hi, n in zip(c.ci_lo, c.ci_hi, c.n_ok)]
+    rows = _rows(BRANCH_CURVE)[0]
+    collapsed = rows[rows.variant != "meanfield"].assign(drift=lambda d: d.k * (d.R_second_half - d.R_first_half).abs())
+    bad = collapsed.groupby(["variant", "p", "mult", "k"]).apply(lambda g: bool((g.R < 0.3).any() or (g.drift > 0.05).any()),
+                                                                 include_groups=False)
+    c["valid"] = [not bad.get((v, p, m, k), False) for v, p, m, k in zip(c.variant, c.p, c.mult, c.k)]
+    return c
+
+
+def branch_curve_extrapolation() -> pd.DataFrame | None:
+    """c(k) = c_inf + b / k by weighted least squares over the valid k of each (graph, p, mult), weights
+    1 / se^2. Three values of k at most: the straight line in 1/k is an ASSUMPTION, least safe near the
+    fold, where the expansion converges slowest."""
+    c = branch_curve_cells()
+    if c is None:
+        return None
+    out = []
+    for (v, p, m), g in c[c.valid].groupby(["variant", "p", "mult"]):
+        if len(g) < 2:
+            continue
+        x = 1.0 / g.k.to_numpy(float)
+        A = np.vstack([np.ones_like(x), x]).T
+        W = np.diag(1.0 / g.se.to_numpy() ** 2)
+        cov = np.linalg.inv(A.T @ W @ A)
+        beta = cov @ A.T @ W @ g.c_mean.to_numpy()
+        th = float(g.theory.iloc[0])
+        out.append({"graph": v, "p": p, "mult": m, "n_k": len(g), "c_inf": beta[0], "c_inf_se": float(np.sqrt(cov[0, 0])),
+                    "slope": beta[1], "theory": th, "closure": float(g.closure.iloc[0]),
+                    "ratio_to_theory": beta[0] / th, "z": (beta[0] - th) / float(np.sqrt(cov[0, 0]))})
+    return pd.DataFrame(out)
+
+
+WINDOW_RUNS = {"paperA_window_gpu": "main (N = 10000, wait 400)", "paperA_window_nscan_gpu": "N scan (wait 400)",
+               "paperA_window_long_gpu": "longer wait (1600, N = 10000)"}
+
+
+def window_cells() -> pd.DataFrame | None:
+    """Bistable window per (run, graph, p, k, N): fold and forward threshold relative to the all-to-all fold,
+    relative width with its 95% interval, and the closure's prediction (closure.window_width)."""
+    out = []
+    for exp, label in WINDOW_RUNS.items():
+        s = load_summary(exp)
+        if s is None:
+            continue
+        c = pd.DataFrame(s["cells"])
+        c["run"], c["run_label"] = exp, label
+        out.append(c)
+    return pd.concat(out, ignore_index=True) if out else None

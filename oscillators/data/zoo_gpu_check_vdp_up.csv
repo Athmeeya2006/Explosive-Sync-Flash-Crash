@@ -1,0 +1,2 @@
+part,case,n_trans_cpu,n_trans_gpu,p_trans_cpu,p_trans_gpu,z_mean,ks_p,max_z_curve,median_z_curve
+statistical,vdp_up,128,128,0.19537534375,0.1952901875,0.09956656347576899,0.7340519272124851,2.405865005094452,0.9180784474148533

@@ -72,32 +72,45 @@ def survives(sim: FastSim, lam: float, t_relax: float, frac: float = 0.55,
     return mean > thr, mean, slope, th
 
 
-def measure_fold(sim: FastSim, mean_deg: float | None = None, rel_tol: float = 2e-3, t_relax: float = 120.0,
-                 frac: float = 0.55) -> FoldResult:
-    """Bisect lam for the disappearance of the upper branch (same bracket and tolerance as S14)."""
+def fold_steps(p: float, mean_deg: float | None = None, rel_tol: float = 2e-3):
+    """The bisection of `measure_fold` as a generator: it yields the next coupling to test and is sent
+    back (survived, tail-mean R, tail slope); its return value is the FoldResult. Shared by the CPU
+    driver below and by the batched GPU driver (esfc.gpu), so both make the same decisions."""
     k = np.inf if mean_deg is None else mean_deg
-    pred = lam_b_inf(sim.p) * (1.0 + (sim.p + 2.0) / (2.0 * k))
+    pred = lam_b_inf(p) * (1.0 + (p + 2.0) / (2.0 * k))
     lo, hi = 0.35 * pred, 2.2 * pred
     n_runs = 1
-    ok, R_at, sl_at, _ = survives(sim, hi, t_relax, frac)
+    ok, R_at, sl_at = yield hi
     while not ok and n_runs < 6:
         hi *= 1.6
-        ok, R_at, sl_at, _ = survives(sim, hi, t_relax, frac)
+        ok, R_at, sl_at = yield hi
         n_runs += 1
     if not ok:
         return FoldResult(np.nan, np.nan, np.nan, n_runs)
     n_runs += 1
-    if survives(sim, lo, t_relax, frac)[0]:
+    if (yield lo)[0]:
         return FoldResult(np.nan, np.nan, np.nan, n_runs)
     while (hi - lo) / hi > rel_tol:
         mid = 0.5 * (lo + hi)
-        ok, R_mid, sl_mid, _ = survives(sim, mid, t_relax, frac)
+        ok, R_mid, sl_mid = yield mid
         n_runs += 1
         if ok:
             hi, R_at, sl_at = mid, R_mid, sl_mid
         else:
             lo = mid
     return FoldResult(0.5 * (lo + hi), R_at, sl_at, n_runs)
+
+
+def measure_fold(sim: FastSim, mean_deg: float | None = None, rel_tol: float = 2e-3, t_relax: float = 120.0,
+                 frac: float = 0.55) -> FoldResult:
+    """Bisect lam for the disappearance of the upper branch (same bracket and tolerance as S14)."""
+    gen = fold_steps(sim.p, mean_deg, rel_tol)
+    lam = next(gen)
+    while True:
+        try:
+            lam = gen.send(survives(sim, lam, t_relax, frac)[:3])
+        except StopIteration as stop:
+            return stop.value
 
 
 def backward_continuation(sim: FastSim, lam_start: float, step_rel: float = 0.01, rel_tol: float = 2e-3,
@@ -136,15 +149,31 @@ def forward_threshold(sim: FastSim, lam_lo: float, lam_hi: float, seed: int, rel
     """Bisect for the lowest coupling at which a random incoherent start reaches the synchronised branch
     within t_relax. This is a first-passage quantity: it depends on t_relax, N and the initial condition,
     and must be reported with them."""
-    th0 = np.random.default_rng(seed).uniform(0.0, 2.0 * np.pi, sim.n)
-    if not survives(sim, lam_hi, t_relax, frac, th0)[0]:
+    th0 = forward_start(seed, sim.n)
+    gen = forward_steps(lam_lo, lam_hi, rel_tol)
+    lam = next(gen)
+    while True:
+        try:
+            lam = gen.send(survives(sim, lam, t_relax, frac, th0)[:3])
+        except StopIteration as stop:
+            return stop.value
+
+
+def forward_start(seed: int, n: int) -> np.ndarray:
+    """The random incoherent start of `forward_threshold`."""
+    return np.random.default_rng(seed).uniform(0.0, 2.0 * np.pi, n)
+
+
+def forward_steps(lam_lo: float, lam_hi: float, rel_tol: float = 5e-3):
+    """The bisection of `forward_threshold` as a generator (see `fold_steps`); returns the threshold."""
+    if not (yield lam_hi)[0]:
         return np.nan
-    if survives(sim, lam_lo, t_relax, frac, th0)[0]:
+    if (yield lam_lo)[0]:
         return lam_lo
     lo, hi = lam_lo, lam_hi
     while (hi - lo) / hi > rel_tol:
         mid = 0.5 * (lo + hi)
-        if survives(sim, mid, t_relax, frac, th0)[0]:
+        if (yield mid)[0]:
             hi = mid
         else:
             lo = mid

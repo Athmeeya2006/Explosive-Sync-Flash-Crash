@@ -1,0 +1,24 @@
+# GPU run of paperA_branch_ada.yaml (item A4 of oscillators/ADA_COMPUTE.md), same seeds. Batches hold at most two N = 800000 graphs.
+# For the Ada cluster, not a workstation. Large connectivity with the neighbourhood overlap k^2/N held
+# at or below 0.05, which needs N up to 800000. Directed (rho = 0) and undirected (rho = 1) graphs, plus
+# the half-way point, to settle whether the reaction term converges to its prediction.
+# Memory per run is about 16 bytes x N x k for the neighbour table: 2.5 GB at k = 192.
+# Set `workers` to the number of cores of the node; runs are independent.
+id: paperA_branch_ada_gpu
+experiment: branch_grid
+root_seed: 20261016
+graphs:
+  - {kind: rec, rho: 0.0, label: rho0.00}
+  - {kind: rec, rho: 0.5, label: rho0.50}
+  - {kind: rec, rho: 1.0, label: rho1.00}
+k: [48, 96, 192]
+n: {48: 50000, 96: 200000, 192: 800000}
+p: [1.0, 2.0]
+mult: [1.25]
+n_seeds: 10
+dt: 0.02
+t_burn: 150
+t_measure: 250
+workers: 20
+backend: gpu
+gpu_batch_nodes: 1700000

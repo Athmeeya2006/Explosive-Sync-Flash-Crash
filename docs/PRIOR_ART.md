@@ -27,9 +27,9 @@ The first verdict below was too generous about the mechanisms. The corrected pos
    the coloured-noise channel of those frameworks and the reaction term is their response channel.
 2. **What appears to be new** is the explicit evaluation for the adaptive (local order parameter)
    Kuramoto model: closed-form leading coefficients for the fold and for the synchronised branch on
-   directed and undirected graphs, the falsification of the static-scatter (Rician) picture that goes
-   back to Ichinomiya (2005), and the quantitative tests by simulation, including the reciprocity
-   interpolation.
+   directed and undirected graphs, the falsification of the static-scatter (Rician) closure (an approximation introduced in this
+   project; not Ichinomiya's, see the correction below), and the quantitative tests by simulation, including
+   the reciprocity interpolation.
 3. **Framing.** A regular article: explicit leading-order sparse-graph corrections for adaptive
    Kuramoto dynamics with a directed/undirected decomposition verified by simulation. Not a new cavity
    method, and the directed/undirected distinction is not claimed as new.
@@ -53,7 +53,7 @@ verified against the paper here. None of these was read in full text in this rep
 | Metz, PRL 134, 037401 (2025), arXiv:2406.06346 | Exact single-site path-probability equation for nonlinear dynamics on sparse directed random graphs, solved by population dynamics; synchronization named as an application | Our directed-graph term should be the leading 1/k expansion of this equation for the adaptive coupling. To be shown, analytically or by population dynamics. The audit reports that the paper excludes bidirected edges and lists Kuramoto without solving it | abstract checked; details from the audit |
 | Metz and Perez Castillo, arXiv:2606.08689 (2026) | Continuous-time dynamical cavity method on sparse random graphs; reciprocal edges need conditional path kernels; dense limits give drift, noise and response channels | Predicts the structure of our decomposition. Our contribution is the explicit coefficients and their test. Unrefereed preprint | abstract checked |
 | Aonishi, Kurata, Okada, PRE 65, 046223 (2002), arXiv:cond-mat/0201453 | Oscillator associative-memory models with symmetric and with asymmetric dilution, which differ by the Onsager reaction term | Direct conceptual precedent for "undirected minus directed equals the reaction term". Differences: random sparse topology, Lorentzian Kuramoto setting, adaptive gain, explicit 1/k coefficient | abstract checked |
-| Ichinomiya, PRE 72, 016109 (2005), arXiv:cond-mat/0507285 | Path-integral treatment of dynamics on a sparse random network; equivalent to globally coupled oscillators with random Gaussian interactions | Origin of the static Gaussian scatter picture, which is what the Rician closure assumes and what the branch test falsifies | abstract checked |
+| Ichinomiya, PRE 72, 016109 (2005), arXiv:cond-mat/0507285 | Path-integral treatment of dynamics on a sparse random network; equivalent to globally coupled oscillators with random Gaussian interactions | Maps sparse dynamics to Gaussian couplings that are static, but keeps the oscillator dynamics in full. CORRECTION (2026-10-25, full text read, docs/LITREVIEW_A_SPARSE_THEORY.md): the Rician closure (frozen neighbour scatter) is a further approximation made in this project on top of such a mapping; it must not be attributed to Ichinomiya. His average treats the two directions of each link as independent (the directed ensemble), and the symmetry he asserts for undirected graphs is where the reaction term comes from | full text read |
 | Pruser, Rosmej, Engel, PRL 132, 187201 (2024), arXiv:2310.09079; Pruser and Engel, PRE 110, 064214 (2024) | Dynamical cavity method for the fully disordered dense Kuramoto model with self-consistent correlation and response functions | Dense counterpart of the reaction term | first paper: abstract checked; second: from the audit |
 | Reddy, arXiv:2603.09402 (2026) | Dense dynamical mean-field theory of oscillator networks: one oscillator driven by a mean field and self-consistent coloured Gaussian noise; reduces to Ott-Antonsen without disorder | Closest dense analogue of "Ott-Antonsen driven by coloured noise". The audit reports it lists the sparse regime as open | abstract checked |
 | Hatchett and Uezu, PRE 78, 036106 (2008) | Cavity analysis of oscillator networks on sparse random graphs in a Hamiltonian (equilibrium) case | Must be read in full for any finite-connectivity threshold expansion | from the audit, unread |
@@ -111,3 +111,18 @@ verified against the paper here. None of these was read in full text in this rep
 - https://arxiv.org/abs/cond-mat/0507285
 - https://arxiv.org/abs/2310.09079
 - https://arxiv.org/abs/2603.09402
+
+
+## Update 2026-10-25: full-text literature reviews
+
+Three reviews with full-text reading, downloaded open-access PDFs and BibTeX replace the web-search-only basis of
+this file for their topics: `docs/LITREVIEW_A_SPARSE_THEORY.md` (closest: Metz and Perez Castillo 2026, Metz PRL
+2025, Tarabolo and Dall'Asta 2025, Restrepo Ott Hunt 2005, Aonishi Kurata Okada 2002),
+`docs/LITREVIEW_OSCILLATOR_EWS.md` (Kato and Masuda 2026, Leyva et al. 2012 and 2025, Bury et al. 2020,
+Berglund and Gentz 2002, Tyulkina et al. 2018) and `docs/LITREVIEW_MARKETS.md` (Lee et al. PNAS 2025, Kritzman
+et al. 2011, Preis et al. 2012, Forbes and Rigobon 2002). Main consequence for Paper A: the mechanisms (coloured
+noise on directed graphs, a response or reaction channel on reciprocal graphs, a Gaussian closure at order 1/k)
+are established in the sparse cavity and dynamical mean-field literature and must be credited; the contribution is
+their explicit evaluation for the adaptive fold and branch, the quantitative tests, and new numerical results (no
+critical connectivity, directed fold below the all-to-all value at small k, reciprocity rescaling the coupling,
+the closed-form degree-heterogeneity law of THEORY.md section 7).

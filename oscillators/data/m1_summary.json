@@ -1,0 +1,12 @@
+{
+ "n_events": 310,
+ "n_markets": 22,
+ "n_quarters": 67,
+ "null_sizes": {
+  "all": 2878,
+  "volmatched": 2335,
+  "peak": 5410
+ },
+ "n_registered_tests": 18,
+ "n_bh_reject": 0
+}

@@ -1,0 +1,25 @@
+family,parameter,value,measured,theory,quantity
+Stuart-Landau,mu,0.05,0.2236067942793139,0.22360679774997896,amplitude |z|
+van der Pol,mu,0.05,0.447219270791194,0.4472135954999579,amplitude of x (averaging: 2 sqrt(mu))
+Stuart-Landau,mu,0.1,0.3162277646645776,0.31622776601683794,amplitude |z|
+van der Pol,mu,0.1,0.6324883744982296,0.6324555320336759,amplitude of x (averaging: 2 sqrt(mu))
+Stuart-Landau,mu,0.2,0.44721359378375053,0.4472135954999579,amplitude |z|
+van der Pol,mu,0.2,0.8946121885520666,0.8944271909999159,amplitude of x (averaging: 2 sqrt(mu))
+Stuart-Landau,mu,0.4,0.6324555297822971,0.6324555320336759,amplitude |z|
+van der Pol,mu,0.4,1.2659349719781963,1.2649110640673518,amplitude of x (averaging: 2 sqrt(mu))
+Stuart-Landau,mu,0.8,0.8944271881696806,0.8944271909999159,amplitude |z|
+van der Pol,mu,0.8,1.7941455422701789,1.7888543819998317,amplitude of x (averaging: 2 sqrt(mu))
+FitzHugh-Nagumo,I,0.3,7.542311664110457e-09,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.32,3.598373428115309e-07,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.33,1.8744382069313525,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.335,1.8800585595791754,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.34,1.883646229846055,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.36,1.8919376924242912,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.4,1.9005045332476806,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,0.6,1.9170250041333508,,half peak-to-peak of v (Hopf at I = 0.3313)
+FitzHugh-Nagumo,I,1.0,1.9214329841173088,,half peak-to-peak of v (Hopf at I = 0.3313)
+theta neuron,eta,0.01,0.03241146155479825,0.03183098861837907,firing rate (SNIC: sqrt(eta) / pi)
+theta neuron,eta,0.05,0.07093652093980689,0.0711762543417177,firing rate (SNIC: sqrt(eta) / pi)
+theta neuron,eta,0.1,0.10026363396024719,0.10065842420897407,firing rate (SNIC: sqrt(eta) / pi)
+theta neuron,eta,0.3,0.17457587492591808,0.17434550493976417,firing rate (SNIC: sqrt(eta) / pi)
+theta neuron,eta,1.0,0.3183098861837907,0.3183098861837907,firing rate (SNIC: sqrt(eta) / pi)

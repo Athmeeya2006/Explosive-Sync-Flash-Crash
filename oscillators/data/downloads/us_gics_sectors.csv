@@ -1,0 +1,1507 @@
+ticker,sector,market
+MMM,Industrials,us_sp500
+AOS,Industrials,us_sp500
+ABT,Health Care,us_sp500
+ABBV,Health Care,us_sp500
+ACN,Information Technology,us_sp500
+ADBE,Information Technology,us_sp500
+AMD,Information Technology,us_sp500
+AES,Utilities,us_sp500
+AFL,Financials,us_sp500
+A,Health Care,us_sp500
+APD,Materials,us_sp500
+ABNB,Consumer Discretionary,us_sp500
+AKAM,Information Technology,us_sp500
+ALB,Materials,us_sp500
+ARE,Real Estate,us_sp500
+ALGN,Health Care,us_sp500
+ALLE,Industrials,us_sp500
+LNT,Utilities,us_sp500
+ALL,Financials,us_sp500
+GOOGL,Communication Services,us_sp500
+GOOG,Communication Services,us_sp500
+MO,Consumer Staples,us_sp500
+AMZN,Consumer Discretionary,us_sp500
+AMCR,Materials,us_sp500
+AEE,Utilities,us_sp500
+AEP,Utilities,us_sp500
+AXP,Financials,us_sp500
+AIG,Financials,us_sp500
+AMT,Real Estate,us_sp500
+AWK,Utilities,us_sp500
+AMP,Financials,us_sp500
+AME,Industrials,us_sp500
+AMGN,Health Care,us_sp500
+APH,Information Technology,us_sp500
+ADI,Information Technology,us_sp500
+AON,Financials,us_sp500
+APA,Energy,us_sp500
+APO,Financials,us_sp500
+AAPL,Information Technology,us_sp500
+AMAT,Information Technology,us_sp500
+APP,Communication Services,us_sp500
+APTV,Consumer Discretionary,us_sp500
+ACGL,Financials,us_sp500
+ADM,Consumer Staples,us_sp500
+ARES,Financials,us_sp500
+ANET,Information Technology,us_sp500
+AJG,Financials,us_sp500
+AIZ,Financials,us_sp500
+T,Communication Services,us_sp500
+ATO,Utilities,us_sp500
+ADSK,Information Technology,us_sp500
+ADP,Industrials,us_sp500
+AZO,Consumer Discretionary,us_sp500
+AVY,Materials,us_sp500
+AXON,Industrials,us_sp500
+BKR,Energy,us_sp500
+BALL,Materials,us_sp500
+BAC,Financials,us_sp500
+BAX,Health Care,us_sp500
+BDX,Health Care,us_sp500
+BRK-B,Financials,us_sp500
+BBY,Consumer Discretionary,us_sp500
+TECH,Health Care,us_sp500
+BIIB,Health Care,us_sp500
+BLK,Financials,us_sp500
+BX,Financials,us_sp500
+XYZ,Financials,us_sp500
+BE,Industrials,us_sp500
+BNY,Financials,us_sp500
+BA,Industrials,us_sp500
+BKNG,Consumer Discretionary,us_sp500
+BSX,Health Care,us_sp500
+BMY,Health Care,us_sp500
+AVGO,Information Technology,us_sp500
+BR,Industrials,us_sp500
+BRO,Financials,us_sp500
+BF-B,Consumer Staples,us_sp500
+BG,Consumer Staples,us_sp500
+BXP,Real Estate,us_sp500
+CHRW,Industrials,us_sp500
+CDNS,Information Technology,us_sp500
+CPT,Real Estate,us_sp500
+COF,Financials,us_sp500
+CAH,Health Care,us_sp500
+CCL,Consumer Discretionary,us_sp500
+CARR,Industrials,us_sp500
+CVNA,Consumer Discretionary,us_sp500
+CASY,Consumer Staples,us_sp500
+CAT,Industrials,us_sp500
+CBOE,Financials,us_sp500
+CBRE,Real Estate,us_sp500
+CDW,Information Technology,us_sp500
+COR,Health Care,us_sp500
+CNC,Health Care,us_sp500
+CNP,Utilities,us_sp500
+CF,Materials,us_sp500
+CRL,Health Care,us_sp500
+SCHW,Financials,us_sp500
+CHTR,Communication Services,us_sp500
+CVX,Energy,us_sp500
+CMG,Consumer Discretionary,us_sp500
+CB,Financials,us_sp500
+CHD,Consumer Staples,us_sp500
+CIEN,Information Technology,us_sp500
+CI,Health Care,us_sp500
+CINF,Financials,us_sp500
+CTAS,Industrials,us_sp500
+CSCO,Information Technology,us_sp500
+C,Financials,us_sp500
+CFG,Financials,us_sp500
+CLX,Consumer Staples,us_sp500
+CME,Financials,us_sp500
+CMS,Utilities,us_sp500
+KO,Consumer Staples,us_sp500
+CTSH,Information Technology,us_sp500
+COHR,Information Technology,us_sp500
+COIN,Financials,us_sp500
+CL,Consumer Staples,us_sp500
+CMCSA,Communication Services,us_sp500
+FIX,Industrials,us_sp500
+COP,Energy,us_sp500
+ED,Utilities,us_sp500
+STZ,Consumer Staples,us_sp500
+CEG,Utilities,us_sp500
+COO,Health Care,us_sp500
+CPRT,Industrials,us_sp500
+GLW,Information Technology,us_sp500
+CPAY,Financials,us_sp500
+CSGP,Real Estate,us_sp500
+COST,Consumer Staples,us_sp500
+CRH,Materials,us_sp500
+CRWD,Information Technology,us_sp500
+CCI,Real Estate,us_sp500
+CSX,Industrials,us_sp500
+CMI,Industrials,us_sp500
+CVS,Health Care,us_sp500
+DHR,Health Care,us_sp500
+DRI,Consumer Discretionary,us_sp500
+DDOG,Information Technology,us_sp500
+DVA,Health Care,us_sp500
+DECK,Consumer Discretionary,us_sp500
+DE,Industrials,us_sp500
+DELL,Information Technology,us_sp500
+DAL,Industrials,us_sp500
+DVN,Energy,us_sp500
+DXCM,Health Care,us_sp500
+FANG,Energy,us_sp500
+DLR,Real Estate,us_sp500
+DG,Consumer Staples,us_sp500
+DLTR,Consumer Staples,us_sp500
+D,Utilities,us_sp500
+DPZ,Consumer Discretionary,us_sp500
+DASH,Consumer Discretionary,us_sp500
+DOV,Industrials,us_sp500
+DOW,Materials,us_sp500
+DHI,Consumer Discretionary,us_sp500
+DTE,Utilities,us_sp500
+DUK,Utilities,us_sp500
+DD,Industrials,us_sp500
+ETN,Industrials,us_sp500
+EBAY,Consumer Discretionary,us_sp500
+ECHO,Communication Services,us_sp500
+ECL,Materials,us_sp500
+EIX,Utilities,us_sp500
+EW,Health Care,us_sp500
+ELV,Health Care,us_sp500
+EME,Industrials,us_sp500
+EMR,Industrials,us_sp500
+ETR,Utilities,us_sp500
+EOG,Energy,us_sp500
+EQT,Energy,us_sp500
+EFX,Industrials,us_sp500
+EQIX,Real Estate,us_sp500
+ERIE,Financials,us_sp500
+ESS,Real Estate,us_sp500
+EL,Consumer Staples,us_sp500
+EG,Financials,us_sp500
+EVRG,Utilities,us_sp500
+P,Information Technology,us_sp500
+ES,Utilities,us_sp500
+EXC,Utilities,us_sp500
+EXE,Energy,us_sp500
+EXPE,Consumer Discretionary,us_sp500
+EXPD,Industrials,us_sp500
+EXR,Real Estate,us_sp500
+XOM,Energy,us_sp500
+FFIV,Information Technology,us_sp500
+FDS,Financials,us_sp500
+FICO,Information Technology,us_sp500
+FAST,Industrials,us_sp500
+FRT,Real Estate,us_sp500
+FDX,Industrials,us_sp500
+FDXF,Industrials,us_sp500
+FERG,Industrials,us_sp500
+FIS,Financials,us_sp500
+FITB,Financials,us_sp500
+FSLR,Information Technology,us_sp500
+FE,Utilities,us_sp500
+FISV,Financials,us_sp500
+FLEX,Information Technology,us_sp500
+F,Consumer Discretionary,us_sp500
+FTNT,Information Technology,us_sp500
+FTV,Industrials,us_sp500
+FOXA,Communication Services,us_sp500
+FOX,Communication Services,us_sp500
+BEN,Financials,us_sp500
+FCX,Materials,us_sp500
+GRMN,Consumer Discretionary,us_sp500
+IT,Information Technology,us_sp500
+GE,Industrials,us_sp500
+GEHC,Health Care,us_sp500
+GEV,Industrials,us_sp500
+GEN,Information Technology,us_sp500
+GNRC,Industrials,us_sp500
+GD,Industrials,us_sp500
+GIS,Consumer Staples,us_sp500
+GM,Consumer Discretionary,us_sp500
+GPC,Consumer Discretionary,us_sp500
+GILD,Health Care,us_sp500
+GPN,Financials,us_sp500
+GL,Financials,us_sp500
+GDDY,Information Technology,us_sp500
+GS,Financials,us_sp500
+HAL,Energy,us_sp500
+HIG,Financials,us_sp500
+HAS,Consumer Discretionary,us_sp500
+HCA,Health Care,us_sp500
+DOC,Real Estate,us_sp500
+HSIC,Health Care,us_sp500
+HSY,Consumer Staples,us_sp500
+HPE,Information Technology,us_sp500
+HLT,Consumer Discretionary,us_sp500
+HD,Consumer Discretionary,us_sp500
+HONA,Industrials,us_sp500
+HON,Industrials,us_sp500
+HRL,Consumer Staples,us_sp500
+HST,Real Estate,us_sp500
+HWM,Industrials,us_sp500
+HPQ,Information Technology,us_sp500
+HUBB,Industrials,us_sp500
+HUM,Health Care,us_sp500
+HBAN,Financials,us_sp500
+HII,Industrials,us_sp500
+IBM,Information Technology,us_sp500
+IEX,Industrials,us_sp500
+IDXX,Health Care,us_sp500
+ITW,Industrials,us_sp500
+ILMN,Health Care,us_sp500
+INCY,Health Care,us_sp500
+IR,Industrials,us_sp500
+PODD,Health Care,us_sp500
+INTC,Information Technology,us_sp500
+IBKR,Financials,us_sp500
+ICE,Financials,us_sp500
+IFF,Materials,us_sp500
+IP,Materials,us_sp500
+INTU,Information Technology,us_sp500
+ISRG,Health Care,us_sp500
+IVZ,Financials,us_sp500
+INVH,Real Estate,us_sp500
+IQV,Health Care,us_sp500
+IRM,Real Estate,us_sp500
+JBHT,Industrials,us_sp500
+JBL,Information Technology,us_sp500
+JKHY,Financials,us_sp500
+J,Industrials,us_sp500
+JNJ,Health Care,us_sp500
+JCI,Industrials,us_sp500
+JPM,Financials,us_sp500
+KVUE,Consumer Staples,us_sp500
+KDP,Consumer Staples,us_sp500
+KEY,Financials,us_sp500
+KEYS,Information Technology,us_sp500
+KMB,Consumer Staples,us_sp500
+KIM,Real Estate,us_sp500
+KMI,Energy,us_sp500
+KKR,Financials,us_sp500
+KLAC,Information Technology,us_sp500
+KHC,Consumer Staples,us_sp500
+KR,Consumer Staples,us_sp500
+LHX,Industrials,us_sp500
+LH,Health Care,us_sp500
+LRCX,Information Technology,us_sp500
+LVS,Consumer Discretionary,us_sp500
+LDOS,Industrials,us_sp500
+LEN,Consumer Discretionary,us_sp500
+LII,Industrials,us_sp500
+LLY,Health Care,us_sp500
+LIN,Materials,us_sp500
+LYV,Communication Services,us_sp500
+LMT,Industrials,us_sp500
+L,Financials,us_sp500
+LOW,Consumer Discretionary,us_sp500
+LULU,Consumer Discretionary,us_sp500
+LITE,Information Technology,us_sp500
+LYB,Materials,us_sp500
+MTB,Financials,us_sp500
+MPC,Energy,us_sp500
+MAR,Consumer Discretionary,us_sp500
+MRSH,Financials,us_sp500
+MLM,Materials,us_sp500
+MRVL,Information Technology,us_sp500
+MAS,Industrials,us_sp500
+MA,Financials,us_sp500
+MKC,Consumer Staples,us_sp500
+MCD,Consumer Discretionary,us_sp500
+MCK,Health Care,us_sp500
+MDT,Health Care,us_sp500
+MRK,Health Care,us_sp500
+META,Communication Services,us_sp500
+MET,Financials,us_sp500
+MTD,Health Care,us_sp500
+MGM,Consumer Discretionary,us_sp500
+MCHP,Information Technology,us_sp500
+MU,Information Technology,us_sp500
+MSFT,Information Technology,us_sp500
+MAA,Real Estate,us_sp500
+MRNA,Health Care,us_sp500
+MDLZ,Consumer Staples,us_sp500
+MPWR,Information Technology,us_sp500
+MNST,Consumer Staples,us_sp500
+MCO,Financials,us_sp500
+MS,Financials,us_sp500
+MOS,Materials,us_sp500
+MSI,Information Technology,us_sp500
+MSCI,Financials,us_sp500
+NDAQ,Financials,us_sp500
+NTAP,Information Technology,us_sp500
+NFLX,Communication Services,us_sp500
+NEM,Materials,us_sp500
+NWSA,Communication Services,us_sp500
+NWS,Communication Services,us_sp500
+NEE,Utilities,us_sp500
+NKE,Consumer Discretionary,us_sp500
+NI,Utilities,us_sp500
+NDSN,Industrials,us_sp500
+NSC,Industrials,us_sp500
+NTRS,Financials,us_sp500
+NOC,Industrials,us_sp500
+NCLH,Consumer Discretionary,us_sp500
+NRG,Utilities,us_sp500
+NUE,Materials,us_sp500
+NVDA,Information Technology,us_sp500
+NVR,Consumer Discretionary,us_sp500
+NXPI,Information Technology,us_sp500
+ORLY,Consumer Discretionary,us_sp500
+OXY,Energy,us_sp500
+ODFL,Industrials,us_sp500
+OMC,Communication Services,us_sp500
+ON,Information Technology,us_sp500
+OKE,Energy,us_sp500
+ORCL,Information Technology,us_sp500
+OTIS,Industrials,us_sp500
+PCAR,Industrials,us_sp500
+PKG,Materials,us_sp500
+PLTR,Information Technology,us_sp500
+PANW,Information Technology,us_sp500
+PH,Industrials,us_sp500
+PAYX,Industrials,us_sp500
+PYPL,Financials,us_sp500
+PNR,Industrials,us_sp500
+PEP,Consumer Staples,us_sp500
+PFE,Health Care,us_sp500
+PCG,Utilities,us_sp500
+PM,Consumer Staples,us_sp500
+PSX,Energy,us_sp500
+PNW,Utilities,us_sp500
+PNC,Financials,us_sp500
+PPG,Materials,us_sp500
+PPL,Utilities,us_sp500
+PFG,Financials,us_sp500
+PG,Consumer Staples,us_sp500
+PGR,Financials,us_sp500
+PLD,Real Estate,us_sp500
+PRU,Financials,us_sp500
+PEG,Utilities,us_sp500
+PTC,Information Technology,us_sp500
+PSA,Real Estate,us_sp500
+PHM,Consumer Discretionary,us_sp500
+PWR,Industrials,us_sp500
+QCOM,Information Technology,us_sp500
+DGX,Health Care,us_sp500
+Q,Information Technology,us_sp500
+RL,Consumer Discretionary,us_sp500
+RJF,Financials,us_sp500
+RDDT,Communication Services,us_sp500
+RTX,Industrials,us_sp500
+O,Real Estate,us_sp500
+REG,Real Estate,us_sp500
+REGN,Health Care,us_sp500
+RF,Financials,us_sp500
+RSG,Industrials,us_sp500
+RMD,Health Care,us_sp500
+RVTY,Health Care,us_sp500
+HOOD,Financials,us_sp500
+ROK,Industrials,us_sp500
+ROL,Industrials,us_sp500
+ROP,Information Technology,us_sp500
+ROST,Consumer Discretionary,us_sp500
+RCL,Consumer Discretionary,us_sp500
+SPGI,Financials,us_sp500
+CRM,Information Technology,us_sp500
+SNDK,Information Technology,us_sp500
+SBAC,Real Estate,us_sp500
+SLB,Energy,us_sp500
+STX,Information Technology,us_sp500
+SRE,Utilities,us_sp500
+NOW,Information Technology,us_sp500
+SHW,Materials,us_sp500
+SPG,Real Estate,us_sp500
+SKYD,Communication Services,us_sp500
+SWKS,Information Technology,us_sp500
+SJM,Consumer Staples,us_sp500
+SW,Materials,us_sp500
+SNA,Industrials,us_sp500
+SOLV,Health Care,us_sp500
+SO,Utilities,us_sp500
+LUV,Industrials,us_sp500
+SWK,Industrials,us_sp500
+SBUX,Consumer Discretionary,us_sp500
+STT,Financials,us_sp500
+STLD,Materials,us_sp500
+STE,Health Care,us_sp500
+SYK,Health Care,us_sp500
+SMCI,Information Technology,us_sp500
+SYF,Financials,us_sp500
+SNPS,Information Technology,us_sp500
+SYY,Consumer Staples,us_sp500
+TMUS,Communication Services,us_sp500
+TROW,Financials,us_sp500
+TTWO,Communication Services,us_sp500
+TPR,Consumer Discretionary,us_sp500
+TRGP,Energy,us_sp500
+TGT,Consumer Staples,us_sp500
+TEL,Information Technology,us_sp500
+TDY,Information Technology,us_sp500
+TER,Information Technology,us_sp500
+TSLA,Consumer Discretionary,us_sp500
+TXN,Information Technology,us_sp500
+TPL,Energy,us_sp500
+TXT,Industrials,us_sp500
+TMO,Health Care,us_sp500
+TJX,Consumer Discretionary,us_sp500
+TKO,Communication Services,us_sp500
+TSCO,Consumer Discretionary,us_sp500
+TT,Industrials,us_sp500
+TDG,Industrials,us_sp500
+TRV,Financials,us_sp500
+TRMB,Information Technology,us_sp500
+TFC,Financials,us_sp500
+TWLO,Information Technology,us_sp500
+TYL,Information Technology,us_sp500
+TSN,Consumer Staples,us_sp500
+USB,Financials,us_sp500
+UBER,Industrials,us_sp500
+UDR,Real Estate,us_sp500
+ULTA,Consumer Discretionary,us_sp500
+UNP,Industrials,us_sp500
+UAL,Industrials,us_sp500
+UPS,Industrials,us_sp500
+URI,Industrials,us_sp500
+UNH,Health Care,us_sp500
+UHS,Health Care,us_sp500
+VLO,Energy,us_sp500
+VEEV,Health Care,us_sp500
+VTR,Real Estate,us_sp500
+VLTO,Industrials,us_sp500
+VRSN,Information Technology,us_sp500
+VRSK,Industrials,us_sp500
+VZ,Communication Services,us_sp500
+VRTX,Health Care,us_sp500
+VRT,Industrials,us_sp500
+VTRS,Health Care,us_sp500
+VICI,Real Estate,us_sp500
+V,Financials,us_sp500
+VST,Utilities,us_sp500
+VMRK,Real Estate,us_sp500
+VMC,Materials,us_sp500
+VYLR,Consumer Staples,us_sp500
+WRB,Financials,us_sp500
+GWW,Industrials,us_sp500
+WAB,Industrials,us_sp500
+WMT,Consumer Staples,us_sp500
+DIS,Communication Services,us_sp500
+WM,Industrials,us_sp500
+WAT,Health Care,us_sp500
+WEC,Utilities,us_sp500
+WFC,Financials,us_sp500
+WELL,Real Estate,us_sp500
+WST,Health Care,us_sp500
+WDC,Information Technology,us_sp500
+WY,Real Estate,us_sp500
+WSM,Consumer Discretionary,us_sp500
+WMB,Energy,us_sp500
+WTW,Financials,us_sp500
+WDAY,Information Technology,us_sp500
+WYNN,Consumer Discretionary,us_sp500
+XEL,Utilities,us_sp500
+XYL,Industrials,us_sp500
+YUM,Consumer Discretionary,us_sp500
+ZBRA,Information Technology,us_sp500
+ZBH,Health Care,us_sp500
+ZTS,Health Care,us_sp500
+AA,Materials,us_sp400_mid
+AAL,Industrials,us_sp400_mid
+AAON,Industrials,us_sp400_mid
+ACI,Consumer Staples,us_sp400_mid
+ACM,Industrials,us_sp400_mid
+ADC,Real Estate,us_sp400_mid
+AEIS,Information Technology,us_sp400_mid
+AFG,Financials,us_sp400_mid
+AGCO,Industrials,us_sp400_mid
+AGNC,Financials,us_sp400_mid
+AHR,Real Estate,us_sp400_mid
+AIT,Industrials,us_sp400_mid
+ALGM,Information Technology,us_sp400_mid
+ALK,Industrials,us_sp400_mid
+ALLY,Financials,us_sp400_mid
+ALSN,Industrials,us_sp400_mid
+ALV,Consumer Discretionary,us_sp400_mid
+AM,Energy,us_sp400_mid
+AMG,Financials,us_sp400_mid
+AMH,Real Estate,us_sp400_mid
+AMKR,Information Technology,us_sp400_mid
+AN,Consumer Discretionary,us_sp400_mid
+ANF,Consumer Discretionary,us_sp400_mid
+APG,Industrials,us_sp400_mid
+APPF,Information Technology,us_sp400_mid
+AR,Energy,us_sp400_mid
+ARMK,Consumer Discretionary,us_sp400_mid
+ARW,Information Technology,us_sp400_mid
+ARWR,Health Care,us_sp400_mid
+ASB,Financials,us_sp400_mid
+ASH,Materials,us_sp400_mid
+ATI,Industrials,us_sp400_mid
+ATR,Materials,us_sp400_mid
+AVAV,Industrials,us_sp400_mid
+AVNT,Materials,us_sp400_mid
+AVT,Information Technology,us_sp400_mid
+AVTR,Health Care,us_sp400_mid
+AXTA,Materials,us_sp400_mid
+AYI,Industrials,us_sp400_mid
+BAH,Industrials,us_sp400_mid
+BBWI,Consumer Discretionary,us_sp400_mid
+BC,Consumer Discretionary,us_sp400_mid
+BCO,Industrials,us_sp400_mid
+BDC,Information Technology,us_sp400_mid
+BHF,Financials,us_sp400_mid
+BILL,Information Technology,us_sp400_mid
+BIO,Health Care,us_sp400_mid
+BJ,Consumer Staples,us_sp400_mid
+BKH,Utilities,us_sp400_mid
+BMRN,Health Care,us_sp400_mid
+BRKR,Health Care,us_sp400_mid
+BROS,Consumer Discretionary,us_sp400_mid
+BRX,Real Estate,us_sp400_mid
+BSY,Information Technology,us_sp400_mid
+BTSG,Health Care,us_sp400_mid
+BURL,Consumer Discretionary,us_sp400_mid
+BWA,Consumer Discretionary,us_sp400_mid
+BWXT,Industrials,us_sp400_mid
+BYD,Consumer Discretionary,us_sp400_mid
+CACI,Industrials,us_sp400_mid
+CAR,Industrials,us_sp400_mid
+CART,Consumer Staples,us_sp400_mid
+CAVA,Consumer Discretionary,us_sp400_mid
+CBSH,Financials,us_sp400_mid
+CBT,Materials,us_sp400_mid
+CCK,Materials,us_sp400_mid
+CDE,Materials,us_sp400_mid
+CDP,Real Estate,us_sp400_mid
+CELH,Consumer Staples,us_sp400_mid
+CFR,Financials,us_sp400_mid
+CG,Financials,us_sp400_mid
+CGNX,Information Technology,us_sp400_mid
+CHDN,Consumer Discretionary,us_sp400_mid
+CHE,Health Care,us_sp400_mid
+CHH,Consumer Discretionary,us_sp400_mid
+CHRD,Energy,us_sp400_mid
+CHWY,Consumer Discretionary,us_sp400_mid
+CLF,Materials,us_sp400_mid
+CLH,Industrials,us_sp400_mid
+CMC,Materials,us_sp400_mid
+CNH,Industrials,us_sp400_mid
+CNM,Industrials,us_sp400_mid
+CNO,Financials,us_sp400_mid
+CNX,Energy,us_sp400_mid
+COKE,Consumer Staples,us_sp400_mid
+COLB,Financials,us_sp400_mid
+COLM,Consumer Discretionary,us_sp400_mid
+CORT,Health Care,us_sp400_mid
+CR,Industrials,us_sp400_mid
+CRBG,Financials,us_sp400_mid
+CROX,Consumer Discretionary,us_sp400_mid
+CRS,Industrials,us_sp400_mid
+CRUS,Information Technology,us_sp400_mid
+CSL,Industrials,us_sp400_mid
+CTRE,Real Estate,us_sp400_mid
+CTVA,Materials,us_sp400_mid
+CUBE,Real Estate,us_sp400_mid
+CUZ,Real Estate,us_sp400_mid
+CVLT,Information Technology,us_sp400_mid
+CW,Industrials,us_sp400_mid
+CXT,Information Technology,us_sp400_mid
+CYTK,Health Care,us_sp400_mid
+DAR,Consumer Staples,us_sp400_mid
+DBX,Information Technology,us_sp400_mid
+DCI,Industrials,us_sp400_mid
+DINO,Energy,us_sp400_mid
+DKS,Consumer Discretionary,us_sp400_mid
+DLB,Information Technology,us_sp400_mid
+DOCN,Information Technology,us_sp400_mid
+DOCS,Health Care,us_sp400_mid
+DOCU,Information Technology,us_sp400_mid
+DT,Information Technology,us_sp400_mid
+DTM,Energy,us_sp400_mid
+DUOL,Consumer Discretionary,us_sp400_mid
+DY,Industrials,us_sp400_mid
+EAT,Consumer Discretionary,us_sp400_mid
+EEFT,Financials,us_sp400_mid
+EGP,Real Estate,us_sp400_mid
+EHC,Health Care,us_sp400_mid
+ELAN,Health Care,us_sp400_mid
+ELF,Consumer Staples,us_sp400_mid
+ELS,Real Estate,us_sp400_mid
+ENS,Industrials,us_sp400_mid
+ENSG,Health Care,us_sp400_mid
+ENTG,Information Technology,us_sp400_mid
+EPR,Real Estate,us_sp400_mid
+EQH,Financials,us_sp400_mid
+ESAB,Industrials,us_sp400_mid
+ESNT,Financials,us_sp400_mid
+EVR,Financials,us_sp400_mid
+EWBC,Financials,us_sp400_mid
+EXEL,Health Care,us_sp400_mid
+EXLS,Industrials,us_sp400_mid
+EXP,Materials,us_sp400_mid
+EXPO,Industrials,us_sp400_mid
+FAF,Financials,us_sp400_mid
+FBIN,Industrials,us_sp400_mid
+FCFS,Financials,us_sp400_mid
+FCN,Industrials,us_sp400_mid
+FFIN,Financials,us_sp400_mid
+FHI,Financials,us_sp400_mid
+FHN,Financials,us_sp400_mid
+FIVE,Consumer Discretionary,us_sp400_mid
+FLG,Financials,us_sp400_mid
+FLR,Industrials,us_sp400_mid
+FLS,Industrials,us_sp400_mid
+FN,Information Technology,us_sp400_mid
+FNB,Financials,us_sp400_mid
+FND,Consumer Discretionary,us_sp400_mid
+FNF,Financials,us_sp400_mid
+FORM,Information Technology,us_sp400_mid
+FOUR,Financials,us_sp400_mid
+FR,Real Estate,us_sp400_mid
+FTI,Energy,us_sp400_mid
+G,Industrials,us_sp400_mid
+GAP,Consumer Discretionary,us_sp400_mid
+GATX,Industrials,us_sp400_mid
+GBCI,Financials,us_sp400_mid
+GEF,Materials,us_sp400_mid
+GGG,Industrials,us_sp400_mid
+GHC,Consumer Discretionary,us_sp400_mid
+GLPI,Real Estate,us_sp400_mid
+GME,Consumer Discretionary,us_sp400_mid
+GMED,Health Care,us_sp400_mid
+GNTX,Consumer Discretionary,us_sp400_mid
+GPK,Materials,us_sp400_mid
+GWRE,Information Technology,us_sp400_mid
+GXO,Industrials,us_sp400_mid
+H,Consumer Discretionary,us_sp400_mid
+HAE,Health Care,us_sp400_mid
+HALO,Health Care,us_sp400_mid
+HGV,Consumer Discretionary,us_sp400_mid
+HIMS,Health Care,us_sp400_mid
+HL,Materials,us_sp400_mid
+HLI,Financials,us_sp400_mid
+HLNE,Financials,us_sp400_mid
+HOG,Consumer Discretionary,us_sp400_mid
+HOMB,Financials,us_sp400_mid
+HQY,Health Care,us_sp400_mid
+HR,Real Estate,us_sp400_mid
+HRB,Consumer Discretionary,us_sp400_mid
+HUBS,Information Technology,us_sp400_mid
+HWC,Financials,us_sp400_mid
+HXL,Industrials,us_sp400_mid
+IBOC,Financials,us_sp400_mid
+IDA,Utilities,us_sp400_mid
+IDCC,Information Technology,us_sp400_mid
+IESC,Industrials,us_sp400_mid
+INGR,Consumer Staples,us_sp400_mid
+IPGP,Information Technology,us_sp400_mid
+IRT,Real Estate,us_sp400_mid
+ITT,Industrials,us_sp400_mid
+JAZZ,Health Care,us_sp400_mid
+JEF,Financials,us_sp400_mid
+JLL,Real Estate,us_sp400_mid
+KBH,Consumer Discretionary,us_sp400_mid
+KBR,Industrials,us_sp400_mid
+KD,Information Technology,us_sp400_mid
+KEX,Industrials,us_sp400_mid
+KNF,Materials,us_sp400_mid
+KNSL,Financials,us_sp400_mid
+KNX,Industrials,us_sp400_mid
+KRC,Real Estate,us_sp400_mid
+KRG,Real Estate,us_sp400_mid
+KRYS,Health Care,us_sp400_mid
+KTOS,Industrials,us_sp400_mid
+LAD,Consumer Discretionary,us_sp400_mid
+LAMR,Real Estate,us_sp400_mid
+LEA,Consumer Discretionary,us_sp400_mid
+LECO,Industrials,us_sp400_mid
+LFUS,Information Technology,us_sp400_mid
+LIVN,Health Care,us_sp400_mid
+LNTH,Health Care,us_sp400_mid
+LOPE,Consumer Discretionary,us_sp400_mid
+LPX,Industrials,us_sp400_mid
+LSCC,Information Technology,us_sp400_mid
+LSTR,Industrials,us_sp400_mid
+M,Consumer Discretionary,us_sp400_mid
+MANH,Information Technology,us_sp400_mid
+MAT,Consumer Discretionary,us_sp400_mid
+MEDP,Health Care,us_sp400_mid
+MIDD,Industrials,us_sp400_mid
+MKSI,Information Technology,us_sp400_mid
+MLI,Industrials,us_sp400_mid
+MMS,Industrials,us_sp400_mid
+MOG-A,Industrials,us_sp400_mid
+MOH,Health Care,us_sp400_mid
+MORN,Financials,us_sp400_mid
+MP,Materials,us_sp400_mid
+MSA,Industrials,us_sp400_mid
+MSM,Industrials,us_sp400_mid
+MTDR,Energy,us_sp400_mid
+MTG,Financials,us_sp400_mid
+MTN,Consumer Discretionary,us_sp400_mid
+MTSI,Information Technology,us_sp400_mid
+MTZ,Industrials,us_sp400_mid
+MUR,Energy,us_sp400_mid
+MUSA,Consumer Discretionary,us_sp400_mid
+MZTI,Consumer Staples,us_sp400_mid
+NBIX,Health Care,us_sp400_mid
+NEU,Materials,us_sp400_mid
+NFG,Utilities,us_sp400_mid
+NJR,Utilities,us_sp400_mid
+NLY,Financials,us_sp400_mid
+NNN,Real Estate,us_sp400_mid
+NOV,Energy,us_sp400_mid
+NOVT,Information Technology,us_sp400_mid
+NTNX,Information Technology,us_sp400_mid
+NVST,Health Care,us_sp400_mid
+NVT,Industrials,us_sp400_mid
+NWE,Utilities,us_sp400_mid
+NXST,Communication Services,us_sp400_mid
+NXT,Industrials,us_sp400_mid
+NYT,Communication Services,us_sp400_mid
+OC,Industrials,us_sp400_mid
+OGE,Utilities,us_sp400_mid
+OGS,Utilities,us_sp400_mid
+OHI,Real Estate,us_sp400_mid
+OKTA,Information Technology,us_sp400_mid
+OLED,Information Technology,us_sp400_mid
+OLLI,Consumer Discretionary,us_sp400_mid
+ONB,Financials,us_sp400_mid
+ONTO,Information Technology,us_sp400_mid
+OPCH,Health Care,us_sp400_mid
+ORA,Utilities,us_sp400_mid
+ORI,Financials,us_sp400_mid
+OSK,Industrials,us_sp400_mid
+OVV,Energy,us_sp400_mid
+OZK,Financials,us_sp400_mid
+PAG,Consumer Discretionary,us_sp400_mid
+PATH,Information Technology,us_sp400_mid
+PB,Financials,us_sp400_mid
+PBF,Energy,us_sp400_mid
+PCTY,Industrials,us_sp400_mid
+PEGA,Information Technology,us_sp400_mid
+PEN,Health Care,us_sp400_mid
+PFGC,Consumer Staples,us_sp400_mid
+PII,Consumer Discretionary,us_sp400_mid
+PINS,Communication Services,us_sp400_mid
+PK,Real Estate,us_sp400_mid
+PLNT,Consumer Discretionary,us_sp400_mid
+PNFP,Financials,us_sp400_mid
+POR,Utilities,us_sp400_mid
+POST,Consumer Staples,us_sp400_mid
+PPC,Consumer Staples,us_sp400_mid
+PR,Energy,us_sp400_mid
+PRI,Financials,us_sp400_mid
+PSN,Industrials,us_sp400_mid
+PVH,Consumer Discretionary,us_sp400_mid
+QLYS,Information Technology,us_sp400_mid
+R,Industrials,us_sp400_mid
+RBA,Industrials,us_sp400_mid
+RBC,Industrials,us_sp400_mid
+REXR,Real Estate,us_sp400_mid
+RGA,Financials,us_sp400_mid
+RGEN,Health Care,us_sp400_mid
+RGLD,Materials,us_sp400_mid
+RH,Consumer Discretionary,us_sp400_mid
+RLI,Financials,us_sp400_mid
+RMBS,Information Technology,us_sp400_mid
+RNR,Financials,us_sp400_mid
+ROIV,Health Care,us_sp400_mid
+ROKU,Communication Services,us_sp400_mid
+RPM,Materials,us_sp400_mid
+RRC,Energy,us_sp400_mid
+RRX,Industrials,us_sp400_mid
+RS,Materials,us_sp400_mid
+RYAN,Financials,us_sp400_mid
+RYN,Real Estate,us_sp400_mid
+SAIA,Industrials,us_sp400_mid
+SAIC,Industrials,us_sp400_mid
+SANM,Information Technology,us_sp400_mid
+SARO,Industrials,us_sp400_mid
+SBRA,Real Estate,us_sp400_mid
+SCI,Consumer Discretionary,us_sp400_mid
+SEIC,Financials,us_sp400_mid
+SF,Financials,us_sp400_mid
+SFM,Consumer Staples,us_sp400_mid
+SGI,Consumer Discretionary,us_sp400_mid
+SHC,Health Care,us_sp400_mid
+SIGI,Financials,us_sp400_mid
+SIRI,Communication Services,us_sp400_mid
+SITM,Information Technology,us_sp400_mid
+SLAB,Information Technology,us_sp400_mid
+SLGN,Materials,us_sp400_mid
+SLM,Financials,us_sp400_mid
+SMG,Materials,us_sp400_mid
+SMTC,Information Technology,us_sp400_mid
+SN,Consumer Discretionary,us_sp400_mid
+SNX,Information Technology,us_sp400_mid
+SOLS,Materials,us_sp400_mid
+SON,Materials,us_sp400_mid
+SPXC,Industrials,us_sp400_mid
+SR,Utilities,us_sp400_mid
+SSB,Financials,us_sp400_mid
+SSD,Industrials,us_sp400_mid
+ST,Industrials,us_sp400_mid
+STAG,Real Estate,us_sp400_mid
+STRL,Industrials,us_sp400_mid
+STWD,Financials,us_sp400_mid
+SUI,Real Estate,us_sp400_mid
+SWX,Utilities,us_sp400_mid
+SYNA,Information Technology,us_sp400_mid
+TCBI,Financials,us_sp400_mid
+TEX,Industrials,us_sp400_mid
+THC,Health Care,us_sp400_mid
+THG,Financials,us_sp400_mid
+THO,Consumer Discretionary,us_sp400_mid
+TKR,Industrials,us_sp400_mid
+TLN,Utilities,us_sp400_mid
+TNL,Consumer Discretionary,us_sp400_mid
+TOL,Consumer Discretionary,us_sp400_mid
+TOST,Financials,us_sp400_mid
+TREX,Industrials,us_sp400_mid
+TRU,Industrials,us_sp400_mid
+TTC,Industrials,us_sp400_mid
+TTEK,Industrials,us_sp400_mid
+TTMI,Information Technology,us_sp400_mid
+TXNM,Utilities,us_sp400_mid
+TXRH,Consumer Discretionary,us_sp400_mid
+UBSI,Financials,us_sp400_mid
+UFPI,Industrials,us_sp400_mid
+UGI,Utilities,us_sp400_mid
+ULS,Industrials,us_sp400_mid
+UMBF,Financials,us_sp400_mid
+UNM,Financials,us_sp400_mid
+USFD,Consumer Staples,us_sp400_mid
+UTHR,Health Care,us_sp400_mid
+VAL,Energy,us_sp400_mid
+VC,Consumer Discretionary,us_sp400_mid
+VFC,Consumer Discretionary,us_sp400_mid
+VIAV,Information Technology,us_sp400_mid
+VICR,Industrials,us_sp400_mid
+VLY,Financials,us_sp400_mid
+VMI,Industrials,us_sp400_mid
+VNO,Real Estate,us_sp400_mid
+VNOM,Energy,us_sp400_mid
+VNT,Information Technology,us_sp400_mid
+VOYA,Financials,us_sp400_mid
+VVV,Consumer Discretionary,us_sp400_mid
+WAL,Financials,us_sp400_mid
+WCC,Industrials,us_sp400_mid
+WEX,Financials,us_sp400_mid
+WFRD,Energy,us_sp400_mid
+WH,Consumer Discretionary,us_sp400_mid
+WHR,Consumer Discretionary,us_sp400_mid
+WING,Consumer Discretionary,us_sp400_mid
+WLK,Materials,us_sp400_mid
+WMG,Communication Services,us_sp400_mid
+WMS,Industrials,us_sp400_mid
+WPC,Real Estate,us_sp400_mid
+WSO,Industrials,us_sp400_mid
+WTFC,Financials,us_sp400_mid
+WTRG,Utilities,us_sp400_mid
+WTS,Industrials,us_sp400_mid
+WWD,Industrials,us_sp400_mid
+XPO,Industrials,us_sp400_mid
+XRAY,Health Care,us_sp400_mid
+YETI,Consumer Discretionary,us_sp400_mid
+ZION,Financials,us_sp400_mid
+AAMI,Financials,us_sp600_small
+AAP,Consumer Discretionary,us_sp600_small
+AAT,Real Estate,us_sp600_small
+ABCB,Financials,us_sp600_small
+ABG,Consumer Discretionary,us_sp600_small
+ABM,Industrials,us_sp600_small
+ABR,Financials,us_sp600_small
+ACA,Industrials,us_sp600_small
+ACAD,Health Care,us_sp600_small
+ACHC,Health Care,us_sp600_small
+ACIW,Information Technology,us_sp600_small
+ACLS,Information Technology,us_sp600_small
+ACMR,Information Technology,us_sp600_small
+ACT,Financials,us_sp600_small
+ADAM,Real Estate,us_sp600_small
+ADEA,Information Technology,us_sp600_small
+ADIG,Information Technology,us_sp600_small
+ADMA,Health Care,us_sp600_small
+ADNT,Consumer Discretionary,us_sp600_small
+ADT,Consumer Discretionary,us_sp600_small
+ADUS,Health Care,us_sp600_small
+AEO,Consumer Discretionary,us_sp600_small
+AESI,Energy,us_sp600_small
+AGNT,Real Estate,us_sp600_small
+AGO,Financials,us_sp600_small
+AGX,Industrials,us_sp600_small
+AGYS,Information Technology,us_sp600_small
+AHCO,Health Care,us_sp600_small
+AIN,Industrials,us_sp600_small
+AIR,Industrials,us_sp600_small
+AKR,Real Estate,us_sp600_small
+ALG,Industrials,us_sp600_small
+ALGT,Industrials,us_sp600_small
+ALHC,Health Care,us_sp600_small
+ALKS,Health Care,us_sp600_small
+ALRM,Financials,us_sp600_small
+AMN,Health Care,us_sp600_small
+AMPH,Health Care,us_sp600_small
+AMR,Materials,us_sp600_small
+AMRX,Health Care,us_sp600_small
+AMSF,Financials,us_sp600_small
+AMTM,Industrials,us_sp600_small
+ANDE,Consumer Staples,us_sp600_small
+ANIP,Health Care,us_sp600_small
+AORT,Health Care,us_sp600_small
+AOSL,Information Technology,us_sp600_small
+APAM,Financials,us_sp600_small
+APLE,Real Estate,us_sp600_small
+APOG,Industrials,us_sp600_small
+ARCB,Industrials,us_sp600_small
+ARLO,Information Technology,us_sp600_small
+AROC,Energy,us_sp600_small
+ARR,Real Estate,us_sp600_small
+ASO,Consumer Discretionary,us_sp600_small
+ASTE,Industrials,us_sp600_small
+ASTH,Health Care,us_sp600_small
+ATEN,Information Technology,us_sp600_small
+ATMU,Industrials,us_sp600_small
+AUB,Financials,us_sp600_small
+AVA,Utilities,us_sp600_small
+AWI,Industrials,us_sp600_small
+AWR,Utilities,us_sp600_small
+AX,Financials,us_sp600_small
+AZTA,Health Care,us_sp600_small
+AZZ,Industrials,us_sp600_small
+BANC,Financials,us_sp600_small
+BANF,Financials,us_sp600_small
+BANR,Financials,us_sp600_small
+BBT,Financials,us_sp600_small
+BCC,Industrials,us_sp600_small
+BCPC,Materials,us_sp600_small
+BFAM,Consumer Discretionary,us_sp600_small
+BFH,Financials,us_sp600_small
+BFS,Real Estate,us_sp600_small
+BGC,Financials,us_sp600_small
+BHE,Information Technology,us_sp600_small
+BJRI,Consumer Discretionary,us_sp600_small
+BKE,Consumer Discretionary,us_sp600_small
+BKU,Financials,us_sp600_small
+BL,Information Technology,us_sp600_small
+BLFS,Health Care,us_sp600_small
+BLKB,Information Technology,us_sp600_small
+BMI,Information Technology,us_sp600_small
+BNL,Real Estate,us_sp600_small
+BOH,Financials,us_sp600_small
+BOOT,Consumer Discretionary,us_sp600_small
+BOX,Information Technology,us_sp600_small
+BRC,Industrials,us_sp600_small
+BTU,Energy,us_sp600_small
+BXMT,Financials,us_sp600_small
+CACC,Financials,us_sp600_small
+CAG,Consumer Staples,us_sp600_small
+CAKE,Consumer Discretionary,us_sp600_small
+CALM,Consumer Staples,us_sp600_small
+CALX,Information Technology,us_sp600_small
+CALY,Consumer Discretionary,us_sp600_small
+CARG,Communication Services,us_sp600_small
+CASH,Financials,us_sp600_small
+CATY,Financials,us_sp600_small
+CBRL,Consumer Discretionary,us_sp600_small
+CBU,Financials,us_sp600_small
+CC,Materials,us_sp600_small
+CCOI,Communication Services,us_sp600_small
+CCS,Consumer Discretionary,us_sp600_small
+CE,Materials,us_sp600_small
+CENT,Consumer Staples,us_sp600_small
+CENTA,Consumer Staples,us_sp600_small
+CENX,Materials,us_sp600_small
+CERT,Health Care,us_sp600_small
+CFFN,Financials,us_sp600_small
+CHCO,Financials,us_sp600_small
+CHEF,Consumer Staples,us_sp600_small
+CLSK,Information Technology,us_sp600_small
+CNK,Communication Services,us_sp600_small
+CNMD,Health Care,us_sp600_small
+CNR,Energy,us_sp600_small
+CNS,Financials,us_sp600_small
+CNXC,Industrials,us_sp600_small
+CNXN,Information Technology,us_sp600_small
+COCO,Consumer Staples,us_sp600_small
+COHU,Information Technology,us_sp600_small
+COLL,Health Care,us_sp600_small
+CON,Health Care,us_sp600_small
+CORT,Health Care,us_sp600_small
+COTY,Consumer Staples,us_sp600_small
+CPB,Consumer Staples,us_sp600_small
+CPF,Financials,us_sp600_small
+CPK,Utilities,us_sp600_small
+CRC,Energy,us_sp600_small
+CRGY,Energy,us_sp600_small
+CRI,Consumer Discretionary,us_sp600_small
+CRK,Energy,us_sp600_small
+CRSR,Information Technology,us_sp600_small
+CRVL,Health Care,us_sp600_small
+CSR,Real Estate,us_sp600_small
+CSW,Industrials,us_sp600_small
+CTS,Information Technology,us_sp600_small
+CUBI,Financials,us_sp600_small
+CURB,Real Estate,us_sp600_small
+CVBF,Financials,us_sp600_small
+CVCO,Consumer Discretionary,us_sp600_small
+CVI,Energy,us_sp600_small
+CVSA,Consumer Discretionary,us_sp600_small
+CWEN,Utilities,us_sp600_small
+CWEN-A,Utilities,us_sp600_small
+CWK,Real Estate,us_sp600_small
+CWST,Industrials,us_sp600_small
+CWT,Utilities,us_sp600_small
+CXM,Information Technology,us_sp600_small
+CXW,Industrials,us_sp600_small
+CZR,Consumer Discretionary,us_sp600_small
+DAN,Consumer Discretionary,us_sp600_small
+DAVE,Financials,us_sp600_small
+DBD,Information Technology,us_sp600_small
+DCH,Consumer Discretionary,us_sp600_small
+DCOM,Financials,us_sp600_small
+DEA,Real Estate,us_sp600_small
+DEI,Real Estate,us_sp600_small
+DFH,Consumer Discretionary,us_sp600_small
+DFIN,Financials,us_sp600_small
+DGII,Information Technology,us_sp600_small
+DIOD,Information Technology,us_sp600_small
+DLX,Industrials,us_sp600_small
+DMC,Consumer Staples,us_sp600_small
+DNOW,Industrials,us_sp600_small
+DORM,Consumer Discretionary,us_sp600_small
+DRH,Real Estate,us_sp600_small
+DV,Communication Services,us_sp600_small
+DXC,Information Technology,us_sp600_small
+DXPE,Industrials,us_sp600_small
+EAT,Consumer Discretionary,us_sp600_small
+EBC,Financials,us_sp600_small
+ECG,Industrials,us_sp600_small
+ECPG,Financials,us_sp600_small
+EFC,Financials,us_sp600_small
+EFOR,Information Technology,us_sp600_small
+EGBN,Financials,us_sp600_small
+EIG,Financials,us_sp600_small
+EMN,Materials,us_sp600_small
+ENOV,Health Care,us_sp600_small
+ENPH,Information Technology,us_sp600_small
+ENR,Consumer Staples,us_sp600_small
+ENVA,Financials,us_sp600_small
+EPAC,Industrials,us_sp600_small
+EPAM,Information Technology,us_sp600_small
+EPC,Consumer Staples,us_sp600_small
+EPRT,Real Estate,us_sp600_small
+ESE,Industrials,us_sp600_small
+ESI,Materials,us_sp600_small
+ETSY,Consumer Discretionary,us_sp600_small
+EVTC,Financials,us_sp600_small
+EXTR,Information Technology,us_sp600_small
+EYE,Consumer Discretionary,us_sp600_small
+EZPW,Financials,us_sp600_small
+FA,Industrials,us_sp600_small
+FBK,Financials,us_sp600_small
+FBNC,Financials,us_sp600_small
+FBP,Financials,us_sp600_small
+FBRT,Real Estate,us_sp600_small
+FCF,Financials,us_sp600_small
+FCPT,Real Estate,us_sp600_small
+FELE,Industrials,us_sp600_small
+FFBC,Financials,us_sp600_small
+FG,Financials,us_sp600_small
+FHB,Financials,us_sp600_small
+FIBK,Financials,us_sp600_small
+FIVN,Information Technology,us_sp600_small
+FIZZ,Consumer Staples,us_sp600_small
+FLO,Consumer Staples,us_sp600_small
+FMC,Materials,us_sp600_small
+FORM,Information Technology,us_sp600_small
+FOXF,Consumer Discretionary,us_sp600_small
+FRPT,Consumer Staples,us_sp600_small
+FSS,Industrials,us_sp600_small
+FTDR,Consumer Discretionary,us_sp600_small
+FTRE,Health Care,us_sp600_small
+FUL,Materials,us_sp600_small
+FULT,Financials,us_sp600_small
+FUN,Consumer Discretionary,us_sp600_small
+GBX,Industrials,us_sp600_small
+GEO,Industrials,us_sp600_small
+GFF,Industrials,us_sp600_small
+GIII,Consumer Discretionary,us_sp600_small
+GKOS,Health Care,us_sp600_small
+GNL,Real Estate,us_sp600_small
+GNW,Financials,us_sp600_small
+GO,Consumer Staples,us_sp600_small
+GOLF,Consumer Discretionary,us_sp600_small
+GPI,Consumer Discretionary,us_sp600_small
+GPOR,Energy,us_sp600_small
+GRBK,Consumer Discretionary,us_sp600_small
+GSHD,Financials,us_sp600_small
+GT,Consumer Discretionary,us_sp600_small
+GTES,Industrials,us_sp600_small
+GTM,Communication Services,us_sp600_small
+GTY,Real Estate,us_sp600_small
+GVA,Industrials,us_sp600_small
+HAFC,Financials,us_sp600_small
+HASI,Financials,us_sp600_small
+HAYW,Industrials,us_sp600_small
+HCC,Materials,us_sp600_small
+HCI,Financials,us_sp600_small
+HCSG,Industrials,us_sp600_small
+HE,Utilities,us_sp600_small
+HFWA,Financials,us_sp600_small
+HIW,Real Estate,us_sp600_small
+HLIT,Information Technology,us_sp600_small
+HLX,Energy,us_sp600_small
+HMN,Financials,us_sp600_small
+HNI,Industrials,us_sp600_small
+HOPE,Financials,us_sp600_small
+HP,Energy,us_sp600_small
+HRMY,Health Care,us_sp600_small
+HSTM,Health Care,us_sp600_small
+HTH,Financials,us_sp600_small
+HTLD,Industrials,us_sp600_small
+HTO,Utilities,us_sp600_small
+HUBG,Industrials,us_sp600_small
+HWKN,Materials,us_sp600_small
+HZO,Consumer Discretionary,us_sp600_small
+IART,Health Care,us_sp600_small
+IBP,Consumer Discretionary,us_sp600_small
+ICHR,Information Technology,us_sp600_small
+ICUI,Health Care,us_sp600_small
+IIPR,Real Estate,us_sp600_small
+INDB,Financials,us_sp600_small
+INDV,Health Care,us_sp600_small
+INSP,Health Care,us_sp600_small
+INSW,Energy,us_sp600_small
+INVA,Health Care,us_sp600_small
+INVX,Energy,us_sp600_small
+IOSP,Materials,us_sp600_small
+IPAR,Consumer Staples,us_sp600_small
+IRDM,Communication Services,us_sp600_small
+ITGR,Health Care,us_sp600_small
+ITRI,Information Technology,us_sp600_small
+IVT,Real Estate,us_sp600_small
+JBGS,Real Estate,us_sp600_small
+JBLU,Industrials,us_sp600_small
+JBSS,Consumer Staples,us_sp600_small
+JBTM,Industrials,us_sp600_small
+JJSF,Consumer Staples,us_sp600_small
+JOE,Real Estate,us_sp600_small
+JXN,Financials,us_sp600_small
+KAI,Industrials,us_sp600_small
+KALU,Materials,us_sp600_small
+KFY,Industrials,us_sp600_small
+KGS,Energy,us_sp600_small
+KLIC,Information Technology,us_sp600_small
+KMPR,Financials,us_sp600_small
+KMT,Industrials,us_sp600_small
+KMX,Consumer Discretionary,us_sp600_small
+KN,Information Technology,us_sp600_small
+KNTK,Energy,us_sp600_small
+KOP,Materials,us_sp600_small
+KRMN,Industrials,us_sp600_small
+KSS,Consumer Discretionary,us_sp600_small
+KTB,Consumer Discretionary,us_sp600_small
+KWR,Materials,us_sp600_small
+LAUR,Consumer Discretionary,us_sp600_small
+LAZ,Financials,us_sp600_small
+LBRT,Energy,us_sp600_small
+LCII,Consumer Discretionary,us_sp600_small
+LEG,Consumer Discretionary,us_sp600_small
+LEU,Energy,us_sp600_small
+LFST,Health Care,us_sp600_small
+LGIH,Consumer Discretionary,us_sp600_small
+LIF,Information Technology,us_sp600_small
+LGND,Health Care,us_sp600_small
+LKFN,Financials,us_sp600_small
+LKQ,Consumer Discretionary,us_sp600_small
+LMAT,Health Care,us_sp600_small
+LNC,Financials,us_sp600_small
+LNN,Materials,us_sp600_small
+LPG,Energy,us_sp600_small
+LQDA,Health Care,us_sp600_small
+LQDT,Industrials,us_sp600_small
+LRN,Consumer Discretionary,us_sp600_small
+LTC,Real Estate,us_sp600_small
+LTH,Consumer Discretionary,us_sp600_small
+LUMN,Communication Services,us_sp600_small
+LW,Consumer Staples,us_sp600_small
+LXP,Real Estate,us_sp600_small
+LYFT,Industrials,us_sp600_small
+LZ,Industrials,us_sp600_small
+LZB,Consumer Discretionary,us_sp600_small
+MAC,Real Estate,us_sp600_small
+MAN,Industrials,us_sp600_small
+MARA,Information Technology,us_sp600_small
+MATW,Consumer Discretionary,us_sp600_small
+MATX,Industrials,us_sp600_small
+MBC,Industrials,us_sp600_small
+MBGL,Industrials,us_sp600_small
+MBIN,Financials,us_sp600_small
+MC,Financials,us_sp600_small
+MCRI,Consumer Discretionary,us_sp600_small
+MCY,Financials,us_sp600_small
+MD,Health Care,us_sp600_small
+MDU,Utilities,us_sp600_small
+MFP,Industrials,us_sp600_small
+MGEE,Utilities,us_sp600_small
+MGY,Energy,us_sp600_small
+MHK,Consumer Discretionary,us_sp600_small
+MHO,Consumer Discretionary,us_sp600_small
+MIR,Information Technology,us_sp600_small
+MKTX,Financials,us_sp600_small
+MLKN,Industrials,us_sp600_small
+MMI,Real Estate,us_sp600_small
+MMSI,Health Care,us_sp600_small
+MPT,Real Estate,us_sp600_small
+MRCY,Industrials,us_sp600_small
+MRP,Real Estate,us_sp600_small
+MRTN,Industrials,us_sp600_small
+MSEX,Utilities,us_sp600_small
+MSGS,Communication Services,us_sp600_small
+MTCH,Communication Services,us_sp600_small
+MTH,Consumer Discretionary,us_sp600_small
+MTRN,Materials,us_sp600_small
+MTUS,Materials,us_sp600_small
+MTX,Materials,us_sp600_small
+MWA,Industrials,us_sp600_small
+MXL,Information Technology,us_sp600_small
+MYRG,Industrials,us_sp600_small
+NABL,Information Technology,us_sp600_small
+NATL,Financials,us_sp600_small
+NAVI,Financials,us_sp600_small
+NBHC,Financials,us_sp600_small
+NBTB,Financials,us_sp600_small
+NE,Energy,us_sp600_small
+NEO,Health Care,us_sp600_small
+NEOG,Health Care,us_sp600_small
+NGVT,Materials,us_sp600_small
+NHC,Health Care,us_sp600_small
+NHI,Real Estate,us_sp600_small
+NIC,Financials,us_sp600_small
+NMIH,Financials,us_sp600_small
+NOG,Energy,us_sp600_small
+NPK,Industrials,us_sp600_small
+NPO,Industrials,us_sp600_small
+NSIT,Industrials,us_sp600_small
+NSP,Industrials,us_sp600_small
+NSSC,Information Technology,us_sp600_small
+NTCT,Information Technology,us_sp600_small
+NTST,Real Estate,us_sp600_small
+NWBI,Financials,us_sp600_small
+NWL,Consumer Discretionary,us_sp600_small
+NWN,Utilities,us_sp600_small
+NX,Industrials,us_sp600_small
+NXRT,Real Estate,us_sp600_small
+OFG,Financials,us_sp600_small
+OGN,Health Care,us_sp600_small
+OI,Materials,us_sp600_small
+OII,Energy,us_sp600_small
+OMCL,Health Care,us_sp600_small
+OPLN,Industrials,us_sp600_small
+OSIS,Information Technology,us_sp600_small
+OSW,Consumer Discretionary,us_sp600_small
+OTTR,Utilities,us_sp600_small
+OUT,Real Estate,us_sp600_small
+PAHC,Health Care,us_sp600_small
+PARR,Energy,us_sp600_small
+PAYC,Industrials,us_sp600_small
+PAYO,Financials,us_sp600_small
+PATK,Consumer Discretionary,us_sp600_small
+PBH,Health Care,us_sp600_small
+PBI,Industrials,us_sp600_small
+PCRX,Health Care,us_sp600_small
+PDFS,Information Technology,us_sp600_small
+PEB,Real Estate,us_sp600_small
+PECO,Real Estate,us_sp600_small
+PENG,Information Technology,us_sp600_small
+PENN,Consumer Discretionary,us_sp600_small
+PFBC,Financials,us_sp600_small
+PFS,Financials,us_sp600_small
+PGNY,Health Care,us_sp600_small
+PHIN,Consumer Discretionary,us_sp600_small
+PI,Information Technology,us_sp600_small
+PIPR,Financials,us_sp600_small
+PJT,Financials,us_sp600_small
+PLAB,Information Technology,us_sp600_small
+PLMR,Financials,us_sp600_small
+PLUS,Information Technology,us_sp600_small
+PLXS,Information Technology,us_sp600_small
+PMT,Real Estate,us_sp600_small
+POOL,Consumer Discretionary,us_sp600_small
+POWI,Information Technology,us_sp600_small
+POWL,Industrials,us_sp600_small
+PPLI,Communication Services,us_sp600_small
+PRDO,Consumer Discretionary,us_sp600_small
+PRG,Financials,us_sp600_small
+PRGO,Health Care,us_sp600_small
+PRGS,Information Technology,us_sp600_small
+PRIM,Industrials,us_sp600_small
+PRK,Financials,us_sp600_small
+PRKS,Consumer Discretionary,us_sp600_small
+PRLB,Industrials,us_sp600_small
+PRSU,Consumer Discretionary,us_sp600_small
+PRVA,Health Care,us_sp600_small
+PSMT,Consumer Staples,us_sp600_small
+PTCT,Health Care,us_sp600_small
+PTEN,Energy,us_sp600_small
+PTGX,Health Care,us_sp600_small
+PTON,Consumer Discretionary,us_sp600_small
+PZZA,Consumer Discretionary,us_sp600_small
+QDEL,Health Care,us_sp600_small
+QNST,Communication Services,us_sp600_small
+QRVO,Information Technology,us_sp600_small
+QTWO,Information Technology,us_sp600_small
+RAMP,Information Technology,us_sp600_small
+RAL,Information Technology,us_sp600_small
+RCUS,Health Care,us_sp600_small
+RDN,Financials,us_sp600_small
+RDNT,Health Care,us_sp600_small
+RELY,Financials,us_sp600_small
+RES,Energy,us_sp600_small
+REYN,Consumer Staples,us_sp600_small
+REX,Energy,us_sp600_small
+REZI,Industrials,us_sp600_small
+RHI,Industrials,us_sp600_small
+RHP,Real Estate,us_sp600_small
+RITM,Financials,us_sp600_small
+RNG,Information Technology,us_sp600_small
+RNST,Financials,us_sp600_small
+ROAD,Industrials,us_sp600_small
+ROCK,Industrials,us_sp600_small
+ROG,Information Technology,us_sp600_small
+RRR,Consumer Discretionary,us_sp600_small
+RSI,Consumer Discretionary,us_sp600_small
+RUN,Industrials,us_sp600_small
+RUSHA,Industrials,us_sp600_small
+RXO,Industrials,us_sp600_small
+SAFE,Real Estate,us_sp600_small
+SABR,Consumer Discretionary,us_sp600_small
+SAFT,Financials,us_sp600_small
+SAH,Consumer Discretionary,us_sp600_small
+SBCF,Financials,us_sp600_small
+SBH,Consumer Discretionary,us_sp600_small
+SBSI,Financials,us_sp600_small
+SCHL,Consumer Discretionary,us_sp600_small
+SCL,Materials,us_sp600_small
+SCSC,Information Technology,us_sp600_small
+SDGR,Health Care,us_sp600_small
+SEDG,Information Technology,us_sp600_small
+SEI,Energy,us_sp600_small
+SEZL,Financials,us_sp600_small
+SFBS,Financials,us_sp600_small
+SFNC,Financials,us_sp600_small
+SHAK,Consumer Discretionary,us_sp600_small
+SHEN,Communication Services,us_sp600_small
+SHO,Real Estate,us_sp600_small
+SHOO,Consumer Discretionary,us_sp600_small
+SIG,Consumer Discretionary,us_sp600_small
+SKT,Real Estate,us_sp600_small
+SKY,Consumer Discretionary,us_sp600_small
+SKYW,Industrials,us_sp600_small
+SLG,Real Estate,us_sp600_small
+SLVM,Materials,us_sp600_small
+SM,Energy,us_sp600_small
+SMP,Consumer Discretionary,us_sp600_small
+SMPL,Consumer Staples,us_sp600_small
+SNDR,Industrials,us_sp600_small
+SNEX,Financials,us_sp600_small
+SONO,Consumer Discretionary,us_sp600_small
+SPHR,Communication Services,us_sp600_small
+SPNT,Financials,us_sp600_small
+SPSC,Information Technology,us_sp600_small
+SRPT,Health Care,us_sp600_small
+STAA,Health Care,us_sp600_small
+STBA,Financials,us_sp600_small
+STC,Financials,us_sp600_small
+STEP,Financials,us_sp600_small
+STRA,Consumer Discretionary,us_sp600_small
+SUPN,Health Care,us_sp600_small
+SXI,Industrials,us_sp600_small
+SXT,Materials,us_sp600_small
+TALO,Energy,us_sp600_small
+TBBK,Financials,us_sp600_small
+TDC,Information Technology,us_sp600_small
+TDS,Communication Services,us_sp600_small
+TDW,Energy,us_sp600_small
+TFIN,Financials,us_sp600_small
+TFX,Health Care,us_sp600_small
+TGTX,Health Care,us_sp600_small
+THRM,Consumer Discretionary,us_sp600_small
+TILE,Industrials,us_sp600_small
+TMDX,Health Care,us_sp600_small
+TMP,Financials,us_sp600_small
+TNC,Industrials,us_sp600_small
+TNDM,Health Care,us_sp600_small
+TPC,Industrials,us_sp600_small
+TR,Consumer Staples,us_sp600_small
+TRIP,Communication Services,us_sp600_small
+TRMK,Financials,us_sp600_small
+TRN,Industrials,us_sp600_small
+TRNO,Real Estate,us_sp600_small
+TRST,Financials,us_sp600_small
+TRUP,Financials,us_sp600_small
+UA,Consumer Discretionary,us_sp600_small
+UAA,Consumer Discretionary,us_sp600_small
+UCB,Financials,us_sp600_small
+UCTT,Information Technology,us_sp600_small
+UE,Real Estate,us_sp600_small
+UFCS,Financials,us_sp600_small
+UFPT,Health Care,us_sp600_small
+UNF,Industrials,us_sp600_small
+UNFI,Consumer Staples,us_sp600_small
+UNIT,Communication Services,us_sp600_small
+UPBD,Consumer Discretionary,us_sp600_small
+UPWK,Industrials,us_sp600_small
+URBN,Consumer Discretionary,us_sp600_small
+USLM,Materials,us_sp600_small
+USPH,Health Care,us_sp600_small
+UTI,Consumer Discretionary,us_sp600_small
+UTL,Utilities,us_sp600_small
+UVV,Consumer Staples,us_sp600_small
+VAC,Consumer Discretionary,us_sp600_small
+VCEL,Health Care,us_sp600_small
+VCTR,Financials,us_sp600_small
+VCYT,Health Care,us_sp600_small
+VECO,Information Technology,us_sp600_small
+VGNT,Consumer Discretionary,us_sp600_small
+VIR,Health Care,us_sp600_small
+VIRT,Financials,us_sp600_small
+VRRM,Industrials,us_sp600_small
+VRTS,Financials,us_sp600_small
+VSAT,Information Technology,us_sp600_small
+VSEC,Industrials,us_sp600_small
+VSH,Information Technology,us_sp600_small
+VSNT,Communication Services,us_sp600_small
+VSTS,Industrials,us_sp600_small
+VSXY,Consumer Discretionary,us_sp600_small
+VTOL,Energy,us_sp600_small
+VVX,Industrials,us_sp600_small
+VYX,Information Technology,us_sp600_small
+WABC,Financials,us_sp600_small
+WAFD,Financials,us_sp600_small
+WAY,Health Care,us_sp600_small
+WD,Financials,us_sp600_small
+WDFC,Consumer Staples,us_sp600_small
+WEN,Consumer Discretionary,us_sp600_small
+WERN,Industrials,us_sp600_small
+WGO,Consumer Discretionary,us_sp600_small
+WHD,Energy,us_sp600_small
+WINA,Consumer Discretionary,us_sp600_small
+WKC,Energy,us_sp600_small
+WLY,Communication Services,us_sp600_small
+WOR,Industrials,us_sp600_small
+WRBY,Consumer Discretionary,us_sp600_small
+WRLD,Financials,us_sp600_small
+WS,Materials,us_sp600_small
+WSBC,Financials,us_sp600_small
+WSC,Industrials,us_sp600_small
+WSFS,Financials,us_sp600_small
+WT,Financials,us_sp600_small
+WU,Financials,us_sp600_small
+WWW,Consumer Discretionary,us_sp600_small
+XHR,Real Estate,us_sp600_small
+XNCR,Health Care,us_sp600_small
+XPEL,Consumer Discretionary,us_sp600_small
+YELP,Communication Services,us_sp600_small
+YOU,Information Technology,us_sp600_small
+ZD,Communication Services,us_sp600_small
+ZWS,Industrials,us_sp600_small

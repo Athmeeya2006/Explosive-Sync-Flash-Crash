@@ -6,13 +6,13 @@
 <title>Flash Crash Propagation, herding oscillators on a trader network</title>
 <style>
   :root{
-    --bg:#04050a;
-    --panel:#080a12;
-    --panel-2:#0c0f1a;
-    --line:#161b2b;
-    --line-2:#222941;
-    --dim:#9fabc4;
-    --mid:#ccd6e8;
+    --bg:#000000;
+    --panel:#000000;
+    --panel-2:#000000;
+    --line:#444444;
+    --line-2:#555555;
+    --dim:#ffffff;
+    --mid:#ffffff;
     --fg:#ffffff;
     --hot:#ff2e63;      /* selling  */
     --cold:#00e0ff;     /* buying   */
@@ -35,10 +35,10 @@
   .wrap{max-width:2000px; margin:0 auto; padding:18px 22px 34px;}
 
   header{display:flex; align-items:flex-start; justify-content:space-between; gap:18px; flex-wrap:wrap; margin-bottom:12px;}
-  h1{font-size:22px; font-weight:600; margin:0 0 3px; letter-spacing:.02em; color:#eaf0ff;}
-  .sub{color:#c8d2e4; font-size:14px; margin:0; max-width:78ch;}
-  .eq{color:var(--mid); font-size:11px; margin:6px 0 0; white-space:nowrap; overflow-x:auto; max-width:100%;}
-  .eq b{color:var(--cold); font-weight:400;}
+  h1{font-size:22px; font-weight:600; margin:0 0 3px; letter-spacing:.02em; color:#ffffff;}
+  .sub{color:#ffffff; font-size:14px; margin:0; max-width:78ch;}
+  .eq{color:#ffffff; font-size:11px; margin:6px 0 0; white-space:nowrap; overflow-x:auto; max-width:100%;}
+  .eq b{color:#ffffff; font-weight:400;}
 
   .stagebox{
     min-width:280px; border:1px solid var(--line-2); border-radius:6px; padding:9px 13px;
@@ -66,7 +66,7 @@
 
   .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top:8px;}
   .stat{background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:5px 7px;}
-  .stat .k{font-size:11.5px; color:#a9b5cc; letter-spacing:.07em;}
+  .stat .k{font-size:11.5px; color:#ffffff; letter-spacing:.07em;}
   .stat .v{font-size:19px; font-variant-numeric:tabular-nums; margin-top:1px;}
 
   .controls{margin-top:12px; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:11px 13px;}
@@ -80,7 +80,7 @@
     background:var(--panel-2); color:var(--fg); border:1px solid var(--line-2);
     padding:9px 14px; border-radius:4px; cursor:pointer; transition:background .12s,border-color .12s;
   }
-  button:hover{background:#141a2b; border-color:#39435f;}
+  button:hover{background:#1a1a1a; border-color:#777777;}
   button:focus-visible{outline:2px solid var(--cold); outline-offset:1px;}
   button.on{background:rgba(0,224,255,.13); border-color:var(--cold); color:#bff4ff;}
   button.danger{border-color:#5d2138; color:#ffb3c6;}
@@ -93,51 +93,51 @@
   .ph.active{opacity:1;}
   .ph .sw{width:9px; height:9px; border-radius:2px; margin-top:3px;}
   .ph .nm{font-size:13px; font-weight:600; letter-spacing:.05em;}
-  .ph .ds{font-size:12.5px; color:#b6c2d8; line-height:1.35;}
+  .ph .ds{font-size:12.5px; color:#ffffff; line-height:1.35;}
 
   .ins-empty{color:var(--dim); font-size:12px; margin:0; line-height:1.5;}
   .ins-role{font-size:15px; font-weight:600; letter-spacing:.06em; margin-bottom:5px;}
-  .ins-why{color:#c8d2e4; font-size:12.5px; line-height:1.45; margin:0 0 8px;}
+  .ins-why{color:#ffffff; font-size:12.5px; line-height:1.45; margin:0 0 8px;}
   .ins-grid{display:grid; grid-template-columns:auto 1fr; gap:3px 10px; font-size:12px;
             font-variant-numeric:tabular-nums; margin-bottom:8px;}
-  .ins-grid .k{color:#a9b5cc;}
+  .ins-grid .k{color:#ffffff;}
   .ins-grid .v{color:var(--fg);}
-  .ins-eq{background:#05070e; border:1px solid var(--line-2); border-radius:4px; padding:10px 11px;
-          font-size:12.5px; line-height:1.8; color:#dbe4f5; overflow-x:auto; white-space:nowrap;}
-  .ins-eq b{color:var(--cold); font-weight:400;}
-  .ins-eq i{color:var(--amber); font-style:normal;}
+  .ins-eq{background:#000000; border:1px solid var(--line-2); border-radius:4px; padding:10px 11px;
+          font-size:12.5px; line-height:1.8; color:#ffffff; overflow-x:auto; white-space:nowrap;}
+  .ins-eq b{color:#ffffff; font-weight:400;}
+  .ins-eq i{color:#ffffff; font-style:normal;}
   .ins-verdict{margin-top:9px; padding:8px 10px; border-radius:4px; font-size:12.5px; line-height:1.55; font-weight:600;}
   .legend{display:flex; align-items:center; gap:11px; margin-top:9px; font-size:12px; color:var(--dim);}
   .ramp{flex:1; height:7px; border-radius:2px;
         background:linear-gradient(90deg,#ff2e63,#7a2440,#1b2438,#1d5f77,#00e0ff);}
-  footer{margin-top:22px; color:#b6c2d8; font-size:12.5px; border-top:1px solid var(--line); padding-top:10px;}
+  footer{margin-top:22px; color:#ffffff; font-size:12.5px; border-top:1px solid var(--line); padding-top:10px;}
   code{color:var(--mid);}
   .explain{margin-top:26px; border-top:1px solid var(--line-2); padding-top:20px;}
   .explain h2{font-size:19px; margin:0 0 16px; color:#ffffff; font-weight:600;}
   .ex-block{margin-bottom:24px; max-width:118ch;}
-  .ex-block h4{font-size:14.5px; margin:0 0 8px; color:#8fe9ff; font-weight:600;}
-  .ex-block p, .ex-block li{font-size:13.5px; line-height:1.72; color:#d6dfef; margin:0 0 9px;}
+  .ex-block h4{font-size:14.5px; margin:0 0 8px; color:#ffffff; font-weight:600;}
+  .ex-block p, .ex-block li{font-size:13.5px; line-height:1.72; color:#ffffff; margin:0 0 9px;}
   .ex-block ul, .ex-block ol{margin:0 0 9px; padding-left:20px;}
   .ex-block li{margin-bottom:6px;}
   .ex-block b{color:#ffffff; font-weight:600;}
   .ex-block i{color:#ffd79a; font-style:normal;}
-  .ex-eq{background:#05070e; border:1px solid var(--line-2); border-radius:5px; padding:12px 14px;
+  .ex-eq{background:#000000; border:1px solid var(--line-2); border-radius:5px; padding:12px 14px;
          font-size:14px; line-height:1.9; margin:10px 0 12px; overflow-x:auto; white-space:nowrap; color:#ffffff;}
   .ex-terms{display:grid; grid-template-columns:auto 1fr; gap:10px 18px; margin:6px 0 0;}
   .ex-terms dt{font-size:13.5px; font-weight:600; white-space:nowrap; color:#ffffff;}
-  .ex-terms dd{margin:0; font-size:13.5px; line-height:1.68; color:#d6dfef;}
+  .ex-terms dd{margin:0; font-size:13.5px; line-height:1.68; color:#ffffff;}
   @media (max-width:760px){ .ex-terms{grid-template-columns:1fr; gap:3px 0;} .ex-terms dd{margin-bottom:10px;} }
 .ui-tab{border-collapse:collapse;width:100%;margin:12px 0;font-size:13px;}
   .ui-tab th,.ui-tab td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;line-height:1.62;}
-  .ui-tab th{background:#0d111d;color:#9fabc4;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
-  .ui-tab td{color:#d6dfef;}
+  .ui-tab th{background:#000000;color:#ffffff;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
+  .ui-tab td{color:#ffffff;}
   .ui-tab td b{color:#ffffff;}
   .ui-tab td:first-child{white-space:nowrap;color:#ffffff;}
-  .ui-sub{font-size:13px;color:#8fe9ff;margin:20px 0 4px;font-weight:600;}
-  kbd{font-family:var(--mono);font-size:11.5px;background:#0d111d;border:1px solid var(--line-2);
+  .ui-sub{font-size:13px;color:#ffffff;margin:20px 0 4px;font-weight:600;}
+  kbd{font-family:var(--mono);font-size:11.5px;background:#000000;border:1px solid var(--line-2);
       border-bottom-width:2px;border-radius:3px;padding:1px 6px;color:#ffffff;}
-  .t1,dt.t1{color:#ffd79a;} .t2,dt.t2{color:#8fe9ff;} .t3,dt.t3{color:#ffb703;}
-  .t4,dt.t4{color:#c0a8ff;} .t5,dt.t5{color:#7dffc4;}
+  .t1,dt.t1{color:#ffffff;} .t2,dt.t2{color:#ffffff;} .t3,dt.t3{color:#ffffff;}
+  .t4,dt.t4{color:#ffffff;} .t5,dt.t5{color:#ffffff;}
 </style>
 </head>
 <body>
@@ -729,7 +729,7 @@ let sim = new Sim(NET, {lam:2.0, sigma:0.3, sigmaC:0.0, f:1.0, seed:7});
 
 /* ---------------------------------------------------------------- phases */
 const PHASES = [
-  {id:'INCOHERENT',  c:'#9fabc4', nm:'INCOHERENT',      ds:'R < 0.25. Phases spread around the circle, buys and sells cancel. This is a working market.'},
+  {id:'INCOHERENT',  c:'#ffffff', nm:'INCOHERENT',      ds:'R < 0.25. Phases spread around the circle, buys and sells cancel. This is a working market.'},
   {id:'CLUSTERING',  c:'#00b4d8', nm:'CLUSTERING',      ds:'Partial synchrony. Sub-groups lock, R flickers upward but no global cluster yet.'},
   {id:'SHOCK',       c:'#ffb703', nm:'SHOCK APPLIED',   ds:'A common sell signal is driving a subset of desks toward θ = −π/2.'},
   {id:'CASCADE',     c:'#ff6b35', nm:'CASCADE',         ds:'R rising fast. Locked desks recruit neighbours; the front spreads along edges from hubs outward.'},
@@ -910,15 +910,15 @@ function drawNet(){
 
 /* ---------------------------------------------------------------- draw: panels */
 function axes(C,pad){
-  const {x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
-  x.strokeStyle='#161b2b'; x.lineWidth=1;
+  const {x,w,h}=C; x.fillStyle='#000000'; x.fillRect(0,0,w,h);
+  x.strokeStyle='#444444'; x.lineWidth=1;
   x.beginPath(); x.moveTo(pad,h-pad); x.lineTo(w-2,h-pad); x.stroke();
 }
 function drawTS(){
   const C=TSC,{x,w,h}=C; axes(C,16);
   const n=hist.R.length; if(n<2) return;
   const x0=18, ww=w-x0-3, hh=h-22;
-  x.strokeStyle='#1b2133'; x.setLineDash([2,3]);
+  x.strokeStyle='#444444'; x.setLineDash([2,3]);
   [0.25,0.5,0.75].forEach(v=>{const y=4+hh*(1-v); x.beginPath(); x.moveTo(x0,y); x.lineTo(w-3,y); x.stroke();});
   x.setLineDash([]);
   const st=Math.max(1,Math.ceil(n/ww));
@@ -929,7 +929,7 @@ function drawTS(){
   x.strokeStyle='#00e0ff'; x.lineWidth=1.4; x.beginPath();
   for(let i=0,k=0;i<n;i+=st,k++){ const X=x0+ww*(i/(n-1)), Y=4+hh*(1-hist.R[i]); k?x.lineTo(X,Y):x.moveTo(X,Y); }
   x.stroke();
-  x.fillStyle='#9fabc4'; x.font='10.5px '+getComputedStyle(document.body).fontFamily;
+  x.fillStyle='#ffffff'; x.font='10.5px '+getComputedStyle(document.body).fontFamily;
   x.fillText('1',4,10); x.fillText('0',4,h-18);
   x.fillStyle='#00e0ff'; x.fillText('R',x0+3,11);
   x.fillStyle='#ffb703'; x.fillText('Q',x0+16,11);
@@ -942,17 +942,17 @@ function drawPX(){
   const x0=26, ww=w-x0-3, hh=h-20, st=Math.max(1,Math.ceil(n/ww));
   x.strokeStyle='rgba(76,86,112,0.5)'; x.setLineDash([2,3]); x.beginPath();
   const y100=4+hh*(1-(100-lo)/(hi-lo)); x.moveTo(x0,y100); x.lineTo(w-3,y100); x.stroke(); x.setLineDash([]);
-  x.strokeStyle=drawdown<-3?'#ff2e63':'#c9d3e6'; x.lineWidth=1.3; x.beginPath();
+  x.strokeStyle=drawdown<-3?'#ff2e63':'#ffffff'; x.lineWidth=1.3; x.beginPath();
   for(let i=0,k=0;i<n;i+=st,k++){ const X=x0+ww*(i/(n-1)), Y=4+hh*(1-(hist.P[i]-lo)/(hi-lo)); k?x.lineTo(X,Y):x.moveTo(X,Y); }
   x.stroke();
-  x.fillStyle='#9fabc4'; x.font='10.5px '+getComputedStyle(document.body).fontFamily;
+  x.fillStyle='#ffffff'; x.font='10.5px '+getComputedStyle(document.body).fontFamily;
   x.fillText(hi.toFixed(1),2,11); x.fillText(lo.toFixed(1),2,h-13);
 }
 function drawCirc(){
-  const C=CIRC,{x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  const C=CIRC,{x,w,h}=C; x.fillStyle='#000000'; x.fillRect(0,0,w,h);
   const cx=w/2, cy=h/2, R=Math.min(w,h)/2-16;
-  x.strokeStyle='#1b2133'; x.lineWidth=1; x.beginPath(); x.arc(cx,cy,R,0,6.2832); x.stroke();
-  x.fillStyle='#9fabc4'; x.font='10px '+getComputedStyle(document.body).fontFamily;
+  x.strokeStyle='#444444'; x.lineWidth=1; x.beginPath(); x.arc(cx,cy,R,0,6.2832); x.stroke();
+  x.fillStyle='#ffffff'; x.font='10px '+getComputedStyle(document.body).fontFamily;
   x.fillText('BUY',cx-9,cy-R-4); x.fillText('SELL',cx-10,cy+R+11);
   const th=sim.theta, rl=sim.rLocal;
   for(let i=0;i<sim.n;i++){
@@ -961,29 +961,29 @@ function drawCirc(){
     const col= mode==='flow'? flowColor(Math.sin(th[i])) : phaseColor(th[i]);
     x.fillStyle=rgba(col,0.55); x.beginPath(); x.arc(px,py,1.3,0,6.2832); x.fill();
   }
-  x.strokeStyle='#eaf0ff'; x.lineWidth=1.6; x.beginPath(); x.moveTo(cx,cy);
+  x.strokeStyle='#ffffff'; x.lineWidth=1.6; x.beginPath(); x.moveTo(cx,cy);
   x.lineTo(cx+R*sim.R*Math.cos(sim.psi), cy-R*sim.R*Math.sin(sim.psi)); x.stroke();
-  x.fillStyle='#eaf0ff'; x.beginPath();
+  x.fillStyle='#ffffff'; x.beginPath();
   x.arc(cx+R*sim.R*Math.cos(sim.psi), cy-R*sim.R*Math.sin(sim.psi),2.6,0,6.2832); x.fill();
 }
 function drawHyst(){
-  const C=HYSC,{x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  const C=HYSC,{x,w,h}=C; x.fillStyle='#000000'; x.fillRect(0,0,w,h);
   const x0=20,y0=h-16, ww=w-x0-6, hh=h-24;
-  x.strokeStyle='#161b2b'; x.beginPath(); x.moveTo(x0,y0); x.lineTo(w-4,y0); x.moveTo(x0,y0); x.lineTo(x0,4); x.stroke();
-  x.fillStyle='#9fabc4'; x.font='10px '+getComputedStyle(document.body).fontFamily;
+  x.strokeStyle='#444444'; x.beginPath(); x.moveTo(x0,y0); x.lineTo(w-4,y0); x.moveTo(x0,y0); x.lineTo(x0,4); x.stroke();
+  x.fillStyle='#ffffff'; x.font='10px '+getComputedStyle(document.body).fontFamily;
   x.fillText('λ',w-11,h-5); x.fillText('R',3,11); x.fillText('0',x0-6,h-5); x.fillText('8',w-9,h-5);
   const pt=(p,col)=>{ x.fillStyle=col;
     for(const d of p){ x.fillRect(x0+ww*(d[0]/8)-0.9, y0-hh*d[1]-0.9, 1.9,1.9); } };
   pt(loop.fwd,'rgba(0,224,255,0.75)'); pt(loop.bwd,'rgba(255,46,99,0.75)');
-  x.fillStyle='#eaf0ff';
+  x.fillStyle='#ffffff';
   x.beginPath(); x.arc(x0+ww*(sim.lam/8), y0-hh*sim.R, 2.4,0,6.2832); x.fill();
 }
 function drawTL(){
-  const C=TLC,{x,w,h}=C; x.fillStyle='#080a12'; x.fillRect(0,0,w,h);
+  const C=TLC,{x,w,h}=C; x.fillStyle='#000000'; x.fillRect(0,0,w,h);
   const n=hist.stage.length; if(!n) return;
   const bw=w/Math.max(n,1);
   for(let i=0;i<n;i++){ x.fillStyle=PH[hist.stage[i]].c; x.fillRect(i*bw,6,Math.ceil(bw),h-22); }
-  x.fillStyle='#9fabc4'; x.font='10px '+getComputedStyle(document.body).fontFamily;
+  x.fillStyle='#ffffff'; x.font='10px '+getComputedStyle(document.body).fontFamily;
   x.fillText('t−'+(n*0.4).toFixed(0),2,h-4); x.fillText('now',w-20,h-4);
 }
 
@@ -1028,7 +1028,7 @@ function renderInspector(){
   else if(k<=periCut){ role='PERIPHERAL'; roleCol='#6fb3ff';
     why='Bottom quartile by degree. It feels a weak field, so it locks late and unlocks early. '+
         'Shocking the periphery is the least effective way to start a cascade.'; }
-  else { role='TYPICAL DESK'; roleCol='#b9c4da';
+  else { role='TYPICAL DESK'; roleCol='#ffffff';
     why='Middling degree. It follows the cascade rather than leading it.'; }
 
   const g=(a,b)=>'<div class="k">'+a+'</div><div class="v">'+b+'</div>';
@@ -1122,10 +1122,10 @@ function frame(now){
   document.getElementById('stagenote').textContent=stageNote;
   document.getElementById('sR').textContent=sim.R.toFixed(3);
   document.getElementById('sQ').textContent=(sim.Q>=0?'+':'')+sim.Q.toFixed(3);
-  document.getElementById('sQ').style.color=sim.Q<-0.2?'#ff2e63':(sim.Q>0.2?'#00e0ff':'#c9d3e6');
+  document.getElementById('sQ').style.color=sim.Q<-0.2?'#ff2e63':(sim.Q>0.2?'#00e0ff':'#ffffff');
   document.getElementById('sP').textContent=sim.price.toFixed(1);
   document.getElementById('sD').textContent=drawdown.toFixed(1)+'%';
-  document.getElementById('sD').style.color=drawdown<-5?'#ff2e63':'#c9d3e6';
+  document.getElementById('sD').style.color=drawdown<-5?'#ff2e63':'#ffffff';
   let locked=0; for(let i=0;i<N;i++) if(sim.rLocal[i]>0.72) locked++;
   document.getElementById('sL').textContent=(100*locked/N).toFixed(0)+'%';
   document.getElementById('sLam').textContent=sim.lam.toFixed(2);

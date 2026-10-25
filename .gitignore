@@ -83,3 +83,10 @@ tmp/
 
 # Minute-bar cache converted from pickle (licensed data, large): never commit
 research/empirical/data/*.parquet
+
+# ---------------------------------------------------------------- Ada cluster (IIIT)
+# SLURM job scripts, their logs and the commit stamp written when the repository is copied to Ada are
+# machine-specific. The record of what ran stays tracked: docs/ADA_RUN_*.md, oscillators/ADA_COMPUTE.md, configs/.
+experiments/ada/
+oscillators/ada/
+.esfc_git

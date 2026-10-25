@@ -1,0 +1,226 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oscillator Demo</title>
+<style>
+:root { --bg:#0e1116; --card:#161b22; --ink:#ffffff; --sub:#d6deeb; --line:#2c3440; --accent:#7fb8ff; --soft:#1c2430;
+        --calm:#5fd38d; --sync:#ff7b72; }
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif; }
+header { max-width:1400px; margin:0 auto; padding:26px 20px 6px }
+h1 { margin:0 0 6px; font-size:28px }
+header p { margin:2px 0; color:var(--sub) }
+main { max-width:1400px; margin:0 auto; padding:10px 20px 40px; display:grid; grid-template-columns:360px 1fr; gap:18px }
+@media (max-width:980px) { main { grid-template-columns:1fr } }
+.panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px }
+label { display:block; font-weight:700; margin:12px 0 2px }
+.hint { color:var(--sub); font-size:14px; margin:2px 0 6px }
+select, input[type=range] { width:100% }
+select { font-size:16px; padding:6px; background:var(--soft); color:var(--ink); border:1px solid var(--line); border-radius:8px }
+.val { color:var(--accent); font-weight:700 }
+button { font-size:15px; padding:8px 12px; margin:4px 4px 4px 0; border-radius:8px; border:1px solid var(--line);
+         background:var(--soft); color:var(--ink); cursor:pointer }
+button:hover { border-color:var(--accent) }
+.plots { display:grid; grid-template-columns:1fr 1fr; gap:14px }
+@media (max-width:980px) { .plots { grid-template-columns:1fr } }
+canvas { width:100%; background:#0a0d12; border:1px solid var(--line); border-radius:10px }
+h3 { margin:4px 0 6px; font-size:17px; color:var(--accent) }
+.read { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:6px }
+.read div { background:var(--soft); border-radius:8px; padding:8px 10px }
+.read b { display:block; font-size:22px }
+.read span { font-size:13px; color:var(--sub) }
+.explain { font-size:15px; color:var(--sub) }
+.explain b { color:var(--ink) }
+.thr { font-size:15px }
+</style></head><body>
+<header><h1>Every oscillator family, live</h1>
+<p>A population of oscillators of the chosen family, simulated in your browser with the same equations as
+<code>oscillators/zoo.py</code> (checked by <code>validate_demo.py</code>). Not evidence: the measured results are on
+<a href="index.html" style="color:var(--accent)">index.html</a> and <a href="reference.html" style="color:var(--accent)">reference.html</a>.</p></header>
+<main>
+<div class="panel">
+  <label for="model">Oscillator family</label>
+  <div class="hint">Changes the equations of every unit. The population restarts from a calm state.</div>
+  <select id="model"></select>
+  <div class="thr" id="thr"></div>
+
+  <label for="K">Coupling <span id="Kname">K</span> = <span class="val" id="Kv"></span></label>
+  <div class="hint">How strongly each unit is pulled toward the population average. For theta neurons it is J, the synaptic strength.</div>
+  <input type="range" id="K" min="0" max="1" step="0.001">
+
+  <label for="p">Herding exponent p = <span class="val" id="pv"></span></label>
+  <div class="hint">Multiplies the coupling by R to the power p. p = 0: plain coupling. p = 1 or 2: units listen more when the others already agree, which makes synchrony explosive and bistable.</div>
+  <input type="range" id="p" min="0" max="2" step="1">
+
+  <label for="sig">Noise sigma = <span class="val" id="sigv"></span></label>
+  <div class="hint">Strength of the independent random kicks each unit receives.</div>
+  <input type="range" id="sig" min="0" max="0.5" step="0.005">
+
+  <label for="N">Units N = <span class="val" id="Nv"></span></label>
+  <div class="hint">Population size. Larger is smoother but slower. Changing it restarts the population.</div>
+  <input type="range" id="N" min="50" max="600" step="50">
+
+  <label for="speed">Steps per frame = <span class="val" id="speedv"></span></label>
+  <div class="hint">How many integration steps are taken between two drawings. Higher runs the simulation faster.</div>
+  <input type="range" id="speed" min="1" max="200" step="1">
+
+  <label>Actions</label>
+  <button id="calm" title="restart with random phases">Start calm</button>
+  <button id="sync" title="restart with every unit at one phase">Start synchronised</button>
+  <button id="shock" title="align 30 percent of units">Shock</button>
+  <button id="halt" title="switch coupling off for a while">Halt</button>
+  <button id="sweep" title="ramp the coupling up and back down">Sweep</button>
+  <button id="pause">Pause</button>
+  <button id="clear" title="clear the plots">Clear plots</button>
+  <div class="hint"><b>Start calm</b>: random phases (R near 0). <b>Start synchronised</b>: every unit at the same phase (R = 1).
+  <b>Shock</b>: puts 30 percent of the units at the current mean phase, like a piece of news that a third of traders act on.
+  <b>Halt</b>: switches coupling off for 20 time units (a circuit breaker), then back on. <b>Sweep</b>: ramps the coupling
+  from 0 to the top of the slider and back, drawing R against coupling in the bottom-right plot (a hysteresis loop
+  when the two directions differ). <b>Pause</b> stops and restarts time. <b>Clear plots</b> erases both history plots.</div>
+</div>
+<div>
+  <div class="read">
+    <div><b id="rR">0</b><span>R, order parameter: 0 = phases spread, 1 = all in step</span></div>
+    <div><b id="rK">0</b><span>effective coupling K R^p that units actually feel</span></div>
+    <div><b id="rT">0</b><span>time t (model time units)</span></div>
+    <div><b id="rS">running</b><span>state: running, paused, halted or sweeping</span></div>
+  </div>
+  <div class="plots" style="margin-top:12px">
+    <div class="panel"><h3>The population on the circle</h3><canvas id="circ" width="560" height="560"></canvas>
+      <p class="explain">Each dot is one unit, placed at its phase (angle) and, for families with an amplitude, at its
+      relative amplitude (distance from the centre; phase-only families sit on the circle). <b>Colour</b>: dot hue = the unit's
+      natural frequency (blue slow, red fast). <b>White arrow</b>: the mean field R e^(i Psi): its length is R, its direction the
+      average phase.</p></div>
+    <div class="panel"><h3>R over time</h3><canvas id="rt" width="560" height="270"></canvas>
+      <p class="explain">The order parameter R (vertical, 0 to 1) over the last stretch of time (horizontal). A jump up is synchrony
+      forming; a drop is it collapsing. Grey bands mark halts.</p>
+      <h3>R against coupling</h3><canvas id="rk" width="560" height="270"></canvas>
+      <p class="explain">Every frame adds a point (coupling, R). During a <b>Sweep</b> points going up are green and going down red;
+      outside a sweep they are grey. Dashed verticals: this family's measured thresholds (listed under the family menu).</p></div>
+  </div>
+</div>
+</main>
+<script src="demo_models.js"></script>
+<script>
+"use strict";
+const THR = {"kuramoto": {"onset": 1.3313, "fold1": 2.61, "fold2": 4.0219}, "inertia": {"onset": 3.7106, "fold1": 2.749, "fold2": 3.3041}, "sl": {"onset": 0.2601, "fold1": 0.4678, "fold2": 0.6751}, "vdp": {"onset": 0.186, "fold1": 0.2875, "fold2": 0.36}, "fhn": {"onset": 0.0398, "fold1": 0.0513, "fold2": 0.0645}, "rossler": {"onset": 0.0852, "fold1": 0.1128, "fold2": 0.1411}, "winfree": {"death": 0.7749}, "theta": {"collapse_shift": -13.375}};
+const { MODELS, makeRng, orderParam } = window.Zoo;
+const $ = id => document.getElementById(id);
+let rng = makeRng(7), m, w, st, t = 0, paused = false, haltUntil = -1, sweep = null;
+let hist = [], cloud = [], halts = [];
+
+for (const k in MODELS) { const o = document.createElement("option"); o.value = k; o.textContent = MODELS[k].label; $("model").appendChild(o); }
+
+function thrText(key) {
+  const d = THR[key];
+  if (!d) return "";
+  const f = (x) => x === null || x === undefined ? "n/a" : x;
+  if (key === "winfree") return `<p>Measured: the population stops (oscillator death) at K = ${f(d.death)} (exact value).</p>`;
+  if (key === "theta") return `<p>Here the coupling is J; the active state collapses when the mean drive is lowered by ${f(d.collapse_shift)} (fixed at its default here).</p>`;
+  const src = key === "inertia" ? "locked-state self-consistency, confirmed by the atlas to 2 percent" : "measured, extrapolated to an infinitely slow sweep";
+  return `<p>Synchrony forms at K = ${f(d.onset)} with p = 0 (atlas, N = 500). With herding, synchrony collapses at K = ${f(d.fold1)} (p = 1) and ${f(d.fold2)} (p = 2) (${src}).</p>`;
+}
+function linesFor(key) {
+  const d = THR[key] || {};
+  return [d.onset, d.fold1, d.fold2, d.death].filter(x => x !== null && x !== undefined);
+}
+
+function restart(sync) {
+  const key = $("model").value; m = MODELS[key];
+  const N = +$("N").value;
+  rng = makeRng(Math.floor(Math.random() * 1e9));
+  w = m.freq(N, rng); st = m.init(N, rng, sync, w); t = 0; haltUntil = -1; sweep = null;
+}
+function chooseModel() {
+  const key = $("model").value; m = MODELS[key];
+  $("K").max = m.Kmax; $("K").step = m.Kmax / 1000; $("K").value = m.K;
+  $("sig").value = m.sigma; $("Kname").textContent = m.couplingName || "K";
+  $("thr").innerHTML = thrText(key);
+  hist = []; cloud = []; halts = [];
+  restart(false); labels();
+}
+function labels() {
+  $("Kv").textContent = (+$("K").value).toFixed(3); $("pv").textContent = $("p").value;
+  $("sigv").textContent = (+$("sig").value).toFixed(3); $("Nv").textContent = $("N").value; $("speedv").textContent = $("speed").value;
+}
+["K", "p", "sig", "speed"].forEach(id => $(id).addEventListener("input", labels));
+$("N").addEventListener("change", () => { labels(); restart(false); });
+$("model").addEventListener("change", chooseModel);
+$("calm").onclick = () => restart(false);
+$("sync").onclick = () => restart(true);
+$("shock").onclick = () => {
+  const ph = m.phases(st, w), Psi = orderParam(ph).Psi, n = ph.length;
+  const idx = Array.from({ length: n }, (_, i) => i).sort(() => rng.uni() - 0.5).slice(0, Math.round(0.3 * n));
+  idx.forEach(j => m.setPhase(st, j, Psi, w));
+};
+$("halt").onclick = () => { haltUntil = t + 20; halts.push([t, t + 20]); };
+$("sweep").onclick = () => { sweep = { dir: 1, K: 0 }; $("K").value = 0; };
+$("pause").onclick = () => { paused = !paused; $("pause").textContent = paused ? "Resume" : "Pause"; };
+$("clear").onclick = () => { hist = []; cloud = []; halts = []; };
+
+function frame() {
+  if (!paused) {
+    const steps = +$("speed").value, p = +$("p").value, sig = +$("sig").value;
+    for (let s = 0; s < steps; s++) {
+      if (sweep) {
+        sweep.K += sweep.dir * m.Kmax * m.dt / 300;            // 300 time units each way
+        if (sweep.K >= m.Kmax) { sweep.K = m.Kmax; sweep.dir = -1; }
+        if (sweep.K <= 0 && sweep.dir < 0) { sweep.K = 0; sweep = null; }
+        if (sweep) $("K").value = sweep.K;
+      }
+      const K = t < haltUntil ? 0 : +$("K").value;
+      m.step(st, w, K, p, sig, m.dt, rng);
+      t += m.dt;
+    }
+    const { R } = orderParam(m.phases(st, w));
+    hist.push([t, R]); if (hist.length > 1500) hist.shift();
+    const K = +$("K").value;
+    cloud.push([K, R, sweep ? sweep.dir : 0]); if (cloud.length > 6000) cloud.shift();
+    $("rR").textContent = R.toFixed(3);
+    $("rK").textContent = (t < haltUntil ? 0 : K * Math.pow(R, +$("p").value)).toFixed(3);
+    $("rT").textContent = t.toFixed(1);
+    $("rS").textContent = paused ? "paused" : t < haltUntil ? "halted" : sweep ? "sweeping" : "running";
+    labels();
+  }
+  draw(); requestAnimationFrame(frame);
+}
+
+function hue(x, lo, hi) { const u = (x - lo) / (hi - lo + 1e-12); return `hsl(${240 - 240 * Math.max(0, Math.min(1, u))},85%,62%)`; }
+function draw() {
+  const c = $("circ"), g = c.getContext("2d"), W = c.width, cx = W / 2, rad = W * 0.42;
+  g.clearRect(0, 0, W, W);
+  g.strokeStyle = "#3a4555"; g.lineWidth = 1.5; g.beginPath(); g.arc(cx, cx, rad, 0, 2 * Math.PI); g.stroke();
+  const ph = m.phases(st, w), rr = m.radii(st, w);
+  const sorted = w.slice().sort((a, b) => a - b), lo = sorted[Math.floor(0.05 * w.length)], hi = sorted[Math.floor(0.95 * w.length)];
+  for (let j = 0; j < ph.length; j++) {
+    const r = rad * (rr ? Math.max(0.05, Math.min(1.1, rr[j])) : 1);
+    g.fillStyle = hue(w[j], lo, hi); g.beginPath(); g.arc(cx + r * Math.cos(ph[j]), cx - r * Math.sin(ph[j]), 4, 0, 2 * Math.PI); g.fill();
+  }
+  const { R, Psi } = orderParam(ph);
+  g.strokeStyle = "#ffffff"; g.lineWidth = 4; g.beginPath(); g.moveTo(cx, cx); g.lineTo(cx + rad * R * Math.cos(Psi), cx - rad * R * Math.sin(Psi)); g.stroke();
+  // R over time
+  const a = $("rt"), h = a.getContext("2d"), A = a.width, B = a.height;
+  h.clearRect(0, 0, A, B);
+  if (hist.length > 1) {
+    const t0 = hist[0][0], t1 = hist[hist.length - 1][0];
+    h.fillStyle = "rgba(170,182,200,0.18)";
+    halts.forEach(([s, e]) => { if (e > t0) h.fillRect(A * (Math.max(s, t0) - t0) / (t1 - t0 + 1e-9), 0, A * (Math.min(e, t1) - Math.max(s, t0)) / (t1 - t0 + 1e-9), B); });
+    h.strokeStyle = "#7fb8ff"; h.lineWidth = 2; h.beginPath();
+    hist.forEach(([tt, R], i) => { const x = A * (tt - t0) / (t1 - t0 + 1e-9), y = B - 10 - (B - 20) * R; i ? h.lineTo(x, y) : h.moveTo(x, y); });
+    h.stroke();
+  }
+  axes(h, A, B, "time", "R");
+  // R against coupling
+  const b = $("rk"), q = b.getContext("2d"), C = b.width, D = b.height;
+  q.clearRect(0, 0, C, D);
+  q.setLineDash([6, 6]); q.strokeStyle = "#aab6c8";
+  linesFor($("model").value).forEach(k => { const x = C * k / m.Kmax; q.beginPath(); q.moveTo(x, 0); q.lineTo(x, D); q.stroke(); });
+  q.setLineDash([]);
+  cloud.forEach(([K, R, d]) => { q.fillStyle = d > 0 ? "#5fd38d" : d < 0 ? "#ff7b72" : "#8a96aa"; q.fillRect(C * K / m.Kmax - 1.5, D - 10 - (D - 20) * R - 1.5, 3, 3); });
+  axes(q, C, D, "coupling", "R");
+}
+function axes(g, W, H, xl, yl) {
+  g.fillStyle = "#d6deeb"; g.font = "15px sans-serif"; g.fillText(xl, W - 80, H - 14); g.fillText(yl + " = 1", 6, 22); g.fillText("0", 6, H - 12);
+}
+$("N").value = 300; $("speed").value = 40; $("p").value = 0;
+chooseModel(); requestAnimationFrame(frame);
+</script></body></html>

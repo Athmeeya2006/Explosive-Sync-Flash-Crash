@@ -1,0 +1,20 @@
+# GPU rerun of paperA_A7_directed.yaml on the same seeds: checks the GPU path (esfc.gpu) against the
+# CPU rows of results/paperA_A7/20261013-175112_d49a0da-dirty seed by seed.
+# A7: directed random regular graphs (the undirected counterpart at the same k and N is in the A1 pilot). On a directed graph a node's neighbours do not
+# listen to it, so there is no back-reaction: the Rician closure predicts coefficient (p+2)/2, the
+# dynamic theory predicts a much smaller a_dyn(p). This is the test that separates the two.
+id: paperA_A7_gpu
+experiment: fold_grid
+root_seed: 20261014
+graphs:
+  - {kind: dir, label: dir}
+k: [24, 48]
+p: [1.0, 2.0]
+n: [10000]
+n_seeds: 6
+dt: 0.02
+t_relax: 480
+frac: 0.55
+rel_tol: 0.002
+workers: 8
+backend: gpu

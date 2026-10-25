@@ -1,0 +1,19 @@
+# Is the 5 to 10% excess of the directed branch shift over the dynamic theory (paperA_branch_curve_gpu) a finite-N
+# effect? Directed graphs at fixed k = 24 with N from 5000 to 320000 (neighbourhood overlap k^2/N from 0.12 down to
+# 0.002), three couplings, both exponents, 10 seeds. If the excess shrinks with N the theory is fine; if it stays,
+# a leading-order term is missing.
+id: paperA_dir_nscan_gpu
+experiment: branch_grid
+root_seed: 20261032
+graphs:
+  - {kind: dir, label: dir}
+k: [24]
+n: [5000, 20000, 80000, 320000]
+p: [1.0, 2.0]
+mult: [1.25, 2.0, 3.0]
+n_seeds: 10
+dt: 0.02
+t_burn: 150
+t_measure: 250
+workers: 10
+backend: gpu

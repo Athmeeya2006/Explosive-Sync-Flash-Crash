@@ -24,6 +24,8 @@ closure. The undirected case is open. See the status card at the top of
 |---|---|
 | All results, with every table explained | [research/index.html](research/index.html) (status card, then sections P0, P1, P2, B1) |
 | The model built up from one oscillator, and what the audit changed | [research/reference.html](research/reference.html) (steps 26 to 28) |
+| Early warnings across oscillator families (harmonic, Stuart-Landau, van der Pol, FitzHugh-Nagumo, Kuramoto variants, Winfree, Roessler, theta neurons), cleaned market data and new market tests | [oscillators/index.html](oscillators/index.html), files in [oscillators/README.md](oscillators/README.md) |
+| Runs that need the Ada cluster, with costs and SLURM scripts | [oscillators/ADA_COMPUTE.md](oscillators/ADA_COMPUTE.md) |
 | Interactive demonstration (not evidence) | [simulation/index.html](simulation/index.html) |
 | Derivation of the finite-connectivity theory | [docs/THEORY.md](docs/THEORY.md) |
 | Cloud runs and how they were checked | [docs/CLOUD_RUN_2026-10-13.md](docs/CLOUD_RUN_2026-10-13.md), results page section P2 |
@@ -129,6 +131,9 @@ figures_src/     one script per figure, reads only results/
 research/        the original research scripts (S1 to S14, A1 to A3, E1 to E8), kept unchanged as the record,
                  plus build_index.py, which generates index.html
 simulation/      browser demonstration
+oscillators/     early-warning benchmark across oscillator families (Z1 to Z3), market data audit and cleaning
+                 (M0), market tests M1 to M4, cluster scripts (ada/), results page (index.html)
+presentation/    slide deck and the scripts that built it
 docs/            inventory, model spec, theory, audit, corrections, decisions, prior art, licences, progress
 legacy/          the retired C++ and Python command-line layer (cannot show explosive synchronization)
 ```

@@ -1,0 +1,30 @@
+id: paperA_structure_gpu
+experiment: fold_grid
+root_seed: 20261027
+graphs:
+- kind: crr
+  triangles: 0
+  label: crr_t0
+- kind: crr
+  triangles: 3
+  label: crr_t3
+- kind: crr
+  triangles: 6
+  label: crr_t6
+- kind: er
+  label: er
+k:
+- 12
+- 24
+n:
+- 10000
+p:
+- 1.0
+- 2.0
+n_seeds: 10
+dt: 0.02
+t_relax: 480
+frac: 0.55
+rel_tol: 0.002
+workers: 10
+backend: gpu

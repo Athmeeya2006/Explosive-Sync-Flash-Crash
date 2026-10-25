@@ -1518,9 +1518,10 @@ def reciprocity_card() -> str:
                    f"{r.reaction:.3f}", fz(r.slope, r.reaction, r.slope_se), f"{r.curvature:+.3f} &plusmn; {r.curvature_se:.3f}"]
                   for r in fit.sort_values(["p", "k"]).itertuples()]) if fit is not None and len(fit) else ""
     agree = report.branch_theory_agreement()
-    got = report._rows("paperA_reciprocity")
+    rec = "paperA_reciprocity_gpu" if report._rows("paperA_reciprocity_gpu") else "paperA_reciprocity"
+    got = report._rows(rec)
     partial = ('<p class="note"><b class="bad">Run incomplete.</b> ' + f"{len(got[0])} rows so far; the tables below use what has finished.</p>"
-               if report.is_partial("paperA_reciprocity") else "")
+               if report.is_partial(rec) else "")
     bullets = []
     if fit is not None and len(fit):
         for r in fit.sort_values("k").itertuples():
@@ -1545,8 +1546,9 @@ the idea behind it is not new: comparing symmetric with asymmetric coupling to i
 term was done for oscillator networks by Aonishi, Kurata and Okada (2002), and the general sparse-graph
 frameworks of Metz (2025) and Metz and P&eacute;rez Castillo (2026) contain both mechanisms
 (<code>docs/PRIOR_ART.md</code>). What this project can add is a quantitative prediction and its test. This
-section is that test. Runs: <code>{report.run_name('paperA_reciprocity')}</code>,
-<code>{report.run_name('paperA_branch_theory')}</code>. Configs: <code>configs/paperA_reciprocity.yaml</code>,
+section is that test. Runs: <code>{report.run_name(rec)}</code> (on the GPU path, 10 seeds; the CPU run of
+2026-10-14 was interrupted before writing rows), <code>{report.run_name('paperA_branch_theory')}</code>.
+Configs: <code>configs/{rec}.yaml</code>,
 <code>configs/paperA_branch_theory.yaml</code>.</p>
 
 <h3>The prediction</h3>
@@ -1589,11 +1591,201 @@ equal the dynamic value and the slope the reaction value. <b>Curvature</b> is th
 <h3>What remains for this test</h3>
 <ul class="findings">
 <li><b>Larger k with small overlap.</b> k = 96 and 192 need N of 200,000 and 800,000 to keep k&sup2;/N at
-0.05. That is a cluster job: <code>configs/paperA_branch_ada.yaml</code>.</li>
-<li><b>Second exponent and other couplings.</b> This sweep is p = 1 at one coupling.</li>
+0.05. Running on the cluster: <code>configs/paperA_branch_ada_gpu.yaml</code>.</li>
+<li><b>Second exponent and other couplings.</b> Done for &rho; = 0 and 1 in section P4.</li>
 <li><b>Link to the exact directed theory.</b> Show that the dynamic term is the leading 1/k expansion of the
 equation of Metz (2025), analytically or by population dynamics.</li>
 </ul>
+</section>"""
+
+
+def branch_curve_card() -> str:
+    """Section P4: the branch shift along the coupling on directed and undirected graphs (GPU run)."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    cells, ex = report.branch_curve_cells(), report.branch_curve_extrapolation()
+    if cells is None or ex is None:
+        return '<section id="p4"><h2>P4 Branch curve</h2><div class="missing">results not available yet</div></section>'
+    gname = {"dir": "directed", "rho1.00": "undirected"}
+    t_cells = _tbl(["graph", "p", "coupling / all-to-all fold", "k", "N", "seeds", "c = k(R&minus;R<sub>0</sub>) [95% CI]",
+                    "theory for this graph", "Rician closure", "distance from theory (SE)", "used"],
+                   [[gname[r.variant], f"{r.p:g}", f"{r.mult:g}", int(r.k), int(r.n), int(r.n_ok), _ci(r.c_mean, r.ci_lo, r.ci_hi, 3),
+                     f"{r.theory:.3f}", f"{r.closure:.3f}", f"{(r.c_mean - r.theory) / r.se:+.1f}",
+                     "yes" if r.valid else '<b class="bad">no</b> (below the graphs&#39; own fold)']
+                    for r in cells.sort_values(["variant", "p", "mult", "k"]).itertuples()])
+    t_ex = _tbl(["graph", "p", "coupling / all-to-all fold", "values of k used", "c extrapolated to k &rarr; &infin; &plusmn; SE",
+                 "theory", "ratio to theory", "distance (SE)", "Rician closure"],
+                [[gname[r.graph], f"{r.p:g}", f"{r.mult:g}", int(r.n_k), f"{r.c_inf:.3f} &plusmn; {r.c_inf_se:.3f}", f"{r.theory:.3f}",
+                  f"<b>{r.ratio_to_theory:.3f}</b>", f"{r.z:+.1f}", f"{r.closure:.3f}"]
+                 for r in ex.sort_values(["graph", "p", "mult"]).itertuples()])
+    und, dr = ex[ex.graph == "rho1.00"], ex[ex.graph == "dir"]
+    far, near = und[und.mult >= 2], und[(und.mult > 1.1) & (und.mult < 2)]
+    bullets = [
+        "<li><b>The Rician closure is excluded in every cell</b>, too negative on directed graphs and not negative enough on "
+        "undirected ones.</li>",
+        f"<li><b>Undirected graphs converge on the reaction-corrected theory as k grows.</b> Away from the fold (2 and 3 times it) "
+        f"the extrapolated shift is {far.ratio_to_theory.min():.2f} to {far.ratio_to_theory.max():.2f} times the prediction. "
+        f"Nearer the fold (1.25 and 1.5 times it) it is {near.ratio_to_theory.min():.2f} to {near.ratio_to_theory.max():.2f} times it "
+        f"({near.z.abs().min():.1f} to {near.z.abs().max():.1f} standard errors). The predicted shift diverges at the fold, where the "
+        f"1/k expansion converges slowest, so a straight line in 1/k through k &le; 48 is least safe there; the size scan at "
+        f"k = 96 and 192 (<code>paperA_branch_ada_gpu</code>) tests that region.</li>",
+        f"<li><b>Directed graphs sit a little beyond the dynamic theory.</b> Extrapolated ratio {dr.ratio_to_theory.mean():.3f} on "
+        f"average ({dr.ratio_to_theory.min():.2f} to {dr.ratio_to_theory.max():.2f}); {int((dr.z.abs() <= 2.1).sum())} of {len(dr)} "
+        f"cells within about 2 standard errors. The earlier single-coupling agreement (section P2) holds to within about 5 to 10%, "
+        f"not exactly.</li>"]
+    fig_html = render_fig(fig("figures/p4_branch_curve.png",
+        "One panel per herding exponent p. Horizontal axis: coupling as a multiple of the all-to-all fold. Vertical axis: the branch shift c = k (R &minus; R<sub>0</sub>). Orange squares: directed graphs; blue circles: undirected. Small filled points: mean over 10 seeds at k = 12, 24, 48 (lighter = smaller k), with 95% bars. Large open points: c extrapolated to infinite k. Dashed lines: the leading-order theory for each graph type; dotted: the Rician closure.",
+        "If the theory is right at leading order, the open points sit on the dashed line of their colour. They do for undirected graphs away from the fold and, to within about 5 to 10%, for directed graphs; the closure misses both."))
+    return f"""
+<section id="p4" class="summary">
+<div class="sec-head"><span class="tag">P4</span><h2>Branch curve: the shift of the synchronised branch along the coupling</h2><span class="verdict v-open">theory tested at five couplings</span></div>
+<p>Item 1 of the plan after section P2: the branch shift at five couplings (1.1 to 3 times the all-to-all fold),
+both exponents, directed and undirected graphs, k = 12, 24 and 48 with the overlap k&sup2;/N &le; 0.05,
+10 seeds per cell, on the GPU path (validated against the CPU code, <code>docs/ADA_RUN_2026-10-24.md</code>).
+Run: <code>{report.run_name(report.BRANCH_CURVE)}</code>. Config: <code>configs/paperA_branch_curve_gpu.yaml</code>.
+Predictions: Table P3.1.</p>
+{fig_html}
+<h3>Table P4.1. Extrapolation to large connectivity</h3>
+<p>Weighted least squares of c(k) = c<sub>&infin;</sub> + b/k over the values of k used (weights 1/SE&sup2;). The
+straight line in 1/k is an assumption with three points at most.</p>
+{t_ex}
+<h3>Reading</h3>
+<ul class="findings">{"".join(bullets)}</ul>
+<h3>Table P4.2. Every cell</h3>
+<p>Cells marked "no" lie at or below the realised graphs&#39; own fold, so seeds left the branch; they are left out
+of the extrapolation.</p>
+{t_cells}
+</section>"""
+
+
+def structure_card() -> str:
+    """Section P5: fold on clustered and on degree-heterogeneous graphs (GPU run)."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    cells = report.fold_cells("paperA_structure_gpu")
+    if cells is None or cells.empty:
+        return '<section id="p5"><h2>P5 Graph structure</h2><div class="missing">results not available yet</div></section>'
+    name = {"crr_t0": "random regular (no triangles)", "crr_t3": "3 triangles per node", "crr_t6": "6 triangles per node",
+            "er": "Erd&odblac;s-R&eacute;nyi (Poisson degrees)"}
+    t = _tbl(["graph", "p", "k", "N", "seeds", "fold ratio [95% CI]", "coefficient k(ratio&minus;1) [95% CI]"],
+             [[name.get(r.graph, r.graph), f"{r.p:g}", int(r.k), int(r.N), int(r.n_seeds), _ci(r.ratio, r.ci_lo, r.ci_hi, 4),
+               _ci(r.coef, r.coef_lo, r.coef_hi, 2)]
+              for r in cells.sort_values(["p", "k", "graph"]).itertuples()])
+    return f"""
+<section id="p5" class="summary">
+<div class="sec-head"><span class="tag">P5</span><h2>Graph structure: clustering and degree heterogeneity</h2><span class="verdict v-open">outside the leading-order theory</span></div>
+<p>The theory assumes locally tree-like graphs with every degree equal (<code>docs/THEORY.md</code> section 5). This
+run measures how far each assumption matters at fixed mean degree: clustered random regular graphs with 0, 3 and 6
+triangles per node (clustering about 0.005, 0.05 and 0.10 at k = 12) and Erd&odblac;s-R&eacute;nyi graphs.
+Run: <code>{report.run_name('paperA_structure_gpu')}</code>. Config: <code>configs/paperA_structure_gpu.yaml</code>.
+The coefficient uses each graph&#39;s realised mean degree.</p>
+{t}
+<h3>Reading</h3>
+<ul class="findings">
+<li><b>Clustering raises the fold modestly.</b> At k = 12 the coefficient grows with the number of triangles at both
+exponents; at k = 24, where the same triangles give less clustering, the effect is within the intervals.</li>
+<li><b>Degree heterogeneity lowers the fold strongly.</b> With the 1/&lang;k&rang; normalisation, high-degree nodes are
+coupled more strongly and hold the synchronised state. A heterogeneous mean field (Restrepo, Ott and Hunt 2005) is the
+natural extension of the theory.</li>
+<li><b>Consistency.</b> The random regular control agrees with the A1 pilot at the same k on independent seeds.</li>
+</ul>
+</section>"""
+
+
+
+def window_card() -> str:
+    """Section P6: the bistable window at low connectivity against the closure's critical connectivity."""
+    import sys
+    sys.path.insert(0, str(REPO / "src"))
+    from esfc import report
+    c = report.window_cells()
+    if c is None:
+        return '<section id="p6"><h2>P6 Bistable window</h2><div class="missing">results not available yet</div></section>'
+    gname = {"dir": "directed", "rho1.00": "undirected"}
+    main = c[c.run == "paperA_window_gpu"]
+    t = _tbl(["run", "graph", "p", "k", "N", "seeds", "fold / all-to-all", "forward / all-to-all", "width [95% CI]",
+              "closure: fold", "closure: incoherence unstable", "closure: width"],
+             [[r.run_label, gname[r.variant], f"{r.p:g}", int(r.k), int(r.n), int(r.n_ok), f"{r.ratio_b:.3f}", f"{r.ratio_f:.3f}",
+               _ci(r.width_mean, r.ci_lo, r.ci_hi, 3), f"{r.closure_ratio_b:.3f}", f"{r.closure_ratio_c:.3f}", f"{r.closure_width:.3f}"]
+              for r in c.sort_values(["run", "variant", "p", "k", "n"]).itertuples()])
+    und = main[main.variant == "rho1.00"]
+    u1, u2 = und[(und.p == 1) & (und.k <= 6)], und[(und.p == 2) & (und.k <= 4)]
+    both = main.pivot_table(index=["p", "k"], columns="variant", values="width_mean").dropna()
+    rel = (both["dir"] / both["rho1.00"] - 1).abs()
+    p1 = und[(und.p == 1) & (und.k >= 10)]
+    k8 = und[(und.p == 1) & (und.k == 8)]
+    dr = main[main.variant == "dir"]
+    below = dr[dr.ratio_b < 1].groupby("p").k.max()
+    dn = c[(c.run == "paperA_window_nscan_gpu") & (c.variant == "dir") & (c.p == 1) & (c.k == 4)].sort_values("n")
+    dir_n = (" It does not depend on N (p = 1, k = 4: " + ", ".join(f"{v:.3f} at N = {int(n)}" for n, v in zip(dn.n, dn.ratio_b))
+             + ").") if len(dn) else ""
+    bullets = [
+        f"<li><b>The window does not close where the closure says.</b> At p = 1 the closure predicts a width below "
+        f"{u1.closure_width.max():.3f} for k &le; 6; on undirected graphs the measured width there is {u1.width_mean.min():.2f} to "
+        f"{u1.width_mean.max():.2f} (95% interval above zero in {int((u1.ci_lo > 0).sum())} of {len(u1)} cells). At p = 2 the closure "
+        f"closes the window at k = 3 to 4 (predicted width {u2.closure_width.min():.3f} to {u2.closure_width.max():.3f}); measured "
+        f"{u2.width_mean.min():.2f} to {u2.width_mean.max():.2f}. Bistability survives down to k = 3.</li>",
+        f"<li><b>Above it, the closure&#39;s width is close at p = 1</b>: measured / predicted {(p1.width_mean / p1.closure_width).min():.2f} "
+        f"to {(p1.width_mean / p1.closure_width).max():.2f} for k &ge; 10, {float(k8.width_mean.iloc[0] / k8.closure_width.iloc[0]):.2f} at k = 8. "
+        f"At p = 2 the closure&#39;s width is too large at every k &ge; 8.</li>",
+        f"<li><b>The width hardly depends on whether links are mutual.</b> Directed and undirected widths differ by "
+        f"{100 * rel[rel.index.get_level_values('k') >= 8].median():.0f}% (median, k &ge; 8), although both edges move a lot: at k = 3 "
+        f"the undirected fold is {und[(und.k == 3) & (und.p == 1)].ratio_b.iloc[0]:.2f} times the all-to-all fold and the directed one "
+        f"{dr[(dr.k == 3) & (dr.p == 1)].ratio_b.iloc[0]:.2f} times.</li>",
+        "<li><b>On directed graphs at small k the fold lies below the all-to-all fold</b> ("
+        + ", ".join(f"p = {pp:g}: k &le; {int(kk)}" for pp, kk in below.items())
+        + "): the synchronised branch survives to weaker coupling than in the all-to-all model, opposite to every theory here "
+        "(the closure predicts a fold well above it). The directed fold is therefore not monotonic in k: below 1 at small k, "
+        "slightly above 1 near k = 12 to 24, and back to 1 as 1 + a/k at large k, which needs a large negative term of higher "
+        "order in 1/k. A candidate is the floor of the local order parameter (about 0.89/&radic;k for random phases), which "
+        "keeps the herding gain large." + dir_n + "</li>",
+    ]
+    uu, dd = main[main.variant == "rho1.00"].set_index(["p", "k"]), dr.set_index(["p", "k"])
+    sc = ((uu.ratio_f / dd.ratio_f) / (uu.ratio_b / dd.ratio_b) - 1).dropna()
+    s1 = sc[(sc.index.get_level_values("p") == 1) & (sc.index.get_level_values("k") >= 4)]
+    s2 = sc[sc.index.get_level_values("p") == 2]
+    f1 = (uu.ratio_b / dd.ratio_b)[(uu.index.get_level_values("p") == 1)]
+    bullets.append(
+        f"<li><b>Reciprocity rescales the coupling.</b> The undirected-to-directed ratio is the same for the fold and for the "
+        f"forward threshold: at p = 1 and k = 4 to 24 the two ratios differ by at most {100 * s1.abs().max():.1f}% "
+        f"(median {100 * s1.abs().median():.1f}%), while the ratio itself ranges from {f1.min():.2f} to {f1[f1.index.get_level_values('k') >= 4].max():.2f}. "
+        f"Mutual links therefore act like a renormalised coupling, lambda divided by a factor f(k), which moves both edges "
+        f"of the window together and explains why its relative width hardly depends on reciprocity. At p = 2 the rule is "
+        f"approximate (up to {100 * s2.abs().max():.1f}%). At leading order f(k) = 1 + reaction / k.</li>")
+    rob = c[c.run != "paperA_window_gpu"]
+    if len(rob):
+        ns = rob[rob.run == "paperA_window_nscan_gpu"]
+        big = ns[ns.n == ns.n.max()]
+        lng = rob[rob.run == "paperA_window_long_gpu"]
+        k4 = ns[(ns.variant == "rho1.00") & (ns.p == 1) & (ns.k == 4)].sort_values("n")
+        bullets.append(
+            f"<li><b>Robust to N and to the waiting time.</b> At N = {int(big.n.iloc[0])} the interval is above zero in "
+            f"{int((big.ci_lo > 0).sum())} of {len(big)} cells, and with the waiting time 1600 instead of 400 in "
+            f"{int((lng.ci_lo > 0).sum())} of {len(lng)}. The window widens with N (undirected, p = 1, k = 4: "
+            + ", ".join(f"{w:.3f} at N = {int(n)}" for n, w in zip(k4.n, k4.width_mean))
+            + "), so finite size narrows it rather than creating it: the widths at N = 10000 are lower bounds. The forward "
+            "threshold is a first passage and depends on N; the width in the limit of large N is not yet fixed.</li>")
+    else:
+        bullets.append("<li><b>Caveat.</b> The forward threshold is a first passage from a random start: it can depend on the "
+                       "waiting time and on N. Robustness runs are pending.</li>")
+    fig_html = render_fig(fig("figures/p6_window.png",
+        "Columns: herding exponent p. Top: relative width of the bistable window, (forward threshold &minus; fold) / fold, against the number of neighbours k (log scale); points are means over 8 seeds with 95% bars, blue undirected and orange directed; the grey line is the Rician closure, which predicts the window closes at small k. Bottom: the two edges separately, relative to the all-to-all fold: filled points the fold, open points the forward threshold; grey lines the closure&#39;s fold (solid) and the coupling where it makes incoherence unstable (dashed).",
+        "If the closure were right, the points in the top row would fall to zero at small k. They do not. In the bottom row the directed and undirected edges are far apart at small k, yet the top row shows almost the same width for both."))
+    return f"""
+<section id="p6" class="summary">
+<div class="sec-head"><span class="tag">P6</span><h2>Bistable window at low connectivity: is there a critical connectivity?</h2><span class="verdict v-open">closure prediction tested</span></div>
+<p>The closure predicts that below a critical connectivity the forward threshold (where a random, incoherent start
+synchronises) meets the fold, so bistability disappears (README: "unverified"). Both edges were measured on the same graphs
+and frequencies: the fold from a synchronised start (as in P1) and the forward threshold from a random start by the same
+bisection, waiting 400 time units per coupling. Run: <code>{report.run_name('paperA_window_gpu')}</code>. Config:
+<code>configs/paperA_window_gpu.yaml</code>.</p>
+{fig_html}
+<h3>Reading</h3>
+<ul class="findings">{"".join(bullets)}</ul>
+<h3>Table P6.1. Every cell</h3>
+{t}
 </section>"""
 
 
@@ -1626,7 +1818,7 @@ def novelty_card() -> str:
          "Static self-consistency; misses the fluctuations from drifting neighbours", "Cite for the p = 2 (triadic) framing", "read earlier"],
     ]
     verdicts = [
-        ["The Rician closure is wrong", "A useful negative result, since the static-scatter picture goes back to Ichinomiya (2005)", "Present as a falsified baseline, not as the headline"],
+        ["The Rician closure is wrong", "A useful negative result: the frozen-scatter closure was this project's own first theory (an approximation on top of Ichinomiya's 2005 Gaussian mapping, not his)", "Present as a falsified baseline, not as the headline"],
         ["(a) Dynamic filtering, exact on directed graphs", "Mechanism known (Metz 2025; noise channel of Metz and P&eacute;rez Castillo 2026). The closed-form coefficients for the adaptive coupling appear new", "New explicit result within a known framework"],
         ["(b) Onsager reaction on undirected graphs", "Concept known (Aonishi et al. 2002; dense case Pr&uuml;ser and Engel 2024; generic in Metz and P&eacute;rez Castillo 2026). The explicit sparse Kuramoto calculation appears new", "New explicit result; validation incomplete (sections P2, P3)"],
         ["(c) Directed against undirected contrast", "The structural distinction is known", "New only as a measured decomposition for explosive synchronization"],
@@ -2095,7 +2287,7 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
 <a class="sh" href="../simulation/index.html"><b>Interactive simulation</b><span>Watch a crash spread node by node through the network. Click any desk to see its own numbers in the locking inequality.</span></a>
 <a class="sh" href="RESEARCH_IDEAS.md"><b>Research ideas</b><span>What is still open, keyed paper by paper to the prior art, with what would have to be computed for each.</span></a>
 </div></header>
-<nav><div class="in"><a href="#status"><span>NOW</span>Status</a><a href="#summary"><span>OLD</span>Earlier summary</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#p2"><span>P2</span>Cloud runs and branch test</a><a href="#p3"><span>P3</span>Reciprocity test</a><a href="#n1"><span>N1</span>Novelty audit</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>SYM</span>Symbols</a>{nav}<a href="#refs"><span>REF</span>References</a></div></nav>
+<nav><div class="in"><a href="#status"><span>NOW</span>Status</a><a href="#summary"><span>OLD</span>Earlier summary</a><a href="#p0"><span>P0</span>Audit</a><a href="#p1"><span>P1</span>New theory and measurements</a><a href="#p2"><span>P2</span>Cloud runs and branch test</a><a href="#p3"><span>P3</span>Reciprocity test</a><a href="#p4"><span>P4</span>Branch curve</a><a href="#p5"><span>P5</span>Graph structure</a><a href="#p6"><span>P6</span>Bistable window</a><a href="#n1"><span>N1</span>Novelty audit</a><a href="#b1"><span>B1</span>Corrected data test</a><a href="#glossary"><span>SYM</span>Symbols</a>{nav}<a href="#refs"><span>REF</span>References</a></div></nav>
 <main>
 {status_card()}
 <div id="summary">{summary_card()}</div>
@@ -2103,6 +2295,9 @@ footer {{ text-align:center; color:var(--muted); font-size:12px; padding:6px 0 4
 {physics_card()}
 {cloud_card()}
 {reciprocity_card()}
+{branch_curve_card()}
+{structure_card()}
+{window_card()}
 {novelty_card()}
 {empirical_card()}
 <section id="glossary"><h2>Symbols and terms</h2><div class="tbl"><table><tbody>{gloss}</tbody></table></div></section>

@@ -1,0 +1,14 @@
+[
+  {"model": "kuramoto", "K": 2.0, "p": 0, "sync": false, "N": 300, "T": 400, "seeds": 4},
+  {"model": "kuramoto", "K": 4.0, "p": 1, "sync": true, "N": 300, "T": 400, "seeds": 4},
+  {"model": "inertia", "K": 3.0, "p": 0, "sync": true, "N": 300, "T": 400, "seeds": 4},
+  {"model": "sl", "K": 0.4, "p": 0, "sync": false, "N": 300, "T": 800, "seeds": 4},
+  {"model": "sl", "K": 0.8, "p": 1, "sync": true, "N": 300, "T": 800, "seeds": 4},
+  {"model": "vdp", "K": 0.3, "p": 0, "sync": false, "N": 300, "T": 800, "seeds": 4},
+  {"model": "vdp", "K": 0.6, "p": 1, "sync": true, "N": 300, "T": 800, "seeds": 4},
+  {"model": "fhn", "K": 0.1, "p": 0, "sync": false, "N": 300, "T": 3000, "seeds": 4},
+  {"model": "winfree", "K": 0.4, "p": 0, "sync": false, "N": 300, "T": 400, "seeds": 4},
+  {"model": "rossler", "K": 0.15, "p": 0, "sync": false, "N": 300, "T": 1500, "seeds": 4},
+  {"model": "rossler", "K": 0.3, "p": 1, "sync": true, "N": 300, "T": 1500, "seeds": 4},
+  {"model": "theta", "K": 15.0, "p": 0, "sync": false, "N": 300, "T": 100, "seeds": 4}
+]

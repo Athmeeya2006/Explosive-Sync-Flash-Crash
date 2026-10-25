@@ -1,0 +1,720 @@
+<title>Explosive Sync Research Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* One deliberate look: graphite ground, white text (the reader's stated preference). Layout: a reading column with a sticky section bar; results as figure blocks (chart, then "what you see", then "why it matters"). */
+:root {
+  --bg: #1f2124; --surface: #282a2e; --raise: #33363b; --line: #44484f;
+  --fg: #ffffff; --fg2: #ffffff; --muted: #c9d1e0;
+  --accent: #7cc7ff; --dir: #ffab4a; --und: #6aa8ff; --theory: #ffffff; --closure: #c9d1e0;
+  --good: #4fd69c; --warn: #ffc65c; --bad: #ff7676; --sel: #23476b;
+  --display: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --body: "Schibsted Grotesk", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 76px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } * { transition: none !important } }
+body { background: var(--bg); color: var(--fg); font: 400 16.5px/1.6 var(--body);
+  -webkit-font-smoothing: antialiased }
+::selection { background: var(--sel); color: var(--fg) }
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px }
+a:hover { text-decoration-thickness: 2px }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px }
+::-webkit-scrollbar { width: 11px; height: 11px } ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px }
+::-webkit-scrollbar-track { background: transparent }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface) }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+header.top { padding-block: 44px 28px; border-bottom: 1px solid var(--line); background: var(--surface) }
+h1 { font: 600 clamp(32px, 5vw, 48px)/1.08 var(--display); letter-spacing: -0.02em; margin: 0 0 14px; text-wrap: balance; max-width: 22ch }
+h2 { font: 600 30px/1.15 var(--display); letter-spacing: -0.015em; margin: 0 0 10px; text-wrap: balance }
+h3 { font: 600 21px/1.25 var(--body); margin: 34px 0 8px; text-wrap: balance }
+h4 { font: 600 17px/1.3 var(--body); margin: 0 0 4px }
+p { margin: 0 0 12px; max-width: 72ch; color: var(--fg2) }
+.lede { font-size: 19px; line-height: 1.55; color: var(--fg2); max-width: 64ch }
+.meta { color: var(--muted); font-size: 14.5px; margin-top: 16px; display: flex; gap: 18px; flex-wrap: wrap }
+
+nav.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line) }
+nav.bar .wrap { display: flex; gap: 4px; overflow-x: auto; padding-block: 8px; scrollbar-width: none }
+nav.bar a { flex: none; color: var(--fg2); text-decoration: none; font-weight: 500; font-size: 15px; padding: 8px 13px; border-radius: 8px; white-space: nowrap }
+nav.bar a:hover { background: var(--raise); color: var(--fg) }
+nav.bar a.on { background: var(--raise); color: var(--fg); box-shadow: inset 0 -2px 0 var(--accent) }
+
+section.block { padding-block: 54px 20px; border-bottom: 1px solid var(--line) }
+section.block > .wrap > p.intro { font-size: 17.5px }
+
+.status { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; margin-top: 22px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface) }
+.status > div { padding: 18px 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); min-width: 0 }
+.status h4 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap }
+.status p { font-size: 15.5px; margin: 6px 0 0 }
+.pill { display: inline-block; font: 600 12.5px/1 var(--body); letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 9px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap }
+.pill.good { color: var(--good) } .pill.warn { color: var(--warn) } .pill.bad { color: var(--bad) } .pill.info { color: var(--accent) }
+
+.eq { font: 500 18px/1.5 var(--display); background: var(--raise); padding: 14px 18px; border-radius: 12px; overflow-x: auto; margin: 12px 0 16px; white-space: nowrap; color: var(--fg) }
+.defs { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: 15.5px; margin: 8px 0 18px; max-width: 80ch }
+.defs dt { font-weight: 600; color: var(--fg) } .defs dd { margin: 0; color: var(--fg2) }
+
+ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 18px 0 0; display: grid; gap: 0; border-left: 2px solid var(--line) }
+ol.steps li { counter-increment: s; position: relative; padding: 0 0 22px 30px }
+ol.steps li::before { content: counter(s); position: absolute; left: -15px; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); color: var(--fg); font: 600 13.5px/24px var(--body); text-align: center }
+ol.steps h4 { font-size: 17.5px } ol.steps p { font-size: 15.5px; margin: 4px 0 0 }
+
+figure.fig { margin: 30px 0 10px; padding: 0 }
+figure.fig .head { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 10px }
+figure.fig .head h3 { margin: 0 }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 10px 6px; position: relative; overflow-x: auto }
+.chart svg { display: block; width: 100%; height: auto; min-width: 560px }
+.chart svg text { fill: var(--fg2); font: 500 13px var(--body) }
+.chart .axis path, .chart .axis line { stroke: var(--line) } .chart .grid line { stroke: var(--line); stroke-opacity: .55 }
+.chart .axis text { fill: var(--muted); font-size: 13px } .chart .axlab { fill: var(--fg2); font-size: 13.5px; font-weight: 600 }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--fg2); padding: 8px 6px 4px }
+.legend span { display: inline-flex; align-items: center; gap: 7px }
+.legend i { display: inline-block; width: 22px; height: 0; border-top: 2.5px solid currentColor }
+.legend i.dot { width: 10px; height: 10px; border: 0; border-radius: 50%; background: currentColor }
+.legend i.dash { border-top-style: dashed } .legend i.dotted { border-top-style: dotted }
+.seg { display: inline-flex; background: var(--raise); border-radius: 9px; padding: 3px; gap: 2px }
+.seg button { font: 500 14.5px var(--body); color: var(--fg2); background: none; border: 0; padding: 7px 13px; border-radius: 7px; cursor: pointer }
+.seg button:hover { color: var(--fg) } .seg button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.18) }
+.read { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 14px }
+.read > div { min-width: 0 } .read h4 { font-size: 15px; letter-spacing: 0.02em; color: var(--fg) }
+.read p { font-size: 15.5px }
+.tip { position: absolute; pointer-events: none; background: var(--fg); color: var(--bg); font: 500 13.5px/1.4 var(--body); padding: 8px 10px; border-radius: 8px; max-width: 280px; box-shadow: 0 6px 18px rgba(0,0,0,.25); opacity: 0; transition: opacity .12s }
+.tip b { font-weight: 700 }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin: 12px 0 }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-weight: 600; color: var(--fg); background: var(--raise); position: sticky; top: 0 }
+td { color: var(--fg2) } td.num { font-variant-numeric: tabular-nums } tr:last-child td { border-bottom: 0 } td.num, th.num { text-align: right }
+
+.papers { display: grid; gap: 18px; margin-top: 18px }
+.paper { border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 22px 24px }
+.paper header { display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; justify-content: space-between; margin-bottom: 8px }
+.paper h3 { margin: 0; font: 600 23px/1.2 var(--display) }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 8px }
+.cols > div { min-width: 0 }
+.cols ul { margin: 6px 0 0; padding-left: 20px; color: var(--fg2); font-size: 15.5px } .cols li { margin-bottom: 6px }
+
+.lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-top: 16px }
+.lib a { display: block; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); padding: 18px 20px; transition: border-color .15s, transform .15s }
+.lib a:hover { border-color: var(--accent); transform: translateY(-1px) }
+.lib a h4 { color: var(--fg); font-size: 18px } .lib a p { font-size: 15px; margin: 6px 0 0 } .lib a .path { color: var(--muted); font-size: 13.5px; margin-top: 8px }
+.reader { display: grid; grid-template-columns: 290px 1fr; gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); margin-top: 18px; min-height: 520px }
+.reader nav { border-right: 1px solid var(--line); background: var(--raise); padding: 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; max-height: 760px }
+.reader nav button { text-align: left; font: 500 15px/1.35 var(--body); color: var(--fg2); background: none; border: 0; padding: 9px 11px; border-radius: 8px; cursor: pointer }
+.reader nav button small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px }
+.reader nav button:hover { background: var(--surface); color: var(--fg) } .reader nav button[aria-current="true"] { background: var(--surface); color: var(--fg); box-shadow: inset 2px 0 0 var(--accent) }
+.doc { padding: 22px 30px 30px; overflow-y: auto; max-height: 760px; min-width: 0 }
+.doc h1 { font-size: 30px; max-width: none } .doc h2 { font-size: 24px; margin-top: 28px } .doc h3 { font-size: 18.5px }
+.doc p, .doc li { color: var(--fg2); font-size: 15.5px; max-width: 78ch } .doc code { font-size: 14px; background: var(--raise); padding: 1px 5px; border-radius: 5px }
+.doc pre { background: var(--raise); padding: 12px 14px; border-radius: 10px; overflow-x: auto } .doc pre code { background: none; padding: 0 }
+.doc table { font-size: 14px; margin: 10px 0 } .doc table th, .doc table td { padding: 6px 9px }
+.doc blockquote { border-left: 2px solid var(--line); margin: 0; padding-left: 14px; color: var(--muted) }
+.note { font-size: 14.5px; color: var(--muted); max-width: 80ch }
+footer { padding-block: 34px 60px; color: var(--muted); font-size: 14.5px }
+
+@media (max-width: 760px) {
+  .read, .cols { grid-template-columns: 1fr } .reader { grid-template-columns: 1fr } .reader nav { max-height: 240px; border-right: 0; border-bottom: 1px solid var(--line) }
+  h2 { font-size: 26px } .doc { padding: 18px }
+}
+</style>
+
+<header class="top"><div class="wrap">
+  <h1>Explosive synchronization on sparse networks, and what it says about flash crashes</h1>
+  <p class="lede">One research repository, three questions. How does the abrupt collapse of synchrony in adaptive
+  (herding) Kuramoto oscillators move when every unit has only k neighbours? Does the same early warning work
+  before abrupt transitions in every kind of oscillator? And does synchrony in real prices warn of crashes?
+  This page is the entry point: what the project is, how the work was done, every result with its numbers, what
+  could be published, and every page and document of the repository.</p>
+  <div class="meta"><span id="m-gen"></span><span id="m-git"></span><span id="m-runs"></span></div>
+</div></header>
+
+<nav class="bar" aria-label="Sections"><div class="wrap">
+  <a href="#what">What this is</a><a href="#how">How it was done</a><a href="#physics">Results: sparse networks</a>
+  <a href="#zoo">Results: oscillator families</a><a href="#markets">Results: markets</a><a href="#publish">Publishable</a>
+  <a href="#runs">Runs</a><a href="#library">Library</a>
+</div>
+</div></nav>
+
+<main>
+<section class="block" id="what"><div class="wrap">
+  <h2>What this is</h2>
+  <p class="intro">The model is a population of phase oscillators whose coupling strength grows with how synchronised each
+  unit's own neighbourhood already is. That feedback (herding) makes synchronisation explosive: the synchronised state
+  survives down to a coupling &lambda;<sub>b</sub> (the fold) and then collapses at once, with a bistable window between
+  the fold and the coupling at which an incoherent start synchronises. In a market reading, the oscillators are traders
+  or stocks and the collapse of a synchronised state is a crash.</p>
+  <div class="eq">d&theta;<sub>i</sub>/dt = &omega;<sub>i</sub> + (&lambda;/&lang;k&rang;) r<sub>i</sub><sup>p</sup> &Sigma;<sub>j</sub> A<sub>ij</sub> sin(&theta;<sub>j</sub> &minus; &theta;<sub>i</sub>),&nbsp;&nbsp;&nbsp; r<sub>i</sub> = |&Sigma;<sub>j</sub> A<sub>ij</sub> e<sup>i&theta;<sub>j</sub></sup>| / k<sub>i</sub></div>
+  <dl class="defs">
+    <dt>&theta;<sub>i</sub>, &omega;<sub>i</sub></dt><dd>phase and natural frequency of unit i; frequencies follow a Lorentzian of half-width &gamma; = 0.5</dd>
+    <dt>&lambda;, p</dt><dd>coupling strength and herding exponent; the gain r<sub>i</sub><sup>p</sup> is the local order parameter of i's neighbours (Zhang, Boccaletti, Guan and Liu, PRL 2015)</dd>
+    <dt>k, A<sub>ij</sub></dt><dd>number of neighbours and the network: each unit listens to k others, on directed graphs (no back-reaction) or undirected ones</dd>
+    <dt>R</dt><dd>global order parameter |mean of e<sup>i&theta;</sup>|: 0 is incoherent, 1 is fully synchronised</dd>
+    <dt>&lambda;<sub>b</sub></dt><dd>fold: the lowest coupling at which the synchronised state survives. In the all-to-all limit it is known exactly (Zou and Wang, PRE 2020)</dd>
+  </dl>
+  <p>The central question: at finite k the fold moves to &lambda;<sub>b</sub>(k) = &lambda;<sub>b</sub>(&infin;)(1 + a/k). Three theories predict
+  the coefficient a. The <b>Rician closure</b> (the project's first theory) treats neighbour scatter as frozen. The <b>dynamic theory</b>
+  lets that scatter rotate and filters it, and applies to directed graphs. <b>Dynamic plus reaction</b> adds the echo a unit receives
+  through neighbours that listen back, and applies to undirected graphs. The same expansion predicts how far the synchronised branch R
+  shifts at any coupling above the fold, which can be measured more precisely than the fold itself.</p>
+  <div class="status" id="status"></div>
+</div></section>
+
+<section class="block" id="how"><div class="wrap">
+  <h2>How it was done</h2>
+  <p class="intro">The work went through a fixed sequence, and each step had to pass before the next one was trusted.</p>
+  <ol class="steps">
+    <li><h4>Audit of the earlier claims</h4><p>An external audit found headline numbers that no committed file backed. They were withdrawn or marked, and the key measurement was re-run (<code>docs/CLAIMS_AUDIT.md</code>, <code>docs/CORRECTIONS.md</code>).</p></li>
+    <li><h4>A tested package</h4><p><code>src/esfc</code>: graphs, frequencies, a compiled integrator held to the original reference code at 1e-12, the fold estimator (bisection on whether a synchronised start survives), the theory, and run directories that store config, seeds and environment for every result.</p></li>
+    <li><h4>Theory</h4><p>The leading 1/k expansion with frozen and rotating neighbour scatter, the reaction term for undirected graphs, and the same expansion on the synchronised branch (<code>docs/THEORY.md</code>).</p></li>
+    <li><h4>First measurements on the workstation and a cloud machine</h4><p>Pilot folds, the directed-graph test that excluded the closure, the oscillator-family studies, and the market tests with a design written before the run.</p></li>
+    <li><h4>GPU path for the cluster</h4><p>Every simulation was ported to the GPU (many realisations stacked as one block-diagonal graph; one CUDA block per oscillator run) and checked against the CPU code before any result was used: identical without noise, and the same statistics with noise. One GTX 1080 Ti did 12 CPU core-hours of fold measurements in 6 minutes.</p></li>
+    <li><h4>Production runs on the Ada cluster</h4><p>Branch curve, reciprocity, bistable window, graph structure, fold to k = 96, and the oscillator scans (populations to N = 25600, noise, ramp speed, sparse networks), on up to four GPUs at a time (<code>docs/ADA_RUN_2026-10-24.md</code>).</p></li>
+    <li><h4>Analysis, with every number generated from the result files</h4><p>The results pages, this hub and the run note are rebuilt from <code>results/</code> and <code>oscillators/data/</code>. Errors found on the way were fixed, not hidden: four are listed under each result where they changed a conclusion.</p></li>
+  </ol>
+</div></section>
+
+<section class="block" id="physics"><div class="wrap">
+  <h2>Results: sparse networks</h2>
+  <p class="intro">Every point is a mean over independent graphs and frequency draws (seeds), with a Student-t 95% interval. Coupling is
+  written as a multiple of the all-to-all fold, and the branch shift as c = k (R &minus; R<sub>0</sub>), where R<sub>0</sub> is the all-to-all
+  synchrony on the same frequencies.</p>
+
+  <figure class="fig" id="f-branch">
+    <div class="head"><h3>The synchronised branch: simulation against the three theories</h3>
+      <div class="seg" role="group" aria-label="Herding exponent" data-for="branch"><button type="button" aria-pressed="true" data-p="1">p = 1</button><button type="button" aria-pressed="false" data-p="2">p = 2</button></div></div>
+    <div class="chart" id="c-branch"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Horizontal: coupling as a multiple of the all-to-all fold. Vertical: the branch shift c. Small points: k = 12, 24, 48 (fainter = smaller k), 10 seeds each. Large open points: c extrapolated to infinite k by c(k) = c<sub>&infin;</sub> + b/k. Orange is directed graphs, blue undirected. Dashed lines: the theory for that graph type. Dotted grey: the Rician closure, the same for both. Hover any point for its numbers.</p></div>
+    <div><h4>Why it matters</h4><p id="r-branch"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-ratio">
+    <div class="head"><h3>How close each extrapolation lands to its theory</h3></div>
+    <div class="chart" id="c-ratio"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>One row per coupling and exponent. The marker is c<sub>&infin;</sub> divided by the prediction for that graph type, with a 95% bar; 1.00 (the vertical line) is exact agreement. The shaded band is &plusmn;5%.</p></div>
+    <div><h4>Why it matters</h4><p id="r-ratio"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-recip">
+    <div class="head"><h3>Reciprocity: the shift grows with the share of mutual links</h3></div>
+    <div class="chart" id="c-recip"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Horizontal: &rho;, the fraction of a unit's k inputs that listen back (0 directed, 1 undirected). Vertical: c at 1.25 times the fold, p = 1. Circles k = 24 (N = 20000), squares k = 48 (N = 50000). The solid line is the theory, dynamic + &rho; &times; reaction, with no fitted parameter; dotted grey is the closure, flat in &rho;.</p></div>
+    <div><h4>Why it matters</h4><p id="r-recip"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-fold">
+    <div class="head"><h3>The fold itself: coefficient k(&lambda;<sub>b</sub>/&lambda;<sub>b</sub>(&infin;) &minus; 1)</h3>
+      <div class="seg" role="group" aria-label="Herding exponent" data-for="fold"><button type="button" aria-pressed="true" data-p="1">p = 1</button><button type="button" aria-pressed="false" data-p="2">p = 2</button></div></div>
+    <div class="chart" id="c-fold"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Horizontal: connectivity k (log scale). Vertical: the measured fold coefficient with its 95% interval, at the largest size run for each k. Horizontal lines: the theories at infinite k (dashed: directed and undirected; dotted: closure). The fold scan to k = 96 with a 0.05% tolerance is running; its points appear here when it finishes.</p></div>
+    <div><h4>Why it matters</h4><p id="r-fold"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-window">
+    <div class="head"><h3>Is there a critical connectivity? The bistable window at small k</h3>
+      <div class="seg" role="group" aria-label="Herding exponent" data-for="window"><button type="button" aria-pressed="true" data-p="1">p = 1</button><button type="button" aria-pressed="false" data-p="2">p = 2</button></div></div>
+    <div class="chart" id="c-window"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Horizontal: k (log scale). Vertical: relative width of the bistable window, (forward threshold &minus; fold)/fold. Points: 8 seeds at N = 10000 (orange directed, blue undirected). Grey line: the closure, which closes the window at small k. Hollow diamonds: undirected at N = 30000 (robustness run).</p></div>
+    <div><h4>Why it matters</h4><p id="r-window"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-struct">
+    <div class="head"><h3>Clustering and degree heterogeneity</h3></div>
+    <div class="chart" id="c-struct"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Fold coefficient for four graph types at the same mean degree: random regular graphs with 0, 3 and 6 triangles per node (clustering about 0.005, 0.05 and 0.10 at k = 12) and Erd&odblac;s-R&eacute;nyi graphs (Poisson degrees). Bars are 95% intervals; blue is random regular, yellow Erd&odblac;s-R&eacute;nyi; full colour is k = 12 and faded k = 24; rows group by exponent. Open diamonds: the prediction for Erd&odblac;s-R&eacute;nyi graphs, the measured random-regular value plus the heterogeneity term of the degree-based mean field.</p></div>
+    <div><h4>Why it matters</h4><p id="r-struct"></p></div></div>
+  </figure>
+</div></section>
+
+<section class="block" id="zoo"><div class="wrap">
+  <h2>Results: oscillator families</h2>
+  <p class="intro">The same questions asked of eleven oscillator models: harmonic, Stuart-Landau, van der Pol, FitzHugh-Nagumo, Kuramoto
+  (with and without inertia, with and without herding), Winfree, R&ouml;ssler and theta neurons, plus a non-oscillating reference.</p>
+
+  <figure class="fig" id="f-z1">
+    <div class="head"><h3>Does the variance of the collective signal warn before every transition?</h3>
+      <div class="seg" role="group" aria-label="Signal" data-for="z1"><button type="button" aria-pressed="true" data-s="coll">Collective signal</button><button type="button" aria-pressed="false" data-s="unit">One unit</button></div></div>
+    <div class="chart" id="c-z1"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Rows: 18 transitions. Columns: runs at four population sizes and at three noise levels &times; three ramp speeds (100 runs each from N = 1600 on). Colour: ROC AUC of a rising variance against the strict null (a ramp of the same size away from the transition): 1 always warns, 0.5 is chance, 0 always falls. The toggle switches between the collective signal and a single unit's signal. Blank cells: not run in that setting (the two workstation runs at noise 0.05 and 0.2 with the default ramp predate the four herding scenarios), or no usable transition.</p></div>
+    <div><h4>Why it matters</h4><p id="r-z1"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-fhn">
+    <div class="head"><h3>The one exception, explained: FitzHugh-Nagumo herding collapse</h3></div>
+    <div class="chart" id="c-fhn"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>AUC of five indicators against the strict null for this one scenario (100 runs, noise 0.1). Light bars: on R as in the benchmark. Dark bars: on R averaged over one spike period (about 37 time units). The dashed line is chance.</p></div>
+    <div><h4>Why it matters</h4><p id="r-fhn"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-z2">
+    <div class="head"><h3>Collapse during a slow ramp, up to N = 819200</h3></div>
+    <div class="chart" id="c-z2"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Adaptive Kuramoto, coupling ramped down through the fold in 3000 time units. Left axis (blue): where the population leaves the branch, (&lambda; &minus; &lambda;<sub>b</sub>)/&lambda;<sub>b</sub> in percent; negative means after the fold. Right axis (orange): median variance of R just before leaving over its variance far from the fold. The shaded region marks sizes where the far-window variance stops falling with N.</p></div>
+    <div><h4>Why it matters</h4><p id="r-z2"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-o5">
+    <div class="head"><h3>Frequency-degree correlation on a scale-free network</h3></div>
+    <div class="chart" id="c-o5"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>Largest gap between the upward and downward sweeps of R (hysteresis) for five families on the same Barab&aacute;si-Albert network, with natural frequency rising with degree (dark) and with the same frequencies shuffled (light). A large gap only in the correlated case is the explosive synchronisation of G&oacute;mez-Garde&ntilde;es et al. (2011).</p></div>
+    <div><h4>Why it matters</h4><p id="r-o5"></p></div></div>
+  </figure>
+
+  <figure class="fig" id="f-o6">
+    <div class="head"><h3>Does every family shift its fold by the same 1/k law?</h3></div>
+    <div class="chart" id="c-o6"></div>
+    <div class="read"><div><h4>What you are seeing</h4><p>k(&lambda;<sub>b</sub>(k)/&lambda;<sub>b</sub>(complete) &minus; 1) for each family on random regular graphs, N = 20000, 4 seeds. Phase reduction predicts one constant for every limit-cycle family. FitzHugh-Nagumo is left out: its first run read a start-up transient as the fold, and its rerun is in progress.</p></div>
+    <div><h4>Why it matters</h4><p id="r-o6"></p></div></div>
+  </figure>
+</div></section>
+
+<section class="block" id="markets"><div class="wrap">
+  <h2>Results: markets</h2>
+  <p class="intro" id="mk-intro"></p>
+  <div class="tbl"><table id="t-mk"></table></div>
+  <p class="note">AUC: probability that the indicator is higher before a crash onset than at a comparison time. "Unmatched" compares with all other times; "volatility-matched" compares with times of equal volatility, which isolates synchrony beyond volatility (the registered primary hypothesis). Intervals are bootstrap 95%; "rejected" is after Benjamini-Hochberg correction.</p>
+</div></section>
+
+<section class="block" id="publish"><div class="wrap">
+  <h2>What could be published</h2>
+  <p class="intro">Five manuscripts follow from the work. Each card lists the evidence now in hand and what is still missing. Manuscripts are on hold by the author's decision until the evidence is complete.</p>
+  <div class="papers" id="papers"></div>
+</div></section>
+
+<section class="block" id="runs"><div class="wrap">
+  <h2>Runs behind the results</h2>
+  <p class="intro">Every result directory under <code>results/</code>: experiment, when it ran, where (workstation CPU or Ada GPU), and how many rows it holds. Each directory stores its config, seeds and environment.</p>
+  <div class="tbl"><table id="t-runs"></table></div>
+</div></section>
+
+<section class="block" id="library"><div class="wrap">
+  <h2>Library</h2>
+  <p class="intro">The full pages and documents. The results pages hold every table and figure with its explanation; the reference pages build the model step by step; the simulation lets you watch a crash spread.</p>
+  <div class="lib">
+    <a href="research/index.html"><h4>Main results page</h4><p>Status card, the audit, every sparse-network experiment (sections P0 to P6) with tables, figures and readings, and the market tests.</p><div class="path">research/index.html</div></a>
+    <a href="research/reference.html"><h4>Build the model from one oscillator</h4><p>The model in the order you would discover it: each step shows where the previous one breaks and adds one term.</p><div class="path">research/reference.html</div></a>
+    <a href="simulation/index.html"><h4>Interactive simulation</h4><p>Watch a crash spread node by node through a network; click any unit to see its own numbers in the locking inequality.</p><div class="path">simulation/index.html</div></a>
+    <a href="oscillators/index.html"><h4>Oscillator studies</h4><p>The early-warning benchmark across families, the transition atlas, sparse networks, the market data audit and the cluster runs.</p><div class="path">oscillators/index.html</div></a>
+    <a href="oscillators/reference.html"><h4>Oscillator reference</h4><p>Each family from a single unit to a population: equations, exact bifurcations, phase reduction and herding.</p><div class="path">oscillators/reference.html</div></a>
+    <a href="oscillators/demo.html"><h4>Oscillator demo</h4><p>Interactive versions of the oscillator kernels, validated against the simulation code.</p><div class="path">oscillators/demo.html</div></a>
+  </div>
+  <h3>Read the repository</h3>
+  <p>Every document that explains the work, rendered here. Pick one on the left.</p>
+  <div class="reader"><nav id="docnav" aria-label="Documents"></nav><article class="doc" id="doc"></article></div>
+  <p class="note">Reference PDFs (papers by other authors) are kept in <code>references/</code> in the repository and are not published here.</p>
+</div></section>
+</main>
+<footer><div class="wrap" id="foot"></div></footer>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script>const DATA = /*__DATA__*/null;</script>
+<script>
+(function () {
+const D = DATA, $ = s => document.querySelector(s);
+const f2 = v => (v == null ? "n/a" : (+v).toFixed(2)), f3 = v => (v == null ? "n/a" : (+v).toFixed(3));
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const tip = $("#tip");
+function showTip(ev, html, host) {
+  const r = host.getBoundingClientRect(); tip.innerHTML = html; tip.style.opacity = 1;
+  const x = Math.min(ev.clientX - r.left + 14, r.width - 290), y = ev.clientY - r.top + 14;
+  host.appendChild(tip); tip.style.left = Math.max(4, x) + "px"; tip.style.top = y + "px";
+}
+function hideTip() { tip.style.opacity = 0 }
+
+/* header meta */
+$("#m-gen").textContent = "Built " + D.generated + " from the result files";
+$("#m-git").textContent = "Commit " + D.git;
+$("#m-runs").textContent = D.runs.length + " result runs";
+
+/* chart scaffold */
+function frame(el, opt) {
+  const W = opt.w || 980, H = opt.h || 420, m = Object.assign({ t: 18, r: 24, b: 52, l: 70 }, opt.m || {});
+  el.innerHTML = "";
+  const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", opt.label || "chart");
+  const g = svg.append("g").attr("transform", `translate(${m.l},${m.t})`);
+  return { svg, g, w: W - m.l - m.r, h: H - m.t - m.b, m };
+}
+function axes(F, x, y, xl, yl, xo, yo) {
+  F.g.append("g").attr("class", "grid").call(d3.axisLeft(y).tickSize(-F.w).tickFormat("").ticks(yo && yo.ticks || 6)).select(".domain").remove();
+  const ax = F.g.append("g").attr("class", "axis").attr("transform", `translate(0,${F.h})`).call(xo && xo.axis || d3.axisBottom(x).ticks(8));
+  F.g.append("g").attr("class", "axis").call(yo && yo.axis || d3.axisLeft(y).ticks(yo && yo.ticks || 6));
+  F.g.append("text").attr("class", "axlab").attr("x", F.w / 2).attr("y", F.h + 42).attr("text-anchor", "middle").text(xl);
+  F.g.append("text").attr("class", "axlab").attr("transform", "rotate(-90)").attr("x", -F.h / 2).attr("y", -52).attr("text-anchor", "middle").text(yl);
+  return ax;
+}
+function legend(el, items) {
+  const d = document.createElement("div"); d.className = "legend";
+  d.innerHTML = items.map(([c, kind, t]) => `<span style="color:${c}"><i class="${kind}"></i><span style="color:var(--fg2)">${t}</span></span>`).join("");
+  el.appendChild(d);
+}
+function seg(name, cb) {
+  const s = document.querySelector(`.seg[data-for="${name}"]`);
+  s.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    s.querySelectorAll("button").forEach(o => o.setAttribute("aria-pressed", o === b)); cb(b.dataset);
+  }));
+}
+const G = { dir: "var(--dir)", "rho1.00": "var(--und)", rr: "var(--und)" };
+
+/* the benchmark claim, computed: lowest collective AUC over the settings with N >= 6400 or slower ramps */
+function z1Claim() {
+  const good = D.z1.columns.filter(c => /N (6400|25600)|ramp x(2|4)$/.test(c));
+  let min = 1, where = "";
+  D.z1.scenarios.forEach(r => { if (r.id === "fhn_adapt_down") return; good.forEach(c => { const v = r.coll && r.coll[c]; if (v != null && v < min) { min = v; where = r.label + ", " + c } }) });
+  let wmin = 1, wwhere = "";
+  D.z1.scenarios.forEach(r => { if (r.id === "fhn_adapt_down") return; D.z1.columns.forEach(c => { const v = r.coll && r.coll[c]; if (v != null && v < wmin) { wmin = v; wwhere = r.label + ", " + c } }) });
+  return { min, where, wmin, wwhere, ncols: good.length };
+}
+
+/* status */
+function status() {
+  const ex = D.branch_ex, und = ex.filter(r => r.graph === "rho1.00"), dir = ex.filter(r => r.graph === "dir");
+  const far = und.filter(r => r.mult >= 2), near = und.filter(r => r.mult > 1.1 && r.mult < 2);
+  const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
+  const w = D.window.filter(r => r.run === "paperA_window_nscan_gpu" && r.n === Math.max(...D.window.filter(q => q.run === "paperA_window_nscan_gpu").map(q => q.n)));
+  const items = [
+    ["good", "Settled", "Rician closure excluded", `Ruled out in every one of the ${D.branch_cells.length} branch cells, in opposite directions on the two graph types.`],
+    ["good", "Strong", "Undirected graphs follow the reaction theory", `Extrapolated to large k the branch shift is ${f2(Math.min(...far.map(r => r.ratio_to_theory)))} to ${f2(Math.max(...far.map(r => r.ratio_to_theory)))} times the prediction away from the fold; ${f2(Math.min(...near.map(r => r.ratio_to_theory)))} to ${f2(Math.max(...near.map(r => r.ratio_to_theory)))} nearer to it.`],
+    ["warn", "Within 5 to 10%", "Directed graphs and the dynamic theory", `Mean extrapolated ratio ${f3(mean(dir.map(r => r.ratio_to_theory)))}; ${dir.filter(r => Math.abs(r.z) <= 2.1).length} of ${dir.length} cells within about 2 standard errors.`],
+    ["good", "New", "No critical connectivity down to k = 3", `The closure closes the bistable window near k = 6 to 8; it stays open in ${w.filter(r => r.ci_lo > 0).length} of ${w.length} cells at N = ${w.length ? w[0].n : "?"}, and widens with N.`],
+    ["good", "Benchmark", "Collective variance warns before 18 transitions", `With N of 6400 or more, or ramps 2 to 4 times slower, every transition warns (lowest AUC ${f2(z1Claim().min)}) except the FitzHugh-Nagumo herding collapse at noise 0.1, which cycle-averaging fixes. Weak cases at N = 400 with fast ramps or strong noise.`],
+    ["bad", "Negative", "Synchrony as a crash warning in minute data", "Not detected beyond volatility, and underpowered (12 test crashes)."],
+  ];
+  $("#status").innerHTML = items.map(([c, pill, h, t]) => `<div><h4><span class="pill ${c}">${pill}</span>${h}</h4><p>${t}</p></div>`).join("");
+}
+
+/* branch curve */
+let pBranch = 1;
+function branch() {
+  const el = $("#c-branch"), F = frame(el, { label: "Branch shift against coupling" });
+  const cells = D.branch_cells.filter(r => r.p === pBranch && r.valid), ex = D.branch_ex.filter(r => r.p === pBranch);
+  const x = d3.scaleLinear().domain([1.0, 3.1]).range([0, F.w]);
+  const ymin = Math.min(-1.25, d3.min(cells, r => r.ci_lo) - 0.05);
+  const y = d3.scaleLinear().domain([Math.max(ymin, -1.8), 0.05]).range([F.h, 0]);
+  axes(F, x, y, "coupling / all-to-all fold", "branch shift c = k (R - R0)");
+  const line = d3.line().x(r => x(r.mult)).y(r => y(r.v));
+  const byM = d3.sort(ex, r => r.mult);
+  [["dir", "dynamic theory", "6 5"], ["rho1.00", "reaction theory", "6 5"]].forEach(([g]) => {
+    F.g.append("path").attr("d", line(byM.filter(r => r.graph === g).map(r => ({ mult: r.mult, v: r.theory })))).attr("fill", "none").attr("stroke", G[g]).attr("stroke-width", 2).attr("stroke-dasharray", "7 5");
+  });
+  F.g.append("path").attr("d", line(byM.filter(r => r.graph === "dir").map(r => ({ mult: r.mult, v: r.closure })))).attr("fill", "none").attr("stroke", "var(--closure)").attr("stroke-width", 2).attr("stroke-dasharray", "2 4");
+  const off = { 12: -0.035, 24: 0, 48: 0.035 }, op = { 12: 0.38, 24: 0.65, 48: 1 };
+  cells.forEach(r => {
+    const g = F.g.append("g").style("color", G[r.variant]).attr("opacity", op[r.k]);
+    const cx = x(r.mult + off[r.k]);
+    g.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(Math.max(r.ci_lo, y.domain()[0]))).attr("y2", y(r.ci_hi)).attr("stroke", "currentColor").attr("stroke-width", 1.6);
+    g.append("circle").attr("cx", cx).attr("cy", y(Math.max(r.c_mean, y.domain()[0]))).attr("r", 4.2).attr("fill", "currentColor")
+      .on("mousemove", ev => showTip(ev, `<b>${r.variant === "dir" ? "Directed" : "Undirected"}, k = ${r.k}</b><br>coupling ${r.mult} x fold, N = ${r.n}<br>c = ${f3(r.c_mean)} [${f3(r.ci_lo)}, ${f3(r.ci_hi)}]<br>theory ${f3(r.theory)}, closure ${f3(r.closure)}`, el)).on("mouseleave", hideTip);
+  });
+  ex.forEach(r => {
+    const g = F.g.append("g").style("color", G[r.graph]), cx = x(r.mult + 0.075);
+    g.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(r.c_inf - 1.96 * r.c_inf_se)).attr("y2", y(r.c_inf + 1.96 * r.c_inf_se)).attr("stroke", "currentColor").attr("stroke-width", 2);
+    g.append("circle").attr("cx", cx).attr("cy", y(r.c_inf)).attr("r", 7).attr("fill", "var(--surface)").attr("stroke", "currentColor").attr("stroke-width", 2.4)
+      .on("mousemove", ev => showTip(ev, `<b>${r.graph === "dir" ? "Directed" : "Undirected"}, extrapolated to k = infinity</b><br>coupling ${r.mult} x fold<br>c = ${f3(r.c_inf)} &plusmn; ${f3(r.c_inf_se)}<br>theory ${f3(r.theory)}: ratio ${f3(r.ratio_to_theory)} (${(+r.z).toFixed(1)} SE)`, el)).on("mouseleave", hideTip);
+  });
+  legend(el, [["var(--dir)", "dot", "directed, k = 12, 24, 48"], ["var(--und)", "dot", "undirected, k = 12, 24, 48"], ["var(--dir)", "dash", "dynamic theory (directed)"], ["var(--und)", "dash", "dynamic + reaction (undirected)"], ["var(--closure)", "dotted", "Rician closure"], ["var(--fg2)", "dot", "open circle: extrapolated to infinite k"]]);
+  const und = D.branch_ex.filter(r => r.graph === "rho1.00"), far = und.filter(r => r.mult >= 2);
+  $("#r-branch").innerHTML = `The closure (dotted) misses both data sets, too negative on directed graphs and not negative enough on undirected ones. On undirected graphs the points move toward the reaction theory as k grows, and the extrapolations land on it away from the fold (${f2(Math.min(...far.map(r => r.ratio_to_theory)))} to ${f2(Math.max(...far.map(r => r.ratio_to_theory)))} times the prediction at 2 and 3 times the fold). Near the fold the predicted shift diverges and the 1/k expansion converges slowest; the size scan at k = 96 and 192 tests that region.`;
+}
+
+/* ratio plot */
+function ratio() {
+  const el = $("#c-ratio"), ex = d3.sort(D.branch_ex, r => r.graph, r => r.p, r => r.mult);
+  const F = frame(el, { h: 60 + ex.length * 26, m: { l: 250, b: 48 }, label: "Extrapolated shift over theory" });
+  const x = d3.scaleLinear().domain([0.6, 1.4]).range([0, F.w]);
+  const y = d3.scaleBand().domain(ex.map((r, i) => i)).range([0, F.h]).padding(0.3);
+  F.g.append("rect").attr("x", x(0.95)).attr("width", x(1.05) - x(0.95)).attr("y", 0).attr("height", F.h).attr("fill", "var(--raise)");
+  F.g.append("g").attr("class", "axis").attr("transform", `translate(0,${F.h})`).call(d3.axisBottom(x).ticks(8));
+  F.g.append("line").attr("x1", x(1)).attr("x2", x(1)).attr("y1", 0).attr("y2", F.h).attr("stroke", "var(--theory)").attr("stroke-width", 1.4);
+  F.g.append("text").attr("class", "axlab").attr("x", F.w / 2).attr("y", F.h + 40).attr("text-anchor", "middle").text("extrapolated shift / theory for that graph type");
+  ex.forEach((r, i) => {
+    const yy = y(i) + y.bandwidth() / 2, se = r.c_inf_se / Math.abs(r.theory) * 1.96, col = G[r.graph];
+    F.g.append("text").attr("x", -12).attr("y", yy + 4.5).attr("text-anchor", "end").text(`${r.graph === "dir" ? "directed" : "undirected"}, p = ${r.p}, ${r.mult} x fold${r.n_k < 3 ? " (2 k)" : ""}`);
+    F.g.append("line").attr("x1", x(Math.max(0.6, r.ratio_to_theory - se))).attr("x2", x(Math.min(1.4, r.ratio_to_theory + se))).attr("y1", yy).attr("y2", yy).attr("stroke", col).attr("stroke-width", 2);
+    F.g.append("circle").attr("cx", x(Math.max(0.6, Math.min(1.4, r.ratio_to_theory)))).attr("cy", yy).attr("r", 6).attr("fill", col)
+      .on("mousemove", ev => showTip(ev, `<b>ratio ${f3(r.ratio_to_theory)}</b><br>c_inf ${f3(r.c_inf)} &plusmn; ${f3(r.c_inf_se)}, theory ${f3(r.theory)}<br>${(+r.z).toFixed(1)} standard errors`, el)).on("mouseleave", hideTip);
+  });
+  const dir = D.branch_ex.filter(r => r.graph === "dir");
+  $("#r-ratio").innerHTML = `Undirected graphs sit within the 5% band at 2 and 3 times the fold and fall short nearer to it. Directed graphs scatter around 1.06 on average (${dir.filter(r => Math.abs(r.z) <= 2.1).length} of ${dir.length} within about 2 standard errors), so the dynamic theory holds to within about 5 to 10%. The one clear outlier is directed, p = 1 at 3 times the fold. The two near-fold undirected rows use only k = 24 and 48, because at k = 12 that coupling lies below the graphs' own fold.`;
+}
+
+/* reciprocity */
+function recip() {
+  const el = $("#c-recip"), F = frame(el, { h: 380, label: "Branch shift against mutual fraction" });
+  const R = D.recip, x = d3.scaleLinear().domain([-0.03, 1.03]).range([0, F.w]);
+  const y = d3.scaleLinear().domain([d3.min(R, r => r.c_lo) - 0.05, -0.2]).range([F.h, 0]);
+  axes(F, x, y, "fraction of mutual links, rho", "branch shift c");
+  const th = R[0], dyn = th.theory, slope = (R.find(r => r.rho === 1) || th).theory - dyn;
+  F.g.append("line").attr("x1", x(0)).attr("x2", x(1)).attr("y1", y(dyn)).attr("y2", y(dyn + slope)).attr("stroke", "var(--theory)").attr("stroke-width", 2);
+  F.g.append("line").attr("x1", x(0)).attr("x2", x(1)).attr("y1", y(th.closure)).attr("y2", y(th.closure)).attr("stroke", "var(--closure)").attr("stroke-width", 2).attr("stroke-dasharray", "2 4");
+  R.forEach(r => {
+    const cx = x(r.rho + (r.k === 24 ? -0.012 : 0.012)), col = r.k === 24 ? "var(--und)" : "var(--dir)";
+    F.g.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(r.c_lo)).attr("y2", y(r.c_hi)).attr("stroke", col).attr("stroke-width", 1.8);
+    const sh = r.k === 24 ? F.g.append("circle").attr("cx", cx).attr("cy", y(r.c)).attr("r", 6) : F.g.append("rect").attr("x", cx - 6).attr("y", y(r.c) - 6).attr("width", 12).attr("height", 12);
+    sh.attr("fill", col).on("mousemove", ev => showTip(ev, `<b>k = ${r.k}, rho = ${r.rho}</b><br>realised mutual fraction ${f3(r.reciprocity)}<br>c = ${f3(r.c)} [${f3(r.c_lo)}, ${f3(r.c_hi)}]<br>theory ${f3(r.theory)}`, el)).on("mouseleave", hideTip);
+  });
+  legend(el, [["var(--und)", "dot", "k = 24, N = 20000"], ["var(--dir)", "dot", "k = 48, N = 50000"], ["var(--theory)", "", "theory: dynamic + rho x reaction"], ["var(--closure)", "dotted", "Rician closure"]]);
+  const fit = D.recip_fit;
+  $("#r-recip").innerHTML = `The shift grows almost linearly with the share of mutual links, which is what the theory implies if the echo travels only through neighbours that listen back. The fitted slope is ${fit.map(r => `${Math.round(100 * r.slope / r.reaction)}% of the predicted reaction at k = ${r.k}`).join(" and ")}: it approaches the prediction as k grows. The closure predicts no dependence on &rho; at all, ${Math.round(Math.abs(fit[fit.length - 1].slope / fit[fit.length - 1].slope_se))} standard errors from the measured slope.`;
+}
+
+/* fold coefficient */
+let pFold = 1;
+function fold() {
+  const el = $("#c-fold"), F = frame(el, { label: "Fold coefficient against connectivity" });
+  let rows = D.folds.filter(r => r.p === pFold);
+  const best = {}; rows.forEach(r => { const k = r.graph + r.k; if (!best[k] || r.N > best[k].N || (r.N === best[k].N && r.n_seeds > best[k].n_seeds)) best[k] = r; });
+  rows = Object.values(best);
+  const th = D.theory.find(t => t.p === pFold);
+  const ks = [...new Set(rows.map(r => r.k))].sort((a, b) => a - b);
+  const x = d3.scaleLog().domain([d3.min(ks) * 0.85, d3.max(ks) * 1.15]).range([0, F.w]);
+  const y = d3.scaleLinear().domain([0, Math.max(th.rician, d3.max(rows, r => r.coef_hi)) * 1.1]).range([F.h, 0]);
+  axes(F, x, y, "connectivity k", "k (fold ratio - 1)", { axis: d3.axisBottom(x).tickValues(ks).tickFormat(d3.format("d")) });
+  [["var(--und)", th.undirected, "7 5"], ["var(--dir)", th.directed, "7 5"], ["var(--closure)", th.rician, "2 4"]].forEach(([c, v, da]) =>
+    F.g.append("line").attr("x1", 0).attr("x2", F.w).attr("y1", y(v)).attr("y2", y(v)).attr("stroke", c).attr("stroke-width", 2).attr("stroke-dasharray", da));
+  rows.forEach(r => {
+    const col = G[r.graph], cx = x(r.k) + (r.graph === "dir" ? 5 : -5);
+    F.g.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(Math.max(0, r.coef_lo))).attr("y2", y(r.coef_hi)).attr("stroke", col).attr("stroke-width", 1.8);
+    F.g.append("circle").attr("cx", cx).attr("cy", y(r.coef)).attr("r", 6).attr("fill", col)
+      .on("mousemove", ev => showTip(ev, `<b>${r.graph === "dir" ? "Directed" : "Undirected"}, k = ${r.k}</b><br>N = ${r.N}, ${r.n_seeds} seeds (${r.run.replace("paperA_", "")})<br>coefficient ${f2(r.coef)} [${f2(r.coef_lo)}, ${f2(r.coef_hi)}]<br>theory at this k ${f2(r.theory_coef)}, closure ${f2(r.rician_coef)}`, el)).on("mouseleave", hideTip);
+  });
+  legend(el, [["var(--und)", "dot", "undirected"], ["var(--dir)", "dot", "directed"], ["var(--und)", "dash", `theory, undirected (${f2(th.undirected)})`], ["var(--dir)", "dash", `theory, directed (${f2(th.directed)})`], ["var(--closure)", "dotted", `Rician closure (${f2(th.rician)})`]]);
+  $("#r-fold").innerHTML = `On directed graphs the measured coefficient sits far below the closure and close to the dynamic theory. On undirected graphs it lies between the directed theory and the full prediction and is still rising with k, as the branch results anticipate: the full reaction term is only reached at large k. The fold is harder to measure than the branch (each point is a bisection), which is why the branch shift carries the main test.`;
+}
+
+/* window */
+let pWin = 1;
+function windowChart() {
+  const el = $("#c-window"), F = frame(el, { label: "Bistable window width against connectivity" });
+  const main = D.window.filter(r => r.run === "paperA_window_gpu" && r.p === pWin);
+  const nscan = D.window.filter(r => r.run === "paperA_window_nscan_gpu" && r.p === pWin && r.variant === "rho1.00");
+  const big = nscan.filter(r => r.n === d3.max(nscan, q => q.n));
+  const ks = [...new Set(main.map(r => r.k))].sort((a, b) => a - b);
+  const x = d3.scaleLog().domain([2.7, 27]).range([0, F.w]);
+  const y = d3.scaleLinear().domain([0, d3.max([...main, ...big], r => Math.max(r.ci_hi, r.closure_width)) * 1.08]).range([F.h, 0]);
+  axes(F, x, y, "connectivity k", "relative window width", { axis: d3.axisBottom(x).tickValues(ks).tickFormat(d3.format("d")) });
+  const th = d3.sort(main.filter(r => r.variant === "rho1.00"), r => r.k);
+  F.g.append("path").attr("d", d3.line().x(r => x(r.k)).y(r => y(Math.max(0, r.closure_width)))(th)).attr("fill", "none").attr("stroke", "var(--closure)").attr("stroke-width", 2.4);
+  main.forEach(r => {
+    const col = G[r.variant], cx = x(r.k) * 1 + (r.variant === "dir" ? 6 : -6);
+    F.g.append("line").attr("x1", cx).attr("x2", cx).attr("y1", y(Math.max(0, r.ci_lo))).attr("y2", y(r.ci_hi)).attr("stroke", col).attr("stroke-width", 1.8);
+    F.g.append("circle").attr("cx", cx).attr("cy", y(r.width_mean)).attr("r", 6).attr("fill", col)
+      .on("mousemove", ev => showTip(ev, `<b>${r.variant === "dir" ? "Directed" : "Undirected"}, k = ${r.k}, N = ${r.n}</b><br>width ${f3(r.width_mean)} [${f3(r.ci_lo)}, ${f3(r.ci_hi)}]<br>fold ${f3(r.ratio_b)}, forward ${f3(r.ratio_f)} (x all-to-all fold)<br>closure width ${f3(r.closure_width)}`, el)).on("mouseleave", hideTip);
+  });
+  big.forEach(r => F.g.append("path").attr("d", d3.symbol(d3.symbolDiamond, 90)()).attr("transform", `translate(${x(r.k) + 16},${y(r.width_mean)})`).attr("fill", "var(--surface)").attr("stroke", "var(--und)").attr("stroke-width", 2)
+    .on("mousemove", ev => showTip(ev, `<b>Undirected, k = ${r.k}, N = ${r.n}</b><br>width ${f3(r.width_mean)} [${f3(r.ci_lo)}, ${f3(r.ci_hi)}]`, el)).on("mouseleave", hideTip));
+  legend(el, [["var(--dir)", "dot", "directed, N = 10000"], ["var(--und)", "dot", "undirected, N = 10000"], ["var(--und)", "dot", `hollow diamond: undirected, N = ${big.length ? big[0].n : ""}`], ["var(--closure)", "", "Rician closure"]]);
+  const u1 = D.window.filter(r => r.run === "paperA_window_gpu" && r.variant === "rho1.00" && r.p === 1 && r.k <= 6);
+  $("#r-window").innerHTML = `The closure predicts that bistability needs a minimum number of neighbours: at p = 1 its window is below ${f3(Math.max(...u1.map(r => r.closure_width)))} for k &le; 6. The measured window stays open down to k = 3 (width ${f2(Math.min(...u1.map(r => r.width_mean)))} to ${f2(Math.max(...u1.map(r => r.width_mean)))} there), and it is wider at N = 30000 than at N = 10000, so finite size narrows it rather than creating it. Directed and undirected widths are nearly equal although their edges differ a lot, and the reason is a clean regularity: the undirected-to-directed ratio is the same for both edges (at p = 1, k = 4 to 24: within ${(100 * resc()).toFixed(1)}%), so mutual links act like a rescaled coupling that moves the whole window. On directed graphs at small k the fold even falls below the all-to-all value, at every N tested. Above k = 10 the closure's width is close at p = 1.`;
+}
+
+/* largest relative difference between the undirected/directed ratios of the two edges (p = 1, k = 4 to 24) */
+function resc() {
+  const m = D.window.filter(r => r.run === "paperA_window_gpu" && r.p === 1 && r.k >= 4);
+  let worst = 0;
+  m.filter(r => r.variant === "rho1.00").forEach(u => {
+    const d = m.find(q => q.variant === "dir" && q.k === u.k); if (!d) return;
+    worst = Math.max(worst, Math.abs((u.ratio_f / d.ratio_f) / (u.ratio_b / d.ratio_b) - 1));
+  });
+  return worst;
+}
+
+/* structure */
+function structure() {
+  const el = $("#c-struct"), S = d3.sort(D.structure, r => r.p, r => r.graph, r => r.k);
+  const F = frame(el, { h: 70 + S.length * 24, m: { l: 300, b: 50 }, label: "Fold coefficient by graph type" });
+  const names = { crr_t0: "random regular, 0 triangles", crr_t3: "random regular, 3 triangles", crr_t6: "random regular, 6 triangles", er: "Erdos-Renyi (Poisson degrees)" };
+  const x = d3.scaleLinear().domain([0, d3.max(S, r => r.coef_hi) * 1.08]).range([0, F.w]);
+  const y = d3.scaleBand().domain(S.map((r, i) => i)).range([0, F.h]).padding(0.28);
+  F.g.append("g").attr("class", "grid").attr("transform", `translate(0,${F.h})`).call(d3.axisBottom(x).tickSize(-F.h).tickFormat("")).select(".domain").remove();
+  F.g.append("g").attr("class", "axis").attr("transform", `translate(0,${F.h})`).call(d3.axisBottom(x).ticks(8));
+  F.g.append("text").attr("class", "axlab").attr("x", F.w / 2).attr("y", F.h + 42).attr("text-anchor", "middle").text("fold coefficient k (fold ratio - 1)");
+  S.forEach((r, i) => {
+    const yy = y(i) + y.bandwidth() / 2, col = r.graph === "er" ? "var(--warn)" : "var(--und)", o = r.k === 12 ? 1 : 0.55;
+    F.g.append("text").attr("x", -12).attr("y", yy + 4.5).attr("text-anchor", "end").text(`p = ${r.p}, k = ${r.k}: ${names[r.graph] || r.graph}`);
+    F.g.append("line").attr("x1", x(r.coef_lo)).attr("x2", x(r.coef_hi)).attr("y1", yy).attr("y2", yy).attr("stroke", col).attr("stroke-width", 2.2).attr("opacity", o);
+    F.g.append("circle").attr("cx", x(r.coef)).attr("cy", yy).attr("r", 6).attr("fill", col).attr("opacity", o)
+      .on("mousemove", ev => showTip(ev, `<b>${names[r.graph]}</b><br>p = ${r.p}, k = ${r.k}, N = ${r.N}, ${r.n_seeds} seeds<br>coefficient ${f2(r.coef)} [${f2(r.coef_lo)}, ${f2(r.coef_hi)}]`, el)).on("mouseleave", hideTip);
+  });
+  const aHet = (p, k) => { const h = (D.hetero_theory || []).find(r => r.p === p && r.k === k); return h ? h.a_het : null };
+  S.forEach((r, i) => {
+    if (r.graph !== "er") return;
+    const rr = D.structure.find(q => q.graph === "crr_t0" && q.p === r.p && q.k === r.k), a = aHet(r.p, r.k);
+    if (!rr || a == null) return;
+    const pred = rr.coef + a, yy = y(i) + y.bandwidth() / 2;
+    F.g.append("path").attr("d", d3.symbol(d3.symbolDiamond, 110)()).attr("transform", `translate(${x(pred)},${yy})`).attr("fill", "var(--surface)").attr("stroke", "var(--fg)").attr("stroke-width", 2)
+      .on("mousemove", ev => showTip(ev, `<b>Prediction</b><br>random-regular coefficient ${f2(rr.coef)} plus heterogeneity term ${f2(a)} = ${f2(pred)}<br>measured ${f2(r.coef)} [${f2(r.coef_lo)}, ${f2(r.coef_hi)}]`, el)).on("mouseleave", hideTip);
+  });
+  legend(el, [["var(--und)", "dot", "random regular"], ["var(--warn)", "dot", "Erdos-Renyi"], ["var(--fg)", "", "open diamond: predicted Erdos-Renyi value"]]);
+  const g = (gr, p, k) => D.structure.find(r => r.graph === gr && r.p === p && r.k === k);
+  $("#r-struct").innerHTML = `Clustering raises the fold modestly (p = 1, k = 12: ${f2(g("crr_t0", 1, 12).coef)} with no triangles, ${f2(g("crr_t6", 1, 12).coef)} with six). Degree heterogeneity lowers it strongly (${f2(g("er", 1, 12).coef)} on Erd&odblac;s-R&eacute;nyi graphs): with the 1/&lang;k&rang; normalisation, high-degree units are coupled more strongly and hold the synchronised state. For heterogeneity there is now a theory: the degree-based mean field gives, exactly at leading order, &lambda;<sub>b</sub>/&lambda;<sub>b</sub>(&infin;) = 1 &minus; (p+2)/(2(p+1)&sup2;) CV&sup2; of the degree (a closed form, derived and checked to 1e-7), so for Poisson degrees the coefficient drops by 3/8 at p = 1 and 2/9 at p = 2. Added to the random-regular value (open diamonds) it predicts the Erd&odblac;s-R&eacute;nyi fold at k = 24 within its interval at both exponents (${f2(g("crr_t0", 1, 24).coef + aHet(1, 24))} against ${f2(g("er", 1, 24).coef)}; ${f2(g("crr_t0", 2, 24).coef + aHet(2, 24))} against ${f2(g("er", 2, 24).coef)}), but not at k = 12, where higher orders matter. A run at k = 24, 48 and 96 tests the additive law. Clustering is still outside the theory.`;
+}
+
+/* z1 heatmap */
+let sigZ1 = "coll";
+function z1() {
+  const el = $("#c-z1"), Z = D.z1, cols = Z.columns, rows = Z.scenarios;
+  const F = frame(el, { w: 1080, h: 130 + rows.length * 27, m: { l: 300, t: 120, b: 14, r: 120 }, label: "Warning skill heatmap" });
+  const x = d3.scaleBand().domain(cols).range([0, F.w]).padding(0.06), y = d3.scaleBand().domain(rows.map(r => r.id)).range([0, F.h]).padding(0.08);
+  const col = d3.scaleLinear().domain([0, 0.5, 0.7, 1]).range(["#c94141", "#55606f", "#3f7fc9", "#2fb47c"]).clamp(true);
+  cols.forEach(c => F.g.append("text").attr("transform", `translate(${x(c) + x.bandwidth() / 2},-10) rotate(-40)`).attr("text-anchor", "start").style("font-size", "12.5px").text(c));
+  rows.forEach(r => {
+    F.g.append("text").attr("x", -10).attr("y", y(r.id) + y.bandwidth() / 2 + 4.5).attr("text-anchor", "end").text(r.label);
+    cols.forEach(c => {
+      const v = r[sigZ1] && r[sigZ1][c];
+      const cell = F.g.append("g").attr("transform", `translate(${x(c)},${y(r.id)})`);
+      cell.append("rect").attr("width", x.bandwidth()).attr("height", y.bandwidth()).attr("rx", 4).attr("fill", v == null ? "var(--raise)" : col(v));
+      if (v != null) cell.append("text").attr("x", x.bandwidth() / 2).attr("y", y.bandwidth() / 2 + 4.5).attr("text-anchor", "middle").style("fill", "#ffffff").style("font-size", "12.5px").style("font-weight", 600).text(v.toFixed(2));
+      cell.on("mousemove", ev => showTip(ev, `<b>${r.label}</b><br>${c}<br>${sigZ1 === "coll" ? "collective" : "one unit"} variance AUC: ${v == null ? "no transition" : v.toFixed(3)}`, el)).on("mouseleave", hideTip);
+    });
+  });
+  const leg = document.createElement("div"); leg.className = "legend";
+  leg.innerHTML = [[0, "0: always falls"], [0.5, "0.5: chance"], [0.7, "0.7"], [1, "1: always warns"]].map(([v, t]) => `<span><i class="dot" style="background:${col(v)};width:14px;height:14px;border-radius:3px"></i>${t}</span>`).join("");
+  el.appendChild(leg);
+  $("#r-z1").innerHTML = sigZ1 === "coll"
+    ? (() => { const z = z1Claim(); return `With N of 6400 or more, or ramps 2 to 4 times slower, the variance of the collective signal warns before every transition (lowest AUC ${f2(z.min)}, ${z.where}) with one exception: the FitzHugh-Nagumo herding collapse at noise 0.1, where it falls at every size (at noise 0.05 it warns; the next figure explains why). Small populations with fast ramps or strong noise weaken it: the lowest value anywhere is ${f2(z.wmin)} (${z.wwhere}). Winfree oscillator death rises from 0.71 at N = 400 to 1.00 at N = 25600.` })()
+    : `A single unit's variance often shows the opposite of a warning: it falls before amplitude death, van der Pol synchrony and Winfree death, because what changes at a collective transition is the mean field, while each unit keeps oscillating on its own cycle. Warnings have to be read from collective signals.`;
+}
+
+function fhn() {
+  const el = $("#c-fhn"), P = D.z1.fhn_period, names = { var: "variance", ac1: "lag-1 autocorrelation", ar2_rate: "AR(2) decay rate", spec_peak: "spectral peak", skew: "|skewness|" };
+  const inds = ["var", "ar2_rate", "spec_peak", "ac1", "skew"].filter(i => P.some(r => r.indicator === i));
+  const F = frame(el, { h: 360, label: "Indicators on raw and period-averaged R" });
+  const x0 = d3.scaleBand().domain(inds).range([0, F.w]).padding(0.25), x1 = d3.scaleBand().domain(["raw", "period_mean"]).range([0, x0.bandwidth()]).padding(0.08);
+  const y = d3.scaleLinear().domain([0, 1]).range([F.h, 0]);
+  axes(F, x0, y, "indicator", "AUC against the strict null", { axis: d3.axisBottom(x0).tickFormat(i => names[i]) });
+  F.g.append("line").attr("x1", 0).attr("x2", F.w).attr("y1", y(0.5)).attr("y2", y(0.5)).attr("stroke", "var(--closure)").attr("stroke-dasharray", "6 5");
+  P.forEach(r => {
+    if (!inds.includes(r.indicator)) return;
+    F.g.append("rect").attr("x", x0(r.indicator) + x1(r.variant)).attr("width", x1.bandwidth()).attr("y", y(r.auc)).attr("height", F.h - y(r.auc)).attr("rx", 3)
+      .attr("fill", "var(--und)").attr("opacity", r.variant === "raw" ? 0.4 : 1)
+      .on("mousemove", ev => showTip(ev, `<b>${names[r.indicator]}</b><br>${r.variant === "raw" ? "R as in the benchmark" : "R averaged over one spike period"}<br>AUC ${f2(r.auc)}`, el)).on("mouseleave", hideTip);
+  });
+  legend(el, [["var(--und)", "dot", "R averaged over one spike period"], ["color-mix(in srgb, var(--und) 40%, transparent)", "dot", "R as in the benchmark"], ["var(--closure)", "dash", "chance (0.5)"]]);
+  const v = k => (P.find(r => r.indicator === "var" && r.variant === k) || {}).auc;
+  $("#r-fhn").innerHTML = `A FitzHugh-Nagumo unit's phase is read from its spike times, so R carries a ripple at the spiking period; that ripple holds most of R's variance (84% of its power in the example run) and it shrinks as units drift apart. Averaged over one period, the slow mode reappears: the variance AUC goes from ${f2(v("raw"))} to ${f2(v("period_mean"))}. For relaxation oscillators, early warnings must be computed on the cycle-averaged collective signal.`;
+}
+
+function z2() {
+  const el = $("#c-z2"), S = D.z2.size; if (!S) return;
+  const F = frame(el, { m: { r: 76 }, label: "Escape point and variance ratio against N" });
+  const x = d3.scaleLog().domain([80, 1.1e6]).range([0, F.w]);
+  const y = d3.scaleLinear().domain([d3.min(S, r => 100 * (r.eps - 2 * r.se)) * 1.05, 0]).range([F.h, 0]);
+  const y2 = d3.scaleLinear().domain([0, d3.max(S, r => r.ratio) * 1.15]).range([F.h, 0]);
+  F.g.append("rect").attr("x", x(9000)).attr("width", F.w - x(9000)).attr("y", 0).attr("height", F.h).attr("fill", "var(--raise)");
+  F.g.append("text").attr("x", x(9000) + 8).attr("y", 18).style("font-size", "12.5px").text("variance floor: ratio not valid here");
+  axes(F, x, y, "population size N", "left the branch at (% from the fold)", { axis: d3.axisBottom(x).tickValues([100, 1000, 1e4, 1e5, 1e6]).tickFormat(d3.format("~s")) });
+  F.g.append("g").attr("class", "axis").attr("transform", `translate(${F.w},0)`).call(d3.axisRight(y2).ticks(6));
+  F.g.append("text").attr("class", "axlab").attr("transform", "rotate(90)").attr("x", F.h / 2).attr("y", -F.w - 54).attr("text-anchor", "middle").text("variance ratio near / far");
+  F.g.append("path").attr("d", d3.line().x(r => x(r.N)).y(r => y(100 * r.eps))(S)).attr("fill", "none").attr("stroke", "var(--und)").attr("stroke-width", 2.2);
+  F.g.append("path").attr("d", d3.line().x(r => x(r.N)).y(r => y2(r.ratio))(S)).attr("fill", "none").attr("stroke", "var(--dir)").attr("stroke-width", 2.2).attr("stroke-dasharray", "7 5");
+  S.forEach(r => {
+    F.g.append("circle").attr("cx", x(r.N)).attr("cy", y(100 * r.eps)).attr("r", 5).attr("fill", "var(--und)")
+      .on("mousemove", ev => showTip(ev, `<b>N = ${r.N}</b>, ${r.runs} runs<br>left the branch ${(100 * r.eps).toFixed(3)}% from the fold (SE ${(100 * r.se).toFixed(3)})<br>variance ratio ${f2(r.ratio)}`, el)).on("mouseleave", hideTip);
+    F.g.append("rect").attr("x", x(r.N) - 4.5).attr("y", y2(r.ratio) - 4.5).attr("width", 9).attr("height", 9).attr("fill", "var(--dir)");
+  });
+  legend(el, [["var(--und)", "dot", "where the population leaves the branch (left axis)"], ["var(--dir)", "dash", "variance ratio before leaving (right axis)"]]);
+  const big = S[S.length - 1];
+  $("#r-z2").innerHTML = `The population always leaves the branch after the fold. The lag shrinks with N and then stops at ${(100 * big.eps).toFixed(2)}% from about N = 6400 up to N = ${big.N.toLocaleString()}: from there on it is the deterministic delay of the ramp itself, not a finite-size effect. The variance ratio looks as if it fell below 1 at large N, but the far-from-fold variance stops falling with N there (a deterministic floor, traced to the clipped tails of the frequency distribution), so that part is an artifact and is being re-run without clipping.`;
+}
+
+function o5() {
+  const el = $("#c-o5"), O = D.o5; if (!O) return;
+  const fams = ["kuramoto", "sl", "vdp", "rossler", "fhn"], names = { kuramoto: "Kuramoto", sl: "Stuart-Landau", vdp: "van der Pol", rossler: "Roessler", fhn: "FitzHugh-Nagumo" };
+  const F = frame(el, { h: 340, label: "Hysteresis gap by family" });
+  const x0 = d3.scaleBand().domain(fams).range([0, F.w]).padding(0.28), x1 = d3.scaleBand().domain([false, true]).range([0, x0.bandwidth()]).padding(0.08);
+  const y = d3.scaleLinear().domain([0, 1]).range([F.h, 0]);
+  axes(F, x0, y, "oscillator family", "largest gap between sweeps", { axis: d3.axisBottom(x0).tickFormat(f => names[f]) });
+  O.forEach(r => F.g.append("rect").attr("x", x0(r.family) + x1(r.shuffled)).attr("width", x1.bandwidth()).attr("y", y(r.max_gap)).attr("height", F.h - y(r.max_gap)).attr("rx", 3)
+    .attr("fill", "var(--dir)").attr("opacity", r.shuffled ? 0.4 : 1)
+    .on("mousemove", ev => showTip(ev, `<b>${names[r.family]}</b><br>${r.shuffled ? "frequencies shuffled" : "frequency rises with degree"}<br>largest gap ${f2(r.max_gap)}, area ${f3(r.area)}`, el)).on("mouseleave", hideTip));
+  legend(el, [["var(--dir)", "dot", "frequency rises with degree"], ["color-mix(in srgb, var(--dir) 40%, transparent)", "dot", "frequencies shuffled (control)"]]);
+  $("#r-o5").innerHTML = `The correlation makes synchronisation explosive for Kuramoto, Stuart-Landau and van der Pol. R&ouml;ssler oscillators are just as hysteretic without it, so for them the correlation is not the cause, and FitzHugh-Nagumo shows no hysteresis either way. The first R&ouml;ssler run had diverged; that turned out to be the bounded stability window of x-coupled R&ouml;ssler oscillators (coupling times degree above about 4.6 on hubs), and the sweep was rerun inside it.`;
+}
+
+function o6() {
+  const el = $("#c-o6"), O = D.o6.filter(r => r.N === 20000 && r.family !== "fhn"); if (!O.length) return;
+  const names = { kuramoto: "Kuramoto", sl: "Stuart-Landau", vdp: "van der Pol", rossler: "Roessler" }, cols = { kuramoto: "var(--und)", sl: "var(--good)", vdp: "var(--dir)", rossler: "var(--bad)" };
+  const F = frame(el, { h: 380, label: "Fold coefficient by family" });
+  const ks = [...new Set(O.map(r => r.k))].sort((a, b) => a - b);
+  const x = d3.scaleLog().domain([d3.min(ks) * 0.85, d3.max(ks) * 1.15]).range([0, F.w]), y = d3.scaleLinear().domain([0, 2]).range([F.h, 0]);
+  axes(F, x, y, "connectivity k", "k (fold ratio - 1)", { axis: d3.axisBottom(x).tickValues(ks).tickFormat(d3.format("d")) });
+  Object.keys(names).forEach(f => {
+    const s = d3.sort(O.filter(r => r.family === f), r => r.k); if (!s.length) return;
+    F.g.append("path").attr("d", d3.line().x(r => x(r.k)).y(r => y(r.k_times_excess))(s)).attr("fill", "none").attr("stroke", cols[f]).attr("stroke-width", 2.2);
+    s.forEach(r => F.g.append("circle").attr("cx", x(r.k)).attr("cy", y(r.k_times_excess)).attr("r", 5).attr("fill", cols[f])
+      .on("mousemove", ev => showTip(ev, `<b>${names[f]}, k = ${r.k}</b><br>fold ratio ${(+r.ratio).toFixed(4)}<br>coefficient ${f2(r.k_times_excess)} (fit a = ${f2(r.fit_a)})`, el)).on("mouseleave", hideTip));
+  });
+  legend(el, Object.keys(names).map(f => [cols[f], "", names[f]]));
+  const a = f => (O.find(r => r.family === f) || {}).fit_a;
+  $("#r-o6").innerHTML = `Kuramoto and Stuart-Landau share one coefficient (fit ${f2(a("kuramoto"))} and ${f2(a("sl"))}), as phase reduction predicts, and match the main project's measurement on the same graphs. Van der Pol sits about 18% higher (${f2(a("vdp"))}). R&ouml;ssler does not follow a 1/k law: its coefficient climbs with k, so a k-independent offset is present. The chaotic amplitude, which phase reduction ignores, is the obvious suspect.`;
+}
+
+function markets() {
+  const M = D.intraday; if (!M || !M.t1) return;
+  $("#mk-intro").innerHTML = `Minute bars of ${M.n_tickers} large US stocks over ${M.n_sessions.toLocaleString()} sessions (${M.span[0]} to ${M.span[1]}), ${M.n_onsets} intraday crash onsets of which ${M.n_test} fall in the test period after 2016. The design was written before the corrected run. Result: synchrony did not warn beyond volatility, and with ${M.n_test} test crashes the smallest detectable AUC is ${f2(M.mde_auc_matched)}, so the test is underpowered.`;
+  const names = { volatility: "volatility", mean_corr: "mean correlation", lead_eig_share: "leading eigenvalue share", corr_given_vol: "correlation beyond volatility (primary)" };
+  const rows = M.t1.map(r => `<tr><td>${names[r.indicator] || r.indicator}</td><td>${r.null === "vol_matched" ? "volatility-matched" : "unmatched"}</td><td class="num">${f3(r.auc)}</td><td class="num">[${f3(r.ci_lo)}, ${f3(r.ci_hi)}]</td><td class="num">${r.n_pos} / ${r.n_neg}</td><td>${r.bh_reject ? "rejected" : "not rejected"}</td></tr>`).join("");
+  $("#t-mk").innerHTML = `<thead><tr><th>indicator</th><th>compared with</th><th class="num">AUC</th><th class="num">95% interval</th><th class="num">crash / comparison times</th><th>null hypothesis</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+function papers() {
+  const ex = D.branch_ex, und = ex.filter(r => r.graph === "rho1.00" && r.mult >= 2);
+  const P = [
+    ["Finite-connectivity corrections to explosive synchronisation with adaptive coupling", "good", "Strongest candidate", "Physical Review E, Chaos",
+      ["Rician closure excluded in every branch cell, on both graph types", `Undirected branch shift extrapolates to the reaction-corrected theory within ${Math.round(100 * Math.max(...und.map(r => Math.abs(1 - r.ratio_to_theory))))}% away from the fold`, "Reciprocity sweep: the shift is linear in the share of mutual links, slope converging to the predicted reaction", "Directed graphs within about 5 to 10% of the dynamic theory", "Closed-form heterogeneity law: fold lowered by (p+2)/(2(p+1)<sup>2</sup>) CV<sup>2</sup>, exact at leading order, checked to 1e-7; matches the Erdos-Renyi fold at k = 24 within its interval at both p (not at k = 12)", "Clustering raises the fold slightly; Erdos-Renyi lowers it strongly", "Literature review done: our directed theory is the 1/k expansion of Metz (PRL 2025) Eq. 7; closest method Tarabolo and Dall'Asta (2025)"],
+      ["Size scan at k = 48, 96 and 192 (A4, queued): decides the near-fold region", "Fold to k = 96 with 0.05% tolerance (running, about two thirds done)", "Directed size scan (running): is the residual 5 to 10% a finite-N effect?", "Erdos-Renyi against random regular at k = 24, 48, 96 (rerun queued after the memory failure)", "Credit Metz, Tarabolo and Dall'Asta, Aonishi et al. (2002) explicitly"]],
+    ["No critical connectivity, reciprocity as a coupling rescaling, and a non-monotonic directed fold", "good", "Candidate (letter)", "Physical Review E (Letter), Chaos",
+      ["The bistable window stays open down to k = 3, where the closure predicts closing near k = 6 to 8; robust to N (widens with N) and to waiting time", "Mutual links rescale the coupling: the undirected/directed ratio is the same for the fold and the forward threshold within about 1% (k = 4 to 24)", "Directed fold below the all-to-all value at small k (0.93 at k = 4), at every N tested: the directed fold is non-monotonic in k", "Shift linear in the mutual-link fraction; slope 123% (k = 24) to 106% (k = 48) of the predicted reaction"],
+      ["A theory for the window at small k (the closure fails there)", "Check that the same rescaling holds at p = 2", "Other oscillator families on the same graphs (O10 window stage)"]],
+    ["Early warnings across coupled-oscillator families, with a strict null", "good", "Candidate", "Chaos, Physical Review E",
+      ["18 transitions in 11 models, 100 runs per setting, sizes to N = 25600, three noise levels x three ramp speeds", `Collective variance warns before every transition at N of 6400 or more or with slower ramps (lowest AUC ${f2(z1Claim().min)}), except one, explained and fixed by cycle-averaging`, "Small populations with fast ramps or strong noise weaken the warning (Stuart-Landau onset, Winfree death)", "Exact theory for the lag-1 autocorrelation of a forced mechanical oscillator (Z3)", "Single units often show the opposite of a warning", "Slow passage through the fold: the lag reaches the deterministic ramp delay above N of about 6400", "Without frequency clipping the variance ratio rises to 2.5 up to N = 819200 (N times the far variance constant at 0.070): the earlier fall was a clipping artefact", "Literature: Kato and Masuda (2026) evaluate without a null; Leyva (2012) has no shuffled control; the event-based phase ripple that hides warnings is not reported anywhere"],
+      ["Apply cycle-averaging to every scenario, not only the exception (queued)", "Sparse-network version for Kuramoto and Stuart-Landau (item A6)", "Short letter on the event-based phase ripple"]],
+    ["Phase reduction across families: one 1/k law for the herding fold?", "warn", "Partial", "Chaos",
+      ["Kuramoto and Stuart-Landau share one coefficient up to k = 192, as predicted", "van der Pol higher (about 1.45 to 1.6); Roessler climbs from 0.49 to 1.0, not a 1/k law", "Amplitude dynamics explain the 10% Stuart-Landau gap (O3e)", "Exact Gaussian-noise fold (continued fraction): 2.05% and 4.89% below the effective-width approximation at the two strongest noises; measured escape approaches it as N grows", "Frequency-degree correlation: explosive in three of five families"],
+      ["FitzHugh-Nagumo rerun with a wider sweep (queued; two earlier runs were invalid)", "Every family through the main pipeline: branch, fold, heterogeneity, window (O10, validation queued)", "An explanation for van der Pol and Roessler"]],
+    ["Synchrony as a crash warning in markets", "bad", "Negative so far", "a short negative-result note",
+      ["Registered design; corrected minute-data study: not detected beyond volatility", "Daily-data study corrected", "Lee et al. (PNAS 2025): reported p-values are about 0.012 and 0.0015, not below 0.001; the robustness claim is contradicted by their own Table S5; 204 correlations uncorrected; one crisis, n = 39"],
+      ["Minute-data rerun without SPY (an index ETF that was treated as a stock; running)", "A later, disjoint time period with the event definition fixed in advance", "More stocks and markets for power (12 test crashes now)", "Point-in-time index membership to remove survivorship bias"]],
+  ];
+  $("#papers").innerHTML = P.map(([t, c, pill, venue, have, need]) => `<article class="paper"><header><h3>${t}</h3><span class="pill ${c}">${pill}</span></header><p>Suitable venue: ${venue}</p><div class="cols"><div><h4>Evidence in hand</h4><ul>${have.map(h => `<li>${h}</li>`).join("")}</ul></div><div><h4>Still needed</h4><ul>${need.map(h => `<li>${h}</li>`).join("")}</ul></div></div></article>`).join("");
+}
+
+function runsTable() {
+  const R = d3.sort(D.runs, r => r.stamp).reverse();
+  const fmt = s => s.length >= 13 ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)} ${s.slice(9, 11)}:${s.slice(11, 13)}` : s;
+  $("#t-runs").innerHTML = `<thead><tr><th>experiment</th><th>started</th><th>where</th><th class="num">rows</th><th>status</th><th>directory</th></tr></thead><tbody>${R.map(r => `<tr><td>${r.experiment}</td><td>${fmt(r.stamp)}</td><td>${r.backend}</td><td class="num">${r.rows || ""}</td><td>${r.finished ? "complete" : "incomplete"}</td><td><code>${r.dir}</code></td></tr>`).join("")}</tbody>`;
+}
+
+function docs() {
+  const nav = $("#docnav"), doc = $("#doc");
+  const open = i => {
+    const d = D.docs[i];
+    nav.querySelectorAll("button").forEach((b, j) => b.setAttribute("aria-current", j === i));
+    doc.innerHTML = window.marked ? marked.parse(d.text) : `<pre>${d.text.replace(/[<&]/g, c => ({ "<": "&lt;", "&": "&amp;" })[c])}</pre>`;
+    doc.scrollTop = 0;
+  };
+  nav.innerHTML = D.docs.map((d, i) => `<button type="button" data-i="${i}">${d.title}<small>${d.path}</small></button>`).join("");
+  nav.querySelectorAll("button").forEach(b => b.addEventListener("click", () => open(+b.dataset.i)));
+  open(0);
+}
+
+function redraw() { branch(); ratio(); recip(); fold(); windowChart(); structure(); z1(); fhn(); z2(); o5(); o6() }
+seg("branch", d => { pBranch = +d.p; branch() }); seg("fold", d => { pFold = +d.p; fold() });
+seg("window", d => { pWin = +d.p; windowChart() }); seg("z1", d => { sigZ1 = d.s; z1() });
+
+/* section highlight in the bar */
+const links = [...document.querySelectorAll("nav.bar a")];
+const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id)) }), { rootMargin: "-40% 0px -55% 0px" });
+document.querySelectorAll("section.block").forEach(s => obs.observe(s));
+
+status(); markets(); papers(); runsTable(); docs();
+redraw();
+$("#foot").innerHTML = `Generated by <code>dashboard/build.py</code> from <code>results/</code> and <code>oscillators/data/</code> at ${D.generated} (commit ${D.git}). Every number on this page comes from those files.`;
+})();
+</script>
