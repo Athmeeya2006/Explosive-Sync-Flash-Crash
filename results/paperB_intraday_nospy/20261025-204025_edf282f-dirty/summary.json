@@ -1,0 +1,3824 @@
+{
+ "n_tickers": 22,
+ "tickers": [
+  "BA",
+  "CAT",
+  "MMM",
+  "IBM",
+  "GE",
+  "DIS",
+  "AXP",
+  "UNH",
+  "NKE",
+  "LOW",
+  "TGT",
+  "COST",
+  "ORCL",
+  "QCOM",
+  "TXN",
+  "AMGN",
+  "SBUX",
+  "ADBE",
+  "BAC",
+  "C",
+  "WFC",
+  "GS"
+ ],
+ "n_bars": 2319682,
+ "n_sessions": 5972,
+ "span": [
+  "2002-12-30",
+  "2026-09-24"
+ ],
+ "regression_slope_train": 0.17243104438041204,
+ "wall_seconds": 885.3,
+ "old_e7_onsets": 31,
+ "old_e7_onsets_before_10am": 6,
+ "primary": {
+  "tag": "primary",
+  "drop": 0.03,
+  "exclude": 30,
+  "lead": 60,
+  "n_onsets": 37,
+  "n_train": 25,
+  "n_test": 12,
+  "n_peaks": 5868,
+  "onsets_first_hour": 7,
+  "test_dates": [
+   "2018-12-19 14:32",
+   "2020-03-12 13:05",
+   "2020-03-16 14:34",
+   "2020-03-17 12:13",
+   "2020-03-18 10:16",
+   "2020-03-19 11:37",
+   "2020-03-20 14:06",
+   "2020-03-25 15:04",
+   "2020-03-27 15:27",
+   "2020-04-07 10:00",
+   "2022-11-02 14:35",
+   "2025-04-07 10:18"
+  ],
+  "n_matched_pairs": 25,
+  "vol_ratio_crash_over_peak": 4.489962566930375,
+  "mde_auc_unmatched": 0.6218169084542271,
+  "mde_auc_matched": 0.6984517258629315,
+  "t1": [
+   {
+    "indicator": "volatility",
+    "null": "unmatched",
+    "auc": 0.986555574775606,
+    "ci_lo": 0.9748644986449865,
+    "ci_hi": 0.9952094024486344,
+    "p_one_sided": 0.0,
+    "n_pos": 36,
+    "n_neg": 5781,
+    "p_bh": 0.0,
+    "bh_reject": true
+   },
+   {
+    "indicator": "volatility",
+    "null": "vol_matched",
+    "auc": 0.5216,
+    "ci_lo": 0.4896,
+    "ci_hi": 0.5728,
+    "p_one_sided": 0.0745,
+    "n_pos": 25,
+    "n_neg": 25,
+    "p_bh": 0.1296,
+    "bh_reject": false
+   },
+   {
+    "indicator": "mean_corr",
+    "null": "unmatched",
+    "auc": 0.9177117395522656,
+    "ci_lo": 0.8741039024039671,
+    "ci_hi": 0.9531370153437062,
+    "p_one_sided": 0.0,
+    "n_pos": 34,
+    "n_neg": 4911,
+    "p_bh": 0.0,
+    "bh_reject": true
+   },
+   {
+    "indicator": "mean_corr",
+    "null": "vol_matched",
+    "auc": 0.5803402646502835,
+    "ci_lo": 0.42722117202268434,
+    "ci_hi": 0.7372400756143668,
+    "p_one_sided": 0.14075,
+    "n_pos": 23,
+    "n_neg": 23,
+    "p_bh": 0.16085714285714284,
+    "bh_reject": false
+   },
+   {
+    "indicator": "lead_eig_share",
+    "null": "unmatched",
+    "auc": 0.9151903889228263,
+    "ci_lo": 0.8707921592583276,
+    "ci_hi": 0.9527216812198306,
+    "p_one_sided": 0.0,
+    "n_pos": 34,
+    "n_neg": 4911,
+    "p_bh": 0.0,
+    "bh_reject": true
+   },
+   {
+    "indicator": "lead_eig_share",
+    "null": "vol_matched",
+    "auc": 0.5803402646502835,
+    "ci_lo": 0.43289224952741023,
+    "ci_hi": 0.729725897920605,
+    "p_one_sided": 0.13675,
+    "n_pos": 23,
+    "n_neg": 23,
+    "p_bh": 0.16085714285714284,
+    "bh_reject": false
+   },
+   {
+    "indicator": "corr_given_vol",
+    "null": "unmatched",
+    "auc": 0.5839711571861488,
+    "ci_lo": 0.46836528441553776,
+    "ci_hi": 0.6927135362391749,
+    "p_one_sided": 0.081,
+    "n_pos": 34,
+    "n_neg": 4911,
+    "p_bh": 0.1296,
+    "bh_reject": false
+   },
+   {
+    "indicator": "corr_given_vol",
+    "null": "vol_matched",
+    "auc": 0.5860113421550095,
+    "ci_lo": 0.4139413988657845,
+    "ci_hi": 0.7637051039697542,
+    "p_one_sided": 0.16125,
+    "n_pos": 23,
+    "n_neg": 23,
+    "p_bh": 0.16125,
+    "bh_reject": false
+   }
+  ],
+  "t2": [
+   {
+    "indicator": "volatility",
+    "budget": 0.005,
+    "threshold": 0.0021629277799030695,
+    "caught": 7,
+    "n_crash": 12,
+    "recall": 0.5833333333333334,
+    "recall_cp": [
+     0.27666968568210587,
+     0.8483477701915698
+    ],
+    "recall_boot": [
+     0.2727272727272727,
+     0.8571428571428571
+    ],
+    "episodes": 65,
+    "false_episodes": 58,
+    "false_per_catch": 8.285714285714286,
+    "false_per_catch_boot": [
+     4.888888888888889,
+     21.333333333333332
+    ],
+    "precision_episodes": 0.1076923076923077,
+    "realised_rate": 0.0020453469549813696
+   },
+   {
+    "indicator": "volatility",
+    "budget": 0.01,
+    "threshold": 0.0017470103866507449,
+    "caught": 9,
+    "n_crash": 12,
+    "recall": 0.75,
+    "recall_cp": [
+     0.4281415381218109,
+     0.9451393554720072
+    ],
+    "recall_boot": [
+     0.4991666666666667,
+     1.0
+    ],
+    "episodes": 117,
+    "false_episodes": 106,
+    "false_per_catch": 11.777777777777779,
+    "false_per_catch_boot": [
+     7.142619047619048,
+     26.75
+    ],
+    "precision_episodes": 0.09401709401709402,
+    "realised_rate": 0.004069696414391302
+   },
+   {
+    "indicator": "volatility",
+    "budget": 0.02,
+    "threshold": 0.001388371730469945,
+    "caught": 10,
+    "n_crash": 12,
+    "recall": 0.8333333333333334,
+    "recall_cp": [
+     0.515862251314033,
+     0.9791374745399076
+    ],
+    "recall_boot": [
+     0.6,
+     1.0
+    ],
+    "episodes": 189,
+    "false_episodes": 178,
+    "false_per_catch": 17.8,
+    "false_per_catch_boot": [
+     9.833333333333334,
+     42.50749999999996
+    ],
+    "precision_episodes": 0.0582010582010582,
+    "realised_rate": 0.00764690611447071
+   },
+   {
+    "indicator": "volatility",
+    "budget": 0.05,
+    "threshold": 0.0009600211424051026,
+    "caught": 11,
+    "n_crash": 12,
+    "recall": 0.9166666666666666,
+    "recall_cp": [
+     0.6152038348490559,
+     0.9978924067681397
+    ],
+    "recall_boot": [
+     0.7142857142857143,
+     1.0
+    ],
+    "episodes": 583,
+    "false_episodes": 572,
+    "false_per_catch": 52.0,
+    "false_per_catch_boot": [
+     31.110833333333332,
+     116.80499999999996
+    ],
+    "precision_episodes": 0.018867924528301886,
+    "realised_rate": 0.021218923706554274
+   },
+   {
+    "indicator": "volatility",
+    "budget": 0.1,
+    "threshold": 0.0007092639126919444,
+    "caught": 11,
+    "n_crash": 12,
+    "recall": 0.9166666666666666,
+    "recall_cp": [
+     0.6152038348490559,
+     0.9978924067681397
+    ],
+    "recall_boot": [
+     0.7142857142857143,
+     1.0
+    ],
+    "episodes": 1545,
+    "false_episodes": 1534,
+    "false_per_catch": 139.45454545454547,
+    "false_per_catch_boot": [
+     85.94027777777778,
+     309.64499999999975
+    ],
+    "precision_episodes": 0.007119741100323625,
+    "realised_rate": 0.05486263820169812
+   },
+   {
+    "indicator": "mean_corr",
+    "budget": 0.005,
+    "threshold": 0.7188239006222349,
+    "caught": 3,
+    "n_crash": 12,
+    "recall": 0.25,
+    "recall_cp": [
+     0.05486064452799274,
+     0.5718584618781891
+    ],
+    "recall_boot": [
+     0.0,
+     0.5
+    ],
+    "episodes": 429,
+    "false_episodes": 426,
+    "false_per_catch": 142.0,
+    "false_per_catch_boot": [
+     62.0,
+     null
+    ],
+    "precision_episodes": 0.006993006993006993,
+    "realised_rate": 0.00723936381406145
+   },
+   {
+    "indicator": "mean_corr",
+    "budget": 0.01,
+    "threshold": 0.679827412725268,
+    "caught": 4,
+    "n_crash": 12,
+    "recall": 0.3333333333333333,
+    "recall_cp": [
+     0.09924609114958331,
+     0.6511244935811844
+    ],
+    "recall_boot": [
+     0.08333333333333333,
+     0.6363636363636364
+    ],
+    "episodes": 703,
+    "false_episodes": 699,
+    "false_per_catch": 174.75,
+    "false_per_catch_boot": [
+     82.77499999999999,
+     737.0499999999997
+    ],
+    "precision_episodes": 0.005689900426742532,
+    "realised_rate": 0.012410474314336327
+   },
+   {
+    "indicator": "mean_corr",
+    "budget": 0.02,
+    "threshold": 0.6324772110156339,
+    "caught": 4,
+    "n_crash": 12,
+    "recall": 0.3333333333333333,
+    "recall_cp": [
+     0.09924609114958331,
+     0.6511244935811844
+    ],
+    "recall_boot": [
+     0.08333333333333333,
+     0.625
+    ],
+    "episodes": 1150,
+    "false_episodes": 1146,
+    "false_per_catch": 286.5,
+    "false_per_catch_boot": [
+     133.62326388888889,
+     1207.0249999999999
+    ],
+    "precision_episodes": 0.0034782608695652175,
+    "realised_rate": 0.021993922179463686
+   },
+   {
+    "indicator": "mean_corr",
+    "budget": 0.05,
+    "threshold": 0.5542048680176629,
+    "caught": 9,
+    "n_crash": 12,
+    "recall": 0.75,
+    "recall_cp": [
+     0.4281415381218109,
+     0.9451393554720072
+    ],
+    "recall_boot": [
+     0.46153846153846156,
+     1.0
+    ],
+    "episodes": 2026,
+    "false_episodes": 2015,
+    "false_per_catch": 223.88888888888889,
+    "false_per_catch_boot": [
+     130.46166666666667,
+     522.8937499999993
+    ],
+    "precision_episodes": 0.005429417571569595,
+    "realised_rate": 0.043612752733492154
+   },
+   {
+    "indicator": "mean_corr",
+    "budget": 0.1,
+    "threshold": 0.4811650198648986,
+    "caught": 10,
+    "n_crash": 12,
+    "recall": 0.8333333333333334,
+    "recall_cp": [
+     0.515862251314033,
+     0.9791374745399076
+    ],
+    "recall_boot": [
+     0.5833333333333334,
+     1.0
+    ],
+    "episodes": 3154,
+    "false_episodes": 3142,
+    "false_per_catch": 314.2,
+    "false_per_catch_boot": [
+     187.82169117647058,
+     757.2562499999999
+    ],
+    "precision_episodes": 0.003804692454026633,
+    "realised_rate": 0.07292907427768615
+   },
+   {
+    "indicator": "lead_eig_share",
+    "budget": 0.005,
+    "threshold": 0.741457339251478,
+    "caught": 3,
+    "n_crash": 12,
+    "recall": 0.25,
+    "recall_cp": [
+     0.05486064452799274,
+     0.5718584618781891
+    ],
+    "recall_boot": [
+     0.0,
+     0.5334615384615378
+    ],
+    "episodes": 445,
+    "false_episodes": 442,
+    "false_per_catch": 147.33333333333334,
+    "false_per_catch_boot": [
+     65.275,
+     null
+    ],
+    "precision_episodes": 0.006741573033707865,
+    "realised_rate": 0.007382528556593977
+   },
+   {
+    "indicator": "lead_eig_share",
+    "budget": 0.01,
+    "threshold": 0.7072754660126748,
+    "caught": 4,
+    "n_crash": 12,
+    "recall": 0.3333333333333333,
+    "recall_cp": [
+     0.09924609114958331,
+     0.6511244935811844
+    ],
+    "recall_boot": [
+     0.08333333333333333,
+     0.6363636363636364
+    ],
+    "episodes": 724,
+    "false_episodes": 719,
+    "false_per_catch": 179.75,
+    "false_per_catch_boot": [
+     86.49861111111112,
+     765.0249999999999
+    ],
+    "precision_episodes": 0.006906077348066298,
+    "realised_rate": 0.01248205668560259
+   },
+   {
+    "indicator": "lead_eig_share",
+    "budget": 0.02,
+    "threshold": 0.6655312341637601,
+    "caught": 4,
+    "n_crash": 12,
+    "recall": 0.3333333333333333,
+    "recall_cp": [
+     0.09924609114958331,
+     0.6511244935811844
+    ],
+    "recall_boot": [
+     0.06666666666666667,
+     0.6
+    ],
+    "episodes": 1169,
+    "false_episodes": 1165,
+    "false_per_catch": 291.25,
+    "false_per_catch_boot": [
+     145.60625,
+     1263.0999999999995
+    ],
+    "precision_episodes": 0.003421727972626176,
+    "realised_rate": 0.021903251175859752
+   },
+   {
+    "indicator": "lead_eig_share",
+    "budget": 0.05,
+    "threshold": 0.597010076690437,
+    "caught": 8,
+    "n_crash": 12,
+    "recall": 0.6666666666666666,
+    "recall_cp": [
+     0.34887550641881554,
+     0.9007539088504167
+    ],
+    "recall_boot": [
+     0.363474025974026,
+     1.0
+    ],
+    "episodes": 2052,
+    "false_episodes": 2041,
+    "false_per_catch": 255.125,
+    "false_per_catch_boot": [
+     146.06071428571428,
+     688.0333333333332
+    ],
+    "precision_episodes": 0.005360623781676413,
+    "realised_rate": 0.04321284588601796
+   },
+   {
+    "indicator": "lead_eig_share",
+    "budget": 0.1,
+    "threshold": 0.5326850255723447,
+    "caught": 10,
+    "n_crash": 12,
+    "recall": 0.8333333333333334,
+    "recall_cp": [
+     0.515862251314033,
+     0.9791374745399076
+    ],
+    "recall_boot": [
+     0.5833333333333334,
+     1.0
+    ],
+    "episodes": 3212,
+    "false_episodes": 3199,
+    "false_per_catch": 319.9,
+    "false_per_catch_boot": [
+     192.3625,
+     778.8124999999997
+    ],
+    "precision_episodes": 0.004047322540473225,
+    "realised_rate": 0.07271909932197178
+   },
+   {
+    "indicator": "corr_given_vol",
+    "budget": 0.005,
+    "threshold": 0.3093469537988107,
+    "caught": 1,
+    "n_crash": 12,
+    "recall": 0.08333333333333333,
+    "recall_cp": [
+     0.002107593231860228,
+     0.38479616515094406
+    ],
+    "recall_boot": [
+     0.0,
+     0.2857142857142857
+    ],
+    "episodes": 460,
+    "false_episodes": 459,
+    "false_per_catch": 459.0,
+    "false_per_catch_boot": [
+     138.65833333333333,
+     null
+    ],
+    "precision_episodes": 0.002173913043478261,
+    "realised_rate": 0.00616085608698308
+   },
+   {
+    "indicator": "corr_given_vol",
+    "budget": 0.01,
+    "threshold": 0.2797637549975074,
+    "caught": 2,
+    "n_crash": 12,
+    "recall": 0.16666666666666666,
+    "recall_cp": [
+     0.02086252546009238,
+     0.48413774868596704
+    ],
+    "recall_boot": [
+     0.0,
+     0.4166666666666667
+    ],
+    "episodes": 869,
+    "false_episodes": 867,
+    "false_per_catch": 433.5,
+    "false_per_catch_boot": [
+     170.195,
+     null
+    ],
+    "precision_episodes": 0.0023014959723820483,
+    "realised_rate": 0.012493509865005192
+   },
+   {
+    "indicator": "corr_given_vol",
+    "budget": 0.02,
+    "threshold": 0.2439675794800611,
+    "caught": 2,
+    "n_crash": 12,
+    "recall": 0.16666666666666666,
+    "recall_cp": [
+     0.02086252546009238,
+     0.48413774868596704
+    ],
+    "recall_boot": [
+     0.0,
+     0.4166666666666667
+    ],
+    "episodes": 1523,
+    "false_episodes": 1521,
+    "false_per_catch": 760.5,
+    "false_per_catch_boot": [
+     291.195,
+     null
+    ],
+    "precision_episodes": 0.0013131976362442547,
+    "realised_rate": 0.02548332417078981
+   },
+   {
+    "indicator": "corr_given_vol",
+    "budget": 0.05,
+    "threshold": 0.1878529426389467,
+    "caught": 2,
+    "n_crash": 12,
+    "recall": 0.16666666666666666,
+    "recall_cp": [
+     0.02086252546009238,
+     0.48413774868596704
+    ],
+    "recall_boot": [
+     0.0,
+     0.4166666666666667
+    ],
+    "episodes": 2785,
+    "false_episodes": 2782,
+    "false_per_catch": 1391.0,
+    "false_per_catch_boot": [
+     539.99,
+     null
+    ],
+    "precision_episodes": 0.0010771992818671453,
+    "realised_rate": 0.05491799523547737
+   },
+   {
+    "indicator": "corr_given_vol",
+    "budget": 0.1,
+    "threshold": 0.13758149436864447,
+    "caught": 2,
+    "n_crash": 12,
+    "recall": 0.16666666666666666,
+    "recall_cp": [
+     0.02086252546009238,
+     0.48413774868596704
+    ],
+    "recall_boot": [
+     0.0,
+     0.42857142857142855
+    ],
+    "episodes": 4259,
+    "false_episodes": 4256,
+    "false_per_catch": 2128.0,
+    "false_per_catch_boot": [
+     833.1450000000001,
+     null
+    ],
+    "precision_episodes": 0.000704390702042733,
+    "realised_rate": 0.09299313572781137
+   }
+  ]
+ },
+ "robustness": [
+  {
+   "tag": "lead_30",
+   "drop": 0.03,
+   "exclude": 30,
+   "lead": 30,
+   "n_onsets": 37,
+   "n_train": 25,
+   "n_test": 12,
+   "n_peaks": 5868,
+   "onsets_first_hour": 7,
+   "test_dates": [
+    "2018-12-19 14:32",
+    "2020-03-12 13:05",
+    "2020-03-16 14:34",
+    "2020-03-17 12:13",
+    "2020-03-18 10:16",
+    "2020-03-19 11:37",
+    "2020-03-20 14:06",
+    "2020-03-25 15:04",
+    "2020-03-27 15:27",
+    "2020-04-07 10:00",
+    "2022-11-02 14:35",
+    "2025-04-07 10:18"
+   ],
+   "n_matched_pairs": 25,
+   "vol_ratio_crash_over_peak": 4.796913969587229,
+   "mde_auc_unmatched": 0.6218169084542271,
+   "mde_auc_matched": 0.6984517258629315,
+   "t1": [
+    {
+     "indicator": "volatility",
+     "null": "unmatched",
+     "auc": 0.9872859366891541,
+     "ci_lo": 0.9763532116704146,
+     "ci_hi": 0.9954160179899672,
+     "p_one_sided": 0.0,
+     "n_pos": 36,
+     "n_neg": 5781,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "volatility",
+     "null": "vol_matched",
+     "auc": 0.544,
+     "ci_lo": 0.5104,
+     "ci_hi": 0.6064,
+     "p_one_sided": 0.0075,
+     "n_pos": 25,
+     "n_neg": 25,
+     "p_bh": 0.015,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "unmatched",
+     "auc": 0.9097101395624329,
+     "ci_lo": 0.864932008045509,
+     "ci_hi": 0.950301706585718,
+     "p_one_sided": 0.0,
+     "n_pos": 34,
+     "n_neg": 4767,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "vol_matched",
+     "auc": 0.5727788279773157,
+     "ci_lo": 0.4252835538752363,
+     "ci_hi": 0.722117202268431,
+     "p_one_sided": 0.17825,
+     "n_pos": 23,
+     "n_neg": 23,
+     "p_bh": 0.21375,
+     "bh_reject": false
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "unmatched",
+     "auc": 0.9086489221239157,
+     "ci_lo": 0.8622441046903343,
+     "ci_hi": 0.9470009810091438,
+     "p_one_sided": 0.0,
+     "n_pos": 34,
+     "n_neg": 4767,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "vol_matched",
+     "auc": 0.5671077504725898,
+     "ci_lo": 0.4158790170132325,
+     "ci_hi": 0.7126654064272212,
+     "p_one_sided": 0.19275,
+     "n_pos": 23,
+     "n_neg": 23,
+     "p_bh": 0.21375,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "unmatched",
+     "auc": 0.5715334591986574,
+     "ci_lo": 0.46100997667789584,
+     "ci_hi": 0.6834863460802822,
+     "p_one_sided": 0.101,
+     "n_pos": 34,
+     "n_neg": 4767,
+     "p_bh": 0.16160000000000002,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "vol_matched",
+     "auc": 0.5708884688090737,
+     "ci_lo": 0.3950850661625709,
+     "ci_hi": 0.7466918714555766,
+     "p_one_sided": 0.21375,
+     "n_pos": 23,
+     "n_neg": 23,
+     "p_bh": 0.21375,
+     "bh_reject": false
+    }
+   ],
+   "t2": [
+    {
+     "indicator": "volatility",
+     "budget": 0.005,
+     "threshold": 0.0021629277799030695,
+     "caught": 6,
+     "n_crash": 12,
+     "recall": 0.5,
+     "recall_cp": [
+      0.21094463823929668,
+      0.7890553617607033
+     ],
+     "recall_boot": [
+      0.2,
+      0.8
+     ],
+     "episodes": 65,
+     "false_episodes": 59,
+     "false_per_catch": 9.833333333333334,
+     "false_per_catch_boot": [
+      5.375,
+      30.012499999999932
+     ],
+     "precision_episodes": 0.09230769230769231,
+     "realised_rate": 0.0020453469549813696
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.01,
+     "threshold": 0.0017470103866507449,
+     "caught": 8,
+     "n_crash": 12,
+     "recall": 0.6666666666666666,
+     "recall_cp": [
+      0.34887550641881554,
+      0.9007539088504167
+     ],
+     "recall_boot": [
+      0.375,
+      0.9285714285714286
+     ],
+     "episodes": 117,
+     "false_episodes": 107,
+     "false_per_catch": 13.375,
+     "false_per_catch_boot": [
+      7.4659375,
+      36.333333333333336
+     ],
+     "precision_episodes": 0.08547008547008547,
+     "realised_rate": 0.004069696414391302
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.02,
+     "threshold": 0.001388371730469945,
+     "caught": 10,
+     "n_crash": 12,
+     "recall": 0.8333333333333334,
+     "recall_cp": [
+      0.515862251314033,
+      0.9791374745399076
+     ],
+     "recall_boot": [
+      0.5995833333333334,
+      1.0
+     ],
+     "episodes": 189,
+     "false_episodes": 178,
+     "false_per_catch": 17.8,
+     "false_per_catch_boot": [
+      10.35654761904762,
+      40.0
+     ],
+     "precision_episodes": 0.0582010582010582,
+     "realised_rate": 0.00764690611447071
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.05,
+     "threshold": 0.0009600211424051026,
+     "caught": 11,
+     "n_crash": 12,
+     "recall": 0.9166666666666666,
+     "recall_cp": [
+      0.6152038348490559,
+      0.9978924067681397
+     ],
+     "recall_boot": [
+      0.7142857142857143,
+      1.0
+     ],
+     "episodes": 583,
+     "false_episodes": 572,
+     "false_per_catch": 52.0,
+     "false_per_catch_boot": [
+      31.41176470588235,
+      116.40499999999997
+     ],
+     "precision_episodes": 0.018867924528301886,
+     "realised_rate": 0.021218923706554274
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.1,
+     "threshold": 0.0007092639126919444,
+     "caught": 11,
+     "n_crash": 12,
+     "recall": 0.9166666666666666,
+     "recall_cp": [
+      0.6152038348490559,
+      0.9978924067681397
+     ],
+     "recall_boot": [
+      0.7272727272727273,
+      1.0
+     ],
+     "episodes": 1545,
+     "false_episodes": 1534,
+     "false_per_catch": 139.45454545454547,
+     "false_per_catch_boot": [
+      84.3875,
+      295.42499999999984
+     ],
+     "precision_episodes": 0.007119741100323625,
+     "realised_rate": 0.05486263820169812
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.005,
+     "threshold": 0.7188239006222349,
+     "caught": 3,
+     "n_crash": 12,
+     "recall": 0.25,
+     "recall_cp": [
+      0.05486064452799274,
+      0.5718584618781891
+     ],
+     "recall_boot": [
+      0.0,
+      0.5384615384615384
+     ],
+     "episodes": 429,
+     "false_episodes": 426,
+     "false_per_catch": 142.0,
+     "false_per_catch_boot": [
+      65.16250000000001,
+      null
+     ],
+     "precision_episodes": 0.006993006993006993,
+     "realised_rate": 0.00723936381406145
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.01,
+     "threshold": 0.679827412725268,
+     "caught": 4,
+     "n_crash": 12,
+     "recall": 0.3333333333333333,
+     "recall_cp": [
+      0.09924609114958331,
+      0.6511244935811844
+     ],
+     "recall_boot": [
+      0.07692307692307693,
+      0.6363636363636364
+     ],
+     "episodes": 703,
+     "false_episodes": 699,
+     "false_per_catch": 174.75,
+     "false_per_catch_boot": [
+      80.990625,
+      754.0499999999997
+     ],
+     "precision_episodes": 0.005689900426742532,
+     "realised_rate": 0.012410474314336327
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.02,
+     "threshold": 0.6324772110156339,
+     "caught": 4,
+     "n_crash": 12,
+     "recall": 0.3333333333333333,
+     "recall_cp": [
+      0.09924609114958331,
+      0.6511244935811844
+     ],
+     "recall_boot": [
+      0.08333333333333333,
+      0.6365259740259731
+     ],
+     "episodes": 1150,
+     "false_episodes": 1146,
+     "false_per_catch": 286.5,
+     "false_per_catch_boot": [
+      133.496875,
+      1197.0
+     ],
+     "precision_episodes": 0.0034782608695652175,
+     "realised_rate": 0.021993922179463686
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.05,
+     "threshold": 0.5542048680176629,
+     "caught": 8,
+     "n_crash": 12,
+     "recall": 0.6666666666666666,
+     "recall_cp": [
+      0.34887550641881554,
+      0.9007539088504167
+     ],
+     "recall_boot": [
+      0.35714285714285715,
+      0.9090909090909091
+     ],
+     "episodes": 2026,
+     "false_episodes": 2017,
+     "false_per_catch": 252.125,
+     "false_per_catch_boot": [
+      141.5625,
+      676.6666666666666
+     ],
+     "precision_episodes": 0.004442250740375123,
+     "realised_rate": 0.043612752733492154
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.1,
+     "threshold": 0.4811650198648986,
+     "caught": 9,
+     "n_crash": 12,
+     "recall": 0.75,
+     "recall_cp": [
+      0.4281415381218109,
+      0.9451393554720072
+     ],
+     "recall_boot": [
+      0.46153846153846156,
+      1.0
+     ],
+     "episodes": 3154,
+     "false_episodes": 3144,
+     "false_per_catch": 349.3333333333333,
+     "false_per_catch_boot": [
+      206.92833333333334,
+      822.3624999999994
+     ],
+     "precision_episodes": 0.0031705770450221942,
+     "realised_rate": 0.07292907427768615
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.005,
+     "threshold": 0.741457339251478,
+     "caught": 3,
+     "n_crash": 12,
+     "recall": 0.25,
+     "recall_cp": [
+      0.05486064452799274,
+      0.5718584618781891
+     ],
+     "recall_boot": [
+      0.0,
+      0.5386363636363627
+     ],
+     "episodes": 445,
+     "false_episodes": 442,
+     "false_per_catch": 147.33333333333334,
+     "false_per_catch_boot": [
+      63.971428571428575,
+      null
+     ],
+     "precision_episodes": 0.006741573033707865,
+     "realised_rate": 0.007382528556593977
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.01,
+     "threshold": 0.7072754660126748,
+     "caught": 4,
+     "n_crash": 12,
+     "recall": 0.3333333333333333,
+     "recall_cp": [
+      0.09924609114958331,
+      0.6511244935811844
+     ],
+     "recall_boot": [
+      0.06666666666666667,
+      0.6428571428571429
+     ],
+     "episodes": 724,
+     "false_episodes": 719,
+     "false_per_catch": 179.75,
+     "false_per_catch_boot": [
+      85.55,
+      798.0749999999996
+     ],
+     "precision_episodes": 0.006906077348066298,
+     "realised_rate": 0.01248205668560259
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.02,
+     "threshold": 0.6655312341637601,
+     "caught": 4,
+     "n_crash": 12,
+     "recall": 0.3333333333333333,
+     "recall_cp": [
+      0.09924609114958331,
+      0.6511244935811844
+     ],
+     "recall_boot": [
+      0.04875000000000007,
+      0.625
+     ],
+     "episodes": 1169,
+     "false_episodes": 1165,
+     "false_per_catch": 291.25,
+     "false_per_catch_boot": [
+      139.371875,
+      null
+     ],
+     "precision_episodes": 0.003421727972626176,
+     "realised_rate": 0.021903251175859752
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.05,
+     "threshold": 0.597010076690437,
+     "caught": 7,
+     "n_crash": 12,
+     "recall": 0.5833333333333334,
+     "recall_cp": [
+      0.27666968568210587,
+      0.8483477701915698
+     ],
+     "recall_boot": [
+      0.2857142857142857,
+      0.8571428571428571
+     ],
+     "episodes": 2052,
+     "false_episodes": 2044,
+     "false_per_catch": 292.0,
+     "false_per_catch_boot": [
+      161.65416666666667,
+      991.5374999999998
+     ],
+     "precision_episodes": 0.003898635477582846,
+     "realised_rate": 0.04321284588601796
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.1,
+     "threshold": 0.5326850255723447,
+     "caught": 9,
+     "n_crash": 12,
+     "recall": 0.75,
+     "recall_cp": [
+      0.4281415381218109,
+      0.9451393554720072
+     ],
+     "recall_boot": [
+      0.45454545454545453,
+      1.0
+     ],
+     "episodes": 3212,
+     "false_episodes": 3201,
+     "false_per_catch": 355.6666666666667,
+     "false_per_catch_boot": [
+      207.19833333333332,
+      820.0124999999999
+     ],
+     "precision_episodes": 0.003424657534246575,
+     "realised_rate": 0.07271909932197178
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.005,
+     "threshold": 0.3093469537988107,
+     "caught": 1,
+     "n_crash": 12,
+     "recall": 0.08333333333333333,
+     "recall_cp": [
+      0.002107593231860228,
+      0.38479616515094406
+     ],
+     "recall_boot": [
+      0.0,
+      0.2857142857142857
+     ],
+     "episodes": 460,
+     "false_episodes": 459,
+     "false_per_catch": 459.0,
+     "false_per_catch_boot": [
+      136.32500000000002,
+      null
+     ],
+     "precision_episodes": 0.002173913043478261,
+     "realised_rate": 0.00616085608698308
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.01,
+     "threshold": 0.2797637549975074,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.4166666666666667
+     ],
+     "episodes": 869,
+     "false_episodes": 867,
+     "false_per_catch": 433.5,
+     "false_per_catch_boot": [
+      166.17,
+      null
+     ],
+     "precision_episodes": 0.0023014959723820483,
+     "realised_rate": 0.012493509865005192
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.02,
+     "threshold": 0.2439675794800611,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.4166666666666667
+     ],
+     "episodes": 1523,
+     "false_episodes": 1521,
+     "false_per_catch": 760.5,
+     "false_per_catch_boot": [
+      295.785,
+      null
+     ],
+     "precision_episodes": 0.0013131976362442547,
+     "realised_rate": 0.02548332417078981
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.05,
+     "threshold": 0.1878529426389467,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.42857142857142855
+     ],
+     "episodes": 2785,
+     "false_episodes": 2783,
+     "false_per_catch": 1391.5,
+     "false_per_catch_boot": [
+      544.57,
+      null
+     ],
+     "precision_episodes": 0.000718132854578097,
+     "realised_rate": 0.05491799523547737
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.1,
+     "threshold": 0.13758149436864447,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.42857142857142855
+     ],
+     "episodes": 4259,
+     "false_episodes": 4257,
+     "false_per_catch": 2128.5,
+     "false_per_catch_boot": [
+      830.375,
+      null
+     ],
+     "precision_episodes": 0.00046959380136182204,
+     "realised_rate": 0.09299313572781137
+    }
+   ]
+  },
+  {
+   "tag": "lead_120",
+   "drop": 0.03,
+   "exclude": 30,
+   "lead": 120,
+   "n_onsets": 37,
+   "n_train": 25,
+   "n_test": 12,
+   "n_peaks": 5868,
+   "onsets_first_hour": 7,
+   "test_dates": [
+    "2018-12-19 14:32",
+    "2020-03-12 13:05",
+    "2020-03-16 14:34",
+    "2020-03-17 12:13",
+    "2020-03-18 10:16",
+    "2020-03-19 11:37",
+    "2020-03-20 14:06",
+    "2020-03-25 15:04",
+    "2020-03-27 15:27",
+    "2020-04-07 10:00",
+    "2022-11-02 14:35",
+    "2025-04-07 10:18"
+   ],
+   "n_matched_pairs": 27,
+   "vol_ratio_crash_over_peak": 3.602187105981826,
+   "mde_auc_unmatched": 0.6218169084542271,
+   "mde_auc_matched": 0.6912126063031516,
+   "t1": [
+    {
+     "indicator": "volatility",
+     "null": "unmatched",
+     "auc": 0.9459243883218974,
+     "ci_lo": 0.879092669472794,
+     "ci_hi": 0.9897519892752119,
+     "p_one_sided": 0.0,
+     "n_pos": 36,
+     "n_neg": 5781,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "volatility",
+     "null": "vol_matched",
+     "auc": 0.50480109739369,
+     "ci_lo": 0.4787379972565158,
+     "ci_hi": 0.53360768175583,
+     "p_one_sided": 0.41225,
+     "n_pos": 27,
+     "n_neg": 27,
+     "p_bh": 0.41225,
+     "bh_reject": false
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "unmatched",
+     "auc": 0.9156159643551216,
+     "ci_lo": 0.8836674053182917,
+     "ci_hi": 0.9431557211925866,
+     "p_one_sided": 0.0,
+     "n_pos": 34,
+     "n_neg": 4964,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "vol_matched",
+     "auc": 0.6406035665294925,
+     "ci_lo": 0.4828189300411523,
+     "ci_hi": 0.7818930041152263,
+     "p_one_sided": 0.03975,
+     "n_pos": 27,
+     "n_neg": 27,
+     "p_bh": 0.0732,
+     "bh_reject": false
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "unmatched",
+     "auc": 0.9130030336066739,
+     "ci_lo": 0.8821249762999478,
+     "ci_hi": 0.9415082713181969,
+     "p_one_sided": 0.0,
+     "n_pos": 34,
+     "n_neg": 4964,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "vol_matched",
+     "auc": 0.6213991769547325,
+     "ci_lo": 0.47050754458161864,
+     "ci_hi": 0.7626886145404664,
+     "p_one_sided": 0.05775,
+     "n_pos": 27,
+     "n_neg": 27,
+     "p_bh": 0.077,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "unmatched",
+     "auc": 0.5583850784471726,
+     "ci_lo": 0.44806385386547853,
+     "ci_hi": 0.6676387638052803,
+     "p_one_sided": 0.149,
+     "n_pos": 34,
+     "n_neg": 4964,
+     "p_bh": 0.1702857142857143,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "vol_matched",
+     "auc": 0.6282578875171467,
+     "ci_lo": 0.47870370370370374,
+     "ci_hi": 0.7599451303155007,
+     "p_one_sided": 0.04575,
+     "n_pos": 27,
+     "n_neg": 27,
+     "p_bh": 0.0732,
+     "bh_reject": false
+    }
+   ],
+   "t2": [
+    {
+     "indicator": "volatility",
+     "budget": 0.005,
+     "threshold": 0.0021629277799030695,
+     "caught": 7,
+     "n_crash": 12,
+     "recall": 0.5833333333333334,
+     "recall_cp": [
+      0.27666968568210587,
+      0.8483477701915698
+     ],
+     "recall_boot": [
+      0.2857142857142857,
+      0.8666666666666667
+     ],
+     "episodes": 65,
+     "false_episodes": 56,
+     "false_per_catch": 8.0,
+     "false_per_catch_boot": [
+      4.75,
+      21.0
+     ],
+     "precision_episodes": 0.13846153846153847,
+     "realised_rate": 0.0020453469549813696
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.01,
+     "threshold": 0.0017470103866507449,
+     "caught": 9,
+     "n_crash": 12,
+     "recall": 0.75,
+     "recall_cp": [
+      0.4281415381218109,
+      0.9451393554720072
+     ],
+     "recall_boot": [
+      0.5,
+      1.0
+     ],
+     "episodes": 117,
+     "false_episodes": 103,
+     "false_per_catch": 11.444444444444445,
+     "false_per_catch_boot": [
+      6.666071428571429,
+      27.762499999999932
+     ],
+     "precision_episodes": 0.11965811965811966,
+     "realised_rate": 0.004069696414391302
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.02,
+     "threshold": 0.001388371730469945,
+     "caught": 11,
+     "n_crash": 12,
+     "recall": 0.9166666666666666,
+     "recall_cp": [
+      0.6152038348490559,
+      0.9978924067681397
+     ],
+     "recall_boot": [
+      0.7272727272727273,
+      1.0
+     ],
+     "episodes": 189,
+     "false_episodes": 175,
+     "false_per_catch": 15.909090909090908,
+     "false_per_catch_boot": [
+      9.234967320261438,
+      34.172499999999964
+     ],
+     "precision_episodes": 0.07407407407407407,
+     "realised_rate": 0.00764690611447071
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.05,
+     "threshold": 0.0009600211424051026,
+     "caught": 11,
+     "n_crash": 12,
+     "recall": 0.9166666666666666,
+     "recall_cp": [
+      0.6152038348490559,
+      0.9978924067681397
+     ],
+     "recall_boot": [
+      0.7142857142857143,
+      1.0
+     ],
+     "episodes": 583,
+     "false_episodes": 572,
+     "false_per_catch": 52.0,
+     "false_per_catch_boot": [
+      30.907416267942583,
+      112.61999999999989
+     ],
+     "precision_episodes": 0.018867924528301886,
+     "realised_rate": 0.021218923706554274
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.1,
+     "threshold": 0.0007092639126919444,
+     "caught": 11,
+     "n_crash": 12,
+     "recall": 0.9166666666666666,
+     "recall_cp": [
+      0.6152038348490559,
+      0.9978924067681397
+     ],
+     "recall_boot": [
+      0.7142857142857143,
+      1.0
+     ],
+     "episodes": 1545,
+     "false_episodes": 1534,
+     "false_per_catch": 139.45454545454547,
+     "false_per_catch_boot": [
+      86.26388888888889,
+      308.8199999999999
+     ],
+     "precision_episodes": 0.007119741100323625,
+     "realised_rate": 0.05486263820169812
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.005,
+     "threshold": 0.7188239006222349,
+     "caught": 3,
+     "n_crash": 12,
+     "recall": 0.25,
+     "recall_cp": [
+      0.05486064452799274,
+      0.5718584618781891
+     ],
+     "recall_boot": [
+      0.0,
+      0.5294117647058824
+     ],
+     "episodes": 429,
+     "false_episodes": 426,
+     "false_per_catch": 142.0,
+     "false_per_catch_boot": [
+      63.829166666666666,
+      null
+     ],
+     "precision_episodes": 0.006993006993006993,
+     "realised_rate": 0.00723936381406145
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.01,
+     "threshold": 0.679827412725268,
+     "caught": 5,
+     "n_crash": 12,
+     "recall": 0.4166666666666667,
+     "recall_cp": [
+      0.15165222980843013,
+      0.7233303143178942
+     ],
+     "recall_boot": [
+      0.125,
+      0.7142857142857143
+     ],
+     "episodes": 703,
+     "false_episodes": 698,
+     "false_per_catch": 139.6,
+     "false_per_catch_boot": [
+      70.99545454545455,
+      694.0249999999999
+     ],
+     "precision_episodes": 0.007112375533428165,
+     "realised_rate": 0.012410474314336327
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.02,
+     "threshold": 0.6324772110156339,
+     "caught": 5,
+     "n_crash": 12,
+     "recall": 0.4166666666666667,
+     "recall_cp": [
+      0.15165222980843013,
+      0.7233303143178942
+     ],
+     "recall_boot": [
+      0.14285714285714285,
+      0.7272727272727273
+     ],
+     "episodes": 1150,
+     "false_episodes": 1145,
+     "false_per_catch": 229.0,
+     "false_per_catch_boot": [
+      114.095,
+      1141.0
+     ],
+     "precision_episodes": 0.004347826086956522,
+     "realised_rate": 0.021993922179463686
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.05,
+     "threshold": 0.5542048680176629,
+     "caught": 9,
+     "n_crash": 12,
+     "recall": 0.75,
+     "recall_cp": [
+      0.4281415381218109,
+      0.9451393554720072
+     ],
+     "recall_boot": [
+      0.5,
+      1.0
+     ],
+     "episodes": 2026,
+     "false_episodes": 2013,
+     "false_per_catch": 223.66666666666666,
+     "false_per_catch_boot": [
+      132.77,
+      524.51875
+     ],
+     "precision_episodes": 0.006416584402764067,
+     "realised_rate": 0.043612752733492154
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.1,
+     "threshold": 0.4811650198648986,
+     "caught": 10,
+     "n_crash": 12,
+     "recall": 0.8333333333333334,
+     "recall_cp": [
+      0.515862251314033,
+      0.9791374745399076
+     ],
+     "recall_boot": [
+      0.5997058823529412,
+      1.0
+     ],
+     "episodes": 3154,
+     "false_episodes": 3134,
+     "false_per_catch": 313.4,
+     "false_per_catch_boot": [
+      187.11764705882354,
+      760.01875
+     ],
+     "precision_episodes": 0.0063411540900443885,
+     "realised_rate": 0.07292907427768615
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.005,
+     "threshold": 0.741457339251478,
+     "caught": 3,
+     "n_crash": 12,
+     "recall": 0.25,
+     "recall_cp": [
+      0.05486064452799274,
+      0.5718584618781891
+     ],
+     "recall_boot": [
+      0.0,
+      0.5454545454545454
+     ],
+     "episodes": 445,
+     "false_episodes": 442,
+     "false_per_catch": 147.33333333333334,
+     "false_per_catch_boot": [
+      65.42202380952381,
+      null
+     ],
+     "precision_episodes": 0.006741573033707865,
+     "realised_rate": 0.007382528556593977
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.01,
+     "threshold": 0.7072754660126748,
+     "caught": 5,
+     "n_crash": 12,
+     "recall": 0.4166666666666667,
+     "recall_cp": [
+      0.15165222980843013,
+      0.7233303143178942
+     ],
+     "recall_boot": [
+      0.13312500000000002,
+      0.7
+     ],
+     "episodes": 724,
+     "false_episodes": 718,
+     "false_per_catch": 143.6,
+     "false_per_catch_boot": [
+      72.89972222222222,
+      714.0499999999997
+     ],
+     "precision_episodes": 0.008287292817679558,
+     "realised_rate": 0.01248205668560259
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.02,
+     "threshold": 0.6655312341637601,
+     "caught": 5,
+     "n_crash": 12,
+     "recall": 0.4166666666666667,
+     "recall_cp": [
+      0.15165222980843013,
+      0.7233303143178942
+     ],
+     "recall_boot": [
+      0.14261904761904762,
+      0.7142857142857143
+     ],
+     "episodes": 1169,
+     "false_episodes": 1164,
+     "false_per_catch": 232.8,
+     "false_per_catch_boot": [
+      121.19777777777779,
+      1130.0249999999999
+     ],
+     "precision_episodes": 0.00427715996578272,
+     "realised_rate": 0.021903251175859752
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.05,
+     "threshold": 0.597010076690437,
+     "caught": 9,
+     "n_crash": 12,
+     "recall": 0.75,
+     "recall_cp": [
+      0.4281415381218109,
+      0.9451393554720072
+     ],
+     "recall_boot": [
+      0.5,
+      1.0
+     ],
+     "episodes": 2052,
+     "false_episodes": 2038,
+     "false_per_catch": 226.44444444444446,
+     "false_per_catch_boot": [
+      133.49583333333334,
+      547.6249999999993
+     ],
+     "precision_episodes": 0.00682261208576998,
+     "realised_rate": 0.04321284588601796
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.1,
+     "threshold": 0.5326850255723447,
+     "caught": 10,
+     "n_crash": 12,
+     "recall": 0.8333333333333334,
+     "recall_cp": [
+      0.515862251314033,
+      0.9791374745399076
+     ],
+     "recall_boot": [
+      0.5833333333333334,
+      1.0
+     ],
+     "episodes": 3212,
+     "false_episodes": 3191,
+     "false_per_catch": 319.1,
+     "false_per_catch_boot": [
+      186.4309742647059,
+      791.76875
+     ],
+     "precision_episodes": 0.006537982565379826,
+     "realised_rate": 0.07271909932197178
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.005,
+     "threshold": 0.3093469537988107,
+     "caught": 1,
+     "n_crash": 12,
+     "recall": 0.08333333333333333,
+     "recall_cp": [
+      0.002107593231860228,
+      0.38479616515094406
+     ],
+     "recall_boot": [
+      0.0,
+      0.2857142857142857
+     ],
+     "episodes": 460,
+     "false_episodes": 459,
+     "false_per_catch": 459.0,
+     "false_per_catch_boot": [
+      128.73958333333334,
+      null
+     ],
+     "precision_episodes": 0.002173913043478261,
+     "realised_rate": 0.00616085608698308
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.01,
+     "threshold": 0.2797637549975074,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.4166666666666667
+     ],
+     "episodes": 869,
+     "false_episodes": 867,
+     "false_per_catch": 433.5,
+     "false_per_catch_boot": [
+      169.59,
+      null
+     ],
+     "precision_episodes": 0.0023014959723820483,
+     "realised_rate": 0.012493509865005192
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.02,
+     "threshold": 0.2439675794800611,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.4
+     ],
+     "episodes": 1523,
+     "false_episodes": 1521,
+     "false_per_catch": 760.5,
+     "false_per_catch_boot": [
+      296.955,
+      null
+     ],
+     "precision_episodes": 0.0013131976362442547,
+     "realised_rate": 0.02548332417078981
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.05,
+     "threshold": 0.1878529426389467,
+     "caught": 2,
+     "n_crash": 12,
+     "recall": 0.16666666666666666,
+     "recall_cp": [
+      0.02086252546009238,
+      0.48413774868596704
+     ],
+     "recall_boot": [
+      0.0,
+      0.4166666666666667
+     ],
+     "episodes": 2785,
+     "false_episodes": 2782,
+     "false_per_catch": 1391.0,
+     "false_per_catch_boot": [
+      545.975,
+      null
+     ],
+     "precision_episodes": 0.0010771992818671453,
+     "realised_rate": 0.05491799523547737
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.1,
+     "threshold": 0.13758149436864447,
+     "caught": 3,
+     "n_crash": 12,
+     "recall": 0.25,
+     "recall_cp": [
+      0.05486064452799274,
+      0.5718584618781891
+     ],
+     "recall_boot": [
+      0.0,
+      0.5016666666666652
+     ],
+     "episodes": 4259,
+     "false_episodes": 4253,
+     "false_per_catch": 1417.6666666666667,
+     "false_per_catch_boot": [
+      616.125,
+      null
+     ],
+     "precision_episodes": 0.001408781404085466,
+     "realised_rate": 0.09299313572781137
+    }
+   ]
+  },
+  {
+   "tag": "no_exclusion",
+   "drop": 0.03,
+   "exclude": 0,
+   "lead": 60,
+   "n_onsets": 48,
+   "n_train": 35,
+   "n_test": 13,
+   "n_peaks": 5870,
+   "onsets_first_hour": 28,
+   "test_dates": [
+    "2018-12-19 14:32",
+    "2020-03-12 13:05",
+    "2020-03-13 09:31",
+    "2020-03-16 14:34",
+    "2020-03-17 09:32",
+    "2020-03-18 10:16",
+    "2020-03-19 11:37",
+    "2020-03-20 09:35",
+    "2020-03-25 09:39",
+    "2020-03-27 15:27",
+    "2020-04-07 10:00",
+    "2022-11-02 14:35",
+    "2025-04-07 10:18"
+   ],
+   "n_matched_pairs": 20,
+   "vol_ratio_crash_over_peak": 3.3762481534290476,
+   "mde_auc_unmatched": 0.6435342671335668,
+   "mde_auc_matched": 0.7204187093546773,
+   "t1": [
+    {
+     "indicator": "volatility",
+     "null": "unmatched",
+     "auc": 0.9681492891755721,
+     "ci_lo": 0.9416257501363884,
+     "ci_hi": 0.9874687108886108,
+     "p_one_sided": 0.0,
+     "n_pos": 26,
+     "n_neg": 2397,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "volatility",
+     "null": "vol_matched",
+     "auc": 0.5075,
+     "ci_lo": 0.475,
+     "ci_hi": 0.55,
+     "p_one_sided": 0.271,
+     "n_pos": 20,
+     "n_neg": 20,
+     "p_bh": 0.271,
+     "bh_reject": false
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "unmatched",
+     "auc": 0.8794650308796528,
+     "ci_lo": 0.817496557336004,
+     "ci_hi": 0.9320652854281422,
+     "p_one_sided": 0.0,
+     "n_pos": 24,
+     "n_neg": 1997,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "vol_matched",
+     "auc": 0.6592797783933518,
+     "ci_lo": 0.5235457063711911,
+     "ci_hi": 0.8005540166204986,
+     "p_one_sided": 0.011,
+     "n_pos": 19,
+     "n_neg": 19,
+     "p_bh": 0.017599999999999998,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "unmatched",
+     "auc": 0.8763770655983976,
+     "ci_lo": 0.8144278918377567,
+     "ci_hi": 0.9294379068602905,
+     "p_one_sided": 0.0,
+     "n_pos": 24,
+     "n_neg": 1997,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "vol_matched",
+     "auc": 0.6703601108033241,
+     "ci_lo": 0.5373961218836565,
+     "ci_hi": 0.817174515235457,
+     "p_one_sided": 0.0065,
+     "n_pos": 19,
+     "n_neg": 19,
+     "p_bh": 0.013,
+     "bh_reject": true
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "unmatched",
+     "auc": 0.6174052745785344,
+     "ci_lo": 0.4745707102320147,
+     "ci_hi": 0.7473517568018695,
+     "p_one_sided": 0.04875,
+     "n_pos": 24,
+     "n_neg": 1997,
+     "p_bh": 0.055714285714285716,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "vol_matched",
+     "auc": 0.6648199445983379,
+     "ci_lo": 0.5152354570637119,
+     "ci_hi": 0.8199445983379502,
+     "p_one_sided": 0.018,
+     "n_pos": 19,
+     "n_neg": 19,
+     "p_bh": 0.023999999999999997,
+     "bh_reject": true
+    }
+   ],
+   "t2": [
+    {
+     "indicator": "volatility",
+     "budget": 0.005,
+     "threshold": 0.0021629277799030695,
+     "caught": 5,
+     "n_crash": 13,
+     "recall": 0.38461538461538464,
+     "recall_cp": [
+      0.13857933889016064,
+      0.6842223970859369
+     ],
+     "recall_boot": [
+      0.1111111111111111,
+      0.6666666666666666
+     ],
+     "episodes": 65,
+     "false_episodes": 60,
+     "false_per_catch": 12.0,
+     "false_per_catch_boot": [
+      5.908585858585859,
+      50.024999999999864
+     ],
+     "precision_episodes": 0.07692307692307693,
+     "realised_rate": 0.0020453469549813696
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.01,
+     "threshold": 0.0017470103866507449,
+     "caught": 6,
+     "n_crash": 13,
+     "recall": 0.46153846153846156,
+     "recall_cp": [
+      0.192232441801288,
+      0.7486545177296964
+     ],
+     "recall_boot": [
+      0.18143939393939396,
+      0.75
+     ],
+     "episodes": 117,
+     "false_episodes": 111,
+     "false_per_catch": 18.5,
+     "false_per_catch_boot": [
+      9.8,
+      62.01249999999993
+     ],
+     "precision_episodes": 0.05128205128205128,
+     "realised_rate": 0.004069696414391302
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.02,
+     "threshold": 0.001388371730469945,
+     "caught": 7,
+     "n_crash": 13,
+     "recall": 0.5384615384615384,
+     "recall_cp": [
+      0.25134548227030357,
+      0.807767558198712
+     ],
+     "recall_boot": [
+      0.25,
+      0.8181818181818182
+     ],
+     "episodes": 189,
+     "false_episodes": 182,
+     "false_per_catch": 26.0,
+     "false_per_catch_boot": [
+      13.916666666666666,
+      71.00833333333328
+     ],
+     "precision_episodes": 0.037037037037037035,
+     "realised_rate": 0.00764690611447071
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.05,
+     "threshold": 0.0009600211424051026,
+     "caught": 8,
+     "n_crash": 13,
+     "recall": 0.6153846153846154,
+     "recall_cp": [
+      0.31577760291406304,
+      0.8614206611098394
+     ],
+     "recall_boot": [
+      0.34958333333333336,
+      0.9
+     ],
+     "episodes": 583,
+     "false_episodes": 575,
+     "false_per_catch": 71.875,
+     "false_per_catch_boot": [
+      40.49519230769231,
+      186.67499999999995
+     ],
+     "precision_episodes": 0.0137221269296741,
+     "realised_rate": 0.021218923706554274
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.1,
+     "threshold": 0.0007092639126919444,
+     "caught": 8,
+     "n_crash": 13,
+     "recall": 0.6153846153846154,
+     "recall_cp": [
+      0.31577760291406304,
+      0.8614206611098394
+     ],
+     "recall_boot": [
+      0.3333333333333333,
+      0.8888888888888888
+     ],
+     "episodes": 1545,
+     "false_episodes": 1537,
+     "false_per_catch": 192.125,
+     "false_per_catch_boot": [
+      108.78530219780221,
+      516.675
+     ],
+     "precision_episodes": 0.005177993527508091,
+     "realised_rate": 0.05486263820169812
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.005,
+     "threshold": 0.7188239006222349,
+     "caught": 3,
+     "n_crash": 13,
+     "recall": 0.23076923076923078,
+     "recall_cp": [
+      0.05038107349115155,
+      0.5381315392340409
+     ],
+     "recall_boot": [
+      0.0,
+      0.5
+     ],
+     "episodes": 429,
+     "false_episodes": 426,
+     "false_per_catch": 142.0,
+     "false_per_catch_boot": [
+      62.996428571428574,
+      null
+     ],
+     "precision_episodes": 0.006993006993006993,
+     "realised_rate": 0.00723936381406145
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.01,
+     "threshold": 0.679827412725268,
+     "caught": 4,
+     "n_crash": 13,
+     "recall": 0.3076923076923077,
+     "recall_cp": [
+      0.09092039457209661,
+      0.6142616617507044
+     ],
+     "recall_boot": [
+      0.07142857142857142,
+      0.6
+     ],
+     "episodes": 703,
+     "false_episodes": 699,
+     "false_per_catch": 174.75,
+     "false_per_catch_boot": [
+      85.36006944444445,
+      738.0
+     ],
+     "precision_episodes": 0.005689900426742532,
+     "realised_rate": 0.012410474314336327
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.02,
+     "threshold": 0.6324772110156339,
+     "caught": 4,
+     "n_crash": 13,
+     "recall": 0.3076923076923077,
+     "recall_cp": [
+      0.09092039457209661,
+      0.6142616617507044
+     ],
+     "recall_boot": [
+      0.07692307692307693,
+      0.6
+     ],
+     "episodes": 1150,
+     "false_episodes": 1146,
+     "false_per_catch": 286.5,
+     "false_per_catch_boot": [
+      134.53854166666665,
+      1201.174999999999
+     ],
+     "precision_episodes": 0.0034782608695652175,
+     "realised_rate": 0.021993922179463686
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.05,
+     "threshold": 0.5542048680176629,
+     "caught": 7,
+     "n_crash": 13,
+     "recall": 0.5384615384615384,
+     "recall_cp": [
+      0.25134548227030357,
+      0.807767558198712
+     ],
+     "recall_boot": [
+      0.2222222222222222,
+      0.8333333333333334
+     ],
+     "episodes": 2026,
+     "false_episodes": 2018,
+     "false_per_catch": 288.2857142857143,
+     "false_per_catch_boot": [
+      163.3019230769231,
+      994.0249999999999
+     ],
+     "precision_episodes": 0.003948667324777887,
+     "realised_rate": 0.043612752733492154
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.1,
+     "threshold": 0.4811650198648986,
+     "caught": 7,
+     "n_crash": 13,
+     "recall": 0.5384615384615384,
+     "recall_cp": [
+      0.25134548227030357,
+      0.807767558198712
+     ],
+     "recall_boot": [
+      0.2725757575757576,
+      0.8333333333333334
+     ],
+     "episodes": 3154,
+     "false_episodes": 3146,
+     "false_per_catch": 449.42857142857144,
+     "false_per_catch_boot": [
+      251.66730769230767,
+      1507.6499999999992
+     ],
+     "precision_episodes": 0.0025364616360177552,
+     "realised_rate": 0.07292907427768615
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.005,
+     "threshold": 0.741457339251478,
+     "caught": 3,
+     "n_crash": 13,
+     "recall": 0.23076923076923078,
+     "recall_cp": [
+      0.05038107349115155,
+      0.5381315392340409
+     ],
+     "recall_boot": [
+      0.0,
+      0.4667647058823524
+     ],
+     "episodes": 445,
+     "false_episodes": 442,
+     "false_per_catch": 147.33333333333334,
+     "false_per_catch_boot": [
+      66.41785714285714,
+      null
+     ],
+     "precision_episodes": 0.006741573033707865,
+     "realised_rate": 0.007382528556593977
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.01,
+     "threshold": 0.7072754660126748,
+     "caught": 4,
+     "n_crash": 13,
+     "recall": 0.3076923076923077,
+     "recall_cp": [
+      0.09092039457209661,
+      0.6142616617507044
+     ],
+     "recall_boot": [
+      0.07142857142857142,
+      0.5790570175438591
+     ],
+     "episodes": 724,
+     "false_episodes": 719,
+     "false_per_catch": 179.75,
+     "false_per_catch_boot": [
+      85.21979166666668,
+      779.0
+     ],
+     "precision_episodes": 0.006906077348066298,
+     "realised_rate": 0.01248205668560259
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.02,
+     "threshold": 0.6655312341637601,
+     "caught": 4,
+     "n_crash": 13,
+     "recall": 0.3076923076923077,
+     "recall_cp": [
+      0.09092039457209661,
+      0.6142616617507044
+     ],
+     "recall_boot": [
+      0.06666666666666667,
+      0.5833333333333334
+     ],
+     "episodes": 1169,
+     "false_episodes": 1165,
+     "false_per_catch": 291.25,
+     "false_per_catch_boot": [
+      138.23819444444445,
+      1232.0999999999995
+     ],
+     "precision_episodes": 0.003421727972626176,
+     "realised_rate": 0.021903251175859752
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.05,
+     "threshold": 0.597010076690437,
+     "caught": 6,
+     "n_crash": 13,
+     "recall": 0.46153846153846156,
+     "recall_cp": [
+      0.192232441801288,
+      0.7486545177296964
+     ],
+     "recall_boot": [
+      0.18181818181818182,
+      0.75
+     ],
+     "episodes": 2052,
+     "false_episodes": 2045,
+     "false_per_catch": 340.8333333333333,
+     "false_per_catch_boot": [
+      175.5431818181818,
+      1055.5249999999999
+     ],
+     "precision_episodes": 0.00341130604288499,
+     "realised_rate": 0.04321284588601796
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.1,
+     "threshold": 0.5326850255723447,
+     "caught": 7,
+     "n_crash": 13,
+     "recall": 0.5384615384615384,
+     "recall_cp": [
+      0.25134548227030357,
+      0.807767558198712
+     ],
+     "recall_boot": [
+      0.25,
+      0.8181818181818182
+     ],
+     "episodes": 3212,
+     "false_episodes": 3203,
+     "false_per_catch": 457.57142857142856,
+     "false_per_catch_boot": [
+      259.88125,
+      1550.5624999999995
+     ],
+     "precision_episodes": 0.002801992528019925,
+     "realised_rate": 0.07271909932197178
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.005,
+     "threshold": 0.3093469537988107,
+     "caught": 1,
+     "n_crash": 13,
+     "recall": 0.07692307692307693,
+     "recall_cp": [
+      0.0019456284973467497,
+      0.3602974352678775
+     ],
+     "recall_boot": [
+      0.0,
+      0.26666666666666666
+     ],
+     "episodes": 460,
+     "false_episodes": 459,
+     "false_per_catch": 459.0,
+     "false_per_catch_boot": [
+      135.32500000000002,
+      null
+     ],
+     "precision_episodes": 0.002173913043478261,
+     "realised_rate": 0.00616085608698308
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.01,
+     "threshold": 0.2797637549975074,
+     "caught": 2,
+     "n_crash": 13,
+     "recall": 0.15384615384615385,
+     "recall_cp": [
+      0.019206671982528473,
+      0.45447105567655766
+     ],
+     "recall_boot": [
+      0.0,
+      0.3752403846153833
+     ],
+     "episodes": 869,
+     "false_episodes": 867,
+     "false_per_catch": 433.5,
+     "false_per_catch_boot": [
+      169.79000000000002,
+      null
+     ],
+     "precision_episodes": 0.0023014959723820483,
+     "realised_rate": 0.012493509865005192
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.02,
+     "threshold": 0.2439675794800611,
+     "caught": 2,
+     "n_crash": 13,
+     "recall": 0.15384615384615385,
+     "recall_cp": [
+      0.019206671982528473,
+      0.45447105567655766
+     ],
+     "recall_boot": [
+      0.0,
+      0.375
+     ],
+     "episodes": 1523,
+     "false_episodes": 1521,
+     "false_per_catch": 760.5,
+     "false_per_catch_boot": [
+      289.4,
+      null
+     ],
+     "precision_episodes": 0.0013131976362442547,
+     "realised_rate": 0.02548332417078981
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.05,
+     "threshold": 0.1878529426389467,
+     "caught": 2,
+     "n_crash": 13,
+     "recall": 0.15384615384615385,
+     "recall_cp": [
+      0.019206671982528473,
+      0.45447105567655766
+     ],
+     "recall_boot": [
+      0.0,
+      0.4
+     ],
+     "episodes": 2785,
+     "false_episodes": 2782,
+     "false_per_catch": 1391.0,
+     "false_per_catch_boot": [
+      536.67,
+      null
+     ],
+     "precision_episodes": 0.0010771992818671453,
+     "realised_rate": 0.05491799523547737
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.1,
+     "threshold": 0.13758149436864447,
+     "caught": 2,
+     "n_crash": 13,
+     "recall": 0.15384615384615385,
+     "recall_cp": [
+      0.019206671982528473,
+      0.45447105567655766
+     ],
+     "recall_boot": [
+      0.0,
+      0.38472222222222163
+     ],
+     "episodes": 4259,
+     "false_episodes": 4256,
+     "false_per_catch": 2128.0,
+     "false_per_catch_boot": [
+      839.335,
+      null
+     ],
+     "precision_episodes": 0.000704390702042733,
+     "realised_rate": 0.09299313572781137
+    }
+   ]
+  },
+  {
+   "tag": "drop_0.02",
+   "drop": 0.02,
+   "exclude": 30,
+   "lead": 60,
+   "n_onsets": 108,
+   "n_train": 76,
+   "n_test": 32,
+   "n_peaks": 5831,
+   "onsets_first_hour": 23,
+   "test_dates": [
+    "2018-12-19 13:59",
+    "2019-08-01 12:46",
+    "2019-08-23 10:40",
+    "2020-02-28 13:01",
+    "2020-03-03 10:03",
+    "2020-03-09 12:10",
+    "2020-03-10 10:10",
+    "2020-03-11 12:20",
+    "2020-03-12 10:54",
+    "2020-03-13 10:23",
+    "2020-03-16 11:24",
+    "2020-03-17 12:13",
+    "2020-03-18 10:16",
+    "2020-03-19 10:34",
+    "2020-03-20 10:59",
+    "2020-03-23 10:12",
+    "2020-03-24 12:29",
+    "2020-03-25 13:47",
+    "2020-03-27 15:27",
+    "2020-04-07 10:00",
+    "2020-10-06 14:45",
+    "2022-01-26 14:02",
+    "2022-03-08 13:10",
+    "2022-09-21 14:45",
+    "2022-11-02 14:35",
+    "2022-12-14 13:42",
+    "2025-04-04 14:02",
+    "2025-04-07 10:18",
+    "2025-04-08 10:17",
+    "2025-04-09 10:01",
+    "2025-04-10 14:44",
+    "2025-10-10 10:39"
+   ],
+   "n_matched_pairs": 77,
+   "vol_ratio_crash_over_peak": 3.5186636078167157,
+   "mde_auc_unmatched": 0.5708934467233617,
+   "mde_auc_matched": 0.6148274137068535,
+   "t1": [
+    {
+     "indicator": "volatility",
+     "null": "unmatched",
+     "auc": 0.9347893291333663,
+     "ci_lo": 0.8990720508031136,
+     "ci_hi": 0.9658416421523963,
+     "p_one_sided": 0.0,
+     "n_pos": 107,
+     "n_neg": 5744,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "volatility",
+     "null": "vol_matched",
+     "auc": 0.5294316073536853,
+     "ci_lo": 0.5140833192781245,
+     "ci_hi": 0.5543978748524203,
+     "p_one_sided": 0.0,
+     "n_pos": 77,
+     "n_neg": 77,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "unmatched",
+     "auc": 0.8858423599136127,
+     "ci_lo": 0.8577503725033901,
+     "ci_hi": 0.9107329108837957,
+     "p_one_sided": 0.0,
+     "n_pos": 98,
+     "n_neg": 4876,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "vol_matched",
+     "auc": 0.6696072253728208,
+     "ci_lo": 0.5839056920814955,
+     "ci_hi": 0.7494223902541483,
+     "p_one_sided": 0.0,
+     "n_pos": 69,
+     "n_neg": 69,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "unmatched",
+     "auc": 0.8826195777736854,
+     "ci_lo": 0.854602875809881,
+     "ci_hi": 0.9086493508395975,
+     "p_one_sided": 0.0,
+     "n_pos": 98,
+     "n_neg": 4876,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "vol_matched",
+     "auc": 0.6662465868515017,
+     "ci_lo": 0.5801249737450116,
+     "ci_hi": 0.7464818315479941,
+     "p_one_sided": 0.0,
+     "n_pos": 69,
+     "n_neg": 69,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "unmatched",
+     "auc": 0.5370933853442936,
+     "ci_lo": 0.46825763631949907,
+     "ci_hi": 0.6058131979206778,
+     "p_one_sided": 0.14275,
+     "n_pos": 98,
+     "n_neg": 4876,
+     "p_bh": 0.14275,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "vol_matched",
+     "auc": 0.6660365469439193,
+     "ci_lo": 0.5746429321571099,
+     "ci_hi": 0.7563537072043688,
+     "p_one_sided": 0.0005,
+     "n_pos": 69,
+     "n_neg": 69,
+     "p_bh": 0.0005714285714285715,
+     "bh_reject": true
+    }
+   ],
+   "t2": [
+    {
+     "indicator": "volatility",
+     "budget": 0.005,
+     "threshold": 0.0021629277799030695,
+     "caught": 12,
+     "n_crash": 32,
+     "recall": 0.375,
+     "recall_cp": [
+      0.21100031642399283,
+      0.5630775449030734
+     ],
+     "recall_boot": [
+      0.21212121212121213,
+      0.5555555555555556
+     ],
+     "episodes": 65,
+     "false_episodes": 53,
+     "false_per_catch": 4.416666666666667,
+     "false_per_catch_boot": [
+      3.1109649122807017,
+      7.168749999999989
+     ],
+     "precision_episodes": 0.18461538461538463,
+     "realised_rate": 0.0020453469549813696
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.01,
+     "threshold": 0.0017470103866507449,
+     "caught": 13,
+     "n_crash": 32,
+     "recall": 0.40625,
+     "recall_cp": [
+      0.23698410055174313,
+      0.5935507534235236
+     ],
+     "recall_boot": [
+      0.24242424242424243,
+      0.5769230769230769
+     ],
+     "episodes": 117,
+     "false_episodes": 102,
+     "false_per_catch": 7.846153846153846,
+     "false_per_catch_boot": [
+      5.347463768115942,
+      13.833333333333334
+     ],
+     "precision_episodes": 0.1282051282051282,
+     "realised_rate": 0.004069696414391302
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.02,
+     "threshold": 0.001388371730469945,
+     "caught": 19,
+     "n_crash": 32,
+     "recall": 0.59375,
+     "recall_cp": [
+      0.4064492465764764,
+      0.7630158994482569
+     ],
+     "recall_boot": [
+      0.4137423935091278,
+      0.7667307692307689
+     ],
+     "episodes": 189,
+     "false_episodes": 168,
+     "false_per_catch": 8.842105263157896,
+     "false_per_catch_boot": [
+      6.153409090909092,
+      14.546103896103892
+     ],
+     "precision_episodes": 0.1111111111111111,
+     "realised_rate": 0.00764690611447071
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.05,
+     "threshold": 0.0009600211424051026,
+     "caught": 24,
+     "n_crash": 32,
+     "recall": 0.75,
+     "recall_cp": [
+      0.5659506250777573,
+      0.8853839948974118
+     ],
+     "recall_boot": [
+      0.5862068965517241,
+      0.8889639639639635
+     ],
+     "episodes": 583,
+     "false_episodes": 559,
+     "false_per_catch": 23.291666666666668,
+     "false_per_catch_boot": [
+      16.257862903225806,
+      35.75156249999999
+     ],
+     "precision_episodes": 0.0411663807890223,
+     "realised_rate": 0.021218923706554274
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.1,
+     "threshold": 0.0007092639126919444,
+     "caught": 25,
+     "n_crash": 32,
+     "recall": 0.78125,
+     "recall_cp": [
+      0.6002717362878924,
+      0.9072284677152807
+     ],
+     "recall_boot": [
+      0.6296296296296297,
+      0.9166666666666666
+     ],
+     "episodes": 1545,
+     "false_episodes": 1520,
+     "false_per_catch": 60.8,
+     "false_per_catch_boot": [
+      42.703676470588235,
+      97.16354166666646
+     ],
+     "precision_episodes": 0.016181229773462782,
+     "realised_rate": 0.05486263820169812
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.005,
+     "threshold": 0.7188239006222349,
+     "caught": 6,
+     "n_crash": 32,
+     "recall": 0.1875,
+     "recall_cp": [
+      0.07207616545849764,
+      0.3643923098640901
+     ],
+     "recall_boot": [
+      0.06451612903225806,
+      0.3333333333333333
+     ],
+     "episodes": 429,
+     "false_episodes": 420,
+     "false_per_catch": 70.0,
+     "false_per_catch_boot": [
+      37.26590909090909,
+      215.0
+     ],
+     "precision_episodes": 0.02097902097902098,
+     "realised_rate": 0.00723936381406145
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.01,
+     "threshold": 0.679827412725268,
+     "caught": 6,
+     "n_crash": 32,
+     "recall": 0.1875,
+     "recall_cp": [
+      0.07207616545849764,
+      0.3643923098640901
+     ],
+     "recall_boot": [
+      0.06896551724137931,
+      0.3333333333333333
+     ],
+     "episodes": 703,
+     "false_episodes": 694,
+     "false_per_catch": 115.66666666666667,
+     "false_per_catch_boot": [
+      60.49375,
+      352.0
+     ],
+     "precision_episodes": 0.012802275960170697,
+     "realised_rate": 0.012410474314336327
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.02,
+     "threshold": 0.6324772110156339,
+     "caught": 8,
+     "n_crash": 32,
+     "recall": 0.25,
+     "recall_cp": [
+      0.1146160051025882,
+      0.43404937492224266
+     ],
+     "recall_boot": [
+      0.10526315789473684,
+      0.40542652027027015
+     ],
+     "episodes": 1150,
+     "false_episodes": 1139,
+     "false_per_catch": 142.375,
+     "false_per_catch_boot": [
+      80.26357142857142,
+      370.0166666666666
+     ],
+     "precision_episodes": 0.009565217391304347,
+     "realised_rate": 0.021993922179463686
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.05,
+     "threshold": 0.5542048680176629,
+     "caught": 11,
+     "n_crash": 32,
+     "recall": 0.34375,
+     "recall_cp": [
+      0.18571909171656617,
+      0.5319310362802687
+     ],
+     "recall_boot": [
+      0.17857142857142858,
+      0.5135328185328184
+     ],
+     "episodes": 2026,
+     "false_episodes": 2011,
+     "false_per_catch": 182.8181818181818,
+     "false_per_catch_boot": [
+      112.61030701754386,
+      402.6249999999999
+     ],
+     "precision_episodes": 0.007403751233958539,
+     "realised_rate": 0.043612752733492154
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.1,
+     "threshold": 0.4811650198648986,
+     "caught": 16,
+     "n_crash": 32,
+     "recall": 0.5,
+     "recall_cp": [
+      0.318874964234164,
+      0.681125035765836
+     ],
+     "recall_boot": [
+      0.32,
+      0.6756756756756757
+     ],
+     "episodes": 3154,
+     "false_episodes": 3136,
+     "false_per_catch": 196.0,
+     "false_per_catch_boot": [
+      129.32391304347826,
+      357.4472222222222
+     ],
+     "precision_episodes": 0.0057070386810399495,
+     "realised_rate": 0.07292907427768615
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.005,
+     "threshold": 0.741457339251478,
+     "caught": 6,
+     "n_crash": 32,
+     "recall": 0.1875,
+     "recall_cp": [
+      0.07207616545849764,
+      0.3643923098640901
+     ],
+     "recall_boot": [
+      0.0625,
+      0.3333333333333333
+     ],
+     "episodes": 445,
+     "false_episodes": 436,
+     "false_per_catch": 72.66666666666667,
+     "false_per_catch_boot": [
+      38.081250000000004,
+      222.02499999999986
+     ],
+     "precision_episodes": 0.020224719101123594,
+     "realised_rate": 0.007382528556593977
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.01,
+     "threshold": 0.7072754660126748,
+     "caught": 6,
+     "n_crash": 32,
+     "recall": 0.1875,
+     "recall_cp": [
+      0.07207616545849764,
+      0.3643923098640901
+     ],
+     "recall_boot": [
+      0.0625,
+      0.3333333333333333
+     ],
+     "episodes": 724,
+     "false_episodes": 715,
+     "false_per_catch": 119.16666666666667,
+     "false_per_catch_boot": [
+      64.49886363636364,
+      373.0499999999997
+     ],
+     "precision_episodes": 0.012430939226519336,
+     "realised_rate": 0.01248205668560259
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.02,
+     "threshold": 0.6655312341637601,
+     "caught": 8,
+     "n_crash": 32,
+     "recall": 0.25,
+     "recall_cp": [
+      0.1146160051025882,
+      0.43404937492224266
+     ],
+     "recall_boot": [
+      0.10705049261083743,
+      0.4118154158215007
+     ],
+     "episodes": 1169,
+     "false_episodes": 1157,
+     "false_per_catch": 144.625,
+     "false_per_catch_boot": [
+      84.56964285714285,
+      393.3499999999999
+     ],
+     "precision_episodes": 0.010265183917878529,
+     "realised_rate": 0.021903251175859752
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.05,
+     "threshold": 0.597010076690437,
+     "caught": 11,
+     "n_crash": 32,
+     "recall": 0.34375,
+     "recall_cp": [
+      0.18571909171656617,
+      0.5319310362802687
+     ],
+     "recall_boot": [
+      0.1724137931034483,
+      0.5161290322580645
+     ],
+     "episodes": 2052,
+     "false_episodes": 2038,
+     "false_per_catch": 185.27272727272728,
+     "false_per_catch_boot": [
+      114.46934984520124,
+      411.65499999999975
+     ],
+     "precision_episodes": 0.00682261208576998,
+     "realised_rate": 0.04321284588601796
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.1,
+     "threshold": 0.5326850255723447,
+     "caught": 17,
+     "n_crash": 32,
+     "recall": 0.53125,
+     "recall_cp": [
+      0.3474368092863928,
+      0.7090601770939847
+     ],
+     "recall_boot": [
+      0.3512884978001257,
+      0.7027277277277276
+     ],
+     "episodes": 3212,
+     "false_episodes": 3191,
+     "false_per_catch": 187.7058823529412,
+     "false_per_catch_boot": [
+      127.1135,
+      344.2333333333333
+     ],
+     "precision_episodes": 0.006537982565379826,
+     "realised_rate": 0.07271909932197178
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.005,
+     "threshold": 0.3093469537988107,
+     "caught": 1,
+     "n_crash": 32,
+     "recall": 0.03125,
+     "recall_cp": [
+      0.0007908685979525579,
+      0.16217099418151154
+     ],
+     "recall_boot": [
+      0.0,
+      0.10714285714285714
+     ],
+     "episodes": 460,
+     "false_episodes": 459,
+     "false_per_catch": 459.0,
+     "false_per_catch_boot": [
+      143.65,
+      null
+     ],
+     "precision_episodes": 0.002173913043478261,
+     "realised_rate": 0.00616085608698308
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.01,
+     "threshold": 0.2797637549975074,
+     "caught": 2,
+     "n_crash": 32,
+     "recall": 0.0625,
+     "recall_cp": [
+      0.007660736346456389,
+      0.20806942989500743
+     ],
+     "recall_boot": [
+      0.0,
+      0.16003225806451596
+     ],
+     "episodes": 869,
+     "false_episodes": 867,
+     "false_per_catch": 433.5,
+     "false_per_catch_boot": [
+      169.19,
+      null
+     ],
+     "precision_episodes": 0.0023014959723820483,
+     "realised_rate": 0.012493509865005192
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.02,
+     "threshold": 0.2439675794800611,
+     "caught": 3,
+     "n_crash": 32,
+     "recall": 0.09375,
+     "recall_cp": [
+      0.01976718017328488,
+      0.25022695068379464
+     ],
+     "recall_boot": [
+      0.0,
+      0.20842803030302978
+     ],
+     "episodes": 1523,
+     "false_episodes": 1519,
+     "false_per_catch": 506.3333333333333,
+     "false_per_catch_boot": [
+      221.2785714285714,
+      null
+     ],
+     "precision_episodes": 0.0026263952724885093,
+     "realised_rate": 0.02548332417078981
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.05,
+     "threshold": 0.1878529426389467,
+     "caught": 7,
+     "n_crash": 32,
+     "recall": 0.21875,
+     "recall_cp": [
+      0.09277153228471936,
+      0.39972826371210757
+     ],
+     "recall_boot": [
+      0.07692307692307693,
+      0.375
+     ],
+     "episodes": 2785,
+     "false_episodes": 2776,
+     "false_per_catch": 396.57142857142856,
+     "false_per_catch_boot": [
+      219.6076923076923,
+      1359.5124999999998
+     ],
+     "precision_episodes": 0.003231597845601436,
+     "realised_rate": 0.05491799523547737
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.1,
+     "threshold": 0.13758149436864447,
+     "caught": 10,
+     "n_crash": 32,
+     "recall": 0.3125,
+     "recall_cp": [
+      0.16118472408820053,
+      0.5000775816321696
+     ],
+     "recall_boot": [
+      0.15384615384615385,
+      0.4737986270022877
+     ],
+     "episodes": 4259,
+     "false_episodes": 4243,
+     "false_per_catch": 424.3,
+     "false_per_catch_boot": [
+      260.6875,
+      1019.1187499999994
+     ],
+     "precision_episodes": 0.0037567504108945763,
+     "realised_rate": 0.09299313572781137
+    }
+   ]
+  },
+  {
+   "tag": "drop_0.04",
+   "drop": 0.04,
+   "exclude": 30,
+   "lead": 60,
+   "n_onsets": 11,
+   "n_train": 9,
+   "n_test": 2,
+   "n_peaks": 5874,
+   "onsets_first_hour": 3,
+   "test_dates": [
+    "2020-03-12 13:05",
+    "2025-04-07 10:18"
+   ],
+   "n_matched_pairs": 8,
+   "vol_ratio_crash_over_peak": 4.03215196145459,
+   "mde_auc_unmatched": 0.7174232116058029,
+   "mde_auc_matched": 0.8339979989994998,
+   "t1": [
+    {
+     "indicator": "volatility",
+     "null": "unmatched",
+     "auc": 0.9860188196113546,
+     "ci_lo": 0.9677007241937257,
+     "ci_hi": 0.9973137282624064,
+     "p_one_sided": 0.0,
+     "n_pos": 11,
+     "n_neg": 5787,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "volatility",
+     "null": "vol_matched",
+     "auc": 0.53125,
+     "ci_lo": 0.421875,
+     "ci_hi": 0.65625,
+     "p_one_sided": 0.17025,
+     "n_pos": 8,
+     "n_neg": 8,
+     "p_bh": 0.17025,
+     "bh_reject": false
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "unmatched",
+     "auc": 0.944941687008408,
+     "ci_lo": 0.8921814257300426,
+     "ci_hi": 0.9823032501582135,
+     "p_one_sided": 0.0,
+     "n_pos": 9,
+     "n_neg": 4916,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "mean_corr",
+     "null": "vol_matched",
+     "auc": 0.7346938775510204,
+     "ci_lo": 0.4489795918367347,
+     "ci_hi": 0.9591836734693877,
+     "p_one_sided": 0.048,
+     "n_pos": 7,
+     "n_neg": 7,
+     "p_bh": 0.064,
+     "bh_reject": false
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "unmatched",
+     "auc": 0.9448512792695055,
+     "ci_lo": 0.8925029382515143,
+     "ci_hi": 0.983388708073411,
+     "p_one_sided": 0.0,
+     "n_pos": 9,
+     "n_neg": 4916,
+     "p_bh": 0.0,
+     "bh_reject": true
+    },
+    {
+     "indicator": "lead_eig_share",
+     "null": "vol_matched",
+     "auc": 0.7346938775510204,
+     "ci_lo": 0.4489795918367347,
+     "ci_hi": 0.9387755102040817,
+     "p_one_sided": 0.043,
+     "n_pos": 7,
+     "n_neg": 7,
+     "p_bh": 0.064,
+     "bh_reject": false
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "unmatched",
+     "auc": 0.7002531416689268,
+     "ci_lo": 0.5225753774523099,
+     "ci_hi": 0.8523726380978212,
+     "p_one_sided": 0.012,
+     "n_pos": 9,
+     "n_neg": 4916,
+     "p_bh": 0.024,
+     "bh_reject": true
+    },
+    {
+     "indicator": "corr_given_vol",
+     "null": "vol_matched",
+     "auc": 0.7346938775510204,
+     "ci_lo": 0.42857142857142855,
+     "ci_hi": 0.9795918367346939,
+     "p_one_sided": 0.06675,
+     "n_pos": 7,
+     "n_neg": 7,
+     "p_bh": 0.07628571428571429,
+     "bh_reject": false
+    }
+   ],
+   "t2": [
+    {
+     "indicator": "volatility",
+     "budget": 0.005,
+     "threshold": 0.0021629277799030695,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 65,
+     "false_episodes": 63,
+     "false_per_catch": 31.5,
+     "false_per_catch_boot": [
+      11.75,
+      null
+     ],
+     "precision_episodes": 0.03076923076923077,
+     "realised_rate": 0.0020453469549813696
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.01,
+     "threshold": 0.0017470103866507449,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 117,
+     "false_episodes": 115,
+     "false_per_catch": 57.5,
+     "false_per_catch_boot": [
+      22.2,
+      null
+     ],
+     "precision_episodes": 0.017094017094017096,
+     "realised_rate": 0.004069696414391302
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.02,
+     "threshold": 0.001388371730469945,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 189,
+     "false_episodes": 187,
+     "false_per_catch": 93.5,
+     "false_per_catch_boot": [
+      35.5,
+      null
+     ],
+     "precision_episodes": 0.010582010582010581,
+     "realised_rate": 0.00764690611447071
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.05,
+     "threshold": 0.0009600211424051026,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 583,
+     "false_episodes": 581,
+     "false_per_catch": 290.5,
+     "false_per_catch_boot": [
+      105.38000000000001,
+      null
+     ],
+     "precision_episodes": 0.003430531732418525,
+     "realised_rate": 0.021218923706554274
+    },
+    {
+     "indicator": "volatility",
+     "budget": 0.1,
+     "threshold": 0.0007092639126919444,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 1545,
+     "false_episodes": 1543,
+     "false_per_catch": 771.5,
+     "false_per_catch_boot": [
+      295.4,
+      null
+     ],
+     "precision_episodes": 0.0012944983818770227,
+     "realised_rate": 0.05486263820169812
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.005,
+     "threshold": 0.7188239006222349,
+     "caught": 1,
+     "n_crash": 2,
+     "recall": 0.5,
+     "recall_cp": [
+      0.01257911709342506,
+      0.9874208829065749
+     ],
+     "recall_boot": [
+      0.0,
+      1.0
+     ],
+     "episodes": 429,
+     "false_episodes": 428,
+     "false_per_catch": 428.0,
+     "false_per_catch_boot": [
+      135.65833333333333,
+      null
+     ],
+     "precision_episodes": 0.002331002331002331,
+     "realised_rate": 0.00723936381406145
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.01,
+     "threshold": 0.679827412725268,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 703,
+     "false_episodes": 701,
+     "false_per_catch": 350.5,
+     "false_per_catch_boot": [
+      130.48333333333335,
+      null
+     ],
+     "precision_episodes": 0.002844950213371266,
+     "realised_rate": 0.012410474314336327
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.02,
+     "threshold": 0.6324772110156339,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 1150,
+     "false_episodes": 1148,
+     "false_per_catch": 574.0,
+     "false_per_catch_boot": [
+      221.185,
+      null
+     ],
+     "precision_episodes": 0.0017391304347826088,
+     "realised_rate": 0.021993922179463686
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.05,
+     "threshold": 0.5542048680176629,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 2026,
+     "false_episodes": 2024,
+     "false_per_catch": 1012.0,
+     "false_per_catch_boot": [
+      401.765,
+      null
+     ],
+     "precision_episodes": 0.0009871668311944718,
+     "realised_rate": 0.043612752733492154
+    },
+    {
+     "indicator": "mean_corr",
+     "budget": 0.1,
+     "threshold": 0.4811650198648986,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 3154,
+     "false_episodes": 3152,
+     "false_per_catch": 1576.0,
+     "false_per_catch_boot": [
+      618.79,
+      null
+     ],
+     "precision_episodes": 0.0006341154090044388,
+     "realised_rate": 0.07292907427768615
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.005,
+     "threshold": 0.741457339251478,
+     "caught": 1,
+     "n_crash": 2,
+     "recall": 0.5,
+     "recall_cp": [
+      0.01257911709342506,
+      0.9874208829065749
+     ],
+     "recall_boot": [
+      0.0,
+      1.0
+     ],
+     "episodes": 445,
+     "false_episodes": 444,
+     "false_per_catch": 444.0,
+     "false_per_catch_boot": [
+      136.0,
+      null
+     ],
+     "precision_episodes": 0.0022471910112359553,
+     "realised_rate": 0.007382528556593977
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.01,
+     "threshold": 0.7072754660126748,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 724,
+     "false_episodes": 721,
+     "false_per_catch": 360.5,
+     "false_per_catch_boot": [
+      136.39000000000001,
+      null
+     ],
+     "precision_episodes": 0.004143646408839779,
+     "realised_rate": 0.01248205668560259
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.02,
+     "threshold": 0.6655312341637601,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 1169,
+     "false_episodes": 1167,
+     "false_per_catch": 583.5,
+     "false_per_catch_boot": [
+      223.395,
+      null
+     ],
+     "precision_episodes": 0.001710863986313088,
+     "realised_rate": 0.021903251175859752
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.05,
+     "threshold": 0.597010076690437,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 2052,
+     "false_episodes": 2050,
+     "false_per_catch": 1025.0,
+     "false_per_catch_boot": [
+      407.15999999999997,
+      null
+     ],
+     "precision_episodes": 0.0009746588693957114,
+     "realised_rate": 0.04321284588601796
+    },
+    {
+     "indicator": "lead_eig_share",
+     "budget": 0.1,
+     "threshold": 0.5326850255723447,
+     "caught": 2,
+     "n_crash": 2,
+     "recall": 1.0,
+     "recall_cp": [
+      0.15811388300841903,
+      1.0
+     ],
+     "recall_boot": [
+      1.0,
+      1.0
+     ],
+     "episodes": 3212,
+     "false_episodes": 3210,
+     "false_per_catch": 1605.0,
+     "false_per_catch_boot": [
+      621.395,
+      null
+     ],
+     "precision_episodes": 0.0006226650062266501,
+     "realised_rate": 0.07271909932197178
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.005,
+     "threshold": 0.3093469537988107,
+     "caught": 0,
+     "n_crash": 2,
+     "recall": 0.0,
+     "recall_cp": [
+      0.0,
+      0.841886116991581
+     ],
+     "recall_boot": [
+      0.0,
+      0.0
+     ],
+     "episodes": 460,
+     "false_episodes": 460,
+     "false_per_catch": null,
+     "false_per_catch_boot": [
+      null,
+      null
+     ],
+     "precision_episodes": 0.0,
+     "realised_rate": 0.00616085608698308
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.01,
+     "threshold": 0.2797637549975074,
+     "caught": 0,
+     "n_crash": 2,
+     "recall": 0.0,
+     "recall_cp": [
+      0.0,
+      0.841886116991581
+     ],
+     "recall_boot": [
+      0.0,
+      0.0
+     ],
+     "episodes": 869,
+     "false_episodes": 869,
+     "false_per_catch": null,
+     "false_per_catch_boot": [
+      null,
+      null
+     ],
+     "precision_episodes": 0.0,
+     "realised_rate": 0.012493509865005192
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.02,
+     "threshold": 0.2439675794800611,
+     "caught": 0,
+     "n_crash": 2,
+     "recall": 0.0,
+     "recall_cp": [
+      0.0,
+      0.841886116991581
+     ],
+     "recall_boot": [
+      0.0,
+      0.0
+     ],
+     "episodes": 1523,
+     "false_episodes": 1523,
+     "false_per_catch": null,
+     "false_per_catch_boot": [
+      null,
+      null
+     ],
+     "precision_episodes": 0.0,
+     "realised_rate": 0.02548332417078981
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.05,
+     "threshold": 0.1878529426389467,
+     "caught": 0,
+     "n_crash": 2,
+     "recall": 0.0,
+     "recall_cp": [
+      0.0,
+      0.841886116991581
+     ],
+     "recall_boot": [
+      0.0,
+      0.0
+     ],
+     "episodes": 2785,
+     "false_episodes": 2785,
+     "false_per_catch": null,
+     "false_per_catch_boot": [
+      null,
+      null
+     ],
+     "precision_episodes": 0.0,
+     "realised_rate": 0.05491799523547737
+    },
+    {
+     "indicator": "corr_given_vol",
+     "budget": 0.1,
+     "threshold": 0.13758149436864447,
+     "caught": 0,
+     "n_crash": 2,
+     "recall": 0.0,
+     "recall_cp": [
+      0.0,
+      0.841886116991581
+     ],
+     "recall_boot": [
+      0.0,
+      0.0
+     ],
+     "episodes": 4259,
+     "false_episodes": 4259,
+     "false_per_catch": null,
+     "false_per_catch_boot": [
+      null,
+      null
+     ],
+     "precision_episodes": 0.0,
+     "realised_rate": 0.09299313572781137
+    }
+   ]
+  }
+ ]
+}
